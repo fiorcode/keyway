@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/screens/set_password_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -8,8 +11,6 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  static SharedPreferences _pref;
-
   @override
   void initState() {
     super.initState();
@@ -18,11 +19,15 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future checkFirstRun() async {
     try {
-      _pref = await SharedPreferences.getInstance();
-      var _mk = _pref.getString('masterKey');
-      if (_mk == null)
+      CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+      if (await _cp.isMasterKey()) {
+        Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+      } else {
         Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
-    } catch (error) {}
+      }
+    } catch (error) {
+      throw error;
+    } //DO SOMETHING
   }
 
   @override

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/widgets/check_board.dart';
 
 class SetPasswordScreen extends StatefulWidget {
@@ -11,6 +15,8 @@ class SetPasswordScreen extends StatefulWidget {
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
+
+  CriptoProvider _cp;
 
   bool _obscurePass = true;
   bool _obscureConfirm = true;
@@ -26,7 +32,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   void _checkPassword() {
     _confirmCtrler.clear();
     setState(() {
-      _minLong = _passCtrler.text.length >= 16 ? true : false;
+      _minLong = _passCtrler.text.length >= 6 ? true : false;
       _maxLong = _passCtrler.text.length <= 32 ? true : false;
       _hasLow = _passCtrler.text.contains(RegExp(r'[a-z]')) ? true : false;
       _hasUpp = _passCtrler.text.contains(RegExp(r'[A-Z]')) ? true : false;
@@ -50,6 +56,18 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       _confirmCtrler.clear();
       _valid = false;
     });
+  }
+
+  void _setPassword() async {
+    try {
+      _cp = Provider.of<CriptoProvider>(context, listen: false);
+      bool _setupSuccess = await _cp.initialSetup(_passCtrler.text);
+      if (_setupSuccess) {
+        Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   @override
@@ -118,6 +136,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               TextField(
                 autocorrect: false,
                 controller: _confirmCtrler,
+                enabled: _valid,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   filled: true,
@@ -160,7 +179,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               const SizedBox(height: 24),
               if (_valid && _equals)
                 RaisedButton(
-                  onPressed: () {},
+                  onPressed: _setPassword,
                   child: Text(
                     'READY',
                     style: TextStyle(color: Colors.green),
