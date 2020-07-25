@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/alpha_screen.dart';
+import 'package:keyway/screens/keyhole_screen.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
@@ -28,7 +30,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   Icons.lock_outline,
                   color: Colors.red,
                 ),
-                onPressed: () {},
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(KeyholeScreen.routeName),
               )
             : IconButton(
                 icon: Icon(
@@ -36,7 +39,13 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   color: Colors.green,
                 ),
                 onPressed: null),
-        actions: <Widget>[IconButton(icon: Icon(Icons.add), onPressed: () {})],
+        actions: <Widget>[
+          IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.of(context).pushNamed(AlphaScreen.routeName);
+              })
+        ],
       ),
       body: FutureBuilder(
         future: _ip.fetchAndSetItems(),

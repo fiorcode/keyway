@@ -6,12 +6,10 @@ class DBHelper {
   static const createAlphaItemTable = '''CREATE TABLE alpha(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
-    type TEXT,
     username TEXT,
     password TEXT,
     pin TEXT,
     ip TEXT,
-    note TEXT,
     date TEXT)''';
 
   static Future<Database> database() async {

@@ -21,13 +21,11 @@ class ItemProvider with ChangeNotifier {
         .map(
           (item) => AlphaItem(
             id: item['id'],
-            type: item['type'],
             title: item['title'],
             username: item['username'],
             password: item['password'],
             pin: item['pin'],
             ip: item['ip'],
-            note: item['note'],
             date: item['date'],
           ),
         )
@@ -37,13 +35,11 @@ class ItemProvider with ChangeNotifier {
 
   void addAlpha(AlphaItem item) {
     DBHelper.insert('alpha', {
-      'type': item.type,
       'title': item.title,
       'username': item.username,
       'password': item.password,
       'pin': item.pin,
       'ip': item.ip,
-      'note': item.note,
       'date': DateTime.now().toUtc().toIso8601String(),
     });
     fetchAndSetItems();

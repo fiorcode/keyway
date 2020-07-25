@@ -50,9 +50,9 @@ class CriptoProvider with ChangeNotifier {
   }
 
   void lock() {
-    _key = '**********PASS*CLEARED**********';
+    _key = 'PASS*CLEARED';
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
-    _mk = '*******MASTER*KEY*CLEARED*******';
+    _mk = 'MASTER*KEY*CLEARED';
     _locked = true;
     notifyListeners();
   }
