@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/alpha_screen.dart';
-import 'package:keyway/screens/keyhole_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cripto_provider.dart';
-import '../providers/item_provider.dart';
+import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/screens/alpha_screen.dart';
+import 'package:keyway/screens/keyhole_screen.dart';
+import 'package:keyway/widgets/alpha_list_tile.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -61,7 +62,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         : ListView.builder(
                             itemCount: lib.items.length,
                             itemBuilder: (ctx, i) {
-                              return Text(lib.items[i].title);
+                              return AlphaListTile(lib.items[i]);
                             },
                           ),
                   ),

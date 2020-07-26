@@ -14,6 +14,10 @@ import 'package:keyway/widgets/TextFields/username_text_field.dart';
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
 
+  AlphaScreen({this.item});
+
+  final AlphaItem item;
+
   @override
   _AlphaScreenState createState() => _AlphaScreenState();
 }
@@ -47,6 +51,20 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _iProv.addAlpha(_item);
     } catch (error) {}
     Navigator.of(context).pop();
+  }
+
+  _saveChanges() async {
+    try {
+      if (_titleCtrler.text.isEmpty) return;
+    } catch (error) {}
+  }
+
+  @override
+  void initState() {
+    if (widget.item != null) {
+      _titleCtrler.text = widget.item.title;
+    }
+    super.initState();
   }
 
   @override

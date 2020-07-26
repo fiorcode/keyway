@@ -4,6 +4,12 @@ abstract class Item {
   String date;
 
   Item(this.id, this.title, this.date);
+
+  Item.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    title = map['title'];
+    date = map['date'];
+  }
 }
 
 class AlphaItem extends Item {
@@ -21,4 +27,24 @@ class AlphaItem extends Item {
     this.ip,
     String date,
   }) : super(id, title, date);
+
+  AlphaItem.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
+    username = map['username'];
+    password = map['password'];
+    pin = map['pin'];
+    ip = map['ip'];
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'title': title,
+      'username': username,
+      'password': password,
+      'pin': pin,
+      'ip': ip,
+      'date': date,
+    };
+    if (id != null) map['id'] = id;
+    return map;
+  }
 }

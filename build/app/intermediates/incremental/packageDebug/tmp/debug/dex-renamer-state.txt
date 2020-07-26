@@ -1,4 +1,4 @@
-#Sat Jul 25 17:32:06 ART 2020
+#Sun Jul 26 17:16:24 ART 2020
 base.0=C\:\\github\\keyway\\build\\app\\intermediates\\dex\\debug\\mergeDexDebug\\out\\classes.dex
 path.0=classes.dex
 renamed.0=classes.dex
