@@ -41,7 +41,7 @@ class _IpTextFieldState extends State<IpTextField> {
         ),
         filled: true,
         fillColor: Theme.of(context).backgroundColor,
-        hintText: 'IP',
+        hintText: 'XXX.XXX.XXX.XXX',
         prefixIcon: _empty
             ? null
             : InkWell(

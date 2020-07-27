@@ -42,7 +42,7 @@ class AlphaItem extends Item {
       'password': password,
       'pin': pin,
       'ip': ip,
-      'date': date,
+      'date': DateTime.now().toUtc().toIso8601String(),
     };
     if (id != null) map['id'] = id;
     return map;

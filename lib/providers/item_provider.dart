@@ -45,6 +45,11 @@ class ItemProvider with ChangeNotifier {
     fetchAndSetItems();
   }
 
+  void updateAlpha(AlphaItem item) {
+    DBHelper.update('alpha', item.toMap());
+    fetchAndSetItems();
+  }
+
   Future<void> deleteAlpha(int id) async {
     await DBHelper.delete('alpha', id); //THIS COULD FAIL
     _items.removeWhere((element) => element.id == id);
