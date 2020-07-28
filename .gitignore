@@ -1,0 +1,9 @@
+
+.dart_tool/flutter_build/8a089cc30ca61be4503a54f2ac23c240/.filecache
+.dart_tool/flutter_build/8a089cc30ca61be4503a54f2ac23c240/.filecache
+*.dill
+.flutter-plugins-dependencies
+*.bin
+build/app/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt
+*.apk
+*.sha1
