@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/screens/items_screen.dart';
+import 'package:keyway/widgets/check_board.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/models/item.dart';
@@ -103,11 +104,18 @@ class _AlphaScreenState extends State<AlphaScreen> {
     Navigator.of(context).pop();
   }
 
+  _refreshBoard() => setState(() {});
+
   @override
   void initState() {
     _cProv = Provider.of<CriptoProvider>(context, listen: false);
     _iProv = Provider.of<ItemProvider>(context, listen: false);
-    if (widget.item != null) _loadItem();
+    if (widget.item != null)
+      _loadItem();
+    else {
+      _username = true;
+      _password = true;
+    }
     super.initState();
   }
 
@@ -121,6 +129,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
             icon: Icon(Icons.lock_outline),
             onPressed: () {
               try {
+                if (_titleCtrler.text.isEmpty) return;
                 if (_cProv.locked)
                   Navigator.of(context).pushNamed(KeyholeScreen.routeName);
                 else if (widget.item == null)
@@ -159,7 +168,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     ),
                     FloatingActionButton(
                       backgroundColor: _password ? null : Colors.grey,
-                      child: Text('****', style: TextStyle(fontSize: 18)),
+                      child: Text('***', style: TextStyle(fontSize: 18)),
                       heroTag: null,
                       onPressed: () => setState(() {
                         _password = !_password;
@@ -189,8 +198,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
               if (_password)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  child: PasswordTextField(_passCtrler),
+                  child: PasswordTextField(_passCtrler, _refreshBoard),
                 ),
+              if (_password) CheckBoard(password: _passCtrler.text),
               if (_pin)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),

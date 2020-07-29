@@ -7,3 +7,4 @@
 build/app/intermediates/incremental/packageDebug/tmp/debug/dex-renamer-state.txt
 *.apk
 *.sha1
+.flutter-plugins-dependencies
