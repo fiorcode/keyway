@@ -1,1 +1,1 @@
-{"mName":"debug","mStoreFile":"C:\\Users\\el_ba\\.android\\debug.keystore","mStorePassword":"android","mKeyAlias":"AndroidDebugKey","mKeyPassword":"android","mStoreType":"jks","mV1SigningEnabled":true,"mV2SigningEnabled":true}
+{"mName":"debug","mStoreFile":"C:\\github\\keyway\\android\\app\\key.jks","mStorePassword":"zaxscd21.","mKeyAlias":"kwandroiddebugkey","mKeyPassword":"zaxscd21.","mStoreType":"jks","mV1SigningEnabled":true,"mV2SigningEnabled":true}

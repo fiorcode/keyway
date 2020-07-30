@@ -22,6 +22,7 @@ class TitleTextField extends StatelessWidget {
         fillColor: Theme.of(context).backgroundColor,
         labelText: 'Title',
       ),
+      textCapitalization: TextCapitalization.sentences,
     );
   }
 }
