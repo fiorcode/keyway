@@ -83,3 +83,4 @@
 # *.sha1
 # android/app/key.jks
 # *.java
+android/app/build.gradle

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -44,7 +45,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Navigator.of(context).pushNamed(AlphaScreen.routeName);
+                Navigator.of(context).pushNamed(SignInDemo.routeName);
+                //Navigator.of(context).pushNamed(AlphaScreen.routeName);
               })
         ],
       ),

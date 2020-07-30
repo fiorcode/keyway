@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/screens/keyhole_screen.dart';
+import 'package:keyway/screens/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
           KeyholeScreen.routeName: (ctx) => KeyholeScreen(),
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
+          SignInDemo.routeName: (ctx) => SignInDemo(),
         },
       ),
     );
