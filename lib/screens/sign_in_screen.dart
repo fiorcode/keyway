@@ -40,7 +40,16 @@ class SignInDemoState extends State<SignInDemo> {
         _handleGetContact();
       }
     });
-    _googleSignIn.signInSilently();
+    //_googleSignIn.signInSilently();
+    _signInSilentlyIntent();
+  }
+
+  void _signInSilentlyIntent() async {
+    try {
+      await GoogleSignIn().signInSilently(suppressErrors: false);
+    } catch (e) {
+      print(e.toString());
+    }
   }
 
   Future<void> _handleGetContact() async {
