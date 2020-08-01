@@ -32,17 +32,15 @@ class SignInDemoState extends State<SignInDemo> {
   @override
   void initState() {
     super.initState();
-    try {
-      _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
-        setState(() {
-          _currentUser = account;
-        });
-        if (_currentUser != null) {
-          _handleGetContact();
-        }
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
+      setState(() {
+        _currentUser = account;
       });
-      //_googleSignIn.signInSilently();
-    } catch (error) {}
+      if (_currentUser != null) {
+        _handleGetContact();
+      }
+    });
+    _googleSignIn.signInSilently();
   }
 
   Future<void> _handleGetContact() async {
