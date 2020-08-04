@@ -6,16 +6,19 @@
 
 import 'dart:async';
 import 'dart:convert' show json;
+import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
+import 'package:googleapis/drive/v3.dart' as gda;
 import "package:http/http.dart" as http;
+import "package:http/io_client.dart";
+import "package:path/path.dart" as p;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:sqflite/sqflite.dart' as sql;
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: <String>[
-    'email',
-    'https://www.googleapis.com/auth/contacts.readonly',
-  ],
+  scopes: [gda.DriveApi.DriveFileScope],
 );
 
 class SignInDemo extends StatefulWidget {
@@ -37,19 +40,28 @@ class SignInDemoState extends State<SignInDemo> {
         _currentUser = account;
       });
       if (_currentUser != null) {
-        _handleGetContact();
+        _uploadFileToGoogleDrive();
       }
     });
-    //_googleSignIn.signInSilently();
-    _signInSilentlyIntent();
+    _googleSignIn.signInSilently();
   }
 
-  void _signInSilentlyIntent() async {
-    try {
-      await GoogleSignIn().signInSilently(suppressErrors: false);
-    } catch (e) {
-      print(e.toString());
-    }
+  // Future _buckupDB() async {
+  //   final dbPath = await sql.getDatabasesPath();
+  // }
+
+  _uploadFileToGoogleDrive() async {
+    var client = GoogleHttpClient(await _currentUser.authHeaders);
+    var drive = gda.DriveApi(client);
+    gda.File fileToUpload = gda.File();
+    var file = await FilePicker.getFile();
+    fileToUpload.parents = ["appDataFolder"];
+    fileToUpload.name = p.basename(file.absolute.path);
+    var response = await drive.files.create(
+      fileToUpload,
+      uploadMedia: gda.Media(file.openRead(), file.lengthSync()),
+    );
+    print(response);
   }
 
   Future<void> _handleGetContact() async {
@@ -127,8 +139,8 @@ class SignInDemoState extends State<SignInDemo> {
             onPressed: _handleSignOut,
           ),
           RaisedButton(
-            child: const Text('REFRESH'),
-            onPressed: _handleGetContact,
+            child: const Text('UPLOAD FILE'),
+            onPressed: _uploadFileToGoogleDrive,
           ),
         ],
       );
@@ -149,12 +161,25 @@ class SignInDemoState extends State<SignInDemo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Google Sign In'),
-        ),
-        body: ConstrainedBox(
-          constraints: const BoxConstraints.expand(),
-          child: _buildBody(),
-        ));
+      appBar: AppBar(
+        title: const Text('Google Sign In'),
+      ),
+      body: ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: _buildBody(),
+      ),
+    );
   }
+}
+
+class GoogleHttpClient extends IOClient {
+  Map<String, String> _headers;
+  GoogleHttpClient(this._headers) : super();
+  @override
+  Future<IOStreamedResponse> send(http.BaseRequest request) =>
+      super.send(request..headers.addAll(_headers));
+
+  @override
+  Future<http.Response> head(Object url, {Map<String, String> headers}) =>
+      super.head(url, headers: headers..addAll(_headers));
 }
