@@ -7,6 +7,7 @@
 import 'dart:async';
 import 'dart:convert' show json;
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:googleapis/drive/v3.dart' as gda;
@@ -15,10 +16,13 @@ import "package:http/io_client.dart";
 import "package:path/path.dart" as p;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-//import 'package:sqflite/sqflite.dart' as sql;
+import 'package:sqflite/sqflite.dart' as sql;
 
+const _clientId =
+    '51420250153-m16q6i98hbjc2unavf5lo4raov95rds7.apps.googleusercontent.com';
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: [gda.DriveApi.DriveFileScope],
+  clientId: _clientId,
 );
 
 class SignInDemo extends StatefulWidget {
@@ -52,16 +56,16 @@ class SignInDemoState extends State<SignInDemo> {
 
   _uploadFileToGoogleDrive() async {
     var client = GoogleHttpClient(await _currentUser.authHeaders);
-    var drive = gda.DriveApi(client);
     gda.File fileToUpload = gda.File();
-    var file = await FilePicker.getFile();
-    fileToUpload.parents = ["appDataFolder"];
-    fileToUpload.name = p.basename(file.absolute.path);
-    var response = await drive.files.create(
-      fileToUpload,
-      uploadMedia: gda.Media(file.openRead(), file.lengthSync()),
-    );
-    print(response);
+    //var file = await FilePicker.getFile();
+    //fileToUpload.parents = ["appDataFolder"];
+    var dbPath = await sql.getDatabasesPath();
+    final localFile = File('$dbPath/kw.db');
+    fileToUpload.name = p.basename(dbPath);
+    var drive = gda.DriveApi(client);
+    await drive.files.create(fileToUpload,
+        uploadMedia: gda.Media(localFile.openRead(), localFile.lengthSync()));
+    //await drive.files.create(gda.File()..name = p.basename(dbPath));
   }
 
   Future<void> _handleGetContact() async {
