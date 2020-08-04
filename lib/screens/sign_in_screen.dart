@@ -1,19 +1,10 @@
-// Copyright 2019 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
-
-// ignore_for_file: public_member_api_docs
-
 import 'dart:async';
-import 'dart:convert' show json;
-import 'dart:convert';
 import 'dart:io';
 
-import 'package:file_picker/file_picker.dart';
-import 'package:googleapis/drive/v3.dart' as gda;
+import 'package:googleapis/drive/v3.dart' as dApi;
 import "package:http/http.dart" as http;
 import "package:http/io_client.dart";
-import "package:path/path.dart" as p;
+//import "package:path/path.dart" as path;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -21,7 +12,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 const _clientId =
     '51420250153-m16q6i98hbjc2unavf5lo4raov95rds7.apps.googleusercontent.com';
 GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: [gda.DriveApi.DriveFileScope],
+  scopes: [dApi.DriveApi.DriveAppdataScope],
   clientId: _clientId,
 );
 
@@ -50,68 +41,51 @@ class SignInDemoState extends State<SignInDemo> {
     _googleSignIn.signInSilently();
   }
 
-  // Future _buckupDB() async {
-  //   final dbPath = await sql.getDatabasesPath();
-  // }
-
   _uploadFileToGoogleDrive() async {
-    var client = GoogleHttpClient(await _currentUser.authHeaders);
-    gda.File fileToUpload = gda.File();
-    //var file = await FilePicker.getFile();
-    //fileToUpload.parents = ["appDataFolder"];
-    var dbPath = await sql.getDatabasesPath();
-    final localFile = File('$dbPath/kw.db');
-    fileToUpload.name = p.basename(dbPath);
-    var drive = gda.DriveApi(client);
-    await drive.files.create(fileToUpload,
-        uploadMedia: gda.Media(localFile.openRead(), localFile.lengthSync()));
-    //await drive.files.create(gda.File()..name = p.basename(dbPath));
-  }
+    try {
+      dApi.File fileToUpload = dApi.File();
+      fileToUpload.name = 'kw.db';
+      fileToUpload.parents = ["appDataFolder"];
 
-  Future<void> _handleGetContact() async {
-    setState(() {
-      _contactText = "Loading contact info...";
-    });
-    final http.Response response = await http.get(
-      'https://people.googleapis.com/v1/people/me/connections'
-      '?requestMask.includeField=person.names',
-      headers: await _currentUser.authHeaders,
-    );
-    if (response.statusCode != 200) {
-      setState(() {
-        _contactText = "People API gave a ${response.statusCode} "
-            "response. Check logs for details.";
-      });
-      print('People API ${response.statusCode} response: ${response.body}');
-      return;
-    }
-    final Map<String, dynamic> data = json.decode(response.body);
-    final String namedContact = _pickFirstNamedContact(data);
-    setState(() {
-      if (namedContact != null) {
-        _contactText = "I see you know $namedContact!";
-      } else {
-        _contactText = "No contacts to display.";
-      }
-    });
-  }
+      final dbPath = await sql.getDatabasesPath();
+      final localFile = File('$dbPath/kw.db');
 
-  String _pickFirstNamedContact(Map<String, dynamic> data) {
-    final List<dynamic> connections = data['connections'];
-    final Map<String, dynamic> contact = connections?.firstWhere(
-      (dynamic contact) => contact['names'] != null,
-      orElse: () => null,
-    );
-    if (contact != null) {
-      final Map<String, dynamic> name = contact['names'].firstWhere(
-        (dynamic name) => name['displayName'] != null,
-        orElse: () => null,
+      final client = GoogleHttpClient(await _currentUser.authHeaders);
+      final drive = dApi.DriveApi(client);
+
+      await drive.files.create(
+        fileToUpload,
+        uploadMedia: dApi.Media(
+          localFile.openRead(),
+          localFile.lengthSync(),
+        ),
       );
-      if (name != null) {
-        return name['displayName'];
+      _listGoogleDriveFiles();
+      _deleteGoogleDriveFiles();
+    } catch (error) {}
+  }
+
+  Future<void> _listGoogleDriveFiles() async {
+    var client = GoogleHttpClient(await _currentUser.authHeaders);
+    var drive = dApi.DriveApi(client);
+    drive.files.list(spaces: 'appDataFolder').then((value) {
+      var list = value;
+      list.files.forEach((f) {
+        print(f.id);
+      });
+    });
+  }
+
+  Future<void> _deleteGoogleDriveFiles() async {
+    var client = GoogleHttpClient(await _currentUser.authHeaders);
+    var drive = dApi.DriveApi(client);
+    drive.files.list(spaces: 'appDataFolder').then((value) {
+      var list = value;
+      for (var i = 0; i < list.files.length; i++) {
+        print("Id: ${list.files[i].id} DELETED");
+        drive.files.delete(list.files[i].id);
       }
-    }
-    return null;
+    });
   }
 
   Future<void> _handleSignIn() async {
