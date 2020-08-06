@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/keyhole_screen.dart';
-import 'package:keyway/screens/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -9,6 +7,8 @@ import 'package:keyway/screens/splash_screen.dart';
 import 'package:keyway/screens/set_password_screen.dart';
 import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/screens/alpha_screen.dart';
+import 'package:keyway/screens/backup_screen.dart';
+import 'package:keyway/screens/keyhole_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: ItemProvider()),
       ],
       child: MaterialApp(
-        title: 'Locker',
+        title: 'Keyway',
         theme: ThemeData(
           primarySwatch: Colors.grey,
           primaryColor: Colors.grey[800],
@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
           KeyholeScreen.routeName: (ctx) => KeyholeScreen(),
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
-          SignInDemo.routeName: (ctx) => SignInDemo(),
+          BackupScreen.routeName: (ctx) => BackupScreen(),
         },
       ),
     );

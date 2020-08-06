@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/backup_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -83,7 +84,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: Center(
         child: SingleChildScrollView(
-          padding: EdgeInsets.all(24),
+          padding: EdgeInsets.all(32),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,7 +93,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 'NOW \nCREATE ONE \nTO PROTECT YOUR \nDATA',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 36,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).primaryColor,
                 ),
@@ -156,8 +157,10 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   suffixIcon: _confirmCtrler.text.isNotEmpty
                       ? InkWell(
                           child: Icon(Icons.clear),
-                          onTap: () => _confirmCtrler.clear(),
-                        )
+                          onTap: () {
+                            _confirmCtrler.clear();
+                            _checkConfirmPassword();
+                          })
                       : null,
                 ),
                 obscureText: _obscureConfirm,
@@ -177,7 +180,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 // minLong: _minLong,
                 // maxLong: _maxLong,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               if (_valid && _equals)
                 RaisedButton(
                   onPressed: _setPassword,
@@ -185,7 +188,23 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     'READY',
                     style: TextStyle(color: Colors.green),
                   ),
-                )
+                ),
+              const SizedBox(height: 12),
+              Text('Not your first time?'),
+              const SizedBox(height: 12),
+              RaisedButton.icon(
+                color: Colors.blue,
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(BackupScreen.routeName),
+                icon: Icon(
+                  Icons.cloud_download,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  'RESTORE MY DATA',
+                  style: TextStyle(color: Colors.white),
+                ),
+              )
             ],
           ),
         ),

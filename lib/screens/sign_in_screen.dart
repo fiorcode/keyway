@@ -4,17 +4,12 @@ import 'dart:io';
 import 'package:googleapis/drive/v3.dart' as dApi;
 import "package:http/http.dart" as http;
 import "package:http/io_client.dart";
-//import "package:path/path.dart" as path;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 
-const _clientId =
-    '51420250153-m16q6i98hbjc2unavf5lo4raov95rds7.apps.googleusercontent.com';
-GoogleSignIn _googleSignIn = GoogleSignIn(
-  scopes: [dApi.DriveApi.DriveAppdataScope],
-  clientId: _clientId,
-);
+// const _clientId =
+//     '51420250153-m16q6i98hbjc2unavf5lo4raov95rds7.apps.googleusercontent.com';
 
 class SignInDemo extends StatefulWidget {
   static const routeName = '/sign-in';
@@ -24,12 +19,13 @@ class SignInDemo extends StatefulWidget {
 }
 
 class SignInDemoState extends State<SignInDemo> {
+  GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
-  String _contactText;
 
   @override
   void initState() {
     super.initState();
+    _googleSignIn = GoogleSignIn(scopes: [dApi.DriveApi.DriveAppdataScope]);
     _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount account) {
       setState(() {
         _currentUser = account;
@@ -104,14 +100,13 @@ class SignInDemoState extends State<SignInDemo> {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           ListTile(
-            leading: GoogleUserCircleAvatar(
-              identity: _currentUser,
-            ),
+            // leading: GoogleUserCircleAvatar(
+            //   identity: _currentUser,
+            // ),
             title: Text(_currentUser.displayName ?? ''),
             subtitle: Text(_currentUser.email ?? ''),
           ),
           const Text("Signed in successfully."),
-          Text(_contactText ?? ''),
           RaisedButton(
             child: const Text('SIGN OUT'),
             onPressed: _handleSignOut,

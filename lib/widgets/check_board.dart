@@ -47,7 +47,7 @@ class CheckBoard extends StatelessWidget {
           logic: password.length >= 6 ? true : false,
         ),
       ],
-      spacing: 20,
+      spacing: 8,
     );
   }
 }
