@@ -1,5 +1,5 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+
 import 'package:keyway/helpers/drive_helper.dart';
 import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/widgets/check_board.dart';
@@ -252,13 +252,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
-              FlatButton(
-                onPressed: () async {
-                  var file = await FilePicker.getFile();
-                  drive.upload(file);
-                },
-                child: Text("UPLOAD"),
-              ),
             ],
           ),
         ),

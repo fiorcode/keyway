@@ -90,7 +90,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Text(
-                'NOW \nCREATE ONE \nTO PROTECT YOUR \nDATA',
+                'NOW \nCREATE ONE \nTO \nPROTECT YOUR DATA',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 24,
