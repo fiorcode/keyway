@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/sign_in_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-//import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/screens/keyhole_screen.dart';
+import 'package:keyway/screens/alpha_screen.dart';
+import 'package:keyway/screens/backup_screen.dart';
 import 'package:keyway/widgets/alpha_list_tile.dart';
 
 class ItemsListScreen extends StatefulWidget {
@@ -26,6 +26,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         centerTitle: true,
+        leading: IconButton(
+            icon: Icon(Icons.backup),
+            onPressed: () =>
+                Navigator.of(context).pushNamed(BackupScreen.routeName)),
         title: _cp.locked
             ? IconButton(
                 icon: Icon(
@@ -45,8 +49,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           IconButton(
               icon: Icon(Icons.add),
               onPressed: () {
-                Navigator.of(context).pushNamed(SignInDemo.routeName);
-                //Navigator.of(context).pushNamed(AlphaScreen.routeName);
+                Navigator.of(context).pushNamed(AlphaScreen.routeName);
               })
         ],
       ),

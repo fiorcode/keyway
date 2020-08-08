@@ -55,4 +55,8 @@ class ItemProvider with ChangeNotifier {
     _items.removeWhere((element) => element.id == id);
     notifyListeners();
   }
+
+  removeItems() {
+    _items.clear();
+  }
 }
