@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
@@ -43,5 +45,10 @@ class DBHelper {
   static Future<void> delete(String table, int id) async {
     final db = await DBHelper.database();
     db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<void> removeDB() async {
+    final dbPath = await sql.getDatabasesPath();
+    File('$dbPath/kw.db').delete();
   }
 }

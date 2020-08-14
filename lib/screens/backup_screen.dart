@@ -94,16 +94,9 @@ class _BackupScreenState extends State<BackupScreen> {
     });
   }
 
-  _deleteLocalDB() async {
-    try {
-      final dbPath = await sql.getDatabasesPath();
-      File('$dbPath/kw.db').delete();
-      ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-      _ip.removeItems();
-    } catch (error) {}
-  }
+  _deleteLocalDB() async => Provider.of<ItemProvider>(context).removeItems();
 
-  Future<void> _restoreDB() async {}
+  //Future<void> _restoreDB() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +198,6 @@ class _BackupScreenState extends State<BackupScreen> {
               RaisedButton(
                 onPressed: () {
                   _deleteLocalDB();
-                  Provider.of<ItemsProvider>(context)
                 },
                 child: Text(
                   'Delete Local Database',

@@ -56,7 +56,9 @@ class ItemProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  removeItems() {
+  void removeItems() {
+    DBHelper.removeDB();
     _items.clear();
+    notifyListeners();
   }
 }
