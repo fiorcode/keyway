@@ -5,6 +5,12 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
+  static const createUserDataTable = '''CREATE TABLE user_data(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    surname TEXT,
+    enc_mk TEXT)''';
+
   static const createAlphaItemTable = '''CREATE TABLE alpha(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
@@ -19,6 +25,7 @@ class DBHelper {
     return sql.openDatabase(path.join(dbPath, 'kw.db'),
         onCreate: (db, version) async {
       await db.execute(createAlphaItemTable);
+      await db.execute(createUserDataTable);
     }, version: 1);
   }
 
@@ -45,6 +52,11 @@ class DBHelper {
   static Future<void> delete(String table, int id) async {
     final db = await DBHelper.database();
     db.delete(table, where: 'id = ?', whereArgs: [id]);
+  }
+
+  static Future<void> restoreDB(File db) async {
+    final dbPath = await sql.getDatabasesPath();
+    File('$dbPath/kw.db').writeAsStringSync(db.readAsStringSync());
   }
 
   static Future<void> removeDB() async {
