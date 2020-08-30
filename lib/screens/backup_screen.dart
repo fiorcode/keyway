@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import "package:http/http.dart" as http;
+import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -20,7 +21,6 @@ class _BackupScreenState extends State<BackupScreen> {
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
   dAPI.FileList _fileList;
-  dAPI.File _db;
 
   Future<void> _handleSignIn() async {
     try {
@@ -41,9 +41,6 @@ class _BackupScreenState extends State<BackupScreen> {
       setState(() {
         _currentUser = account;
       });
-      if (_currentUser != null) {
-        _downloadDB();
-      }
     });
     _googleSignIn.signInSilently();
     _currentUser = _googleSignIn.currentUser;
@@ -55,7 +52,9 @@ class _BackupScreenState extends State<BackupScreen> {
     drive.files.list(spaces: 'appDataFolder').then((value) {
       _fileList = value;
       _fileList.files.forEach((f) {
-        if (f.name == 'kw.db') _db = f;
+        if (f.name == 'kw.db') {
+          drive.files.get(f.id).then((file) => file.toString());
+        }
         print(f.id);
       });
     });
@@ -120,7 +119,7 @@ class _BackupScreenState extends State<BackupScreen> {
                     color: Theme.of(context).primaryColor,
                   ),
                 ),
-              const SizedBox(height: 24),
+              if (_currentUser == null) const SizedBox(height: 24),
               if (_currentUser == null)
                 RaisedButton(
                   onPressed: () {
@@ -141,33 +140,6 @@ class _BackupScreenState extends State<BackupScreen> {
                           child: Text(
                             'Sign in with Google',
                             style: TextStyle(color: Colors.grey[800]),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: () => _handleSignOut(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/google_logo.png'),
-                          height: 32,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(color: Colors.red[800]),
                           ),
                         )
                       ],
@@ -207,6 +179,33 @@ class _BackupScreenState extends State<BackupScreen> {
                   ),
                 ),
               ),
+              if (_currentUser != null)
+                RaisedButton(
+                  onPressed: () => _handleSignOut(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Image(
+                          image: AssetImage('assets/google_logo.png'),
+                          height: 32,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: Text(
+                            'Sign Out',
+                            style: TextStyle(color: Colors.red[800]),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(32),
+                  ),
+                ),
             ],
           ),
         ),
