@@ -1,8 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as e;
+
+import 'package:keyway/helpers/db_helper.dart';
 
 class CriptoProvider with ChangeNotifier {
   static SharedPreferences _pref;
@@ -71,6 +74,9 @@ class CriptoProvider with ChangeNotifier {
       _mkCrypted = _crypter.encrypt(_mk, iv: e.IV.fromLength(16));
       _pref.setString('masterKey', _mkCrypted.base64);
       _pref.setBool('isMasterKey', true);
+
+      //SAVE MASTER KEY IN DATABASE
+      DBHelper.insert('user_data', {'enc_mk': _mkCrypted.base64});
 
       //CLEAN
       _random = Random.secure();
