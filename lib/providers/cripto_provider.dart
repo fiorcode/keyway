@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
 import 'package:keyway/helpers/db_helper.dart';
+import 'package:keyway/models/user.dart';
 
 class CriptoProvider with ChangeNotifier {
   static SharedPreferences _pref;
@@ -70,6 +71,8 @@ class CriptoProvider with ChangeNotifier {
       List<int> _v = List<int>.generate(32, (i) => _random.nextInt(256));
       _mk = base64Url.encode(_v).substring(0, 32);
 
+      print('MASTER KEY: $_mk');
+
       //ENCRYPT AND SAVE MASTER KEY
       _mkCrypted = _crypter.encrypt(_mk, iv: e.IV.fromLength(16));
       _pref.setString('masterKey', _mkCrypted.base64);
@@ -77,6 +80,8 @@ class CriptoProvider with ChangeNotifier {
 
       //SAVE MASTER KEY IN DATABASE
       DBHelper.insert('user_data', {'enc_mk': _mkCrypted.base64});
+
+      print('MASTER KEY: ${_mkCrypted.base64}');
 
       //CLEAN
       _random = Random.secure();
@@ -88,6 +93,23 @@ class CriptoProvider with ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  setMasterKey() async {
+    final _userData = await DBHelper.getData('user_data');
+    String _encMK = _userData
+        .map(
+          (item) => User(
+            name: item['name'],
+            surname: item['surname'],
+            encMK: item['enc_mk'],
+          ),
+        )
+        .toList()
+        .first
+        .encMK;
+    _pref.setString('masterKey', _encMK);
+    _pref.setBool('isMasterKey', true);
   }
 
   Future<String> doCrypt(String value) async {
