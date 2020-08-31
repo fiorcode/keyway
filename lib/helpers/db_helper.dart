@@ -54,10 +54,11 @@ class DBHelper {
     db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
-  static Future<void> restoreDB(File db) async {
-    final dbPath = await sql.getDatabasesPath();
-    File('$dbPath/kw.db').writeAsStringSync(db.readAsStringSync());
-  }
+  // static Future<void> restoreDB(dynamic db) async {
+  //   final dbPath = await sql.getDatabasesPath();
+  //   api.Media dbMedia = db;
+  //   File('$dbPath/kw.db').writeAsStringSync(db.readAsStringSync());
+  // }
 
   static Future<void> removeDB() async {
     final dbPath = await sql.getDatabasesPath();
