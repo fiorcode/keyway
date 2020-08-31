@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 
 import "package:http/http.dart" as http;
-import 'package:keyway/helpers/db_helper.dart';
+import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/screens/items_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:googleapis/drive/v3.dart' as dAPI;
@@ -51,13 +52,33 @@ class _BackupScreenState extends State<BackupScreen> {
     var drive = dAPI.DriveApi(client);
     drive.files.list(spaces: 'appDataFolder').then((value) {
       _fileList = value;
-      _fileList.files.forEach((f) {
+      _fileList.files.forEach((f) async {
         if (f.name == 'kw.db') {
-          drive.files.get(f.id).then((file) => file.toString());
+          dAPI.Media file = await drive.files.get(
+            f.id,
+            downloadOptions: dAPI.DownloadOptions.FullMedia,
+          );
+          print(file.stream);
+          final dbPath = await sql.getDatabasesPath();
+          print(dbPath);
+          final localFile = File('$dbPath/kw.db');
+          List<int> dataStore = [];
+          file.stream.listen((data) {
+            print("DataReceived: ${data.length}");
+            dataStore.insertAll(dataStore.length, data);
+          }, onDone: () {
+            print("Task Done");
+            localFile.writeAsBytes(dataStore);
+            print("File saved at ${localFile.path}");
+          }, onError: (error) {
+            print("Some Error");
+          });
         }
-        print(f.id);
       });
     });
+    Provider.of<CriptoProvider>(context, listen: false).setMasterKey();
+
+    Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
   }
 
   Future<void> _uploadDB() async {
@@ -93,7 +114,8 @@ class _BackupScreenState extends State<BackupScreen> {
     });
   }
 
-  _deleteLocalDB() async => Provider.of<ItemProvider>(context).removeItems();
+  _deleteLocalDB() async =>
+      Provider.of<ItemProvider>(context, listen: false).removeItems();
 
   //Future<void> _restoreDB() async {}
 
@@ -122,9 +144,7 @@ class _BackupScreenState extends State<BackupScreen> {
               if (_currentUser == null) const SizedBox(height: 24),
               if (_currentUser == null)
                 RaisedButton(
-                  onPressed: () {
-                    _handleSignIn().then((_) => _downloadDB());
-                  },
+                  onPressed: () => _handleSignIn(),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: Row(
@@ -154,11 +174,11 @@ class _BackupScreenState extends State<BackupScreen> {
                   onPressed: _uploadDB,
                   child: Text('Upload Database'),
                 ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: _downloadDB,
-                  child: Text('Download Database'),
-                ),
+              //if (_currentUser != null)
+              RaisedButton(
+                onPressed: _downloadDB,
+                child: Text('Download Database'),
+              ),
               if (_currentUser != null)
                 RaisedButton(
                   onPressed: _deleteDB,
