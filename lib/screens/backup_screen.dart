@@ -1,15 +1,17 @@
-import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+
+import 'package:provider/provider.dart';
 import "package:http/http.dart" as http;
+import 'package:http/io_client.dart';
+import 'package:sqflite/sqflite.dart' as sql;
+import 'package:googleapis/drive/v3.dart' as dAPI;
+import 'package:google_sign_in/google_sign_in.dart';
+
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/screens/items_screen.dart';
-import 'package:provider/provider.dart';
-import 'package:sqflite/sqflite.dart' as sql;
-import 'package:googleapis/drive/v3.dart' as dAPI;
-import 'package:http/io_client.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
 class BackupScreen extends StatefulWidget {
   static const routeName = '/backup';
@@ -47,7 +49,7 @@ class _BackupScreenState extends State<BackupScreen> {
     _currentUser = _googleSignIn.currentUser;
   }
 
-  Future<void> _downloadDB() async {
+  Future _downloadDB() async {
     var client = GoogleHttpClient(await _currentUser.authHeaders);
     var drive = dAPI.DriveApi(client);
     drive.files.list(spaces: 'appDataFolder').then((value) {
@@ -58,27 +60,20 @@ class _BackupScreenState extends State<BackupScreen> {
             f.id,
             downloadOptions: dAPI.DownloadOptions.FullMedia,
           );
-          print(file.stream);
+          print(f.id);
           final dbPath = await sql.getDatabasesPath();
-          print(dbPath);
           final localFile = File('$dbPath/kw.db');
           List<int> dataStore = [];
           file.stream.listen((data) {
-            print("DataReceived: ${data.length}");
             dataStore.insertAll(dataStore.length, data);
           }, onDone: () {
-            print("Task Done");
             localFile.writeAsBytes(dataStore);
-            print("File saved at ${localFile.path}");
           }, onError: (error) {
             print("Some Error");
           });
         }
       });
     });
-    Provider.of<CriptoProvider>(context, listen: false).setMasterKey();
-
-    Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
   }
 
   Future<void> _uploadDB() async {
@@ -116,8 +111,6 @@ class _BackupScreenState extends State<BackupScreen> {
 
   _deleteLocalDB() async =>
       Provider.of<ItemProvider>(context, listen: false).removeItems();
-
-  //Future<void> _restoreDB() async {}
 
   @override
   Widget build(BuildContext context) {
@@ -174,11 +167,27 @@ class _BackupScreenState extends State<BackupScreen> {
                   onPressed: _uploadDB,
                   child: Text('Upload Database'),
                 ),
-              //if (_currentUser != null)
-              RaisedButton(
-                onPressed: _downloadDB,
-                child: Text('Download Database'),
-              ),
+              if (_currentUser != null)
+                RaisedButton(
+                  onPressed: () async {
+                    await _downloadDB();
+                    Provider.of<CriptoProvider>(context, listen: false)
+                        .setMasterKey();
+                    Navigator.of(context)
+                        .pushReplacementNamed(ItemsListScreen.routeName);
+                  },
+                  child: Text('Download Database'),
+                ),
+              if (_currentUser != null)
+                RaisedButton(
+                  onPressed: () {
+                    Provider.of<CriptoProvider>(context, listen: false)
+                        .setMasterKey();
+                    Navigator.of(context)
+                        .pushReplacementNamed(ItemsListScreen.routeName);
+                  },
+                  child: Text('GO'),
+                ),
               if (_currentUser != null)
                 RaisedButton(
                   onPressed: _deleteDB,
@@ -187,18 +196,19 @@ class _BackupScreenState extends State<BackupScreen> {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
-              RaisedButton(
-                onPressed: () {
-                  _deleteLocalDB();
-                },
-                child: Text(
-                  'Delete Local Database',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.bold,
+              if (_currentUser != null)
+                RaisedButton(
+                  onPressed: () {
+                    _deleteLocalDB();
+                  },
+                  child: Text(
+                    'Delete Local Database',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
-              ),
               if (_currentUser != null)
                 RaisedButton(
                   onPressed: () => _handleSignOut(),
