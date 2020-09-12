@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -27,9 +28,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-            icon: Icon(Icons.backup),
+            icon: Icon(Icons.dashboard),
             onPressed: () =>
-                Navigator.of(context).pushNamed(BackupScreen.routeName)),
+                Navigator.of(context).pushNamed(DashboardScreen.routeName)),
         title: _cp.locked
             ? IconButton(
                 icon: Icon(
