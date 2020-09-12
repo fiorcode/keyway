@@ -52,7 +52,7 @@ class _BackupScreenState extends State<BackupScreen> {
   Future _downloadDB() async {
     var client = GoogleHttpClient(await _currentUser.authHeaders);
     var drive = dAPI.DriveApi(client);
-    drive.files.list(spaces: 'appDataFolder').then((value) {
+    await drive.files.list(spaces: 'appDataFolder').then((value) {
       _fileList = value;
       _fileList.files.forEach((f) async {
         if (f.name == 'kw.db') {
@@ -67,7 +67,10 @@ class _BackupScreenState extends State<BackupScreen> {
           file.stream.listen((data) {
             dataStore.insertAll(dataStore.length, data);
           }, onDone: () {
-            localFile.writeAsBytes(dataStore);
+            localFile.writeAsBytesSync(dataStore, flush: true);
+            Provider.of<CriptoProvider>(context, listen: false).setMasterKey();
+            Navigator.of(context)
+                .pushReplacementNamed(ItemsListScreen.routeName);
           }, onError: (error) {
             print("Some Error");
           });
@@ -171,10 +174,6 @@ class _BackupScreenState extends State<BackupScreen> {
                 RaisedButton(
                   onPressed: () async {
                     await _downloadDB();
-                    Provider.of<CriptoProvider>(context, listen: false)
-                        .setMasterKey();
-                    Navigator.of(context)
-                        .pushReplacementNamed(ItemsListScreen.routeName);
                   },
                   child: Text('Download Database'),
                 ),
