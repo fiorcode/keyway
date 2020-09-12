@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/screens/splash_screen.dart';
-import 'package:keyway/screens/set_password_screen.dart';
-import 'package:keyway/screens/items_screen.dart';
-import 'package:keyway/screens/alpha_screen.dart';
-import 'package:keyway/screens/backup_screen.dart';
-import 'package:keyway/screens/keyhole_screen.dart';
+import 'providers/cripto_provider.dart';
+import 'providers/item_provider.dart';
+import 'screens/splash_screen.dart';
+import 'screens/set_password_screen.dart';
+import 'screens/items_screen.dart';
+import 'screens/alpha_screen.dart';
+import 'screens/backup_screen.dart';
+import 'screens/keyhole_screen.dart';
+import 'screens/dashboard_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         routes: {
           SetPasswordScreen.routeName: (ctx) => SetPasswordScreen(),
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
+          DashboardScreen.routeName: (ctx) => DashboardScreen(),
           KeyholeScreen.routeName: (ctx) => KeyholeScreen(),
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
