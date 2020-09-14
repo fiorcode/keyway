@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/backup_screen.dart';
+
+import 'package:keyway/widgets/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const routeName = '/dash';
@@ -10,40 +13,30 @@ class DashboardScreen extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
         child: ListView(
           children: [
-            Card(
-              clipBehavior: Clip.antiAlias,
-              shadowColor: Colors.green,
-              elevation: 8,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                  side: BorderSide(width: 1, color: Colors.green)),
-              margin: EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(16),
-                    color: Theme.of(context).primaryColor,
-                    child: Icon(
-                      Icons.cloud_upload,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      'Backup',
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontSize: 16,
-                      ),
-                    ),
-                  )
-                ],
+            DashboardCard(
+              icon: Icon(Icons.cloud_upload, color: Colors.white, size: 32),
+              title: Text(
+                'Backup',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 16,
+                ),
               ),
-            )
+              goTo: () =>
+                  Navigator.of(context).pushNamed(BackupScreen.routeName),
+            ),
+            DashboardCard(
+              icon: Icon(Icons.storage, color: Colors.white, size: 32),
+              title: Text(
+                'Data',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 16,
+                ),
+              ),
+              goTo: () =>
+                  Navigator.of(context).pushNamed(BackupScreen.routeName),
+            ),
           ],
         ),
       ),
