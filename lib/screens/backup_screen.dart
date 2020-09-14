@@ -120,94 +120,91 @@ class _BackupScreenState extends State<BackupScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(32),
+      body: SingleChildScrollView(
+        child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              if (_currentUser == null)
-                Text(
-                  'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              if (_currentUser == null) const SizedBox(height: 24),
-              if (_currentUser == null)
-                RaisedButton(
-                  onPressed: () => _handleSignIn(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/google_logo.png'),
-                          height: 32,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: <Widget>[
+                  if (_currentUser == null)
+                    Text(
+                      'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  if (_currentUser == null) const SizedBox(height: 24),
+                  if (_currentUser == null)
+                    RaisedButton(
+                      onPressed: () => _handleSignIn(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Image(
+                              image: AssetImage('assets/google_logo.png'),
+                              height: 32,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                'Sign in with Google',
+                                style: TextStyle(color: Colors.grey[800]),
+                              ),
+                            )
+                          ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Sign in with Google',
-                            style: TextStyle(color: Colors.grey[800]),
-                          ),
-                        )
-                      ],
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(32),
+                      ),
                     ),
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: _uploadDB,
-                  child: Text('Upload Database'),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: () async {
-                    await _downloadDB();
-                  },
-                  child: Text('Download Database'),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: () {
-                    Provider.of<CriptoProvider>(context, listen: false)
-                        .setMasterKey();
-                    Navigator.of(context)
-                        .pushReplacementNamed(ItemsListScreen.routeName);
-                  },
-                  child: Text('GO'),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: _deleteDB,
-                  child: Text(
-                    'Delete Database',
-                    style: TextStyle(color: Colors.red),
-                  ),
-                ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: () {
-                    _deleteLocalDB();
-                  },
-                  child: Text(
-                    'Delete Local Database',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
+                  if (_currentUser != null)
+                    RaisedButton(
+                      onPressed: _uploadDB,
+                      child: Text('Upload Database'),
                     ),
-                  ),
-                ),
+                  if (_currentUser != null)
+                    RaisedButton(
+                      onPressed: () async {
+                        await _downloadDB();
+                      },
+                      child: Text('Download Database'),
+                    ),
+                  if (_currentUser != null)
+                    RaisedButton(
+                      onPressed: _deleteDB,
+                      child: Text(
+                        'Delete Database',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  if (_currentUser != null)
+                    RaisedButton(
+                      onPressed: () {
+                        _deleteLocalDB();
+                      },
+                      child: Text(
+                        'Delete Local Database',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               if (_currentUser != null)
                 RaisedButton(
                   onPressed: () => _handleSignOut(),
