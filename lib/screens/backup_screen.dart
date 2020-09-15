@@ -112,8 +112,8 @@ class _BackupScreenState extends State<BackupScreen> {
     });
   }
 
-  _deleteLocalDB() async =>
-      Provider.of<ItemProvider>(context, listen: false).removeItems();
+  // _deleteLocalDB() async =>
+  //     Provider.of<ItemProvider>(context, listen: false).removeItems();
 
   @override
   Widget build(BuildContext context) {
@@ -122,117 +122,212 @@ class _BackupScreenState extends State<BackupScreen> {
       appBar: AppBar(),
       body: SingleChildScrollView(
         child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: <Widget>[
-                  if (_currentUser == null)
-                    Text(
-                      'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  if (_currentUser == null) const SizedBox(height: 24),
-                  if (_currentUser == null)
-                    RaisedButton(
-                      onPressed: () => _handleSignIn(),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/google_logo.png'),
-                              height: 32,
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                if (_currentUser != null)
+                  Column(
+                    children: [
+                      Card(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.cloud_upload,
+                                size: 64,
+                              ),
+                              title: Text(
+                                'Upload your data',
+                              ),
+                              subtitle: Text('Last upload: 01/01/2020'),
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                'Sign in with Google',
-                                style: TextStyle(color: Colors.grey[800]),
+                                'Upload your data on your personal drive cloud.',
+                                style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6)),
                               ),
+                            ),
+                            ButtonBar(
+                              alignment: MainAxisAlignment.center,
+                              children: [
+                                FlatButton(
+                                  onPressed: _uploadDB,
+                                  child: const Text('UPLOAD'),
+                                )
+                              ],
                             )
                           ],
                         ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32),
+                      Card(
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.cloud_download,
+                                size: 64,
+                              ),
+                              title: Text(
+                                'Download your data',
+                              ),
+                              subtitle: Text('Last download: 01/01/2020'),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Download your data from your personal drive cloud.',
+                                style: TextStyle(
+                                    color: Colors.black.withOpacity(0.6)),
+                              ),
+                            ),
+                            ButtonBar(
+                              alignment: MainAxisAlignment.center,
+                              children: [
+                                FlatButton(
+                                  onPressed: _downloadDB,
+                                  child: const Text('DOWNLOAD'),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  if (_currentUser != null)
-                    RaisedButton(
-                      onPressed: _uploadDB,
-                      child: Text('Upload Database'),
-                    ),
-                  if (_currentUser != null)
-                    RaisedButton(
-                      onPressed: () async {
-                        await _downloadDB();
-                      },
-                      child: Text('Download Database'),
-                    ),
-                  if (_currentUser != null)
-                    RaisedButton(
-                      onPressed: _deleteDB,
-                      child: Text(
-                        'Delete Database',
-                        style: TextStyle(color: Colors.red),
+                      Card(
+                        color: Colors.red,
+                        child: Column(
+                          children: [
+                            ListTile(
+                              leading: Icon(
+                                Icons.delete_forever,
+                                color: Colors.white,
+                                size: 64,
+                              ),
+                              title: Text(
+                                'Delete your data',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Delete your data from your personal drive cloud.',
+                                style: TextStyle(
+                                    color: Colors.white.withOpacity(0.6)),
+                              ),
+                            ),
+                            ButtonBar(
+                              alignment: MainAxisAlignment.center,
+                              children: [
+                                FlatButton(
+                                  onPressed: _deleteDB,
+                                  child: const Text(
+                                    'DELETE',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
-                    ),
-                  if (_currentUser != null)
-                    RaisedButton(
-                      onPressed: () {
-                        _deleteLocalDB();
-                      },
-                      child: Text(
-                        'Delete Local Database',
+                    ],
+                  ),
+                if (_currentUser == null)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Text(
+                        'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
-                          color: Colors.red,
+                          fontSize: 24,
                           fontWeight: FontWeight.bold,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
-                    ),
-                ],
-              ),
-              if (_currentUser != null)
-                RaisedButton(
-                  onPressed: () => _handleSignOut(),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Image(
-                          image: AssetImage('assets/google_logo.png'),
-                          height: 32,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 8.0),
-                          child: Text(
-                            'Sign Out',
-                            style: TextStyle(color: Colors.red[800]),
+                      const SizedBox(height: 24),
+                      RaisedButton(
+                        onPressed: () => _handleSignIn(),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image(
+                                image: AssetImage('assets/google_logo.png'),
+                                height: 32,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: Text(
+                                  'Sign in with Google',
+                                  style: TextStyle(color: Colors.grey[800]),
+                                ),
+                              )
+                            ],
                           ),
-                        )
-                      ],
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(32),
+                        ),
+                      ),
+                      RaisedButton(
+                        onPressed: _uploadDB,
+                        child: Text('Upload Database'),
+                      ),
+                      RaisedButton(
+                        onPressed: () async {
+                          await _downloadDB();
+                        },
+                        child: Text('Download Database'),
+                      ),
+                      RaisedButton(
+                        onPressed: _deleteDB,
+                        child: Text(
+                          'Delete Database',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                if (_currentUser != null)
+                  RaisedButton(
+                    onPressed: () => _handleSignOut(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/google_logo.png'),
+                            height: 32,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'Sign Out',
+                              style: TextStyle(color: Colors.red[800]),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
                     ),
                   ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(32),
-                  ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
