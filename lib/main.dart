@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/providers/drive_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
@@ -20,6 +21,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: CriptoProvider()),
         ChangeNotifierProvider.value(value: ItemProvider()),
+        ChangeNotifierProvider.value(value: DriveProvider()),
       ],
       child: MaterialApp(
         title: 'Keyway',
