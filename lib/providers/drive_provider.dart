@@ -25,7 +25,10 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future<void> handleSignOut() => _googleSignIn.disconnect();
+  Future handleSignOut() async {
+    await _googleSignIn.disconnect();
+    notifyListeners();
+  }
 
   Future trySignInSilently() async {
     _googleSignIn = GoogleSignIn(scopes: [dAPI.DriveApi.DriveAppdataScope]);
@@ -47,7 +50,6 @@ class DriveProvider with ChangeNotifier {
             f.id,
             downloadOptions: dAPI.DownloadOptions.FullMedia,
           );
-          print(f.id);
           final dbPath = await sql.getDatabasesPath();
           final localFile = File('$dbPath/kw.db');
           List<int> dataStore = [];
