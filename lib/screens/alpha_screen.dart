@@ -1,19 +1,18 @@
 import 'package:flutter/material.dart';
 
-import 'package:keyway/helpers/drive_helper.dart';
-import 'package:keyway/screens/items_screen.dart';
-import 'package:keyway/widgets/check_board.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/screens/keyhole_screen.dart';
+import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/widgets/TextFields/ip_text_field.dart';
 import 'package:keyway/widgets/TextFields/password_text_field.dart';
 import 'package:keyway/widgets/TextFields/pin_text_field.dart';
 import 'package:keyway/widgets/TextFields/title_text_field.dart';
 import 'package:keyway/widgets/TextFields/username_text_field.dart';
+import 'package:keyway/widgets/check_board.dart';
 
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
@@ -39,8 +38,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   bool _password = false;
   bool _pin = false;
   bool _ip = false;
-
-  final drive = DriveHelper();
 
   Future<AlphaItem> _createItem() async {
     try {
