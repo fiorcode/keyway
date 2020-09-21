@@ -11,9 +11,12 @@ import 'package:google_sign_in/google_sign_in.dart';
 class DriveProvider with ChangeNotifier {
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
-  dAPI.FileList _fileList;
+  bool _fileFound = false;
+  DateTime _createdDate;
 
   GoogleSignInAccount get currentUser => _currentUser;
+  bool get fileFound => _fileFound;
+  DateTime get createdDate => _createdDate;
 
   Future<void> handleSignIn() async {
     try {
@@ -39,11 +42,27 @@ class DriveProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future checkStatus() async {
+    try {
+      if (_fileFound) return;
+      var client = GoogleHttpClient(await _currentUser.authHeaders);
+      var drive = dAPI.DriveApi(client);
+      dAPI.FileList _fileList = await drive.files.list(spaces: 'appDataFolder');
+      _fileList.files.forEach((f) {
+        if (f.name == 'kw.db') {
+          _fileFound = true;
+          _createdDate = f.createdTime;
+          notifyListeners();
+        }
+      });
+    } catch (error) {}
+  }
+
   Future<bool> downloadDB() async {
     var client = GoogleHttpClient(await _currentUser.authHeaders);
     var drive = dAPI.DriveApi(client);
     await drive.files.list(spaces: 'appDataFolder').then((value) {
-      _fileList = value;
+      dAPI.FileList _fileList = value;
       _fileList.files.forEach((f) async {
         if (f.name == 'kw.db') {
           dAPI.Media file = await drive.files.get(
@@ -96,7 +115,6 @@ class DriveProvider with ChangeNotifier {
     drive.files.list(spaces: 'appDataFolder').then((value) {
       value.files.forEach((f) {
         if (f.name == 'kw.db') drive.files.delete(f.id);
-        print('${f.id} DELETED');
       });
     });
   }
