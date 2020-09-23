@@ -18,11 +18,11 @@ class _DashboardCardState extends State<DashboardCard> {
       onTap: widget.goTo,
       child: Card(
         clipBehavior: Clip.antiAlias,
-        shadowColor: Colors.green,
+        shadowColor: Colors.grey,
         elevation: 8,
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(width: 1, color: Colors.green)),
+            side: BorderSide(width: 3, color: Colors.grey)),
         margin: EdgeInsets.only(left: 32, right: 32, top: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
