@@ -12,11 +12,12 @@ class DriveProvider with ChangeNotifier {
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
   bool _fileFound = false;
-  DateTime _createdDate;
+  DateTime _modifiedDate;
+  DateTime _lastCheck;
 
   GoogleSignInAccount get currentUser => _currentUser;
   bool get fileFound => _fileFound;
-  DateTime get createdDate => _createdDate;
+  DateTime get modifiedDate => _modifiedDate;
 
   Future<void> handleSignIn() async {
     try {
@@ -44,18 +45,26 @@ class DriveProvider with ChangeNotifier {
 
   Future checkStatus() async {
     try {
-      if (_fileFound) return;
+      if (_lastCheck != null) {
+        var secSinceLastCheck =
+            _lastCheck.difference(DateTime.now()).inSeconds.abs();
+        if (secSinceLastCheck < 15) return;
+      }
       var client = GoogleHttpClient(await _currentUser.authHeaders);
       var drive = dAPI.DriveApi(client);
-      dAPI.FileList _fileList = await drive.files.list(spaces: 'appDataFolder');
+      dAPI.FileList _fileList =
+          await drive.files.list(spaces: 'appDataFolder', $fields: '*');
       _fileList.files.forEach((f) {
         if (f.name == 'kw.db') {
           _fileFound = true;
-          _createdDate = f.createdTime;
+          _modifiedDate = f.modifiedTime;
+          _lastCheck = DateTime.now();
           notifyListeners();
         }
       });
-    } catch (error) {}
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<bool> downloadDB() async {
