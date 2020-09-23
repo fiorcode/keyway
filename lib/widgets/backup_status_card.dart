@@ -9,6 +9,25 @@ class BackupStatusCard extends StatefulWidget {
 }
 
 class _BackupStatusCardState extends State<BackupStatusCard> {
+  bool _uploading = false;
+  bool _downloading = false;
+  bool _deleting = false;
+
+  _upload(DriveProvider drive) async {
+    // setState(() => _uploading = true);
+    // await drive.uploadDB().whenComplete(() async {
+    //   await drive.checkStatus();
+    //   setState(() => _uploading = false);
+    // });
+    await drive.uploadDB();
+    await drive.checkStatus();
+  }
+
+  _delete(DriveProvider drive) async {
+    _deleting = true;
+    await drive.deleteDB().whenComplete(() => _deleting = false);
+  }
+
   @override
   Widget build(BuildContext context) {
     DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
@@ -62,7 +81,15 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year}',
+                    drive.fileFound
+                        ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
+                        : 'Last time uploaded: Never',
+                    style: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    'Number of files: ${drive.fileCount}',
                     style: TextStyle(
                       color: Colors.black54,
                     ),
@@ -71,7 +98,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                     alignment: MainAxisAlignment.spaceAround,
                     children: [
                       FlatButton(
-                        onPressed: null,
+                        onPressed: () => _upload(drive),
                         child: Text(
                           'UPLOAD',
                           style: TextStyle(color: Colors.black87),
@@ -87,7 +114,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         ),
                       if (drive.fileFound)
                         FlatButton(
-                          onPressed: null,
+                          onPressed: () => _delete(drive),
                           child: Text(
                             'DELETE',
                             style: TextStyle(color: Colors.red),
@@ -95,6 +122,8 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         ),
                     ],
                   ),
+                  if (_uploading || _downloading || _deleting)
+                    LinearProgressIndicator(),
                 ],
               ),
             ),
