@@ -11,13 +11,18 @@ import 'package:google_sign_in/google_sign_in.dart';
 class DriveProvider with ChangeNotifier {
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
+  dAPI.FileList _fileList;
   bool _fileFound = false;
   DateTime _modifiedDate;
   DateTime _lastCheck;
 
+  int _fileCount;
+
   GoogleSignInAccount get currentUser => _currentUser;
   bool get fileFound => _fileFound;
   DateTime get modifiedDate => _modifiedDate;
+
+  int get fileCount => _fileCount;
 
   Future<void> handleSignIn() async {
     try {
@@ -52,9 +57,11 @@ class DriveProvider with ChangeNotifier {
       }
       var client = GoogleHttpClient(await _currentUser.authHeaders);
       var drive = dAPI.DriveApi(client);
-      dAPI.FileList _fileList =
-          await drive.files.list(spaces: 'appDataFolder', $fields: '*');
+      _fileList = await drive.files.list(spaces: 'appDataFolder', $fields: '*');
+      _fileCount = 0;
       _fileList.files.forEach((f) {
+        _fileCount++;
+        print('${f.name}: ${f.modifiedTime.toString()}');
         if (f.name == 'kw.db') {
           _fileFound = true;
           _modifiedDate = f.modifiedTime;
@@ -98,34 +105,64 @@ class DriveProvider with ChangeNotifier {
 
   Future<void> uploadDB() async {
     try {
-      dAPI.File fileToUpload = dAPI.File();
-      fileToUpload.name = 'kw.db';
-      fileToUpload.parents = ["appDataFolder"];
+      dAPI.File _fileToUpload = dAPI.File();
+      _fileToUpload.name = 'kw.db';
+      _fileToUpload.parents = ["appDataFolder"];
 
-      final dbPath = await sql.getDatabasesPath();
-      final localFile = File('$dbPath/kw.db');
+      final _dbPath = await sql.getDatabasesPath();
+      final _localFile = File('$_dbPath/kw.db');
 
-      final client = GoogleHttpClient(await _currentUser.authHeaders);
-      final drive = dAPI.DriveApi(client);
+      final _client = GoogleHttpClient(await _currentUser.authHeaders);
+      final _drive = dAPI.DriveApi(_client);
 
-      await drive.files.create(
-        fileToUpload,
-        uploadMedia: dAPI.Media(
-          localFile.openRead(),
-          localFile.lengthSync(),
-        ),
+      dAPI.FileList _fileList;
+      _fileList = await _drive.files.list(
+        spaces: 'appDataFolder',
+        $fields: '*',
       );
-    } catch (error) {}
+      if (_fileList.files.length == 0) {
+        await _drive.files.create(
+          _fileToUpload,
+          uploadMedia: dAPI.Media(
+            _localFile.openRead(),
+            _localFile.lengthSync(),
+          ),
+        );
+      } else {
+        _fileList.files.forEach(
+          (f) async {
+            if (f.name == 'kw.db') {
+              await _drive.files.update(
+                dAPI.File(),
+                f.id,
+                uploadMedia: dAPI.Media(
+                  _localFile.openRead(),
+                  _localFile.lengthSync(),
+                ),
+              );
+            }
+          },
+        );
+      }
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<void> deleteDB() async {
-    var client = GoogleHttpClient(await _currentUser.authHeaders);
-    var drive = dAPI.DriveApi(client);
-    drive.files.list(spaces: 'appDataFolder').then((value) {
-      value.files.forEach((f) {
-        if (f.name == 'kw.db') drive.files.delete(f.id);
+    try {
+      var client = GoogleHttpClient(await _currentUser.authHeaders);
+      var drive = dAPI.DriveApi(client);
+      drive.files.list(spaces: 'appDataFolder').then((value) {
+        value.files.forEach((f) {
+          if (f.name == 'kw.db') drive.files.delete(f.id);
+        });
       });
-    });
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
