@@ -53,7 +53,7 @@ class DriveProvider with ChangeNotifier {
       if (_lastCheck != null) {
         var secSinceLastCheck =
             _lastCheck.difference(DateTime.now()).inSeconds.abs();
-        if (secSinceLastCheck < 15) return;
+        if (secSinceLastCheck < 3) return;
       }
       var client = GoogleHttpClient(await _currentUser.authHeaders);
       var drive = dAPI.DriveApi(client);
@@ -132,7 +132,7 @@ class DriveProvider with ChangeNotifier {
         _fileList.files.forEach(
           (f) async {
             if (f.name == 'kw.db') {
-              await _drive.files.update(
+              dAPI.File _file = await _drive.files.update(
                 dAPI.File(),
                 f.id,
                 uploadMedia: dAPI.Media(
@@ -140,11 +140,12 @@ class DriveProvider with ChangeNotifier {
                   _localFile.lengthSync(),
                 ),
               );
+              _fileFound = true;
+              _modifiedDate = _file.modifiedTime;
             }
           },
         );
       }
-      notifyListeners();
     } catch (error) {
       throw error;
     }
