@@ -13,14 +13,8 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
   bool _downloading = false;
   bool _deleting = false;
 
-  _upload(DriveProvider drive) async {
-    // setState(() => _uploading = true);
-    // await drive.uploadDB().whenComplete(() async {
-    //   await drive.checkStatus();
-    //   setState(() => _uploading = false);
-    // });
-    await drive.uploadDB();
-    await drive.checkStatus();
+  Future _upload(DriveProvider drive) async {
+    return await drive.uploadDB();
   }
 
   _delete(DriveProvider drive) async {
@@ -98,7 +92,12 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                     alignment: MainAxisAlignment.spaceAround,
                     children: [
                       FlatButton(
-                        onPressed: () => _upload(drive),
+                        onPressed: () async {
+                          //setState(() => _uploading = true);
+                          await drive.uploadDB();
+                          //setState(() => _uploading = false);
+                          await drive.checkStatus();
+                        },
                         child: Text(
                           'UPLOAD',
                           style: TextStyle(color: Colors.black87),
