@@ -5,24 +5,22 @@ import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'package:http/io_client.dart';
 import 'package:sqflite/sqflite.dart' as sql;
-import 'package:googleapis/drive/v3.dart' as dAPI;
+import 'package:googleapis/drive/v3.dart' as api;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class DriveProvider with ChangeNotifier {
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
-  dAPI.FileList _fileList;
+  api.FileList _fileList;
   bool _fileFound = false;
   DateTime _modifiedDate;
   DateTime _lastCheck;
-
-  int _fileCount;
 
   GoogleSignInAccount get currentUser => _currentUser;
   bool get fileFound => _fileFound;
   DateTime get modifiedDate => _modifiedDate;
 
-  int get fileCount => _fileCount;
+  int get fileCount => _fileList.files.length;
 
   Future<void> handleSignIn() async {
     try {
@@ -40,12 +38,31 @@ class DriveProvider with ChangeNotifier {
   }
 
   Future trySignInSilently() async {
-    _googleSignIn = GoogleSignIn(scopes: [dAPI.DriveApi.DriveAppdataScope]);
+    _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.DriveAppdataScope]);
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount account) => _currentUser = account);
     await _googleSignIn.signInSilently();
     _currentUser = _googleSignIn.currentUser;
     notifyListeners();
+  }
+
+  Future<api.DriveApi> _getApi() async {
+    Map<String, String> _headers = await _currentUser.authHeaders;
+    return api.DriveApi(GoogleHttpClient(_headers));
+  }
+
+  Future<api.FileList> _getFileList() async {
+    api.DriveApi drive = await _getApi();
+    return drive.files.list(spaces: 'appDataFolder', $fields: '*');
+  }
+
+  Future<api.File> _getDB() async {
+    api.File _db;
+    _fileList = await _getFileList();
+    _fileList.files.forEach((f) async {
+      if (f.name == 'kw.db') _db = f;
+    });
+    return _db;
   }
 
   Future checkStatus() async {
@@ -55,20 +72,26 @@ class DriveProvider with ChangeNotifier {
             _lastCheck.difference(DateTime.now()).inSeconds.abs();
         if (secSinceLastCheck < 3) return;
       }
-      var client = GoogleHttpClient(await _currentUser.authHeaders);
-      var drive = dAPI.DriveApi(client);
-      _fileList = await drive.files.list(spaces: 'appDataFolder', $fields: '*');
-      _fileCount = 0;
-      _fileList.files.forEach((f) {
-        _fileCount++;
-        print('${f.name}: ${f.modifiedTime.toString()}');
-        if (f.name == 'kw.db') {
-          _fileFound = true;
-          _modifiedDate = f.modifiedTime;
-          _lastCheck = DateTime.now();
-          notifyListeners();
-        }
-      });
+      api.File _db = await _getDB();
+      if (_db != null) {
+        _fileFound = true;
+        _modifiedDate = _db.modifiedTime.toLocal();
+        _lastCheck = DateTime.now().toLocal();
+        notifyListeners();
+      }
+      // api.DriveApi drive = await _getApi();
+      // _fileList = await drive.files.list(spaces: 'appDataFolder', $fields: '*');
+      // _fileCount = 0;
+      // _fileList.files.forEach((f) {
+      //   _fileCount++;
+      //   print('${f.name}: ${f.modifiedTime.toString()}');
+      //   if (f.name == 'kw.db') {
+      //     _fileFound = true;
+      //     _modifiedDate = f.modifiedTime;
+      //     _lastCheck = DateTime.now();
+      //     notifyListeners();
+      //   }
+      // });
     } catch (error) {
       throw error;
     }
@@ -76,14 +99,14 @@ class DriveProvider with ChangeNotifier {
 
   Future<bool> downloadDB() async {
     var client = GoogleHttpClient(await _currentUser.authHeaders);
-    var drive = dAPI.DriveApi(client);
+    var drive = api.DriveApi(client);
     await drive.files.list(spaces: 'appDataFolder').then((value) {
-      dAPI.FileList _fileList = value;
+      api.FileList _fileList = value;
       _fileList.files.forEach((f) async {
         if (f.name == 'kw.db') {
-          dAPI.Media file = await drive.files.get(
+          api.Media file = await drive.files.get(
             f.id,
-            downloadOptions: dAPI.DownloadOptions.FullMedia,
+            downloadOptions: api.DownloadOptions.FullMedia,
           );
           final dbPath = await sql.getDatabasesPath();
           final localFile = File('$dbPath/kw.db');
@@ -103,48 +126,42 @@ class DriveProvider with ChangeNotifier {
     return false;
   }
 
-  Future<void> uploadDB() async {
+  Future uploadDB() async {
     try {
-      dAPI.File _fileToUpload = dAPI.File();
-      _fileToUpload.name = 'kw.db';
-      _fileToUpload.parents = ["appDataFolder"];
-
       final _dbPath = await sql.getDatabasesPath();
-      final _localFile = File('$_dbPath/kw.db');
+      final _localDB = File('$_dbPath/kw.db');
 
-      final _client = GoogleHttpClient(await _currentUser.authHeaders);
-      final _drive = dAPI.DriveApi(_client);
+      _fileList = await _getFileList();
 
-      dAPI.FileList _fileList;
-      _fileList = await _drive.files.list(
-        spaces: 'appDataFolder',
-        $fields: '*',
-      );
+      api.DriveApi _drive = await _getApi();
+
       if (_fileList.files.length == 0) {
+        api.File _fileToUpload = api.File();
+        _fileToUpload.name = 'kw.db';
+        _fileToUpload.parents = ["appDataFolder"];
         await _drive.files.create(
           _fileToUpload,
-          uploadMedia: dAPI.Media(
-            _localFile.openRead(),
-            _localFile.lengthSync(),
+          uploadMedia: api.Media(
+            _localDB.openRead(),
+            _localDB.lengthSync(),
           ),
         );
       } else {
-        _fileList.files.forEach(
-          (f) async {
-            if (f.name == 'kw.db') {
-              dAPI.File _file = await _drive.files.update(
-                dAPI.File(),
-                f.id,
-                uploadMedia: dAPI.Media(
-                  _localFile.openRead(),
-                  _localFile.lengthSync(),
-                ),
-              );
-              _fileFound = true;
-              _modifiedDate = _file.modifiedTime;
-            }
-          },
-        );
+        _fileList.files.forEach((f) async {
+          if (f.name == 'kw.db') {
+            api.File _f = await _drive.files.update(
+              api.File(),
+              f.id,
+              uploadMedia: api.Media(
+                _localDB.openRead(),
+                _localDB.lengthSync(),
+              ),
+            );
+            _fileFound = true;
+            _modifiedDate = _f.modifiedTime;
+            notifyListeners();
+          }
+        });
       }
     } catch (error) {
       throw error;
@@ -154,7 +171,7 @@ class DriveProvider with ChangeNotifier {
   Future<void> deleteDB() async {
     try {
       var client = GoogleHttpClient(await _currentUser.authHeaders);
-      var drive = dAPI.DriveApi(client);
+      var drive = api.DriveApi(client);
       drive.files.list(spaces: 'appDataFolder').then((value) {
         value.files.forEach((f) {
           if (f.name == 'kw.db') drive.files.delete(f.id);
