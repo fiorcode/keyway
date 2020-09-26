@@ -48,83 +48,87 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                 color: drive.fileFound ? Colors.green : Colors.red,
               ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Google Drive File Status',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Icon(
-                    drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
-                    color: drive.fileFound ? Colors.green : Colors.red,
-                    size: 64,
-                  ),
-                  Text(
-                    drive.fileFound ? 'File Found' : 'File Not Found',
-                    style: TextStyle(
-                      color: drive.fileFound ? Colors.green : Colors.red,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    drive.fileFound
-                        ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
-                        : 'Last time uploaded: Never',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  Text(
-                    'Number of files: ${drive.fileCount}',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  ButtonBar(
-                    alignment: MainAxisAlignment.spaceAround,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
                     children: [
-                      FlatButton(
-                        onPressed: () async {
-                          //setState(() => _uploading = true);
-                          await drive.uploadDB();
-                          //setState(() => _uploading = false);
-                          await drive.checkStatus();
-                        },
-                        child: Text(
-                          'UPLOAD',
-                          style: TextStyle(color: Colors.black87),
+                      Text(
+                        'Google Drive File Status',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.6),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 8),
+                      Icon(
+                        drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
+                        color: drive.fileFound ? Colors.green : Colors.red,
+                        size: 64,
+                      ),
+                      Text(
+                        drive.fileFound ? 'File Found' : 'File Not Found',
+                        style: TextStyle(
+                          color: drive.fileFound ? Colors.green : Colors.red,
                         ),
                       ),
-                      if (drive.fileFound)
-                        FlatButton(
-                          onPressed: null,
-                          child: Text(
-                            'DOWNLOAD',
-                            style: TextStyle(color: Colors.black87),
-                          ),
+                      SizedBox(height: 8),
+                      Text(
+                        drive.fileFound
+                            ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
+                            : 'Last time uploaded: Never',
+                        style: TextStyle(
+                          color: Colors.black54,
                         ),
-                      if (drive.fileFound)
-                        FlatButton(
-                          onPressed: () => _delete(drive),
-                          child: Text(
-                            'DELETE',
-                            style: TextStyle(color: Colors.red),
-                          ),
+                      ),
+                      Text(
+                        'Number of files: ${drive.fileCount}',
+                        style: TextStyle(
+                          color: Colors.black54,
                         ),
+                      ),
+                      ButtonBar(
+                        alignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          FlatButton(
+                            onPressed: () async {
+                              setState(() => _uploading = true);
+                              drive.uploadDB().then(
+                                  (_) => setState(() => _uploading = false));
+                              //setState(() => _uploading = false);
+                            },
+                            child: Text(
+                              'UPLOAD',
+                              style: TextStyle(color: Colors.black87),
+                            ),
+                          ),
+                          if (drive.fileFound)
+                            FlatButton(
+                              onPressed: null,
+                              child: Text(
+                                'DOWNLOAD',
+                                style: TextStyle(color: Colors.black87),
+                              ),
+                            ),
+                          if (drive.fileFound)
+                            FlatButton(
+                              onPressed: () => _delete(drive),
+                              child: Text(
+                                'DELETE',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                        ],
+                      ),
                     ],
                   ),
-                  if (_uploading || _downloading || _deleting)
-                    LinearProgressIndicator(),
-                ],
-              ),
+                ),
+                if (_uploading || _downloading || _deleting)
+                  LinearProgressIndicator(),
+              ],
             ),
           );
         }
