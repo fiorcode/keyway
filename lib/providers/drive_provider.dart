@@ -79,19 +79,6 @@ class DriveProvider with ChangeNotifier {
         _lastCheck = DateTime.now().toLocal();
         notifyListeners();
       }
-      // api.DriveApi drive = await _getApi();
-      // _fileList = await drive.files.list(spaces: 'appDataFolder', $fields: '*');
-      // _fileCount = 0;
-      // _fileList.files.forEach((f) {
-      //   _fileCount++;
-      //   print('${f.name}: ${f.modifiedTime.toString()}');
-      //   if (f.name == 'kw.db') {
-      //     _fileFound = true;
-      //     _modifiedDate = f.modifiedTime;
-      //     _lastCheck = DateTime.now();
-      //     notifyListeners();
-      //   }
-      // });
     } catch (error) {
       throw error;
     }
@@ -131,38 +118,24 @@ class DriveProvider with ChangeNotifier {
       final _dbPath = await sql.getDatabasesPath();
       final _localDB = File('$_dbPath/kw.db');
 
-      _fileList = await _getFileList();
+      api.File _db = await _getDB();
+
+      api.File _fileToUpload = api.File();
+      api.Media _media = api.Media(_localDB.openRead(), _localDB.lengthSync());
 
       api.DriveApi _drive = await _getApi();
 
-      if (_fileList.files.length == 0) {
-        api.File _fileToUpload = api.File();
+      if (_db == null) {
         _fileToUpload.name = 'kw.db';
         _fileToUpload.parents = ["appDataFolder"];
-        await _drive.files.create(
-          _fileToUpload,
-          uploadMedia: api.Media(
-            _localDB.openRead(),
-            _localDB.lengthSync(),
-          ),
-        );
+        await _drive.files.create(_fileToUpload, uploadMedia: _media);
       } else {
-        _fileList.files.forEach((f) async {
-          if (f.name == 'kw.db') {
-            api.File _f = await _drive.files.update(
-              api.File(),
-              f.id,
-              uploadMedia: api.Media(
-                _localDB.openRead(),
-                _localDB.lengthSync(),
-              ),
-            );
-            _fileFound = true;
-            _modifiedDate = _f.modifiedTime;
-            notifyListeners();
-          }
-        });
+        await _drive.files.update(_fileToUpload, _db.id, uploadMedia: _media);
       }
+      _db = await _getDB();
+      _fileFound = _db != null;
+      _modifiedDate = _db.modifiedTime.toLocal();
+      notifyListeners();
     } catch (error) {
       throw error;
     }
