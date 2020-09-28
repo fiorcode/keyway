@@ -9,130 +9,112 @@ class BackupStatusCard extends StatefulWidget {
 }
 
 class _BackupStatusCardState extends State<BackupStatusCard> {
-  bool _uploading = false;
-  bool _downloading = false;
-  bool _deleting = false;
+  bool _working = true;
 
-  Future _upload(DriveProvider drive) async {
-    return await drive.uploadDB();
+  _work(Future f) async {
+    setState(() => _working = true);
+    await f;
+    setState(() => _working = false);
   }
 
-  _delete(DriveProvider drive) async {
-    _deleting = true;
-    await drive.deleteDB().whenComplete(() => _deleting = false);
+  @override
+  void initState() {
+    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
+    _work(drive.checkStatus());
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
-    return FutureBuilder(
-      future: drive.checkStatus(),
-      builder: (ctx, snap) {
-        if (snap.connectionState == ConnectionState.waiting)
-          return Center(child: CircularProgressIndicator());
-        if (snap.hasError) {
-          return Center(
-            child: Text(
-              snap.error.toString(),
-              style: TextStyle(color: Colors.red, fontSize: 18),
-            ),
-          );
-        } else {
-          return Card(
-            elevation: 6,
-            shadowColor: drive.fileFound ? Colors.green : Colors.red,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-              side: BorderSide(
-                width: 2,
-                color: drive.fileFound ? Colors.green : Colors.red,
-              ),
-            ),
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
+    if (!_working)
+      return Card(
+        elevation: 6,
+        shadowColor: drive.fileFound ? Colors.green : Colors.red,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(
+            width: 2,
+            color: drive.fileFound ? Colors.green : Colors.red,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Google Drive File Status',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 8),
+                  Icon(
+                    drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
+                    color: drive.fileFound ? Colors.green : Colors.red,
+                    size: 64,
+                  ),
+                  Text(
+                    drive.fileFound ? 'File Found' : 'File Not Found',
+                    style: TextStyle(
+                      color: drive.fileFound ? Colors.green : Colors.red,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    drive.fileFound
+                        ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
+                        : 'Last time uploaded: Never',
+                    style: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  Text(
+                    'Number of files: ${drive.fileCount}',
+                    style: TextStyle(
+                      color: Colors.black54,
+                    ),
+                  ),
+                  ButtonBar(
+                    alignment: MainAxisAlignment.spaceAround,
                     children: [
-                      Text(
-                        'Google Drive File Status',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.6),
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 8),
-                      Icon(
-                        drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
-                        color: drive.fileFound ? Colors.green : Colors.red,
-                        size: 64,
-                      ),
-                      Text(
-                        drive.fileFound ? 'File Found' : 'File Not Found',
-                        style: TextStyle(
-                          color: drive.fileFound ? Colors.green : Colors.red,
+                      FlatButton(
+                        onPressed: () => _work(drive.uploadDB()),
+                        child: Text(
+                          'UPLOAD',
+                          style: TextStyle(color: Colors.black87),
                         ),
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        drive.fileFound
-                            ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
-                            : 'Last time uploaded: Never',
-                        style: TextStyle(
-                          color: Colors.black54,
-                        ),
-                      ),
-                      Text(
-                        'Number of files: ${drive.fileCount}',
-                        style: TextStyle(
-                          color: Colors.black54,
-                        ),
-                      ),
-                      ButtonBar(
-                        alignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          FlatButton(
-                            onPressed: () async {
-                              setState(() => _uploading = true);
-                              drive.uploadDB().then(
-                                  (_) => setState(() => _uploading = false));
-                              //setState(() => _uploading = false);
-                            },
-                            child: Text(
-                              'UPLOAD',
-                              style: TextStyle(color: Colors.black87),
-                            ),
+                      if (drive.fileFound)
+                        FlatButton(
+                          onPressed: null,
+                          child: Text(
+                            'DOWNLOAD',
+                            style: TextStyle(color: Colors.black87),
                           ),
-                          if (drive.fileFound)
-                            FlatButton(
-                              onPressed: null,
-                              child: Text(
-                                'DOWNLOAD',
-                                style: TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                          if (drive.fileFound)
-                            FlatButton(
-                              onPressed: () => _delete(drive),
-                              child: Text(
-                                'DELETE',
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ),
-                        ],
-                      ),
+                        ),
+                      if (drive.fileFound)
+                        FlatButton(
+                          onPressed: () {},
+                          child: Text(
+                            'DELETE',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ),
                     ],
                   ),
-                ),
-                if (_uploading || _downloading || _deleting)
-                  LinearProgressIndicator(),
-              ],
+                ],
+              ),
             ),
-          );
-        }
-      },
-    );
+          ],
+        ),
+      );
+    else
+      return Center(child: CircularProgressIndicator());
   }
 }
