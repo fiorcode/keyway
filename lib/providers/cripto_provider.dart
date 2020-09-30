@@ -81,7 +81,7 @@ class CriptoProvider with ChangeNotifier {
       //SAVE MASTER KEY IN DATABASE
       DBHelper.insert('user_data', {'enc_mk': _mkCrypted.base64});
 
-      print('MASTER KEY: ${_mkCrypted.base64}');
+      print('CRIPTED MASTER KEY: ${_mkCrypted.base64}');
 
       //CLEAN
       _random = Random.secure();
