@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/backup_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/widgets/check_board.dart';
+
+import 'restore_screen.dart';
+import 'items_screen.dart';
 
 class SetPasswordScreen extends StatefulWidget {
   static const routeName = 'set-password';
@@ -195,7 +196,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               RaisedButton.icon(
                 color: Colors.blue,
                 onPressed: () =>
-                    Navigator.of(context).pushNamed(BackupScreen.routeName),
+                    Navigator.of(context).pushNamed(RestoreScreen.routeName),
                 icon: Icon(
                   Icons.cloud_download,
                   color: Colors.white,
