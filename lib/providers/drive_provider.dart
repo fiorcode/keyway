@@ -20,7 +20,7 @@ class DriveProvider with ChangeNotifier {
   bool get fileFound => _fileFound;
   DateTime get modifiedDate => _modifiedDate;
 
-  int get fileCount => _fileList.files.length;
+  // int get fileCount => _fileList.files.length;
 
   Future<void> handleSignIn() async {
     try {
@@ -70,7 +70,7 @@ class DriveProvider with ChangeNotifier {
       if (_lastCheck != null) {
         var secSinceLastCheck =
             _lastCheck.difference(DateTime.now()).inSeconds.abs();
-        if (secSinceLastCheck < 3) return;
+        if (secSinceLastCheck < 15) return;
       }
       api.File _db = await _getDB();
       if (_db != null) {
@@ -84,33 +84,27 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future<bool> downloadDB() async {
-    var client = GoogleHttpClient(await _currentUser.authHeaders);
-    var drive = api.DriveApi(client);
-    await drive.files.list(spaces: 'appDataFolder').then((value) {
-      api.FileList _fileList = value;
-      _fileList.files.forEach((f) async {
-        if (f.name == 'kw.db') {
-          api.Media file = await drive.files.get(
-            f.id,
-            downloadOptions: api.DownloadOptions.FullMedia,
-          );
-          final dbPath = await sql.getDatabasesPath();
-          final localFile = File('$dbPath/kw.db');
-          List<int> dataStore = [];
-          file.stream.listen((data) {
-            dataStore.insertAll(dataStore.length, data);
-          }, onDone: () {
-            localFile.writeAsBytesSync(dataStore, flush: true);
-            return true;
-          }, onError: (error) {
-            print("Some Error");
-            return false;
-          });
-        }
-      });
-    });
-    return false;
+  Future downloadDB() async {
+    try {
+      api.File _db = await _getDB();
+      if (_db != null) {
+        api.DriveApi drive = await _getApi();
+        api.Media _file = await drive.files.get(
+          _db.id,
+          downloadOptions: api.DownloadOptions.FullMedia,
+        );
+        final dbPath = await sql.getDatabasesPath();
+        final localFile = File('$dbPath/kw.db');
+        List<int> dataStore = [];
+        _file.stream.listen(
+          (data) => dataStore.insertAll(dataStore.length, data),
+          onDone: () => localFile.writeAsBytesSync(dataStore, flush: true),
+          onError: (error) => throw error,
+        );
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future uploadDB() async {
@@ -141,15 +135,16 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future<void> deleteDB() async {
+  Future deleteDB() async {
     try {
-      var client = GoogleHttpClient(await _currentUser.authHeaders);
-      var drive = api.DriveApi(client);
-      drive.files.list(spaces: 'appDataFolder').then((value) {
-        value.files.forEach((f) {
-          if (f.name == 'kw.db') drive.files.delete(f.id);
-        });
-      });
+      api.File _db = await _getDB();
+      api.DriveApi drive = await _getApi();
+      if (_db != null) await drive.files.delete(_db.id);
+      _db = await _getDB();
+      if (_db == null) {
+        _fileFound = false;
+        _lastCheck = DateTime.now();
+      }
       notifyListeners();
     } catch (error) {
       throw error;
