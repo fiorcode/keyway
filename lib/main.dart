@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
 import 'screens/items_screen.dart';
@@ -35,6 +36,7 @@ class MyApp extends StatelessWidget {
         home: SplashScreen(),
         routes: {
           SetPasswordScreen.routeName: (ctx) => SetPasswordScreen(),
+          RestoreScreen.routeName: (ctx) => RestoreScreen(),
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
           KeyholeScreen.routeName: (ctx) => KeyholeScreen(),
