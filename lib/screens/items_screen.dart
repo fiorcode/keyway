@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/alpha_card.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -67,7 +68,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         : ListView.builder(
                             itemCount: lib.items.length,
                             itemBuilder: (ctx, i) {
-                              return AlphaListTile(lib.items[i]);
+                              return Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: AlphaCard(lib.items[i]),
+                              );
                             },
                           ),
                   ),
