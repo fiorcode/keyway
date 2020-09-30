@@ -70,7 +70,7 @@ class _AlphaListTileState extends State<AlphaListTile> {
             SnackBar(
               backgroundColor: Colors.red,
               content: Text('Please unlock'),
-              duration: Duration(seconds: 2),
+              duration: Duration(seconds: 1),
             ),
           );
           return;
