@@ -44,6 +44,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: [
+                  SizedBox(height: 16),
                   Text(
                     'Google Drive File Status',
                     style: TextStyle(
@@ -74,12 +75,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                       color: Colors.black54,
                     ),
                   ),
-                  Text(
-                    'Number of files: ${drive.fileCount}',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
                   ButtonBar(
                     alignment: MainAxisAlignment.spaceAround,
                     children: [
@@ -92,7 +87,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                       ),
                       if (drive.fileFound)
                         FlatButton(
-                          onPressed: null,
+                          onPressed: () => _work(drive.downloadDB()),
                           child: Text(
                             'DOWNLOAD',
                             style: TextStyle(color: Colors.black87),
@@ -100,7 +95,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         ),
                       if (drive.fileFound)
                         FlatButton(
-                          onPressed: () {},
+                          onPressed: () => _work(drive.deleteDB()),
                           child: Text(
                             'DELETE',
                             style: TextStyle(color: Colors.red),
@@ -115,6 +110,49 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
         ),
       );
     else
-      return Center(child: CircularProgressIndicator());
+      return Card(
+        elevation: 6,
+        shadowColor: Colors.orange,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: const BorderSide(
+            width: 2,
+            color: Colors.orange,
+          ),
+        ),
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Google Drive File Status',
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.6),
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 8),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: CircularProgressIndicator(
+                      backgroundColor: Colors.orange,
+                    ),
+                  ),
+                  Text('Working...', style: TextStyle(color: Colors.orange)),
+                  SizedBox(height: 8),
+                  Text(
+                    'Last time uploaded: -',
+                    style: TextStyle(color: Colors.black54),
+                  )
+                ],
+              ),
+            ),
+          ],
+        ),
+      );
   }
 }
