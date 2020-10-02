@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 abstract class Item {
   int id;
   String title;
@@ -17,6 +19,7 @@ class AlphaItem extends Item {
   String password;
   String pin;
   String ip;
+  int color = Colors.grey.value;
 
   AlphaItem({
     int id,
@@ -25,6 +28,7 @@ class AlphaItem extends Item {
     this.password,
     this.pin,
     this.ip,
+    this.color,
     String date,
   }) : super(id, title, date);
 
