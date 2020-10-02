@@ -24,6 +24,9 @@ class _AlphaCardState extends State<AlphaCard> {
       elevation: 8,
       child: ListTile(
         leading: CircleAvatar(
+          backgroundColor: widget._alpha.color == null
+              ? Colors.grey
+              : Color(widget._alpha.color),
           child: Text(widget._alpha.title.substring(0, 1).toUpperCase()),
         ),
         title: Text(widget._alpha.title),
