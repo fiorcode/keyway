@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/alpha_card.dart';
+import 'package:keyway/widgets/color_picker.dart';
 
 import 'package:provider/provider.dart';
 
@@ -107,6 +109,11 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   _refreshBoard() => setState(() {});
 
+  _setColor(int color) {
+    widget.item.color = color;
+    setState(() {});
+  }
+
   @override
   void initState() {
     _cProv = Provider.of<CriptoProvider>(context, listen: false);
@@ -212,6 +219,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: IpTextField(_ipCtrler),
                 ),
+              AlphaCard(
+                AlphaItem(
+                  title: _titleCtrler.text,
+                  date: DateTime.now().toLocal().toString(),
+                ),
+              ),
+              SizedBox(height: 16),
+              ColorPicker(_setColor),
               if (widget.item != null)
                 FlatButton(
                   onPressed: () {
