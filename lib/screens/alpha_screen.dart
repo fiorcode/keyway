@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/alpha_card.dart';
-import 'package:keyway/widgets/color_picker.dart';
-
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
@@ -15,6 +13,8 @@ import 'package:keyway/widgets/TextFields/pin_text_field.dart';
 import 'package:keyway/widgets/TextFields/title_text_field.dart';
 import 'package:keyway/widgets/TextFields/username_text_field.dart';
 import 'package:keyway/widgets/check_board.dart';
+import 'package:keyway/widgets/alpha_card.dart';
+import 'package:keyway/widgets/color_picker.dart';
 
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
@@ -30,6 +30,9 @@ class AlphaScreen extends StatefulWidget {
 class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider _cProv;
   ItemProvider _iProv;
+
+  AlphaItem _item;
+
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
   final _passCtrler = TextEditingController();
@@ -41,21 +44,21 @@ class _AlphaScreenState extends State<AlphaScreen> {
   bool _pin = false;
   bool _ip = false;
 
-  Future<AlphaItem> _createItem() async {
+  _createItem() async {
     try {
-      return AlphaItem(
-        title: _titleCtrler.text,
-        username: _userCtrler.text.isEmpty
-            ? ''
-            : await _cProv.doCrypt(_userCtrler.text),
-        password: _passCtrler.text.isEmpty
-            ? ''
-            : await _cProv.doCrypt(_passCtrler.text),
-        pin: _pinCtrler.text.isEmpty
-            ? ''
-            : await _cProv.doCrypt(_pinCtrler.text),
-        ip: _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text),
-      );
+      _item.username = _userCtrler.text.isEmpty
+          ? ''
+          : await _cProv.doCrypt(_userCtrler.text);
+      _item.password = _passCtrler.text.isEmpty
+          ? ''
+          : await _cProv.doCrypt(_passCtrler.text);
+      _item.pin =
+          _pinCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_pinCtrler.text);
+      _item.ip =
+          _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text);
+      _item.date = DateTime.now().toUtc().toIso8601String();
+      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:m');
+      _item.shortDate = dateFormat.format(DateTime.now().toUtc());
     } catch (error) {
       throw error;
     }
@@ -63,21 +66,21 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   _loadItem() async {
     try {
-      _titleCtrler.text = widget.item.title;
-      if (widget.item.username.isNotEmpty) {
-        _userCtrler.text = await _cProv.doDecrypt(widget.item.username);
+      _titleCtrler.text = _item.title;
+      if (_item.username.isNotEmpty) {
+        _userCtrler.text = await _cProv.doDecrypt(_item.username);
         _username = true;
       }
-      if (widget.item.password.isNotEmpty) {
-        _passCtrler.text = await _cProv.doDecrypt(widget.item.password);
+      if (_item.password.isNotEmpty) {
+        _passCtrler.text = await _cProv.doDecrypt(_item.password);
         _password = true;
       }
-      if (widget.item.pin.isNotEmpty) {
-        _pinCtrler.text = await _cProv.doDecrypt(widget.item.pin);
+      if (_item.pin.isNotEmpty) {
+        _pinCtrler.text = await _cProv.doDecrypt(_item.pin);
         _pin = true;
       }
-      if (widget.item.ip.isNotEmpty) {
-        _ipCtrler.text = await _cProv.doDecrypt(widget.item.ip);
+      if (_item.ip.isNotEmpty) {
+        _ipCtrler.text = await _cProv.doDecrypt(_item.ip);
         _ip = true;
       }
       setState(() {});
@@ -90,7 +93,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     try {
       if (_titleCtrler.text.isEmpty) return;
       if (!_username && !_password && !_pin && !_ip) return;
-      AlphaItem _item = await _createItem();
+      await _createItem();
       _iProv.addAlpha(_item);
     } catch (error) {}
     Navigator.of(context).pop();
@@ -107,22 +110,31 @@ class _AlphaScreenState extends State<AlphaScreen> {
     Navigator.of(context).pop();
   }
 
+  _ctrlersChanged() {
+    setState(() {
+      _item.title = _titleCtrler.text;
+    });
+  }
+
   _refreshBoard() => setState(() {});
 
   _setColor(int color) {
-    widget.item.color = color;
-    setState(() {});
+    setState(() {
+      _item.color = color;
+    });
   }
 
   @override
   void initState() {
     _cProv = Provider.of<CriptoProvider>(context, listen: false);
     _iProv = Provider.of<ItemProvider>(context, listen: false);
-    if (widget.item != null)
+    if (widget.item != null) {
+      _item = widget.item;
       _loadItem();
-    else {
+    } else {
       _username = true;
       _password = true;
+      _item = AlphaItem();
     }
     super.initState();
   }
@@ -158,7 +170,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
-                child: TitleTextField(_titleCtrler),
+                child: TitleTextField(_titleCtrler, _ctrlersChanged),
               ),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -219,12 +231,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: IpTextField(_ipCtrler),
                 ),
-              AlphaCard(
-                AlphaItem(
-                  title: _titleCtrler.text,
-                  date: DateTime.now().toLocal().toString(),
-                ),
-              ),
+              AlphaCard(_item),
               SizedBox(height: 16),
               ColorPicker(_setColor),
               if (widget.item != null)
