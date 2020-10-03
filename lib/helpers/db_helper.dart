@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
@@ -18,7 +17,9 @@ class DBHelper {
     password TEXT,
     pin TEXT,
     ip TEXT,
-    date TEXT)''';
+    date TEXT,
+    date_short TEXT,
+    color INTEGER)''';
 
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
@@ -53,12 +54,6 @@ class DBHelper {
     final db = await DBHelper.database();
     db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
-
-  // static Future<void> restoreDB(dynamic db) async {
-  //   final dbPath = await sql.getDatabasesPath();
-  //   api.Media dbMedia = db;
-  //   File('$dbPath/kw.db').writeAsStringSync(db.readAsStringSync());
-  // }
 
   static Future<void> removeDB() async {
     final dbPath = await sql.getDatabasesPath();
