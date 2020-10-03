@@ -1,16 +1,18 @@
-import 'package:flutter/material.dart';
-
 abstract class Item {
   int id;
   String title;
   String date;
+  String shortDate;
+  int color;
 
-  Item(this.id, this.title, this.date);
+  Item(this.id, this.title, this.date, this.shortDate, this.color);
 
   Item.fromMap(Map<String, dynamic> map) {
     id = map['id'];
     title = map['title'];
     date = map['date'];
+    shortDate = map['date_short'];
+    color = map['color'];
   }
 }
 
@@ -19,7 +21,6 @@ class AlphaItem extends Item {
   String password;
   String pin;
   String ip;
-  int color = Colors.grey.value;
 
   AlphaItem({
     int id,
@@ -28,9 +29,10 @@ class AlphaItem extends Item {
     this.password,
     this.pin,
     this.ip,
-    this.color,
     String date,
-  }) : super(id, title, date);
+    String shortDate,
+    int color,
+  }) : super(id, title, date, shortDate, color);
 
   AlphaItem.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
@@ -46,7 +48,9 @@ class AlphaItem extends Item {
       'password': password,
       'pin': pin,
       'ip': ip,
-      'date': DateTime.now().toUtc().toIso8601String(),
+      'date': date,
+      'date_short': shortDate,
+      'color': color,
     };
     if (id != null) map['id'] = id;
     return map;
