@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class TitleTextField extends StatelessWidget {
-  const TitleTextField(this.ctrler);
+  const TitleTextField(this.ctrler, this.onChanged);
 
   final TextEditingController ctrler;
+  final Function onChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class TitleTextField extends StatelessWidget {
         labelText: 'Title',
       ),
       textCapitalization: TextCapitalization.sentences,
+      onChanged: (_) => onChanged(),
     );
   }
 }
