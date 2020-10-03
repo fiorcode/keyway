@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/alpha_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 
@@ -24,13 +24,19 @@ class _AlphaCardState extends State<AlphaCard> {
       elevation: 8,
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: widget._alpha.color == null
-              ? Colors.grey
-              : Color(widget._alpha.color),
-          child: Text(widget._alpha.title.substring(0, 1).toUpperCase()),
+          backgroundColor: widget._alpha.color != null
+              ? Color(widget._alpha.color)
+              : Colors.grey,
+          child: Text(
+            widget._alpha.title != null ?? widget._alpha.title.isNotEmpty
+                ? widget._alpha.title.substring(0, 1).toUpperCase()
+                : '',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
         ),
-        title: Text(widget._alpha.title),
-        subtitle: Text(widget._alpha.date),
+        title: Text(widget._alpha.title != null ? widget._alpha.title : ''),
+        subtitle: Text(
+            widget._alpha.shortDate != null ? widget._alpha.shortDate : ''),
         onTap: () {
           if (_cProv.locked) {
             Scaffold.of(context).showSnackBar(
