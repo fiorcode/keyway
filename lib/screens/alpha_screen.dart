@@ -233,7 +233,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                 ),
               AlphaCard(_item),
               SizedBox(height: 16),
-              ColorPicker(_setColor),
+              ColorPicker(_item.color, _setColor),
               if (widget.item != null)
                 FlatButton(
                   onPressed: () {
