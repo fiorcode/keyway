@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ColorPicker extends StatefulWidget {
-  ColorPicker(this.change);
+  ColorPicker(this.value, this.change);
 
   final Function change;
+  final int value;
+
   @override
   _ColorPickerState createState() => _ColorPickerState();
 }
@@ -25,6 +27,12 @@ class _ColorPickerState extends State<ColorPicker> {
       _color = Color.fromARGB(255, ((val - 340) * 3).toInt(), 255, 0);
     else if (val <= 510)
       _color = Color.fromARGB(255, 255, 255 - ((val - 425) * 3).toInt(), 0);
+  }
+
+  @override
+  void initState() {
+    //
+    super.initState();
   }
 
   @override
