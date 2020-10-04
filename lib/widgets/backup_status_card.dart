@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import 'package:keyway/providers/drive_provider.dart';
 
 class BackupStatusCard extends StatefulWidget {
@@ -27,6 +28,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
   @override
   Widget build(BuildContext context) {
     DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     if (!_working)
       return Card(
         elevation: 6,
@@ -69,7 +71,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                   SizedBox(height: 8),
                   Text(
                     drive.fileFound
-                        ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
+                        ? 'Last time uploaded: ${dateFormat.format(drive.modifiedDate)}'
                         : 'Last time uploaded: Never',
                     style: TextStyle(
                       color: Colors.black54,
