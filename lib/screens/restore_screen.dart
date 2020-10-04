@@ -53,33 +53,6 @@ class SignedInBody extends StatelessWidget {
           ),
           SizedBox(height: 32),
           RestoreCard(),
-          // SizedBox(height: 32),
-          // Center(
-          //   child: RaisedButton(
-          //     color: Colors.red,
-          //     onPressed: () => drive.handleSignOut(),
-          //     child: Padding(
-          //       padding: const EdgeInsets.symmetric(vertical: 12),
-          //       child: Row(
-          //         mainAxisSize: MainAxisSize.min,
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         children: <Widget>[
-          //           Icon(Icons.delete_forever, color: Colors.white, size: 32),
-          //           Padding(
-          //             padding: const EdgeInsets.only(left: 8.0),
-          //             child: Text(
-          //               'Delete and start over',
-          //               style: TextStyle(color: Colors.white),
-          //             ),
-          //           )
-          //         ],
-          //       ),
-          //     ),
-          //     shape: RoundedRectangleBorder(
-          //       borderRadius: BorderRadius.circular(32),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
