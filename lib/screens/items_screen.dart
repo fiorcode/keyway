@@ -56,25 +56,26 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       ),
       body: FutureBuilder(
         future: _ip.fetchAndSetItems(),
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : Consumer<ItemProvider>(
-                    child: Center(
-                      child: const Text('Got no data yet, start adding some'),
-                    ),
-                    builder: (ctx, lib, ch) => lib.items.length <= 0
-                        ? ch
-                        : ListView.builder(
-                            itemCount: lib.items.length,
-                            itemBuilder: (ctx, i) {
-                              return Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: AlphaCard(lib.items[i]),
-                              );
-                            },
-                          ),
-                  ),
+        builder: (ctx, snapshot) => snapshot.connectionState ==
+                ConnectionState.waiting
+            ? Center(child: CircularProgressIndicator())
+            : Consumer<ItemProvider>(
+                child: Center(
+                  child: const Text('Got no data yet, start adding some'),
+                ),
+                builder: (ctx, lib, ch) => lib.items.length <= 0
+                    ? ch
+                    : ListView.builder(
+                        padding: EdgeInsets.all(8),
+                        itemCount: lib.items.length,
+                        itemBuilder: (ctx, i) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 1),
+                            child: AlphaCard(lib.items[i]),
+                          );
+                        },
+                      ),
+              ),
       ),
     );
   }
