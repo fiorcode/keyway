@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/items_screen.dart';
-
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+
 import 'package:keyway/providers/drive_provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/items_screen.dart';
 
 class RestoreCard extends StatefulWidget {
   @override
@@ -20,10 +21,9 @@ class _RestoreCardState extends State<RestoreCard> {
   }
 
   _restore(DriveProvider drive) async {
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     setState(() => _working = true);
     await drive.downloadDB().then((_) async {
-      CriptoProvider cripto =
-          Provider.of<CriptoProvider>(context, listen: false);
       await cripto.setMasterKey();
       setState(() => _working = false);
       Navigator.of(context).pushNamedAndRemoveUntil(
@@ -43,6 +43,7 @@ class _RestoreCardState extends State<RestoreCard> {
   @override
   Widget build(BuildContext context) {
     DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     if (!_working)
       return Card(
         elevation: 6,
@@ -85,7 +86,7 @@ class _RestoreCardState extends State<RestoreCard> {
                   SizedBox(height: 8),
                   Text(
                     drive.fileFound
-                        ? 'Last time uploaded: ${drive.modifiedDate.day}/${drive.modifiedDate.month}/${drive.modifiedDate.year} ${drive.modifiedDate.hour}:${drive.modifiedDate.minute}'
+                        ? 'Last time uploaded: ${dateFormat.format(drive.modifiedDate)}'
                         : 'Last time uploaded: Never',
                     style: TextStyle(
                       color: Colors.black54,
