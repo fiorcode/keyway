@@ -21,13 +21,13 @@ class ItemProvider with ChangeNotifier {
     _items.addAll(_alphaList.map((item) => AlphaItem.fromMap(item)).toList());
   }
 
-  addAlpha(AlphaItem item) {
-    DBHelper.insert('alpha', item.toMap());
+  addAlpha(AlphaItem item) async {
+    await DBHelper.insert('alpha', item.toMap());
     fetchAndSetItems();
   }
 
-  updateAlpha(AlphaItem item) {
-    DBHelper.update('alpha', item.toMap());
+  updateAlpha(AlphaItem item) async {
+    await DBHelper.update('alpha', item.toMap());
     fetchAndSetItems();
   }
 
@@ -35,6 +35,19 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.delete('alpha', id); //THIS COULD FAIL
     _items.removeWhere((element) => element.id == id);
     fetchAndSetItems();
+  }
+
+  Future<bool> checkPassRepeated(String s) async {
+    final _result = await DBHelper.getByValue('alpha', 'password', s);
+    if (_result.isNotEmpty)
+      return true;
+    else
+      return false;
+  }
+
+  Future checkRepeated() async {
+    List<AlphaItem> _alphaItems = _items.cast<AlphaItem>();
+    _alphaItems.sort((a, b) => b.password.compareTo(a.password));
   }
 
   removeItems() async {
