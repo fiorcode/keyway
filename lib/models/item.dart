@@ -4,8 +4,16 @@ abstract class Item {
   String date;
   String shortDate;
   int color;
+  bool repeated;
 
-  Item(this.id, this.title, this.date, this.shortDate, this.color);
+  Item(
+    this.id,
+    this.title,
+    this.date,
+    this.shortDate,
+    this.color,
+    this.repeated,
+  );
 
   Item.fromMap(Map<String, dynamic> map) {
     id = map['id'];
@@ -32,7 +40,8 @@ class AlphaItem extends Item {
     String date,
     String shortDate,
     int color,
-  }) : super(id, title, date, shortDate, color);
+    bool repeated,
+  }) : super(id, title, date, shortDate, color, repeated);
 
   AlphaItem.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
