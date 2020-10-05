@@ -20,8 +20,11 @@ class _AlphaCardState extends State<AlphaCard> {
     CriptoProvider _cProv = Provider.of<CriptoProvider>(context, listen: false);
     return Card(
       clipBehavior: Clip.antiAlias,
-      shadowColor: Colors.grey,
+      shadowColor: Colors.green,
       elevation: 8,
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+          side: BorderSide(width: 3, color: Colors.green)),
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: widget._alpha.color != null
