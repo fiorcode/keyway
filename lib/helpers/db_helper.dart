@@ -55,6 +55,12 @@ class DBHelper {
     db.delete(table, where: 'id = ?', whereArgs: [id]);
   }
 
+  static Future<List<Map<String, dynamic>>> getByValue(
+      String table, String col, String val) async {
+    final db = await DBHelper.database();
+    return db.query(table, where: '$col = ?', whereArgs: [val]);
+  }
+
   static Future<void> removeDB() async {
     final dbPath = await sql.getDatabasesPath();
     File('$dbPath/kw.db').delete();
