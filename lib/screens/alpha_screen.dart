@@ -57,8 +57,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _item.ip =
           _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text);
       _item.date = DateTime.now().toUtc().toIso8601String();
-      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:m');
-      _item.shortDate = dateFormat.format(DateTime.now().toUtc());
+      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+      _item.shortDate = dateFormat.format(DateTime.now().toLocal());
     } catch (error) {
       throw error;
     }
@@ -94,9 +94,39 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (_titleCtrler.text.isEmpty) return;
       if (!_username && !_password && !_pin && !_ip) return;
       await _createItem();
-      _iProv.addAlpha(_item);
+      if (await _iProv.checkPassRepeated(_item.password)) {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('Password repeated', textAlign: TextAlign.center),
+              content: Text(
+                'This password is already in use, do you want to save it anyway?',
+                textAlign: TextAlign.center,
+              ),
+              actions: <Widget>[
+                FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('CANCEL'),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    _iProv.addAlpha(_item);
+                    Navigator.of(context).popUntil(
+                      ModalRoute.withName(ItemsListScreen.routeName),
+                    );
+                  },
+                  child: Text('Save', style: TextStyle(color: Colors.red)),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        _iProv.addAlpha(_item);
+        Navigator.of(context).pop();
+      }
     } catch (error) {}
-    Navigator.of(context).pop();
   }
 
   _saveChanges() async {
@@ -106,8 +136,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _item.id = widget.item.id;
       _item.date = widget.item.date;
       _iProv.updateAlpha(_item);
+      Navigator.of(context).pop();
     } catch (error) {}
-    Navigator.of(context).pop();
   }
 
   _ctrlersChanged() {
