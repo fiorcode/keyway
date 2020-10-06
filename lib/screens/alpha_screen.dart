@@ -59,6 +59,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _item.date = DateTime.now().toUtc().toIso8601String();
       DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
       _item.shortDate = dateFormat.format(DateTime.now().toLocal());
+      _item.expired = 'n';
+      _item.repeated = 'n';
     } catch (error) {
       throw error;
     }
@@ -110,20 +112,20 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   child: Text('CANCEL'),
                 ),
                 FlatButton(
-                  onPressed: () {
-                    _iProv.addAlpha(_item);
+                  onPressed: () async {
+                    await _iProv.insertRepeated(_item);
                     Navigator.of(context).popUntil(
                       ModalRoute.withName(ItemsListScreen.routeName),
                     );
                   },
-                  child: Text('Save', style: TextStyle(color: Colors.red)),
+                  child: Text('SAVE', style: TextStyle(color: Colors.red)),
                 ),
               ],
             );
           },
         );
       } else {
-        _iProv.addAlpha(_item);
+        _iProv.insertAlpha(_item);
         Navigator.of(context).pop();
       }
     } catch (error) {}
@@ -282,7 +284,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                             ),
                             FlatButton(
                               onPressed: () {
-                                _iProv.deleteAlpha(widget.item.id);
+                                _iProv.deleteAlpha(widget.item);
                                 Navigator.of(context).popUntil(
                                   ModalRoute.withName(
                                       ItemsListScreen.routeName),
