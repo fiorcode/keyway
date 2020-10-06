@@ -1,10 +1,12 @@
 abstract class Item {
   int id;
   String title;
+  DateTime dateTime;
   String date;
   String shortDate;
   int color;
-  bool repeated;
+  String repeated;
+  String expired;
 
   Item(
     this.id,
@@ -13,6 +15,7 @@ abstract class Item {
     this.shortDate,
     this.color,
     this.repeated,
+    this.expired,
   );
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -21,6 +24,8 @@ abstract class Item {
     date = map['date'];
     shortDate = map['date_short'];
     color = map['color'];
+    repeated = map['repeated'];
+    expired = map['expired'];
   }
 }
 
@@ -30,18 +35,19 @@ class AlphaItem extends Item {
   String pin;
   String ip;
 
-  AlphaItem({
-    int id,
-    String title,
-    this.username,
-    this.password,
-    this.pin,
-    this.ip,
-    String date,
-    String shortDate,
-    int color,
-    bool repeated,
-  }) : super(id, title, date, shortDate, color, repeated);
+  AlphaItem(
+      {int id,
+      String title,
+      this.username,
+      this.password,
+      this.pin,
+      this.ip,
+      String date,
+      String shortDate,
+      int color,
+      String repeated,
+      String expired})
+      : super(id, title, date, shortDate, color, repeated, expired);
 
   AlphaItem.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
@@ -60,6 +66,8 @@ class AlphaItem extends Item {
       'date': date,
       'date_short': shortDate,
       'color': color,
+      'repeated': repeated,
+      'expired': expired,
     };
     if (id != null) map['id'] = id;
     return map;
