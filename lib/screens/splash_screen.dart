@@ -19,8 +19,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future checkFirstRun() async {
     try {
-      CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-      if (await _cp.isMasterKey()) {
+      CriptoProvider cripto =
+          Provider.of<CriptoProvider>(context, listen: false);
+      if (await cripto.isMasterKey()) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       } else {
         Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
