@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CheckBoard extends StatelessWidget {
-  CheckBoard({
-    @required this.password,
-    // @required this.hasLow,
-    // @required this.hasUpp,
-    // @required this.hasNum,
-    // @required this.special,
-    // @required this.minLong,
-    // @required this.maxLong,
-  });
+  CheckBoard({@required this.password});
 
   final String password;
-  // final bool minLong;
-  // final bool maxLong;
-  // final bool hasLow;
-  // final bool hasUpp;
-  // final bool hasNum;
-  // final bool special;
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +56,9 @@ class IconLabel extends StatelessWidget {
           : const Icon(Icons.cancel, color: Colors.red),
       label: Text(
         label,
-        style: TextStyle(color: logic ? Colors.green : Colors.red),
+        style: TextStyle(
+          color: logic ? Colors.green : Colors.red,
+        ),
       ),
     );
   }
