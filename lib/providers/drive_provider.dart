@@ -1,7 +1,7 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 
+import 'package:connectivity/connectivity.dart';
 import "package:http/http.dart" as http;
 import 'package:http/io_client.dart';
 import 'package:sqflite/sqflite.dart' as sql;
@@ -9,6 +9,8 @@ import 'package:googleapis/drive/v3.dart' as api;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class DriveProvider with ChangeNotifier {
+  Connectivity _connectivity;
+  String _connectionStatus;
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
   api.FileList _fileList;
@@ -37,13 +39,22 @@ class DriveProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future trySignInSilently() async {
-    _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.DriveAppdataScope]);
-    _googleSignIn.onCurrentUserChanged
-        .listen((GoogleSignInAccount account) => _currentUser = account);
-    await _googleSignIn.signInSilently();
-    _currentUser = _googleSignIn.currentUser;
-    notifyListeners();
+  trySignInSilently() async {
+    try {
+      _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.DriveAppdataScope]);
+      _googleSignIn.onCurrentUserChanged.listen(
+        (GoogleSignInAccount account) {
+          _currentUser = account;
+        },
+      );
+      await _googleSignIn
+          .signInSilently(suppressErrors: false)
+          .catchError((e) => throw e);
+      _currentUser = _googleSignIn.currentUser;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   Future<api.DriveApi> _getApi() async {
