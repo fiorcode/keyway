@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/error_body.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
@@ -21,13 +22,19 @@ class _RestoreScreenState extends State<RestoreScreen> {
       appBar: AppBar(),
       body: FutureBuilder(
         future: drive.trySignInSilently(),
-        builder: (ctx, snap) => snap.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : Consumer<DriveProvider>(
-                child: NoSignedInBody(drive: drive),
-                builder: (ctx, dp, ch) =>
-                    dp.currentUser == null ? ch : SignedInBody(drive: drive),
-              ),
+        builder: (ctx, snap) {
+          if (snap.hasData) {
+            return Consumer<DriveProvider>(
+              child: NoSignedInBody(drive: drive),
+              builder: (ctx, dp, ch) =>
+                  dp.currentUser == null ? ch : SignedInBody(drive: drive),
+            );
+          } else if (snap.hasError) {
+            return ErrorBody(snap.error.toString());
+          } else {
+            return Center(child: CircularProgressIndicator());
+          }
+        },
       ),
     );
   }
