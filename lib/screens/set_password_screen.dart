@@ -8,7 +8,7 @@ import 'restore_screen.dart';
 import 'items_screen.dart';
 
 class SetPasswordScreen extends StatefulWidget {
-  static const routeName = 'set-password';
+  static const routeName = '/set-password';
 
   @override
   _SetPasswordScreenState createState() => _SetPasswordScreenState();
@@ -18,7 +18,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
 
-  CriptoProvider _cp;
+  CriptoProvider cripto;
 
   bool _obscurePass = true;
   bool _obscureConfirm = true;
@@ -62,8 +62,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   void _setPassword() async {
     try {
-      _cp = Provider.of<CriptoProvider>(context, listen: false);
-      bool _setupSuccess = await _cp.initialSetup(_passCtrler.text);
+      cripto = Provider.of<CriptoProvider>(context, listen: false);
+      bool _setupSuccess = await cripto.initialSetup(_passCtrler.text);
       if (_setupSuccess) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
@@ -172,15 +172,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 onSubmitted: (_) {},
               ),
               const SizedBox(height: 24),
-              CheckBoard(
-                password: _passCtrler.text,
-                // hasLow: _hasLow,
-                // hasUpp: _hasUpp,
-                // hasNum: _hasNum,
-                // special: _special,
-                // minLong: _minLong,
-                // maxLong: _maxLong,
-              ),
+              CheckBoard(password: _passCtrler.text),
               const SizedBox(height: 12),
               if (_valid && _equals)
                 RaisedButton(
@@ -197,10 +189,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 color: Colors.blue,
                 onPressed: () =>
                     Navigator.of(context).pushNamed(RestoreScreen.routeName),
-                icon: Icon(
-                  Icons.cloud_download,
-                  color: Colors.white,
-                ),
+                icon: Icon(Icons.cloud_download, color: Colors.white),
                 label: Text(
                   'RESTORE MY DATA',
                   style: TextStyle(color: Colors.white),
