@@ -19,16 +19,12 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   checkFirstRun() async {
-    try {
-      cripto = Provider.of<CriptoProvider>(context, listen: false);
-      bool firstRun = await cripto.isMasterKey();
-      if (firstRun) {
-        Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
-      } else {
-        Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
-      }
-    } catch (error) {
-      throw error;
+    cripto = Provider.of<CriptoProvider>(context, listen: false);
+    bool firstRun = await cripto.isMasterKey();
+    if (firstRun) {
+      Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+    } else {
+      Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
     }
   }
 
