@@ -75,4 +75,8 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.removeDB();
     fetchAndSetItems();
   }
+
+  void dispose() {
+    super.dispose();
+  }
 }
