@@ -9,6 +9,7 @@ class CheckBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
+      alignment: WrapAlignment.center,
       children: <Widget>[
         IconLabel(
           label: 'a-z',
