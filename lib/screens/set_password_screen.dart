@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -31,7 +32,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   bool _valid = false;
   bool _equals = false;
 
-  void _checkPassword() {
+  _checkPassword() {
     _confirmCtrler.clear();
     setState(() {
       _minLong = _passCtrler.text.length >= 6 ? true : false;
@@ -46,13 +47,13 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     });
   }
 
-  void _checkConfirmPassword() {
+  _checkConfirmPassword() {
     setState(() {
       _equals = _valid ? _passCtrler.text == _confirmCtrler.text : false;
     });
   }
 
-  void _clear() {
+  _clear() {
     setState(() {
       _passCtrler.clear();
       _confirmCtrler.clear();
@@ -60,7 +61,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     });
   }
 
-  void _setPassword() async {
+  Future _setPassword() async {
     try {
       cripto = Provider.of<CriptoProvider>(context, listen: false);
       bool _setupSuccess = await cripto.initialSetup(_passCtrler.text);
@@ -176,7 +177,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               const SizedBox(height: 12),
               if (_valid && _equals)
                 RaisedButton(
-                  onPressed: _setPassword,
+                  onPressed: () => _setPassword().catchError(
+                    (e) => ErrorHelper().errorDialog(context, e),
+                  ),
                   child: Text(
                     'READY',
                     style: TextStyle(color: Colors.green),
