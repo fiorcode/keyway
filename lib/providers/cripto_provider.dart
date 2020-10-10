@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -30,27 +30,23 @@ class CriptoProvider with ChangeNotifier {
     return _pref.getBool('isMasterKey') ?? false;
   }
 
-  void _setKey(String password) {
+  _setKey(String password) {
     _key = password;
     int _i = 0;
-    while (_key.length < 32) {
+    while (_key.length < 31) {
       _key = _key + _key[_i];
       _i++;
     }
   }
 
   void unlock(String password) {
-    try {
-      _setKey(password);
-      _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
-      _mkCrypted = e.Encrypted.fromBase64(_getMasterKey());
-      _mk = _crypter.decrypt(_mkCrypted, iv: e.IV.fromLength(16));
-      _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
-      _locked = false;
-      notifyListeners();
-    } catch (error) {
-      throw error;
-    }
+    _setKey(password);
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
+    _mkCrypted = e.Encrypted.fromBase64(_getMasterKey());
+    _mk = _crypter.decrypt(_mkCrypted, iv: e.IV.fromLength(16));
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
+    _locked = false;
+    notifyListeners();
   }
 
   void lock() {
@@ -62,37 +58,29 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<bool> initialSetup(String password) async {
-    try {
-      _setKey(password);
-      _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
+    _setKey(password);
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
 
-      //CREATION OF MASTER KEY
-      Random _random = Random.secure();
-      List<int> _v = List<int>.generate(32, (i) => _random.nextInt(256));
-      _mk = base64Url.encode(_v).substring(0, 32);
+    //CREATION OF MASTER KEY
+    Random _random = Random.secure();
+    List<int> _v = List<int>.generate(32, (i) => _random.nextInt(256));
+    _mk = base64Url.encode(_v).substring(0, 32);
 
-      print('MASTER KEY: $_mk');
+    //ENCRYPT AND SAVE MASTER KEY
+    _mkCrypted = _crypter.encrypt(_mk, iv: e.IV.fromLength(16));
+    _pref.setString('masterKey', _mkCrypted.base64);
+    _pref.setBool('isMasterKey', true);
 
-      //ENCRYPT AND SAVE MASTER KEY
-      _mkCrypted = _crypter.encrypt(_mk, iv: e.IV.fromLength(16));
-      _pref.setString('masterKey', _mkCrypted.base64);
-      _pref.setBool('isMasterKey', true);
+    //SAVE MASTER KEY IN DATABASE
+    DBHelper.insert('user_data', {'enc_mk': _mkCrypted.base64});
 
-      //SAVE MASTER KEY IN DATABASE
-      DBHelper.insert('user_data', {'enc_mk': _mkCrypted.base64});
+    //CLEAN
+    _random = Random.secure();
+    _v = List<int>.generate(32, (i) => _random.nextInt(256));
 
-      print('CRIPTED MASTER KEY: ${_mkCrypted.base64}');
+    lock();
 
-      //CLEAN
-      _random = Random.secure();
-      _v = List<int>.generate(32, (i) => _random.nextInt(256));
-
-      lock();
-
-      return true;
-    } catch (error) {
-      throw error;
-    }
+    return true;
   }
 
   setMasterKey() async {
@@ -118,5 +106,9 @@ class CriptoProvider with ChangeNotifier {
 
   Future<String> doDecrypt(String value) async {
     return _crypter.decrypt64(value, iv: e.IV.fromLength(16));
+  }
+
+  void dispose() {
+    super.dispose();
   }
 }
