@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 
@@ -9,11 +10,14 @@ import 'package:googleapis/drive/v3.dart' as api;
 import 'package:google_sign_in/google_sign_in.dart';
 
 class DriveProvider with ChangeNotifier {
-  Connectivity _connectivity;
-  String _connectionStatus;
+  ConnectivityResult _connectivityResult;
+  String _connectionStatus = 'Unknown';
+
   GoogleSignIn _googleSignIn;
   GoogleSignInAccount _currentUser;
+
   api.FileList _fileList;
+
   bool _fileFound = false;
   DateTime _modifiedDate;
   DateTime _lastCheck;
@@ -24,37 +28,55 @@ class DriveProvider with ChangeNotifier {
 
   // int get fileCount => _fileList.files.length;
 
-  Future<void> handleSignIn() async {
+  Future<bool> checkInternet() async {
     try {
-      await _googleSignIn.signIn();
-      _currentUser = _googleSignIn.currentUser;
-      notifyListeners();
+      _connectivityResult = await (Connectivity().checkConnectivity());
+      if (_connectivityResult == ConnectivityResult.none) {
+        _connectionStatus = "No internet connection";
+        return false;
+      }
+      _connectionStatus = _connectivityResult.toString();
+      return true;
     } catch (error) {
-      print(error);
+      throw error;
+    }
+  }
+
+  Future handleSignIn() async {
+    try {
+      if (await checkInternet()) {
+        await _googleSignIn.signIn();
+        _currentUser = _googleSignIn.currentUser;
+        notifyListeners();
+      } else
+        throw _connectionStatus;
+    } catch (error) {
+      throw error;
     }
   }
 
   Future handleSignOut() async {
-    await _googleSignIn.disconnect();
-    notifyListeners();
+    try {
+      await _googleSignIn.disconnect();
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   trySignInSilently() async {
-    try {
+    if (await checkInternet()) {
       _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.DriveAppdataScope]);
       _googleSignIn.onCurrentUserChanged.listen(
         (GoogleSignInAccount account) {
           _currentUser = account;
         },
       );
-      await _googleSignIn
-          .signInSilently(suppressErrors: false)
-          .catchError((e) => throw e);
+      await _googleSignIn.signInSilently();
       _currentUser = _googleSignIn.currentUser;
       notifyListeners();
-    } catch (error) {
-      throw error;
-    }
+    } else
+      throw _connectionStatus;
   }
 
   Future<api.DriveApi> _getApi() async {
@@ -160,6 +182,10 @@ class DriveProvider with ChangeNotifier {
     } catch (error) {
       throw error;
     }
+  }
+
+  void dispose() {
+    super.dispose();
   }
 }
 
