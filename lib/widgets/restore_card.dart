@@ -93,19 +93,20 @@ class _RestoreCardState extends State<RestoreCard> {
                     ),
                   ),
                   SizedBox(height: 24),
-                  RaisedButton.icon(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(color: Colors.green, width: 2),
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                  if (drive.fileFound)
+                    RaisedButton.icon(
+                      color: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                      ),
+                      onPressed: () => _restore(drive),
+                      icon: Icon(Icons.restore, color: Colors.green),
+                      label: Text(
+                        'RESTORE',
+                        style: TextStyle(color: Colors.green),
+                      ),
                     ),
-                    onPressed: () => _restore(drive),
-                    icon: Icon(Icons.restore, color: Colors.green),
-                    label: Text(
-                      'RESTORE',
-                      style: TextStyle(color: Colors.green),
-                    ),
-                  ),
                   SizedBox(height: 16),
                 ],
               ),
