@@ -170,7 +170,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   _checkConfirmPassword();
                 },
                 textInputAction: TextInputAction.next,
-                onSubmitted: (_) {},
+                onSubmitted: (_) => _setPassword().catchError(
+                  (e) => ErrorHelper().errorDialog(context, e),
+                ),
               ),
               const SizedBox(height: 24),
               CheckBoard(password: _passCtrler.text),
@@ -180,10 +182,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   onPressed: () => _setPassword().catchError(
                     (e) => ErrorHelper().errorDialog(context, e),
                   ),
-                  child: Text(
-                    'READY',
-                    style: TextStyle(color: Colors.green),
-                  ),
+                  child: Text('CONTINUE'),
                 ),
               const SizedBox(height: 12),
               Text('Not your first time?'),
