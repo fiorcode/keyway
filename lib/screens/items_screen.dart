@@ -1,12 +1,14 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/screens/keyhole_screen.dart';
 import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/screens/dashboard_screen.dart';
 import 'package:keyway/widgets/alpha_card.dart';
+import 'package:keyway/widgets/TextFields/unlock_text_field.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -18,6 +20,15 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider cripto;
   ItemProvider elements;
+  bool _unlocking = false;
+  TextEditingController _ctrl = TextEditingController();
+
+  _lockSwitch() {
+    setState(() {
+      _unlocking = !_unlocking;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     cripto = Provider.of<CriptoProvider>(context);
@@ -35,16 +46,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             ? IconButton(
                 icon: Icon(
                   Icons.lock_outline,
-                  color: Colors.red,
+                  color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(KeyholeScreen.routeName),
+                onPressed: _lockSwitch,
               )
             : IconButton(
-                icon: Icon(
-                  Icons.lock_open,
-                  color: Colors.green,
-                ),
+                icon: Icon(Icons.lock_open, color: Colors.green),
                 onPressed: null),
         actions: <Widget>[
           IconButton(
@@ -70,13 +77,21 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         color: Colors.white54,
                       ),
                     ),
-                    Center(
-                      child: Text(
-                        'Empty.',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 32, color: Colors.black54),
+                    if (_unlocking && cripto.locked)
+                      Container(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+                          child: Container(
+                            color: Colors.black.withOpacity(0.1),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.all(32),
+                                child: UnlockTextField(_ctrl),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
                   ],
                 ),
                 builder: (ctx, lib, ch) => lib.items.length <= 0
