@@ -60,7 +60,6 @@ class _UnlockTextFieldState extends State<UnlockTextField> {
                 onTap: () {
                   try {
                     _cProv.unlock(widget.ctrler.text);
-                    Navigator.of(context).pop();
                   } catch (error) {
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
