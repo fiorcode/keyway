@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/alpha_card.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -7,7 +6,7 @@ import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/screens/keyhole_screen.dart';
 import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/screens/dashboard_screen.dart';
-// import 'package:keyway/widgets/alpha_list_tile.dart';
+import 'package:keyway/widgets/alpha_card.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -17,21 +16,22 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  CriptoProvider _cp;
-  ItemProvider _ip;
+  CriptoProvider cripto;
+  ItemProvider elements;
   @override
   Widget build(BuildContext context) {
-    _cp = Provider.of<CriptoProvider>(context);
-    _ip = Provider.of<ItemProvider>(context, listen: false);
+    cripto = Provider.of<CriptoProvider>(context);
+    elements = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         leading: IconButton(
-            icon: Icon(Icons.dashboard),
-            onPressed: () =>
-                Navigator.of(context).pushNamed(DashboardScreen.routeName)),
-        title: _cp.locked
+          icon: Icon(Icons.settings),
+          onPressed: () =>
+              Navigator.of(context).pushNamed(DashboardScreen.routeName),
+        ),
+        title: cripto.locked
             ? IconButton(
                 icon: Icon(
                   Icons.lock_outline,
@@ -48,20 +48,36 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 onPressed: null),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).pushNamed(AlphaScreen.routeName);
-              })
+            icon: Icon(Icons.add),
+            onPressed: () {
+              Navigator.of(context).pushNamed(AlphaScreen.routeName);
+            },
+          )
         ],
       ),
       body: FutureBuilder(
-        future: _ip.fetchAndSetItems(),
+        future: elements.fetchAndSetItems(),
         builder: (ctx, snapshot) => snapshot.connectionState ==
                 ConnectionState.waiting
             ? Center(child: CircularProgressIndicator())
             : Consumer<ItemProvider>(
-                child: Center(
-                  child: const Text('Got no data yet, start adding some'),
+                child: Stack(
+                  children: [
+                    Center(
+                      child: Icon(
+                        Icons.blur_on,
+                        size: 128,
+                        color: Colors.white54,
+                      ),
+                    ),
+                    Center(
+                      child: Text(
+                        'Empty.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 32, color: Colors.black54),
+                      ),
+                    ),
+                  ],
                 ),
                 builder: (ctx, lib, ch) => lib.items.length <= 0
                     ? ch
