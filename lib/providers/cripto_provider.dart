@@ -33,7 +33,7 @@ class CriptoProvider with ChangeNotifier {
   _setKey(String password) {
     _key = password;
     int _i = 0;
-    while (_key.length < 31) {
+    while (_key.length < 32) {
       _key = _key + _key[_i];
       _i++;
     }
@@ -53,7 +53,7 @@ class CriptoProvider with ChangeNotifier {
     _key = 'PASS*CLEARED';
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
     _mk = 'MASTER*KEY*CLEARED';
-    _locked = true;
+    _locked = false;
     notifyListeners();
   }
 
