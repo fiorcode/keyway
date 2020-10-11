@@ -34,10 +34,11 @@ class ErrorBody extends StatelessWidget {
     return Column(
       children: [
         Center(
-            child: Padding(
-          padding: const EdgeInsets.all(64.0),
-          child: Image.asset("assets/error.png"),
-        )),
+          child: Padding(
+            padding: const EdgeInsets.all(64.0),
+            child: Image.asset("assets/error.png"),
+          ),
+        ),
         Center(
           child: Padding(
             padding: const EdgeInsets.all(32.0),
