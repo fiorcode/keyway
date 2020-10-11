@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 
@@ -45,101 +46,90 @@ class _AlphaScreenState extends State<AlphaScreen> {
   bool _ip = false;
 
   _createItem() async {
-    try {
-      _item.username = _userCtrler.text.isEmpty
-          ? ''
-          : await _cProv.doCrypt(_userCtrler.text);
-      _item.password = _passCtrler.text.isEmpty
-          ? ''
-          : await _cProv.doCrypt(_passCtrler.text);
-      _item.pin =
-          _pinCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_pinCtrler.text);
-      _item.ip =
-          _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text);
-      _item.date = DateTime.now().toUtc().toIso8601String();
-      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-      _item.shortDate = dateFormat.format(DateTime.now().toLocal());
-      _item.expired = 'n';
-      _item.repeated = 'n';
-    } catch (error) {
-      throw error;
-    }
+    _item.username = _userCtrler.text.isEmpty
+        ? ''
+        : await _cProv
+            .doCrypt(_userCtrler.text)
+            .catchError((e) => ErrorHelper().errorDialog(context, e));
+    _item.password =
+        _passCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_passCtrler.text);
+    _item.pin =
+        _pinCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_pinCtrler.text);
+    _item.ip =
+        _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text);
+    _item.date = DateTime.now().toUtc().toIso8601String();
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+    _item.shortDate = dateFormat.format(DateTime.now().toLocal());
+    _item.expired = 'n';
+    _item.repeated = 'n';
   }
 
   _loadItem() async {
-    try {
-      _titleCtrler.text = _item.title;
-      if (_item.username.isNotEmpty) {
-        _userCtrler.text = await _cProv.doDecrypt(_item.username);
-        _username = true;
-      }
-      if (_item.password.isNotEmpty) {
-        _passCtrler.text = await _cProv.doDecrypt(_item.password);
-        _password = true;
-      }
-      if (_item.pin.isNotEmpty) {
-        _pinCtrler.text = await _cProv.doDecrypt(_item.pin);
-        _pin = true;
-      }
-      if (_item.ip.isNotEmpty) {
-        _ipCtrler.text = await _cProv.doDecrypt(_item.ip);
-        _ip = true;
-      }
-      setState(() {});
-    } catch (error) {
-      throw error;
+    _titleCtrler.text = _item.title;
+    if (_item.username.isNotEmpty) {
+      _userCtrler.text = await _cProv.doDecrypt(_item.username);
+      _username = true;
     }
+    if (_item.password.isNotEmpty) {
+      _passCtrler.text = await _cProv.doDecrypt(_item.password);
+      _password = true;
+    }
+    if (_item.pin.isNotEmpty) {
+      _pinCtrler.text = await _cProv.doDecrypt(_item.pin);
+      _pin = true;
+    }
+    if (_item.ip.isNotEmpty) {
+      _ipCtrler.text = await _cProv.doDecrypt(_item.ip);
+      _ip = true;
+    }
+    setState(() {});
   }
 
   _save() async {
-    try {
-      if (_titleCtrler.text.isEmpty) return;
-      if (!_username && !_password && !_pin && !_ip) return;
-      await _createItem();
-      if (await _iProv.checkPassRepeated(_item.password)) {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('Password repeated', textAlign: TextAlign.center),
-              content: Text(
-                'This password is already in use, do you want to save it anyway?',
-                textAlign: TextAlign.center,
+    if (_titleCtrler.text.isEmpty) return;
+    if (!_username && !_password && !_pin && !_ip) return;
+    await _createItem();
+    if (await _iProv.checkPassRepeated(_item.password)) {
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Password repeated', textAlign: TextAlign.center),
+            content: Text(
+              'This password is already in use, do you want to save it anyway?',
+              textAlign: TextAlign.center,
+            ),
+            actions: <Widget>[
+              FlatButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('CANCEL'),
               ),
-              actions: <Widget>[
-                FlatButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: Text('CANCEL'),
-                ),
-                FlatButton(
-                  onPressed: () async {
-                    await _iProv.insertRepeated(_item);
-                    Navigator.of(context).popUntil(
-                      ModalRoute.withName(ItemsListScreen.routeName),
-                    );
-                  },
-                  child: Text('SAVE', style: TextStyle(color: Colors.red)),
-                ),
-              ],
-            );
-          },
-        );
-      } else {
-        _iProv.insertAlpha(_item);
-        Navigator.of(context).pop();
-      }
-    } catch (error) {}
+              FlatButton(
+                onPressed: () async {
+                  await _iProv.insertRepeated(_item);
+                  Navigator.of(context).popUntil(
+                    ModalRoute.withName(ItemsListScreen.routeName),
+                  );
+                },
+                child: Text('SAVE', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      _iProv.insertAlpha(_item);
+      Navigator.of(context).pop();
+    }
   }
 
   _saveChanges() async {
-    try {
-      if (_titleCtrler.text.isEmpty) return;
-      AlphaItem _item = await _createItem();
-      _item.id = widget.item.id;
-      _item.date = widget.item.date;
-      _iProv.updateAlpha(_item);
-      Navigator.of(context).pop();
-    } catch (error) {}
+    if (_titleCtrler.text.isEmpty) return;
+    AlphaItem _item = await _createItem();
+    _item.id = widget.item.id;
+    _item.date = widget.item.date;
+    _iProv.updateAlpha(_item);
+    Navigator.of(context).pop();
   }
 
   _ctrlersChanged() {
@@ -180,15 +170,13 @@ class _AlphaScreenState extends State<AlphaScreen> {
           IconButton(
             icon: Icon(Icons.lock_outline),
             onPressed: () {
-              try {
-                if (_titleCtrler.text.isEmpty) return;
-                if (_cProv.locked)
-                  Navigator.of(context).pushNamed(KeyholeScreen.routeName);
-                else if (widget.item == null)
-                  _save();
-                else
-                  _saveChanges();
-              } catch (error) {}
+              if (_titleCtrler.text.isEmpty) return;
+              if (_cProv.locked)
+                Navigator.of(context).pushNamed(KeyholeScreen.routeName);
+              else if (widget.item == null)
+                _save();
+              else
+                _saveChanges();
             },
           ),
         ],
