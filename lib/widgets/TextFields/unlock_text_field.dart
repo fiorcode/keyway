@@ -4,21 +4,22 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 
 class UnlockTextField extends StatefulWidget {
-  UnlockTextField(this.ctrler);
+  UnlockTextField(this.func);
 
-  final TextEditingController ctrler;
+  final Function func;
 
   @override
   _UnlockTextFieldState createState() => _UnlockTextFieldState();
 }
 
 class _UnlockTextFieldState extends State<UnlockTextField> {
+  TextEditingController _ctrler = TextEditingController();
   bool _empty = true;
   bool _obscure = true;
 
   void _isEmpty() {
     setState(() {
-      _empty = widget.ctrler.text.isEmpty;
+      _empty = _ctrler.text.isEmpty;
     });
   }
 
@@ -33,7 +34,7 @@ class _UnlockTextFieldState extends State<UnlockTextField> {
     final _cProv = Provider.of<CriptoProvider>(context);
     return TextField(
       autocorrect: false,
-      controller: widget.ctrler,
+      controller: _ctrler,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
@@ -59,7 +60,8 @@ class _UnlockTextFieldState extends State<UnlockTextField> {
                 child: Icon(Icons.vpn_key),
                 onTap: () {
                   try {
-                    _cProv.unlock(widget.ctrler.text);
+                    _cProv.unlock(_ctrler.text);
+                    widget.func();
                   } catch (error) {
                     Scaffold.of(context).showSnackBar(
                       SnackBar(
