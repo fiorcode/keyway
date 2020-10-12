@@ -21,7 +21,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider cripto;
   ItemProvider elements;
   bool _unlocking = false;
-  TextEditingController _ctrl = TextEditingController();
 
   _lockSwitch() {
     setState(() {
@@ -48,7 +47,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   Icons.lock_outline,
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                onPressed: _lockSwitch,
+                onPressed: cripto.locked ? _lockSwitch : null,
               )
             : IconButton(
                 icon: Icon(Icons.lock_open, color: Colors.green),
@@ -86,7 +85,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                             child: Center(
                               child: Padding(
                                 padding: const EdgeInsets.all(32),
-                                child: UnlockTextField(_ctrl),
+                                child: UnlockTextField(_lockSwitch),
                               ),
                             ),
                           ),
