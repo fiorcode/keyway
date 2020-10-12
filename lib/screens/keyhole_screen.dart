@@ -4,7 +4,8 @@ import '../widgets/TextFields/unlock_text_field.dart';
 
 class KeyholeScreen extends StatelessWidget {
   static const routeName = '/keyhole';
-  final _ctrler = TextEditingController();
+
+  _lock() {}
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class KeyholeScreen extends StatelessWidget {
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(32.0),
-            child: UnlockTextField(_ctrler),
+            child: UnlockTextField(_lock),
           ),
         ),
       ),
