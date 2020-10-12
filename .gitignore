@@ -117,3 +117,4 @@ app.*.symbols
 !/dev/ci/**/Gemfile.lock
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies
+.flutter-plugins-dependencies
