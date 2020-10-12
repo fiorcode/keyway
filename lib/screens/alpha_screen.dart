@@ -168,7 +168,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.lock_outline),
+            icon: Icon(Icons.save),
             onPressed: () {
               if (_titleCtrler.text.isEmpty) return;
               if (_cProv.locked)
