@@ -44,9 +44,9 @@ class AlphaItem extends Item {
       this.ip,
       String date,
       String shortDate,
-      int color,
-      String repeated,
-      String expired})
+      int color = 0,
+      String repeated = 'n',
+      String expired = 'n'})
       : super(id, title, date, shortDate, color, repeated, expired);
 
   AlphaItem.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
