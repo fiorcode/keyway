@@ -29,10 +29,22 @@ class _ColorPickerState extends State<ColorPicker> {
       _color = Color.fromARGB(255, 255, 255 - ((val - 425) * 3).toInt(), 0);
   }
 
+  _setValue(Color col) {
+    if (col.red == 255 && col.green == 0) _value = col.blue / 3;
+    if (col.blue == 255 && col.green == 0) _value = (col.red / 3) + 85;
+    if (col.blue == 255 && col.red == 0) _value = (col.green / 3) + 170;
+    if (col.green == 255 && col.red == 0) _value = (col.blue / 3) + 255;
+    if (col.green == 255 && col.blue == 0) _value = (col.red / 3) + 340;
+    if (col.red == 255 && col.blue == 0) _value = (col.green / 3) + 425;
+  }
+
   @override
   void initState() {
-    //
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _color = Color(widget.value);
+      _setValue(_color);
+    });
   }
 
   @override
