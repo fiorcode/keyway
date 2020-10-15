@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,7 +6,7 @@ import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/screens/dashboard_screen.dart';
 import 'package:keyway/widgets/alpha_card.dart';
-import 'package:keyway/widgets/TextFields/unlock_text_field.dart';
+import 'package:keyway/widgets/unlock_container.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -67,50 +65,37 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       ),
       body: FutureBuilder(
         future: elements.fetchAndSetItems(),
-        builder: (ctx, snapshot) => snapshot.connectionState ==
-                ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : Consumer<ItemProvider>(
-                child: Center(
-                  child: Icon(
-                    Icons.blur_on,
-                    size: 128,
-                    color: Colors.white54,
-                  ),
-                ),
-                builder: (ctx, lib, ch) => lib.items.length <= 0
-                    ? ch
-                    : Stack(
-                        children: [
-                          ListView.builder(
-                            padding: EdgeInsets.all(8),
-                            itemCount: lib.items.length,
-                            itemBuilder: (ctx, i) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 1),
-                                child: AlphaCard(lib.items[i]),
-                              );
-                            },
-                          ),
-                          if (_unlocking && cripto.locked)
-                            Container(
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
-                                child: Container(
-                                  color: Colors.black.withOpacity(0.1),
-                                  child: Center(
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(32),
-                                      child: UnlockTextField(_lockSwitch),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                        ],
+        builder: (ctx, snapshot) =>
+            snapshot.connectionState == ConnectionState.waiting
+                ? Center(child: CircularProgressIndicator())
+                : Consumer<ItemProvider>(
+                    child: Center(
+                      child: Icon(
+                        Icons.blur_on,
+                        size: 128,
+                        color: Colors.white54,
                       ),
-              ),
+                    ),
+                    builder: (ctx, lib, ch) => lib.items.length <= 0
+                        ? ch
+                        : Stack(
+                            children: [
+                              ListView.builder(
+                                padding: EdgeInsets.all(8),
+                                itemCount: lib.items.length,
+                                itemBuilder: (ctx, i) {
+                                  return Padding(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 1),
+                                    child: AlphaCard(lib.items[i]),
+                                  );
+                                },
+                              ),
+                              if (_unlocking && cripto.locked)
+                                UnlockContainer(_lockSwitch),
+                            ],
+                          ),
+                  ),
       ),
     );
   }
