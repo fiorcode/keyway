@@ -51,12 +51,21 @@ class _AlphaScreenState extends State<AlphaScreen> {
         : await _cProv
             .doCrypt(_userCtrler.text)
             .catchError((e) => ErrorHelper().errorDialog(context, e));
-    _item.password =
-        _passCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_passCtrler.text);
-    _item.pin =
-        _pinCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_pinCtrler.text);
-    _item.ip =
-        _ipCtrler.text.isEmpty ? '' : await _cProv.doCrypt(_ipCtrler.text);
+    _item.password = _passCtrler.text.isEmpty
+        ? ''
+        : await _cProv
+            .doCrypt(_passCtrler.text)
+            .catchError((e) => ErrorHelper().errorDialog(context, e));
+    _item.pin = _pinCtrler.text.isEmpty
+        ? ''
+        : await _cProv
+            .doCrypt(_pinCtrler.text)
+            .catchError((e) => ErrorHelper().errorDialog(context, e));
+    _item.ip = _ipCtrler.text.isEmpty
+        ? ''
+        : await _cProv
+            .doCrypt(_ipCtrler.text)
+            .catchError((e) => ErrorHelper().errorDialog(context, e));
     _item.date = DateTime.now().toUtc().toIso8601String();
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     _item.shortDate = dateFormat.format(DateTime.now().toLocal());
@@ -240,7 +249,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: PasswordTextField(_passCtrler, _refreshBoard),
                 ),
-              if (_password) CheckBoard(password: _passCtrler.text),
+              if (_password && _passCtrler.text.isNotEmpty)
+                CheckBoard(password: _passCtrler.text),
               if (_pin)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
@@ -251,9 +261,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: IpTextField(_ipCtrler),
                 ),
-              AlphaCard(_item),
-              SizedBox(height: 16),
-              ColorPicker(_item.color, _setColor),
+              if (_titleCtrler.text.isNotEmpty) AlphaCard(_item),
+              if (_titleCtrler.text.isNotEmpty) SizedBox(height: 16),
+              if (_titleCtrler.text.isNotEmpty)
+                ColorPicker(_item.color, _setColor),
               if (widget.item != null)
                 FlatButton(
                   onPressed: () {
