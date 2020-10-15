@@ -6,7 +6,6 @@ import 'package:intl/intl.dart';
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/screens/keyhole_screen.dart';
 import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/widgets/TextFields/ip_text_field.dart';
 import 'package:keyway/widgets/TextFields/password_text_field.dart';
@@ -179,9 +178,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
           IconButton(
             icon: Icon(Icons.save),
             onPressed: () {
-              if (_titleCtrler.text.isEmpty) return;
-              if (_cProv.locked)
-                Navigator.of(context).pushNamed(KeyholeScreen.routeName);
+              if (_titleCtrler.text.isEmpty)
+                return;
+              //if (_cProv.locked)
               else if (widget.item == null)
                 _save();
               else
