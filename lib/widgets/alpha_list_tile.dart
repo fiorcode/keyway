@@ -42,8 +42,8 @@ class _AlphaListTileState extends State<AlphaListTile> {
     super.didUpdateWidget(oldWidget);
   }
 
-  void _decrypt() async {
-    _title = await _cProv.doDecrypt(widget._alpha.password);
+  void _decrypt() {
+    _title = _cProv.doDecrypt(widget._alpha.password);
     //_subTitle = "";
     _trailing = "";
     _decrypted = true;
