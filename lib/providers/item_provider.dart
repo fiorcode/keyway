@@ -62,12 +62,13 @@ class ItemProvider with ChangeNotifier {
 
   insertRepeated(AlphaItem item) async {
     await DBHelper.insert('alpha', item.toMap());
-    await DBHelper.updateRepeated(item.toMap());
+    await DBHelper.checkRepeated(item.toMap());
     fetchAndSetItems();
   }
 
-  deleteRepeated(AlphaItem item) async {
-    await DBHelper.deleteRepeated(item.toMap());
+  updateRepeated(AlphaItem item) async {
+    await DBHelper.update('alpha', item.toMap());
+    await DBHelper.checkRepeated(item.toMap());
     fetchAndSetItems();
   }
 
