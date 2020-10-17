@@ -17,7 +17,7 @@ class ItemsListScreen extends StatefulWidget {
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider cripto;
-  ItemProvider elements;
+  ItemProvider items;
   bool _unlocking = false;
 
   _lockSwitch() {
@@ -29,7 +29,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   @override
   Widget build(BuildContext context) {
     cripto = Provider.of<CriptoProvider>(context);
-    elements = Provider.of<ItemProvider>(context, listen: false);
+    items = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -64,7 +64,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               ],
       ),
       body: FutureBuilder(
-        future: elements.fetchAndSetItems(),
+        future: items.fetchAndSetItems(),
         builder: (ctx, snapshot) =>
             snapshot.connectionState == ConnectionState.waiting
                 ? Center(child: CircularProgressIndicator())
