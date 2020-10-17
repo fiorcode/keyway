@@ -64,7 +64,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   Future _setPassword() async {
     try {
       cripto = Provider.of<CriptoProvider>(context, listen: false);
-      bool _setupSuccess = await cripto.initialSetup(_passCtrler.text);
+      bool _setupSuccess = cripto.initialSetup(_passCtrler.text);
       if (_setupSuccess) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
