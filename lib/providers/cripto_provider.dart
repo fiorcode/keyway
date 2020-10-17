@@ -18,7 +18,6 @@ class CriptoProvider with ChangeNotifier {
   e.Encrypted _mkCrypted;
 
   CriptoProvider() {
-    //unlock('Qwe123!');
     lock();
   }
 
@@ -46,6 +45,8 @@ class CriptoProvider with ChangeNotifier {
     _mkCrypted = e.Encrypted.fromBase64(_getMasterKey());
     _mk = _crypter.decrypt(_mkCrypted, iv: e.IV.fromLength(16));
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
+    _key = 'PASS*CLEARED';
+    _mk = 'MASTER*KEY*CLEARED';
     _locked = false;
     notifyListeners();
   }
@@ -58,7 +59,7 @@ class CriptoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> initialSetup(String password) async {
+  bool initialSetup(String password) {
     _setKey(password);
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
 
@@ -101,11 +102,11 @@ class CriptoProvider with ChangeNotifier {
     _pref.setBool('isMasterKey', true);
   }
 
-  Future<String> doCrypt(String value) async {
+  String doCrypt(String value) {
     return _crypter.encrypt(value, iv: e.IV.fromLength(16)).base64;
   }
 
-  Future<String> doDecrypt(String value) async {
+  String doDecrypt(String value) {
     return _crypter.decrypt64(value, iv: e.IV.fromLength(16));
   }
 
