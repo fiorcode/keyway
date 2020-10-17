@@ -49,7 +49,7 @@ class DBHelper {
     File('$dbPath/kw.db').delete();
   }
 
-  static Future updateRepeated(Map<String, Object> data) async {
+  static Future checkRepeated(Map<String, Object> data) async {
     final db = await DBHelper.database();
     return await db.update(
       'alpha',
