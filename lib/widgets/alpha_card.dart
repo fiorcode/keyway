@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/screens/alpha_screen.dart';
@@ -17,12 +18,14 @@ class AlphaCard extends StatefulWidget {
 class _AlphaCardState extends State<AlphaCard> {
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cProv = Provider.of<CriptoProvider>(context, listen: false);
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Card(
       clipBehavior: Clip.antiAlias,
       shadowColor: widget._alpha.repeated == 'y'
           ? Colors.red
-          : widget._alpha.expired == 'y' ? Colors.orange : Colors.green,
+          : widget._alpha.expired == 'y'
+              ? Colors.orange
+              : Colors.green,
       elevation: 8,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -30,7 +33,9 @@ class _AlphaCardState extends State<AlphaCard> {
             width: 3,
             color: widget._alpha.repeated == 'y'
                 ? Colors.red
-                : widget._alpha.expired == 'y' ? Colors.orange : Colors.green,
+                : widget._alpha.expired == 'y'
+                    ? Colors.orange
+                    : Colors.green,
           )),
       child: ListTile(
         leading: CircleAvatar(
@@ -48,7 +53,7 @@ class _AlphaCardState extends State<AlphaCard> {
         subtitle: Text(
             widget._alpha.shortDate != null ? widget._alpha.shortDate : ''),
         onTap: () {
-          if (_cProv.locked) {
+          if (cripto.locked) {
             Scaffold.of(context).showSnackBar(
               SnackBar(
                 backgroundColor: Colors.red,
@@ -65,6 +70,22 @@ class _AlphaCardState extends State<AlphaCard> {
             ),
           );
         },
+        trailing: cripto.locked
+            ? null
+            : GestureDetector(
+                child: Icon(Icons.copy_rounded),
+                onTap: () => Clipboard.setData(ClipboardData(
+                        text: cripto.doDecrypt(widget._alpha.password)))
+                    .then(
+                  (_) => Scaffold.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: Colors.green,
+                      content: Text('Copied'),
+                      duration: Duration(seconds: 1),
+                    ),
+                  ),
+                ),
+              ),
       ),
     );
   }
