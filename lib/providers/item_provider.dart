@@ -53,10 +53,10 @@ class ItemProvider with ChangeNotifier {
     _items.cast<AlphaItem>().forEach((i) async {
       i.expired = 'n';
       i.dateTime = DateTime.parse(i.date);
-      if (i.dateTime.difference(DateTime.now()).inMinutes.abs() > 10) {
+      if (i.dateTime.difference(DateTime.now()).inDays.abs() > 9) {
         i.expired = 'y';
-        await DBHelper.update('alpha', i.toMap());
       }
+      await DBHelper.update('alpha', i.toMap());
     });
   }
 
