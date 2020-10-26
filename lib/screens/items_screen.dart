@@ -32,6 +32,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     return await items.fetchAndSetItems();
   }
 
+  Future onReturn() async {
+    setState(() {
+      getItems = _getItems();
+    });
+  }
+
   @override
   void initState() {
     getItems = _getItems();
@@ -69,7 +75,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 IconButton(
                   icon: Icon(Icons.add),
                   onPressed: () {
-                    Navigator.of(context).pushNamed(AlphaScreen.routeName);
+                    Navigator.of(context)
+                        .pushNamed(AlphaScreen.routeName)
+                        .then((_) => onReturn());
                   },
                 )
               ],
@@ -83,14 +91,17 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             case (ConnectionState.waiting):
               return Center(child: CircularProgressIndicator());
             case (ConnectionState.done):
-              return items.items.length <= 0
-                  ? Center(
-                      child:
-                          Icon(Icons.blur_on, size: 128, color: Colors.white54),
-                    )
-                  : Stack(
-                      children: [
-                        ListView.builder(
+              return Stack(
+                children: [
+                  items.items.length <= 0
+                      ? Center(
+                          child: Icon(
+                            Icons.blur_on,
+                            size: 128,
+                            color: Colors.white54,
+                          ),
+                        )
+                      : ListView.builder(
                           padding: EdgeInsets.all(8),
                           itemCount: items.items.length,
                           itemBuilder: (ctx, i) {
@@ -100,10 +111,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                             );
                           },
                         ),
-                        if (_unlocking && cripto.locked)
-                          UnlockContainer(_lockSwitch),
-                      ],
-                    );
+                  if (_unlocking && cripto.locked) UnlockContainer(_lockSwitch),
+                ],
+              );
             default:
               return Center(child: Text('default'));
           }
