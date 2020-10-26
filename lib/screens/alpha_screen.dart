@@ -23,7 +23,7 @@ class AlphaScreen extends StatefulWidget {
 
   AlphaScreen({this.item});
 
-  final AlphaItem item;
+  final Alpha item;
 
   @override
   _AlphaScreenState createState() => _AlphaScreenState();
@@ -33,7 +33,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider cripto;
   ItemProvider items;
 
-  AlphaItem _item;
+  Alpha _item;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -103,16 +103,16 @@ class _AlphaScreenState extends State<AlphaScreen> {
           WarningHelper().passRepeatedWarning(context, _saveRepeated);
         } else {
           if (_item.id != null)
-            items.updateAlpha(_item);
+            items.update(_item);
           else
-            items.insertAlpha(_item);
+            items.insert(_item);
           Navigator.of(context).pop();
         }
       } else {
         if (_item.id != null)
-          items.updateAlpha(_item);
+          items.update(_item);
         else
-          items.insertAlpha(_item);
+          items.insert(_item);
         Navigator.of(context).pop();
       }
     } catch (error) {
@@ -154,7 +154,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     } else {
       _username = true;
       _password = true;
-      _item = AlphaItem();
+      _item = Alpha();
     }
     super.didChangeDependencies();
   }
@@ -247,7 +247,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: PasswordTextField(_passCtrler),
                     ),
-                  if (_password && _passCtrler.text.isNotEmpty)
+                  if (_passCtrler.text.isNotEmpty)
                     CheckBoard(password: _passCtrler.text),
                   if (_pin)
                     Padding(
@@ -281,7 +281,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                                 ),
                                 FlatButton(
                                   onPressed: () {
-                                    items.deleteAlpha(widget.item);
+                                    items.delete(widget.item);
                                     Navigator.of(context).popUntil(
                                       ModalRoute.withName(
                                           ItemsListScreen.routeName),
