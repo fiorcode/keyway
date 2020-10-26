@@ -9,7 +9,7 @@ import 'package:keyway/providers/cripto_provider.dart';
 class AlphaCard extends StatefulWidget {
   AlphaCard(this._alpha);
 
-  final AlphaItem _alpha;
+  final Alpha _alpha;
 
   @override
   _AlphaCardState createState() => _AlphaCardState();
