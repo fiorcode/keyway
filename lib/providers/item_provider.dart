@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../helpers/db_helper.dart';
@@ -6,68 +5,100 @@ import '../models/item.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
+  List<Item> _oldItems = [];
+  List<Item> _deletedItems = [];
 
   List<Item> get items => [..._items];
+  List<Item> get oldItems => [..._oldItems];
+  List<Item> get deletedItems => [..._deletedItems];
 
   fetchAndSetItems() async {
     _items.clear();
-    await _fetchAndSetAlpha();
+    await _fetchAndSet();
     await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
   }
 
-  _fetchAndSetAlpha() async {
-    final _alphaList = await DBHelper.getData('alpha');
-    _items.addAll(_alphaList.map((item) => AlphaItem.fromMap(item)).toList());
+  _fetchAndSet() async {
+    _items.addAll((await DBHelper.getData(DBHelper.itemsTable))
+        .map((item) => Alpha.fromMap(item))
+        .toList());
   }
 
-  insertAlpha(AlphaItem item) async {
-    await DBHelper.insert('alpha', item.toMap());
+  fetchAndSetOldItems() async {
+    _oldItems.clear();
+    await _fetchAndSetOld();
+    _oldItems.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
+  }
+
+  _fetchAndSetOld() async {
+    final _alphaList = await DBHelper.getData(DBHelper.oldItemsTable);
+    _oldItems.addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
+  }
+
+  fetchAndSetDeletedItems() async {
+    _deletedItems.clear();
+    await _fetchAndSetDeleted();
+    _deletedItems.sort((a, b) => b.date.compareTo(a.date));
+    notifyListeners();
+  }
+
+  _fetchAndSetDeleted() async {
+    final _alphaList = await DBHelper.getData(DBHelper.deletedItemsTable);
+    _deletedItems
+        .addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
+  }
+
+  insert(Alpha item) async {
+    await DBHelper.insert(DBHelper.itemsTable, item.toMap());
     fetchAndSetItems();
   }
 
-  updateAlpha(AlphaItem item) async {
-    await DBHelper.update('alpha', item.toMap());
+  update(Alpha item) async {
+    await DBHelper.getItemById(item.id).then(
+      (value) async {
+        OldAlpha old = Alpha.fromMap(value.first).toOldAlpha();
+        if (old.password != item.password || old.pin != item.pin) {
+          await DBHelper.insert(DBHelper.oldItemsTable, old.toMap());
+        }
+      },
+    );
+    await DBHelper.update(DBHelper.itemsTable, item.toMap());
     fetchAndSetItems();
   }
 
-  deleteAlpha(AlphaItem item) async {
+  delete(Alpha item) async {
     if (item.repeated == 'n')
-      await DBHelper.delete('alpha', item.id);
+      await DBHelper.delete(DBHelper.itemsTable, item.id);
     else
       await DBHelper.deleteRepeated(item.toMap());
+    DBHelper.insert(DBHelper.deletedItemsTable, item.toDeletedAlpha().toMap());
     _items.removeWhere((element) => element.id == item.id);
     fetchAndSetItems();
   }
 
   Future<bool> checkPassRepeated(String s) async {
-    final _result = await DBHelper.getByValue('alpha', 'password', s);
-    if (_result.isNotEmpty)
+    if ((await DBHelper.getByValue(DBHelper.itemsTable, 'password', s))
+            .isNotEmpty ||
+        (await DBHelper.getByValue(DBHelper.oldItemsTable, 'password', s))
+            .isNotEmpty ||
+        (await DBHelper.getByValue(DBHelper.deletedItemsTable, 'password', s))
+            .isNotEmpty)
       return true;
     else
       return false;
   }
 
-  _checkExpirations() async {
-    _items.cast<AlphaItem>().forEach((i) async {
-      i.expired = 'n';
-      i.dateTime = DateTime.parse(i.date);
-      if (i.dateTime.difference(DateTime.now()).inDays.abs() > 9) {
-        i.expired = 'y';
-      }
-      await DBHelper.update('alpha', i.toMap());
-    });
-  }
-
-  insertRepeated(AlphaItem item) async {
-    await DBHelper.insert('alpha', item.toMap());
+  insertRepeated(Alpha item) async {
+    await DBHelper.insert('items', item.toMap());
     await DBHelper.checkRepeated(item.toMap());
     fetchAndSetItems();
   }
 
-  updateRepeated(AlphaItem item) async {
-    await DBHelper.update('alpha', item.toMap());
+  updateRepeated(Alpha item) async {
+    await DBHelper.update('items', item.toMap());
     await DBHelper.checkRepeated(item.toMap());
     fetchAndSetItems();
   }
@@ -75,6 +106,17 @@ class ItemProvider with ChangeNotifier {
   removeItems() async {
     await DBHelper.removeDB();
     fetchAndSetItems();
+  }
+
+  _checkExpirations() async {
+    _items.cast<Alpha>().forEach((i) async {
+      i.expired = 'n';
+      i.dateTime = DateTime.parse(i.date);
+      if (i.dateTime.difference(DateTime.now()).inDays.abs() > 9) {
+        i.expired = 'y';
+      }
+      await DBHelper.update('items', i.toMap());
+    });
   }
 
   void dispose() {
