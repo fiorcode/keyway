@@ -19,6 +19,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider cripto;
   ItemProvider items;
   bool _unlocking = false;
+  Future getItems;
 
   _lockSwitch() {
     setState(() {
@@ -26,10 +27,20 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     });
   }
 
+  _getItems() async {
+    items = Provider.of<ItemProvider>(context, listen: false);
+    return await items.fetchAndSetItems();
+  }
+
+  @override
+  void initState() {
+    getItems = _getItems();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     cripto = Provider.of<CriptoProvider>(context);
-    items = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -64,38 +75,39 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               ],
       ),
       body: FutureBuilder(
-        future: items.fetchAndSetItems(),
-        builder: (ctx, snapshot) =>
-            snapshot.connectionState == ConnectionState.waiting
-                ? Center(child: CircularProgressIndicator())
-                : Consumer<ItemProvider>(
-                    child: Center(
-                      child: Icon(
-                        Icons.blur_on,
-                        size: 128,
-                        color: Colors.white54,
-                      ),
-                    ),
-                    builder: (ctx, lib, ch) => lib.items.length <= 0
-                        ? ch
-                        : Stack(
-                            children: [
-                              ListView.builder(
-                                padding: EdgeInsets.all(8),
-                                itemCount: lib.items.length,
-                                itemBuilder: (ctx, i) {
-                                  return Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(vertical: 1),
-                                    child: AlphaCard(lib.items[i]),
-                                  );
-                                },
-                              ),
-                              if (_unlocking && cripto.locked)
-                                UnlockContainer(_lockSwitch),
-                            ],
-                          ),
-                  ),
+        future: getItems,
+        builder: (ctx, snap) {
+          switch (snap.connectionState) {
+            case ConnectionState.none:
+              return Center(child: Text('none'));
+            case (ConnectionState.waiting):
+              return Center(child: CircularProgressIndicator());
+            case (ConnectionState.done):
+              return items.items.length <= 0
+                  ? Center(
+                      child:
+                          Icon(Icons.blur_on, size: 128, color: Colors.white54),
+                    )
+                  : Stack(
+                      children: [
+                        ListView.builder(
+                          padding: EdgeInsets.all(8),
+                          itemCount: items.items.length,
+                          itemBuilder: (ctx, i) {
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 1),
+                              child: AlphaCard(items.items[i]),
+                            );
+                          },
+                        ),
+                        if (_unlocking && cripto.locked)
+                          UnlockContainer(_lockSwitch),
+                      ],
+                    );
+            default:
+              return Center(child: Text('default'));
+          }
+        },
       ),
     );
   }
