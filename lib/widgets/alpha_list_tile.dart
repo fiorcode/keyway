@@ -8,7 +8,7 @@ import 'package:keyway/screens/alpha_screen.dart';
 class AlphaListTile extends StatefulWidget {
   AlphaListTile(this._alpha);
 
-  final AlphaItem _alpha;
+  final Alpha _alpha;
 
   @override
   _AlphaListTileState createState() => _AlphaListTileState();
