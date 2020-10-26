@@ -34,8 +34,7 @@ class DashboardScreen extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-              goTo: () =>
-                  Navigator.of(context).pushNamed(BackupScreen.routeName),
+              goTo: () {},
             ),
           ],
         ),
