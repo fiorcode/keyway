@@ -17,13 +17,12 @@ class ItemProvider with ChangeNotifier {
     await _fetchAndSet();
     await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
-    notifyListeners();
   }
 
-  _fetchAndSet() async {
-    _items.addAll((await DBHelper.getData(DBHelper.itemsTable))
-        .map((item) => Alpha.fromMap(item))
-        .toList());
+  Future<void> _fetchAndSet() async {
+    List<Map<String, dynamic>> data =
+        await DBHelper.getData(DBHelper.itemsTable);
+    _items.addAll(data.map((item) => Alpha.fromMap(item)).toList());
   }
 
   fetchAndSetOldItems() async {
@@ -59,7 +58,7 @@ class ItemProvider with ChangeNotifier {
   update(Alpha item) async {
     await DBHelper.getItemById(item.id).then(
       (value) async {
-        OldAlpha old = Alpha.fromMap(value.first).toOldAlpha();
+        OldAlpha old = OldAlpha.fromAlpha(Alpha.fromMap(value.first));
         if (old.password != item.password || old.pin != item.pin) {
           await DBHelper.insert(DBHelper.oldItemsTable, old.toMap());
         }
@@ -74,7 +73,8 @@ class ItemProvider with ChangeNotifier {
       await DBHelper.delete(DBHelper.itemsTable, item.id);
     else
       await DBHelper.deleteRepeated(item.toMap());
-    DBHelper.insert(DBHelper.deletedItemsTable, item.toDeletedAlpha().toMap());
+    DeletedAlpha delete = DeletedAlpha.fromAlpha(item);
+    DBHelper.insert(DBHelper.deletedItemsTable, delete.toMap());
     _items.removeWhere((element) => element.id == item.id);
     fetchAndSetItems();
   }
@@ -108,7 +108,7 @@ class ItemProvider with ChangeNotifier {
     fetchAndSetItems();
   }
 
-  _checkExpirations() async {
+  Future<void> _checkExpirations() async {
     _items.cast<Alpha>().forEach((i) async {
       i.expired = 'n';
       i.dateTime = DateTime.parse(i.date);
