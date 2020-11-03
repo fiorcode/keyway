@@ -245,7 +245,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   if (_password)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: PasswordTextField(_passCtrler),
+                      child: PasswordTextField(_passCtrler, _ctrlersChanged),
                     ),
                   if (_passCtrler.text.isNotEmpty)
                     CheckBoard(password: _passCtrler.text),
@@ -281,7 +281,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                                 ),
                                 FlatButton(
                                   onPressed: () {
-                                    items.delete(widget.item);
+                                    items.delete(_item);
                                     Navigator.of(context).popUntil(
                                       ModalRoute.withName(
                                           ItemsListScreen.routeName),
