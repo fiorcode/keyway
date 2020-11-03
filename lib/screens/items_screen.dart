@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -16,8 +17,8 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  CriptoProvider cripto;
   ItemProvider items;
+  CriptoProvider cripto;
   bool _unlocking = false;
   Future getItems;
 
@@ -55,8 +56,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             ? null
             : IconButton(
                 icon: Icon(Icons.settings),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(DashboardScreen.routeName),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(DashboardScreen.routeName)
+                    .then((_) => onReturn()),
               ),
         title: cripto.locked
             ? IconButton(
@@ -91,29 +93,35 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             case (ConnectionState.waiting):
               return Center(child: CircularProgressIndicator());
             case (ConnectionState.done):
-              return Stack(
-                children: [
-                  items.items.length <= 0
-                      ? Center(
-                          child: Icon(
-                            Icons.blur_on,
-                            size: 128,
-                            color: Colors.white54,
+              if (snap.hasError)
+                return ErrorHelper().errorBody(snap.error);
+              else
+                return Stack(
+                  children: [
+                    items.items.length <= 0
+                        ? Center(
+                            child: Icon(
+                              Icons.blur_on,
+                              size: 128,
+                              color: Colors.white54,
+                            ),
+                          )
+                        : ListView.builder(
+                            padding: EdgeInsets.all(8),
+                            itemCount: items.items.length,
+                            itemBuilder: (ctx, i) {
+                              return Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 1),
+                                child: AlphaCard(items.items[i]),
+                              );
+                            },
                           ),
-                        )
-                      : ListView.builder(
-                          padding: EdgeInsets.all(8),
-                          itemCount: items.items.length,
-                          itemBuilder: (ctx, i) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 1),
-                              child: AlphaCard(items.items[i]),
-                            );
-                          },
-                        ),
-                  if (_unlocking && cripto.locked) UnlockContainer(_lockSwitch),
-                ],
-              );
+                    if (_unlocking && cripto.locked)
+                      UnlockContainer(_lockSwitch),
+                  ],
+                );
+              break;
             default:
               return Center(child: Text('default'));
           }
