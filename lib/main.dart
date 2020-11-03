@@ -11,6 +11,7 @@ import 'screens/items_screen.dart';
 import 'screens/alpha_screen.dart';
 import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
+import 'screens/data_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -40,6 +41,7 @@ class MyApp extends StatelessWidget {
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
+          DataScreen.routeName: (ctx) => DataScreen(),
         },
       ),
     );
