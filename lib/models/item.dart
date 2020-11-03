@@ -72,37 +72,6 @@ class Alpha extends Item {
     if (id != null) map['id'] = id;
     return map;
   }
-
-  OldAlpha toOldAlpha() {
-    return OldAlpha(
-        title: this.title,
-        username: this.username,
-        password: this.password,
-        pin: this.pin,
-        ip: this.ip,
-        date: this.date,
-        shortDate: this.shortDate,
-        color: this.color,
-        repeated: this.repeated,
-        expired: this.expired,
-        itemId: this.id);
-  }
-
-  DeletedAlpha toDeletedAlpha() {
-    return DeletedAlpha(
-        title: this.title,
-        username: this.username,
-        password: this.password,
-        pin: this.pin,
-        ip: this.ip,
-        date: this.date,
-        shortDate: this.shortDate,
-        deletedDate: DateTime.now().toIso8601String(),
-        color: this.color,
-        repeated: this.repeated,
-        expired: this.expired,
-        itemId: this.id);
-  }
 }
 
 class OldAlpha extends Alpha {
@@ -122,6 +91,20 @@ class OldAlpha extends Alpha {
     String expired = 'n',
     this.itemId,
   }) : super();
+
+  OldAlpha.fromAlpha(Alpha a) {
+    this.title = a.title;
+    this.username = a.username;
+    this.password = a.password;
+    this.pin = a.pin;
+    this.ip = a.pin;
+    this.date = a.date;
+    this.shortDate = a.shortDate;
+    this.color = a.color;
+    this.repeated = a.repeated;
+    this.expired = a.expired;
+    this.itemId = a.id;
+  }
 
   OldAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
@@ -169,6 +152,21 @@ class DeletedAlpha extends Alpha {
     String expired = 'n',
     this.itemId,
   }) : super();
+
+  DeletedAlpha.fromAlpha(Alpha a) {
+    this.title = a.title;
+    this.username = a.username;
+    this.password = a.password;
+    this.pin = a.pin;
+    this.ip = a.pin;
+    this.date = a.date;
+    this.shortDate = a.shortDate;
+    this.deletedDate = DateTime.now().toIso8601String();
+    this.color = a.color;
+    this.repeated = a.repeated;
+    this.expired = a.expired;
+    this.itemId = a.id;
+  }
 
   DeletedAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
