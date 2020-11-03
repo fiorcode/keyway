@@ -80,7 +80,7 @@ class CriptoProvider with ChangeNotifier {
     _random = Random.secure();
     _v = List<int>.generate(32, (i) => _random.nextInt(256));
 
-    lock();
+    unlock(password);
 
     return true;
   }
