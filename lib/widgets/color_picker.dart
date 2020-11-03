@@ -1,50 +1,54 @@
 import 'package:flutter/material.dart';
 
 class ColorPicker extends StatefulWidget {
-  ColorPicker(this.value, this.change);
+  ColorPicker(this.color, this.change);
 
   final Function change;
-  final int value;
+  final int color;
 
   @override
   _ColorPickerState createState() => _ColorPickerState();
 }
 
 class _ColorPickerState extends State<ColorPicker> {
-  double _value = 0;
-  Color _color = Color.fromARGB(255, 255, 0, 0);
+  double _value;
+  Color _color;
 
   _setColor(double val) {
-    if (val <= 85)
-      _color = Color.fromARGB(255, 255, 0, (val * 3).toInt());
-    else if (val <= 170)
-      _color = Color.fromARGB(255, 255 - ((val - 85) * 3).toInt(), 0, 255);
-    else if (val <= 255)
-      _color = Color.fromARGB(255, 0, ((val - 170) * 3).toInt(), 255);
-    else if (val <= 340)
-      _color = Color.fromARGB(255, 0, 255, 255 - ((val - 255) * 3).toInt());
-    else if (val <= 425)
-      _color = Color.fromARGB(255, ((val - 340) * 3).toInt(), 255, 0);
-    else if (val <= 510)
-      _color = Color.fromARGB(255, 255, 255 - ((val - 425) * 3).toInt(), 0);
+    setState(() {
+      if (val <= 85)
+        _color = Color.fromARGB(255, 255, 0, (val * 3).toInt());
+      else if (val <= 170)
+        _color = Color.fromARGB(255, 255 - ((val - 85) * 3).toInt(), 0, 255);
+      else if (val <= 255)
+        _color = Color.fromARGB(255, 0, ((val - 170) * 3).toInt(), 255);
+      else if (val <= 340)
+        _color = Color.fromARGB(255, 0, 255, 255 - ((val - 255) * 3).toInt());
+      else if (val <= 425)
+        _color = Color.fromARGB(255, ((val - 340) * 3).toInt(), 255, 0);
+      else if (val <= 510)
+        _color = Color.fromARGB(255, 255, 255 - ((val - 425) * 3).toInt(), 0);
+    });
   }
 
   _setValue(Color col) {
-    if (col.red == 255 && col.green == 0) _value = col.blue / 3;
-    if (col.blue == 255 && col.green == 0) _value = (col.red / 3) + 85;
-    if (col.blue == 255 && col.red == 0) _value = (col.green / 3) + 170;
-    if (col.green == 255 && col.red == 0) _value = (col.blue / 3) + 255;
-    if (col.green == 255 && col.blue == 0) _value = (col.red / 3) + 340;
-    if (col.red == 255 && col.blue == 0) _value = (col.green / 3) + 425;
+    setState(() {
+      if (col.red == 255 && col.green == 0) _value = col.blue / 3;
+      if (col.blue == 255 && col.green == 0) _value = (col.red / 3) + 85;
+      if (col.blue == 255 && col.red == 0) _value = (col.green / 3) + 170;
+      if (col.green == 255 && col.red == 0) _value = (col.blue / 3) + 255;
+      if (col.green == 255 && col.blue == 0) _value = (col.red / 3) + 340;
+      if (col.red == 255 && col.blue == 0) _value = (col.green / 3) + 425;
+    });
   }
 
   @override
   void initState() {
-    super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _color = Color(widget.value);
+      _color = Color(widget == null ? 0 : widget.color);
       _setValue(_color);
     });
+    super.initState();
   }
 
   @override
@@ -59,7 +63,7 @@ class _ColorPickerState extends State<ColorPicker> {
       child: Slider(
         min: 0,
         max: 510,
-        value: _value,
+        value: _value == null ? 0 : _value,
         onChanged: (value) {
           setState(() {
             _value = value;
