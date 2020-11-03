@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField(this.ctrler);
+  PasswordTextField(this.ctrler, this.func);
 
   final TextEditingController ctrler;
+  final Function func;
 
   @override
   _PasswordTextFieldState createState() => _PasswordTextFieldState();
@@ -13,22 +14,17 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   bool _empty = true;
   bool _obscure = true;
 
-  void _isEmpty() {
+  void _onChange() {
     setState(() {
       _empty = widget.ctrler.text.isEmpty;
     });
+    widget.func();
   }
 
   void _obscureSwitch() {
     setState(() {
       _obscure = !_obscure;
     });
-  }
-
-  @override
-  void initState() {
-    _isEmpty();
-    super.initState();
   }
 
   @override
@@ -63,7 +59,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
               ),
       ),
       obscureText: _obscure,
-      onChanged: (_) => _isEmpty(),
+      onChanged: (_) => _onChange(),
     );
   }
 }
