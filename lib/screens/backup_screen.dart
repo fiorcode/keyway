@@ -45,15 +45,23 @@ class SignedInBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(32.0),
-      child: ListView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Image(
             image: AssetImage('assets/drive_logo.png'),
-            height: 96,
+            height: 92,
           ),
-          SizedBox(height: 32),
+          Text(
+            'GOOGLE DRIVE \nFILE \nSTATUS',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).primaryColor,
+            ),
+          ),
           BackupStatusCard(),
-          SizedBox(height: 32),
           Center(
             child: RaisedButton(
               onPressed: () => drive.handleSignOut(),
@@ -99,20 +107,19 @@ class NoSignedInBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Text(
-            'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
+            'SIGN IN \nWITH YOUR \nGOOGLE ACCOUNT \nAND \nRESTORE \nYOUR DATA',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 24,
+              fontSize: 32,
               fontWeight: FontWeight.bold,
               color: Theme.of(context).primaryColor,
             ),
           ),
-          const SizedBox(height: 24),
           RaisedButton(
             onPressed: () => drive.handleSignIn(),
             child: Padding(
