@@ -12,17 +12,14 @@ class ItemProvider with ChangeNotifier {
   List<Item> get oldItems => [..._oldItems];
   List<Item> get deletedItems => [..._deletedItems];
 
-  fetchAndSetItems() async {
-    _items.clear();
-    await _fetchAndSet();
+  Future<void> fetchAndSetItems() async {
+    await DBHelper.getData(DBHelper.itemsTable).then((data) {
+      _items.clear();
+      Iterable<Alpha> _iter = data.map((e) => Alpha.fromMap(e));
+      _items.addAll(_iter.toList());
+    });
     await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
-  }
-
-  Future<void> _fetchAndSet() async {
-    List<Map<String, dynamic>> data =
-        await DBHelper.getData(DBHelper.itemsTable);
-    _items.addAll(data.map((item) => Alpha.fromMap(item)).toList());
   }
 
   fetchAndSetOldItems() async {
