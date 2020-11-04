@@ -16,28 +16,31 @@ class _DashboardCardState extends State<DashboardCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: widget.goTo,
-      child: Card(
-        clipBehavior: Clip.antiAlias,
-        shadowColor: Colors.grey,
-        elevation: 8,
-        shape: RoundedRectangleBorder(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          color: Theme.of(context).primaryColor,
+          clipBehavior: Clip.antiAlias,
+          elevation: 8,
+          shadowColor: Colors.grey,
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
-            side: BorderSide(width: 3, color: Colors.grey)),
-        margin: EdgeInsets.only(left: 32, right: 32, top: 16),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              color: Theme.of(context).primaryColor,
-              child: widget.icon,
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: widget.title,
-            )
-          ],
+            side: BorderSide(width: 3, color: Colors.grey),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: widget.icon,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: Center(child: widget.title),
+              )
+            ],
+          ),
         ),
       ),
     );
