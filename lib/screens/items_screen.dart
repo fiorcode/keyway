@@ -55,7 +55,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         leading: cripto.locked
             ? null
             : IconButton(
-                icon: Icon(Icons.settings),
+                icon: Icon(Icons.widgets),
                 onPressed: () => Navigator.of(context)
                     .pushNamed(DashboardScreen.routeName)
                     .then((_) => onReturn()),
@@ -69,8 +69,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 onPressed: cripto.locked ? _lockSwitch : null,
               )
             : IconButton(
-                icon: Icon(Icons.lock_open, color: Colors.green),
-                onPressed: null),
+                icon: Icon(Icons.search, color: Colors.green), onPressed: null),
         actions: cripto.locked
             ? null
             : [
@@ -113,7 +112,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
-                                child: AlphaCard(items.items[i]),
+                                child: AlphaCard(items.items[i], onReturn),
                               );
                             },
                           ),
