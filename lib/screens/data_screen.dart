@@ -71,7 +71,7 @@ class _DataScreenState extends State<DataScreen> {
                           itemBuilder: (ctx, i) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),
-                              child: AlphaCard(items.deletedItems[i]),
+                              child: AlphaCard(items.deletedItems[i], onReturn),
                             );
                           },
                         ),
