@@ -27,8 +27,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
   @override
   void initState() {
     _status = _checkStatus();
-    //DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
-    //_work(drive.checkStatus());
     super.initState();
   }
 
@@ -60,16 +58,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
                       children: [
-                        Text(
-                          'Google Drive File Status',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 8),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: CircularProgressIndicator(
@@ -108,16 +96,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                     child: Column(
                       children: [
                         SizedBox(height: 16),
-                        Text(
-                          'Google Drive File Status',
-                          style: TextStyle(
-                            color: Colors.black.withOpacity(0.6),
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                        SizedBox(height: 8),
                         Icon(
                           drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
                           color: drive.fileFound ? Colors.green : Colors.red,
