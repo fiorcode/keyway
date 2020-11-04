@@ -14,9 +14,9 @@ import 'package:keyway/widgets/TextFields/pin_text_field.dart';
 import 'package:keyway/widgets/TextFields/title_text_field.dart';
 import 'package:keyway/widgets/TextFields/username_text_field.dart';
 import 'package:keyway/widgets/check_board.dart';
-import 'package:keyway/widgets/alpha_card.dart';
 import 'package:keyway/widgets/color_picker.dart';
 import 'package:keyway/widgets/unlock_container.dart';
+import 'package:keyway/widgets/Cards/alpha_preview_card.dart';
 
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
@@ -215,7 +215,13 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         ),
                         FloatingActionButton(
                           backgroundColor: _password ? null : Colors.grey,
-                          child: Text('***', style: TextStyle(fontSize: 18)),
+                          child: Text(
+                            '*',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                           heroTag: null,
                           onPressed: () => setState(() {
                             _password = !_password;
@@ -259,7 +265,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: IpTextField(_ipCtrler),
                     ),
-                  if (_titleCtrler.text.isNotEmpty) AlphaCard(_item),
+                  if (_titleCtrler.text.isNotEmpty) AlphaPreviewCard(_item),
                   if (_titleCtrler.text.isNotEmpty) SizedBox(height: 16),
                   if (_titleCtrler.text.isNotEmpty)
                     ColorPicker(_item.color, _setColor),
