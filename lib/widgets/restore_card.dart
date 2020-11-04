@@ -62,16 +62,6 @@ class _RestoreCardState extends State<RestoreCard> {
               child: Column(
                 children: [
                   SizedBox(height: 16),
-                  Text(
-                    'Google Drive File Status',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
                   Icon(
                     drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
                     color: drive.fileFound ? Colors.green : Colors.red,
@@ -132,7 +122,7 @@ class _RestoreCardState extends State<RestoreCard> {
               child: Column(
                 children: [
                   Text(
-                    'Google Drive File Status',
+                    'Searching Status...',
                     style: TextStyle(
                       color: Colors.black.withOpacity(0.6),
                       fontWeight: FontWeight.bold,
