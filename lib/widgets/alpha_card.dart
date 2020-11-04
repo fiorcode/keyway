@@ -7,15 +7,29 @@ import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 
 class AlphaCard extends StatefulWidget {
-  AlphaCard(this._alpha);
+  AlphaCard(this._alpha, this.onReturn);
 
   final Alpha _alpha;
+  final Function onReturn;
 
   @override
   _AlphaCardState createState() => _AlphaCardState();
 }
 
 class _AlphaCardState extends State<AlphaCard> {
+  bool _showPass = false;
+
+  Widget _setTitle() {
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
+    return _showPass
+        ? Center(
+            child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24),
+            child: Text(cripto.doDecrypt(widget._alpha.password)),
+          ))
+        : Text(widget._alpha.title != null ? widget._alpha.title : '');
+  }
+
   @override
   Widget build(BuildContext context) {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
@@ -49,9 +63,11 @@ class _AlphaCardState extends State<AlphaCard> {
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
           ),
         ),
-        title: Text(widget._alpha.title != null ? widget._alpha.title : ''),
-        subtitle: Text(
-            widget._alpha.shortDate != null ? widget._alpha.shortDate : ''),
+        title: _setTitle(),
+        subtitle: _showPass
+            ? null
+            : Text(
+                widget._alpha.shortDate != null ? widget._alpha.shortDate : ''),
         onTap: () {
           if (cripto.locked) {
             Scaffold.of(context).showSnackBar(
@@ -68,23 +84,38 @@ class _AlphaCardState extends State<AlphaCard> {
             MaterialPageRoute(
               builder: (context) => AlphaScreen(item: widget._alpha),
             ),
-          );
+          ).then((_) => widget.onReturn());
         },
         trailing: cripto.locked
             ? null
-            : GestureDetector(
-                child: Icon(Icons.copy_rounded),
-                onTap: () => Clipboard.setData(ClipboardData(
-                        text: cripto.doDecrypt(widget._alpha.password)))
-                    .then(
-                  (_) => Scaffold.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: Colors.green,
-                      content: Text('Copied'),
-                      duration: Duration(seconds: 1),
+            : Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Icon(Icons.copy_rounded),
+                      onTap: () => Clipboard.setData(ClipboardData(
+                              text: cripto.doDecrypt(widget._alpha.password)))
+                          .then(
+                        (_) => Scaffold.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: Colors.green,
+                            content: Text('Copied'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: GestureDetector(
+                      child: Icon(Icons.remove_red_eye_outlined),
+                      onTap: () => setState(() => _showPass = !_showPass),
+                    ),
+                  ),
+                ],
               ),
       ),
     );
