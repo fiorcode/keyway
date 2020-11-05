@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/screens/alpha_screen.dart';
-import 'package:keyway/screens/dashboard_screen.dart';
-import 'package:keyway/widgets/alpha_card.dart';
-import 'package:keyway/widgets/unlock_container.dart';
+import '../providers/cripto_provider.dart';
+import '../providers/item_provider.dart';
+import '../screens/alpha_screen.dart';
+import '../screens/dashboard_screen.dart';
+import '../widgets/unlock_container.dart';
+import '../widgets/Cards/alpha_card.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
