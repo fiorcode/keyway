@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/backup_screen.dart';
-import 'package:keyway/screens/data_screen.dart';
 
-import 'package:keyway/widgets/dashboard_card.dart';
+import '../screens/backup_screen.dart';
+import '../screens/data_screen.dart';
+import '../widgets/Cards/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const routeName = '/dash';
