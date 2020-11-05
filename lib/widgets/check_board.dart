@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../helpers/password_helper.dart';
+
 class CheckBoard extends StatelessWidget {
   CheckBoard({@required this.password});
 
@@ -10,28 +12,26 @@ class CheckBoard extends StatelessWidget {
     return Wrap(
       crossAxisAlignment: WrapCrossAlignment.center,
       alignment: WrapAlignment.center,
-      children: <Widget>[
+      children: [
         IconLabel(
           label: 'a-z',
-          logic: password.contains(RegExp(r'[a-z]')) ? true : false,
+          logic: PasswordHelper.hasLow(password),
         ),
         IconLabel(
           label: 'A-Z',
-          logic: password.contains(RegExp(r'[A-Z]')) ? true : false,
+          logic: PasswordHelper.hasUpp(password),
         ),
         IconLabel(
           label: '0-9',
-          logic: password.contains(RegExp(r'[0-9]')) ? true : false,
+          logic: PasswordHelper.hasNum(password),
         ),
         IconLabel(
-          label: '!@#\$%^&',
-          logic: password.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'))
-              ? true
-              : false,
+          label: '!@#%&<>',
+          logic: PasswordHelper.hasSpec(password),
         ),
         IconLabel(
           label: '+16 Lenght',
-          logic: password.length >= 6 ? true : false,
+          logic: PasswordHelper.minLong(password),
         ),
       ],
       spacing: 8,
@@ -55,6 +55,7 @@ class IconLabel extends StatelessWidget {
       avatar: logic
           ? const Icon(Icons.check_circle, color: Colors.green)
           : const Icon(Icons.cancel, color: Colors.red),
+      backgroundColor: logic ? Colors.green[100] : Colors.red[100],
       label: Text(
         label,
         style: TextStyle(
