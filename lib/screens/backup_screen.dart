@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
-import 'package:keyway/widgets/backup_status_card.dart';
+import 'package:keyway/widgets/Cards/backup_status_card.dart';
 
 class BackupScreen extends StatefulWidget {
   static const routeName = '/backup';
