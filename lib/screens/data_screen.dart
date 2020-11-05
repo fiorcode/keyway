@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/alpha_card.dart';
+import 'package:keyway/widgets/Cards/alpha_card.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
