@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/drive_provider.dart';
 import 'package:keyway/widgets/restore_card.dart';
+import 'package:keyway/widgets/no_signed_in_body.dart';
 
 class RestoreScreen extends StatefulWidget {
   static const routeName = '/restore';
@@ -13,113 +14,39 @@ class RestoreScreen extends StatefulWidget {
 }
 
 class _RestoreScreenState extends State<RestoreScreen> {
+  Future trySignInSilently;
+
+  Future _trySignInSilently() async {
+    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
+    return drive.trySignInSilently();
+  }
+
+  @override
+  void initState() {
+    trySignInSilently = _trySignInSilently();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(),
       body: FutureBuilder(
-        future: drive.trySignInSilently(),
+        future: trySignInSilently,
         builder: (ctx, snap) {
           if (snap.connectionState == ConnectionState.done) {
-            if (snap.hasError) {
-              return ErrorHelper().errorBody(snap.error);
-            } else {
+            if (snap.hasError)
+              return ErrorHelper.errorBody(snap.error);
+            else
               return Consumer<DriveProvider>(
-                child: NoSignedInBody(drive: drive),
+                child: NoSignedInBody(),
                 builder: (ctx, dp, ch) =>
-                    dp.currentUser == null ? ch : SignedInBody(drive: drive),
+                    dp.currentUser == null ? ch : RestoreCard(),
               );
-            }
-          } else {
+          } else
             return Center(child: CircularProgressIndicator());
-          }
         },
-      ),
-    );
-  }
-}
-
-class SignedInBody extends StatelessWidget {
-  const SignedInBody({
-    Key key,
-    @required this.drive,
-  }) : super(key: key);
-
-  final DriveProvider drive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: ListView(
-        children: [
-          Image(
-            image: AssetImage('assets/drive_logo.png'),
-            height: 96,
-          ),
-          SizedBox(height: 32),
-          RestoreCard(),
-        ],
-      ),
-    );
-  }
-}
-
-class NoSignedInBody extends StatelessWidget {
-  const NoSignedInBody({
-    Key key,
-    @required this.drive,
-  }) : super(key: key);
-
-  final DriveProvider drive;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.max,
-        children: <Widget>[
-          Text(
-            'SIGN IN WITH \nYOUR \nGOOGLE ACCOUNT \nAND \nRESTORE YOUR DATA',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
-          const SizedBox(height: 24),
-          RaisedButton(
-            onPressed: () => drive.handleSignIn(),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Image(
-                    image: AssetImage('assets/google_logo.png'),
-                    height: 32,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      'Sign in with Google',
-                      style: TextStyle(color: Colors.grey[800]),
-                    ),
-                  )
-                ],
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
-            ),
-          ),
-        ],
       ),
     );
   }
