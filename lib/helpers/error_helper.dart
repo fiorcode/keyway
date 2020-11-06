@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ErrorHelper {
-  errorDialog(BuildContext context, dynamic e) {
+  static errorDialog(BuildContext context, dynamic e) {
     showDialog(
       context: context,
       builder: (context) {
