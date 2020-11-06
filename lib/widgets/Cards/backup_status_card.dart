@@ -19,10 +19,8 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
     setState(() => _working = false);
   }
 
-  _checkStatus() async {
-    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
-    await drive.checkStatus();
-  }
+  _checkStatus() async =>
+      await Provider.of<DriveProvider>(context, listen: false).checkStatus();
 
   @override
   void initState() {
