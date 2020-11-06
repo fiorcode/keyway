@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../screens/alpha_screen.dart';
@@ -19,25 +19,16 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   ItemProvider items;
   CriptoProvider cripto;
+
   bool _unlocking = false;
   Future getItems;
 
-  _lockSwitch() {
-    setState(() {
-      _unlocking = !_unlocking;
-    });
-  }
+  _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  _getItems() async {
-    items = Provider.of<ItemProvider>(context, listen: false);
-    return await items.fetchAndSetItems();
-  }
+  Future _getItems() async =>
+      Provider.of<ItemProvider>(context, listen: false).fetchAndSetItems();
 
-  Future onReturn() async {
-    setState(() {
-      getItems = _getItems();
-    });
-  }
+  Future onReturn() async => setState(() => getItems = _getItems());
 
   @override
   void initState() {
@@ -69,18 +60,18 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 onPressed: cripto.locked ? _lockSwitch : null,
               )
             : IconButton(
-                icon: Icon(Icons.search, color: Colors.green), onPressed: null),
+                icon: Icon(Icons.search, color: Colors.green),
+                onPressed: null,
+              ),
         actions: cripto.locked
             ? null
             : [
                 IconButton(
                   icon: Icon(Icons.add),
-                  onPressed: () {
-                    Navigator.of(context)
-                        .pushNamed(AlphaScreen.routeName)
-                        .then((_) => onReturn());
-                  },
-                )
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(AlphaScreen.routeName)
+                      .then((_) => onReturn()),
+                ),
               ],
       ),
       body: FutureBuilder(
@@ -93,7 +84,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               return Center(child: CircularProgressIndicator());
             case (ConnectionState.done):
               if (snap.hasError)
-                return ErrorHelper().errorBody(snap.error);
+                return ErrorHelper.errorBody(snap.error);
               else
                 return Stack(
                   children: [
