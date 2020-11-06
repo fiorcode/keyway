@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/helpers/password_helper.dart';
 import 'package:provider/provider.dart';
-
-import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/widgets/check_board.dart';
 
 import 'restore_screen.dart';
 import 'items_screen.dart';
+import '../helpers/password_helper.dart';
+import '../helpers/error_helper.dart';
+import '../providers/cripto_provider.dart';
+import '../widgets/check_board.dart';
 
 class SetPasswordScreen extends StatefulWidget {
   static const routeName = '/set-password';
@@ -26,26 +25,23 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   bool _strong = false;
   bool _equals = false;
 
-  _checkPassword() {
-    _confirmCtrler.clear();
-    setState(() {
-      _strong = PasswordHelper.isStrong(_passCtrler.text);
-    });
-  }
+  _checkPassword() =>
+      setState(() => _strong = PasswordHelper.isStrong(_passCtrler.text));
 
-  _checkConfirmPassword() {
-    setState(() {
-      _equals = _strong ? _passCtrler.text == _confirmCtrler.text : false;
-    });
-  }
+  _checkConfirmPassword() =>
+      setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
 
-  _clear() {
-    setState(() {
-      _confirmCtrler.clear();
-      _passCtrler.clear();
-      _strong = false;
-    });
-  }
+  _clear() => setState(() {
+        _confirmCtrler.clear();
+        _passCtrler.clear();
+        _strong = false;
+      });
+
+  _clearConfirm() => setState(() => _confirmCtrler.clear());
+
+  _obscurePassSwitch() => setState(() => _obscurePass = !_obscurePass);
+
+  _obscureConfirmSwitch() => setState(() => _obscureConfirm = !_obscureConfirm);
 
   _setPassword() {
     try {
@@ -101,76 +97,53 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                             child: Icon(
                               Icons.visibility,
                             ),
-                            onTap: () {
-                              setState(() {
-                                _obscurePass = !_obscurePass;
-                              });
-                            },
+                            onTap: _obscurePassSwitch,
                           )
                         : null,
                     suffixIcon: _passCtrler.text.isNotEmpty
                         ? InkWell(
                             child: Icon(Icons.clear),
-                            onTap: () {
-                              _clear();
-                              _checkPassword();
-                            },
+                            onTap: _clear,
                           )
                         : null,
                   ),
                   obscureText: _obscurePass,
-                  onChanged: (_) {
-                    _checkPassword();
-                  },
+                  onChanged: (_) => _checkPassword(),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: TextField(
-                  autocorrect: false,
-                  controller: _confirmCtrler,
-                  enabled: _strong,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    labelText: 'Confirm Password',
-                    prefixIcon: _confirmCtrler.text.isNotEmpty
-                        ? InkWell(
-                            child: Icon(
-                              Icons.visibility,
-                            ),
-                            onTap: () {
-                              setState(() {
-                                _obscureConfirm = !_obscureConfirm;
-                              });
-                            },
-                          )
-                        : null,
-                    suffixIcon: _confirmCtrler.text.isNotEmpty
-                        ? InkWell(
-                            child: Icon(Icons.clear),
-                            onTap: () {
-                              _confirmCtrler.clear();
-                              _checkConfirmPassword();
-                            })
-                        : null,
-                  ),
-                  obscureText: _obscureConfirm,
-                  onChanged: (_) {
-                    _checkConfirmPassword();
-                  },
-                  textInputAction: TextInputAction.next,
-                  onSubmitted: (_) => _setPassword().catchError(
-                    (e) => ErrorHelper.errorDialog(context, e),
+              if (!_strong && _passCtrler.text.isNotEmpty)
+                CheckBoard(password: _passCtrler.text),
+              if (_strong)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: TextField(
+                    autocorrect: false,
+                    controller: _confirmCtrler,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(),
+                      filled: true,
+                      labelText: 'Confirm Password',
+                      prefixIcon: _confirmCtrler.text.isNotEmpty
+                          ? InkWell(
+                              child: Icon(Icons.visibility),
+                              onTap: _obscureConfirmSwitch,
+                            )
+                          : null,
+                      suffixIcon: _confirmCtrler.text.isNotEmpty
+                          ? InkWell(
+                              child: Icon(Icons.clear),
+                              onTap: _clearConfirm,
+                            )
+                          : null,
+                    ),
+                    obscureText: _obscureConfirm,
+                    onChanged: (_) => _checkConfirmPassword(),
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (_) => _setPassword(),
                   ),
                 ),
-              ),
-              CheckBoard(password: _passCtrler.text),
               if (_strong && _equals)
-                RaisedButton(
-                  onPressed: _setPassword,
-                  child: Text('CONTINUE'),
-                ),
+                RaisedButton(onPressed: _setPassword, child: Text('CONTINUE')),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
