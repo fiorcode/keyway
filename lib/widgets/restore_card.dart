@@ -12,31 +12,23 @@ class RestoreCard extends StatefulWidget {
 }
 
 class _RestoreCardState extends State<RestoreCard> {
-  bool _working = true;
-
-  _work(Future f) async {
-    setState(() => _working = true);
-    await f;
-    setState(() => _working = false);
-  }
+  Future _status;
 
   _restore(DriveProvider drive) async {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
-    setState(() => _working = true);
     await drive.downloadDB().then((_) async {
       await cripto.setMasterKey();
-      setState(() => _working = false);
-      Navigator.of(context).pushNamedAndRemoveUntil(
-        ItemsListScreen.routeName,
-        (route) => false,
-      );
+      Navigator.of(context)
+          .pushNamedAndRemoveUntil(ItemsListScreen.routeName, (route) => false);
     });
   }
 
+  _checkStatus() async =>
+      await Provider.of<DriveProvider>(context, listen: false).checkStatus();
+
   @override
   void initState() {
-    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
-    _work(drive.checkStatus());
+    _status = _checkStatus();
     super.initState();
   }
 
@@ -44,110 +36,63 @@ class _RestoreCardState extends State<RestoreCard> {
   Widget build(BuildContext context) {
     DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    if (!_working)
-      return Card(
-        elevation: 6,
-        shadowColor: drive.fileFound ? Colors.green : Colors.red,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            width: 2,
-            color: drive.fileFound ? Colors.green : Colors.red,
-          ),
-        ),
-        child: Column(
-          children: [
-            Padding(
+    return FutureBuilder(
+      future: _status,
+      builder: (ctx, snap) {
+        switch (snap.connectionState) {
+          case ConnectionState.none:
+            return Center(child: Text('none'));
+          case (ConnectionState.waiting):
+            return LinearProgressIndicator();
+          case (ConnectionState.done):
+            return Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  SizedBox(height: 16),
-                  Icon(
-                    drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
-                    color: drive.fileFound ? Colors.green : Colors.red,
-                    size: 64,
-                  ),
-                  Text(
-                    drive.fileFound ? 'File Found' : 'File Not Found',
-                    style: TextStyle(
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(height: 16),
+                    Icon(
+                      drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
                       color: drive.fileFound ? Colors.green : Colors.red,
+                      size: 128,
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    drive.fileFound
-                        ? 'Last time uploaded: ${dateFormat.format(drive.modifiedDate)}'
-                        : 'Last time uploaded: Never',
-                    style: TextStyle(
-                      color: Colors.black54,
-                    ),
-                  ),
-                  SizedBox(height: 24),
-                  if (drive.fileFound)
-                    RaisedButton.icon(
-                      color: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(color: Colors.green, width: 2),
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                      ),
-                      onPressed: () => _restore(drive),
-                      icon: Icon(Icons.restore, color: Colors.green),
-                      label: Text(
-                        'RESTORE',
-                        style: TextStyle(color: Colors.green),
+                    Text(
+                      drive.fileFound ? 'File Found' : 'File Not Found',
+                      style: TextStyle(
+                        color: drive.fileFound ? Colors.green : Colors.red,
                       ),
                     ),
-                  SizedBox(height: 16),
-                ],
+                    SizedBox(height: 16),
+                    if (drive.fileFound)
+                      RaisedButton.icon(
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(color: Colors.green, width: 2),
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                        ),
+                        onPressed: () => _restore(drive),
+                        icon: Icon(Icons.restore, color: Colors.green),
+                        label: Text(
+                          'RESTORE',
+                          style: TextStyle(color: Colors.green),
+                        ),
+                      ),
+                    SizedBox(height: 8),
+                    if (drive.fileFound)
+                      Text(
+                        'Uploaded: ${dateFormat.format(drive.modifiedDate)}',
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      );
-    else
-      return Card(
-        elevation: 6,
-        shadowColor: Colors.orange,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: const BorderSide(
-            width: 2,
-            color: Colors.orange,
-          ),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Searching Status...',
-                    style: TextStyle(
-                      color: Colors.black.withOpacity(0.6),
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: CircularProgressIndicator(
-                      backgroundColor: Colors.orange,
-                    ),
-                  ),
-                  Text('Working...', style: TextStyle(color: Colors.orange)),
-                  SizedBox(height: 8),
-                  Text(
-                    'Last time uploaded: -',
-                    style: TextStyle(color: Colors.black54),
-                  )
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
+            );
+          default:
+            return Center(child: Text('default'));
+        }
+      },
+    );
   }
 }
