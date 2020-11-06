@@ -22,7 +22,7 @@ class ErrorHelper {
     );
   }
 
-  Widget errorBody(dynamic e) => ErrorBody(e);
+  static Widget errorBody(dynamic e) => ErrorBody(e);
 }
 
 class ErrorBody extends StatelessWidget {
