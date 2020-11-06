@@ -68,7 +68,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _item.date = _item.dateTime.toIso8601String();
       _item.shortDate = dateFormat.format(_item.dateTime.toLocal());
     } catch (error) {
-      ErrorHelper().errorDialog(context, error);
+      ErrorHelper.errorDialog(context, error);
     }
   }
 
@@ -116,7 +116,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
         Navigator.of(context).pop();
       }
     } catch (error) {
-      ErrorHelper().errorDialog(context, error);
+      ErrorHelper.errorDialog(context, error);
     }
   }
 
