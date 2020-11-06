@@ -47,10 +47,14 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     });
   }
 
-  Future _setPassword() async {
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
-    if (cripto.initialSetup(_passCtrler.text)) {
-      Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+  _setPassword() {
+    try {
+      CriptoProvider cripto =
+          Provider.of<CriptoProvider>(context, listen: false);
+      if (cripto.initialSetup(_passCtrler.text))
+        Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+    } catch (error) {
+      ErrorHelper.errorDialog(context, error);
     }
   }
 
@@ -157,16 +161,14 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   },
                   textInputAction: TextInputAction.next,
                   onSubmitted: (_) => _setPassword().catchError(
-                    (e) => ErrorHelper().errorDialog(context, e),
+                    (e) => ErrorHelper.errorDialog(context, e),
                   ),
                 ),
               ),
               CheckBoard(password: _passCtrler.text),
               if (_strong && _equals)
                 RaisedButton(
-                  onPressed: () => _setPassword().catchError(
-                    (e) => ErrorHelper().errorDialog(context, e),
-                  ),
+                  onPressed: _setPassword,
                   child: Text('CONTINUE'),
                 ),
               Column(
