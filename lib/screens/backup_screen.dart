@@ -50,15 +50,15 @@ class SignedInBody extends StatelessWidget {
         children: [
           Image(
             image: AssetImage('assets/drive_logo.png'),
-            height: 92,
+            height: MediaQuery.of(context).size.width / 4,
           ),
           Text(
-            'GOOGLE DRIVE \nFILE \nSTATUS',
+            'GOOGLE DRIVE FILE STATUS',
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 32,
+              fontSize: 16,
               fontWeight: FontWeight.bold,
-              color: Theme.of(context).primaryColor,
+              color: Colors.black45,
             ),
           ),
           BackupStatusCard(),
