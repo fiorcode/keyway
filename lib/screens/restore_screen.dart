@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/providers/drive_provider.dart';
-import 'package:keyway/widgets/restore_card.dart';
-import 'package:keyway/widgets/no_signed_in_body.dart';
+import '../helpers/error_helper.dart';
+import '../providers/drive_provider.dart';
+import '../widgets/no_signed_in_body.dart';
+import '../widgets/restore_body.dart';
 
 class RestoreScreen extends StatefulWidget {
   static const routeName = '/restore';
@@ -29,6 +29,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
 
   @override
   Widget build(BuildContext context) {
+    trySignInSilently = _trySignInSilently();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(),
@@ -42,7 +43,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
               return Consumer<DriveProvider>(
                 child: NoSignedInBody(),
                 builder: (ctx, dp, ch) =>
-                    dp.currentUser == null ? ch : RestoreCard(),
+                    dp.currentUser == null ? ch : RestoreBody(),
               );
           } else
             return Center(child: CircularProgressIndicator());
