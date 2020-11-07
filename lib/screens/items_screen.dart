@@ -17,9 +17,6 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  ItemProvider items;
-  CriptoProvider cripto;
-
   bool _unlocking = false;
   Future getItems;
 
@@ -38,7 +35,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    cripto = Provider.of<CriptoProvider>(context);
+    ItemProvider items = Provider.of<ItemProvider>(context, listen: false);
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -59,10 +57,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 ),
                 onPressed: cripto.locked ? _lockSwitch : null,
               )
-            : IconButton(
-                icon: Icon(Icons.search, color: Colors.green),
-                onPressed: null,
-              ),
+            : items.items.length > 10
+                ? IconButton(
+                    icon: Icon(Icons.search, color: Colors.green),
+                    onPressed: null,
+                  )
+                : null,
         actions: cripto.locked
             ? null
             : [
@@ -90,10 +90,62 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   children: [
                     items.items.length <= 0
                         ? Center(
-                            child: Icon(
-                              Icons.blur_on,
-                              size: 128,
-                              color: Colors.white54,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Stack(
+                                  alignment: AlignmentDirectional.center,
+                                  children: [
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.width / 2,
+                                      width:
+                                          MediaQuery.of(context).size.width / 2,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange[50],
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.width / 3,
+                                      width:
+                                          MediaQuery.of(context).size.width / 3,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange[100],
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Container(
+                                      height:
+                                          MediaQuery.of(context).size.width / 4,
+                                      width:
+                                          MediaQuery.of(context).size.width / 4,
+                                      decoration: BoxDecoration(
+                                        color: Colors.orange[200],
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.vpn_key_sharp,
+                                      size: 64,
+                                      color: Colors.orange[800],
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16),
+                                  child: Text(
+                                    'HAVE A KEY,\nSTART ENCRIPTING',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 24,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           )
                         : ListView.builder(
