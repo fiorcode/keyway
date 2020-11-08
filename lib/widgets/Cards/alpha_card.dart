@@ -44,7 +44,7 @@ class _AlphaCardState extends State<AlphaCard> {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
           side: BorderSide(
-            width: 3,
+            width: 2,
             color: widget._alpha.repeated == 'y'
                 ? Colors.red
                 : widget._alpha.expired == 'y'
@@ -91,11 +91,13 @@ class _AlphaCardState extends State<AlphaCard> {
             : Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      child: Icon(Icons.copy_rounded),
-                      onTap: () => Clipboard.setData(ClipboardData(
+                  SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.grey[200],
+                      child: Icon(Icons.copy, color: Colors.black, size: 16),
+                      onPressed: () => Clipboard.setData(ClipboardData(
                               text: cripto.doDecrypt(widget._alpha.password)))
                           .then(
                         (_) => Scaffold.of(context).showSnackBar(
@@ -108,11 +110,18 @@ class _AlphaCardState extends State<AlphaCard> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GestureDetector(
-                      child: Icon(Icons.remove_red_eye_outlined),
-                      onTap: () => setState(() => _showPass = !_showPass),
+                  SizedBox(width: 8),
+                  SizedBox(
+                    height: 32,
+                    width: 32,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.grey[200],
+                      child: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color: Colors.black,
+                        size: 16,
+                      ),
+                      onPressed: () => setState(() => _showPass = !_showPass),
                     ),
                   ),
                 ],
