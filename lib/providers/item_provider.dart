@@ -12,7 +12,7 @@ class ItemProvider with ChangeNotifier {
   List<Item> get oldItems => [..._oldItems];
   List<Item> get deletedItems => [..._deletedItems];
 
-  Future<void> fetchAndSetItems() async {
+  fetchAndSetItems() async {
     await DBHelper.getData(DBHelper.itemsTable).then((data) {
       _items.clear();
       Iterable<Alpha> _iter = data.map((e) => Alpha.fromMap(e));
