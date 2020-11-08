@@ -164,7 +164,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     cripto = Provider.of<CriptoProvider>(context, listen: false);
     items = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.grey[400],
       appBar: AppBar(
         centerTitle: true,
         title: cripto.locked
@@ -175,15 +175,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
                 ),
                 onPressed: cripto.locked ? _lockSwitch : null,
               )
-            : IconButton(
-                icon: Icon(Icons.lock_open, color: Colors.green),
-                onPressed: null),
-        actions: <Widget>[
+            : null,
+        actions: [
           if (_titleCtrler.text.isNotEmpty && !cripto.locked)
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: _save,
-            ),
+            IconButton(icon: Icon(Icons.save), onPressed: _save),
         ],
       ),
       body: Stack(
