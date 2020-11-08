@@ -17,28 +17,29 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
+  ItemProvider items;
+  CriptoProvider cripto;
   bool _unlocking = false;
   Future getItems;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future _getItems() async =>
-      Provider.of<ItemProvider>(context, listen: false).fetchAndSetItems();
+  Future _getItems() async => items.fetchAndSetItems();
 
   Future onReturn() async => setState(() => getItems = _getItems());
 
   @override
   void initState() {
+    cripto = Provider.of<CriptoProvider>(context, listen: false);
+    items = Provider.of<ItemProvider>(context, listen: false);
     getItems = _getItems();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    ItemProvider items = Provider.of<ItemProvider>(context, listen: false);
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Colors.grey[600],
       appBar: AppBar(
         centerTitle: true,
         leading: cripto.locked
