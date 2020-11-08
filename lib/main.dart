@@ -31,8 +31,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.grey,
           primaryColor: Colors.grey[800],
+          primaryColorLight: Colors.grey[400],
           accentColor: Colors.white,
-          backgroundColor: Colors.grey[400],
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         home: SplashScreen(),
