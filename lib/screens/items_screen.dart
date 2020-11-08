@@ -38,6 +38,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.grey[600],
       appBar: AppBar(
