@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/alpha_card.dart';
+import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
+import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -71,7 +72,13 @@ class _DataScreenState extends State<DataScreen> {
                           itemBuilder: (ctx, i) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),
-                              child: AlphaCard(items.deletedItems[i], onReturn),
+                              child: cripto.locked
+                                  ? AlphaLockedCard(
+                                      alpha: items.deletedItems[i])
+                                  : AlphaUnlockedCard(
+                                      alpha: items.deletedItems[i],
+                                      onReturn: onReturn,
+                                    ),
                             );
                           },
                         ),

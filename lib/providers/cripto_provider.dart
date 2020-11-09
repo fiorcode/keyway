@@ -18,7 +18,7 @@ class CriptoProvider with ChangeNotifier {
   e.Encrypted _mkCrypted;
 
   CriptoProvider() {
-    lock();
+    unlock('Qwe123!');
   }
 
   bool get locked => _locked;
@@ -39,7 +39,7 @@ class CriptoProvider with ChangeNotifier {
     }
   }
 
-  unlock(String password) {
+  void unlock(String password) {
     _setKey(password);
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
     _mkCrypted = e.Encrypted.fromBase64(_getMasterKey());
@@ -51,7 +51,7 @@ class CriptoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  lock() {
+  void lock() {
     _key = 'PASS*CLEARED';
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
     _mk = 'MASTER*KEY*CLEARED';

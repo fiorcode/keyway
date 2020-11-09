@@ -164,7 +164,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     cripto = Provider.of<CriptoProvider>(context, listen: false);
     items = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: Colors.grey[400],
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         title: cripto.locked

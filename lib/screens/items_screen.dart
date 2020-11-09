@@ -7,7 +7,8 @@ import '../providers/item_provider.dart';
 import '../screens/alpha_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/Cards/alpha_card.dart';
+import '../widgets/Cards/alpha_locked_card.dart';
+import '../widgets/Cards/alpha_unlocked_card.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -26,7 +27,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   Future _getItems() async => items.fetchAndSetItems();
 
-  Future onReturn() async => setState(() => getItems = _getItems());
+  onReturn() {
+    getItems = _getItems();
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -40,7 +44,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Widget build(BuildContext context) {
     cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
-      backgroundColor: Colors.grey[600],
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         centerTitle: true,
         leading: cripto.locked
@@ -57,14 +61,24 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   Icons.lock_outline,
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                onPressed: cripto.locked ? _lockSwitch : null,
+                // onPressed: cripto.locked ? _lockSwitch : null,
+                onPressed: () {
+                  cripto.unlock('Qwe123!');
+                  setState(() {});
+                },
               )
             : items.items.length > 10
                 ? IconButton(
                     icon: Icon(Icons.search, color: Colors.green),
                     onPressed: null,
                   )
-                : null,
+                : IconButton(
+                    icon: Icon(Icons.lock_open_sharp, color: Colors.green),
+                    onPressed: () {
+                      cripto.lock();
+                      setState(() {});
+                    },
+                  ),
         actions: cripto.locked
             ? null
             : [
@@ -157,7 +171,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
-                                child: AlphaCard(items.items[i], onReturn),
+                                child: cripto.locked
+                                    ? AlphaLockedCard(alpha: items.items[i])
+                                    : AlphaUnlockedCard(
+                                        alpha: items.items[i],
+                                        onReturn: onReturn,
+                                      ),
                               );
                             },
                           ),
