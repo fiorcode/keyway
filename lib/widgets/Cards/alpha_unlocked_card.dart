@@ -60,15 +60,15 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
               : Colors.green,
       elevation: 8,
       shape: StadiumBorder(
-        side: BorderSide(
-          width: 0.4,
-          color: widget.alpha.repeated == 'y'
-              ? Colors.red
-              : widget.alpha.expired == 'y'
-                  ? Colors.orange
-                  : Colors.green,
-        ),
-      ),
+          // side: BorderSide(
+          //   width: 0.4,
+          //   color: widget.alpha.repeated == 'y'
+          //       ? Colors.red
+          //       : widget.alpha.expired == 'y'
+          //           ? Colors.orange
+          //           : Colors.green,
+          // ),
+          ),
       child: ListTile(
         dense: true,
         contentPadding: EdgeInsets.all(4),
