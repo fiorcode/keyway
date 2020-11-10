@@ -43,11 +43,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   _obscureConfirmSwitch() => setState(() => _obscureConfirm = !_obscureConfirm);
 
-  _setPassword() {
+  _setPassword() async {
     try {
       CriptoProvider cripto =
           Provider.of<CriptoProvider>(context, listen: false);
-      if (cripto.initialSetup(_passCtrler.text))
+      if (await cripto.initialSetup(_passCtrler.text))
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
