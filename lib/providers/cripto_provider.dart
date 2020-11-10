@@ -9,40 +9,33 @@ import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/models/user.dart';
 
 class CriptoProvider with ChangeNotifier {
-  static SharedPreferences _pref;
-
-  bool _locked;
+  bool _locked = true;
   String _key;
   String _mk;
   e.Encrypter _crypter;
   e.Encrypted _mkCrypted;
 
   CriptoProvider() {
+    //RESOLVE THIS SITUATION
     unlock('Qwe123!');
   }
 
   bool get locked => _locked;
 
-  String _getMasterKey() => _pref.getString('masterKey');
+  Future<String> _getMasterKey() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    return _pref.getString('masterKey');
+  }
 
   Future<bool> isMasterKey() async {
-    _pref = await SharedPreferences.getInstance();
+    SharedPreferences _pref = await SharedPreferences.getInstance();
     return _pref.getBool('isMasterKey') ?? false;
   }
 
-  _setKey(String password) {
-    _key = password;
-    int _i = 0;
-    while (_key.length < 32) {
-      _key = _key + _key[_i];
-      _i++;
-    }
-  }
-
-  void unlock(String password) {
+  Future<void> unlock(String password) async {
     _setKey(password);
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
-    _mkCrypted = e.Encrypted.fromBase64(_getMasterKey());
+    _mkCrypted = e.Encrypted.fromBase64(await _getMasterKey());
     _mk = _crypter.decrypt(_mkCrypted, iv: e.IV.fromLength(16));
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
     _key = 'PASS*CLEARED';
@@ -59,7 +52,8 @@ class CriptoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  bool initialSetup(String password) {
+  Future<bool> initialSetup(String password) async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
     _setKey(password);
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
 
@@ -85,7 +79,8 @@ class CriptoProvider with ChangeNotifier {
     return true;
   }
 
-  setMasterKey() async {
+  Future<void> setMasterKey() async {
+    SharedPreferences _pref = await SharedPreferences.getInstance();
     final _userData = await DBHelper.getData('user_data');
     String _encMK = _userData
         .map(
@@ -102,12 +97,19 @@ class CriptoProvider with ChangeNotifier {
     _pref.setBool('isMasterKey', true);
   }
 
-  String doCrypt(String value) {
-    return _crypter.encrypt(value, iv: e.IV.fromLength(16)).base64;
-  }
+  String doCrypt(String value) =>
+      _crypter.encrypt(value, iv: e.IV.fromLength(16)).base64;
 
-  String doDecrypt(String value) {
-    return _crypter.decrypt64(value, iv: e.IV.fromLength(16));
+  String doDecrypt(String value) =>
+      _crypter.decrypt64(value, iv: e.IV.fromLength(16));
+
+  _setKey(String password) {
+    _key = password;
+    int _i = 0;
+    while (_key.length < 32) {
+      _key = _key + _key[_i];
+      _i++;
+    }
   }
 
   void dispose() {
