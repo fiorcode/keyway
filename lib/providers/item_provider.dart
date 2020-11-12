@@ -12,36 +12,37 @@ class ItemProvider with ChangeNotifier {
   List<Item> get oldItems => [..._oldItems];
   List<Item> get deletedItems => [..._deletedItems];
 
-  fetchAndSetItems() async {
+  Future<void> fetchAndSetItems() async {
+    Iterable<Alpha> _iter;
     await DBHelper.getData(DBHelper.itemsTable).then((data) {
       _items.clear();
-      Iterable<Alpha> _iter = data.map((e) => Alpha.fromMap(e));
-      _items.addAll(_iter.toList());
+      _iter = data.map((e) => Alpha.fromMap(e));
     });
+    _items.addAll(_iter.toList());
     await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  fetchAndSetOldItems() async {
+  Future<void> fetchAndSetOldItems() async {
     _oldItems.clear();
     await _fetchAndSetOld();
     _oldItems.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
   }
 
-  _fetchAndSetOld() async {
+  Future<void> _fetchAndSetOld() async {
     final _alphaList = await DBHelper.getData(DBHelper.oldItemsTable);
     _oldItems.addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
   }
 
-  fetchAndSetDeletedItems() async {
+  Future<void> fetchAndSetDeletedItems() async {
     _deletedItems.clear();
     await _fetchAndSetDeleted();
     _deletedItems.sort((a, b) => b.date.compareTo(a.date));
     notifyListeners();
   }
 
-  _fetchAndSetDeleted() async {
+  Future<void> _fetchAndSetDeleted() async {
     final _alphaList = await DBHelper.getData(DBHelper.deletedItemsTable);
     _deletedItems
         .addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
@@ -58,20 +59,28 @@ class ItemProvider with ChangeNotifier {
         OldAlpha old = OldAlpha.fromAlpha(Alpha.fromMap(value.first));
         if (old.password != item.password || old.pin != item.pin) {
           await DBHelper.insert(DBHelper.oldItemsTable, old.toMap());
+          await DBHelper.update(DBHelper.itemsTable, item.toMap());
+          if (await checkPassRepeated(item.password))
+            await DBHelper.setRepeated(item.toMap());
+          else {
+            if (item.repeated == 'y') {
+              item.repeated = 'n';
+              await DBHelper.update(DBHelper.itemsTable, item.toMap());
+            }
+          }
         }
       },
     );
-    await DBHelper.update(DBHelper.itemsTable, item.toMap());
     fetchAndSetItems();
   }
 
-  delete(Alpha item) async {
+  Future<void> delete(Alpha item) async {
     if (item.repeated == 'n')
       await DBHelper.delete(DBHelper.itemsTable, item.id);
     else
       await DBHelper.deleteRepeated(item.toMap());
     DeletedAlpha delete = DeletedAlpha.fromAlpha(item);
-    DBHelper.insert(DBHelper.deletedItemsTable, delete.toMap());
+    await DBHelper.insert(DBHelper.deletedItemsTable, delete.toMap());
     _items.removeWhere((element) => element.id == item.id);
     fetchAndSetItems();
   }
@@ -88,15 +97,15 @@ class ItemProvider with ChangeNotifier {
       return false;
   }
 
-  insertRepeated(Alpha item) async {
+  Future<void> insertRepeated(Alpha item) async {
     await DBHelper.insert('items', item.toMap());
-    await DBHelper.checkRepeated(item.toMap());
+    await DBHelper.setRepeated(item.toMap());
     fetchAndSetItems();
   }
 
   updateRepeated(Alpha item) async {
     await DBHelper.update('items', item.toMap());
-    await DBHelper.checkRepeated(item.toMap());
+    await DBHelper.setRepeated(item.toMap());
     fetchAndSetItems();
   }
 
@@ -107,12 +116,16 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> _checkExpirations() async {
     _items.cast<Alpha>().forEach((i) async {
-      i.expired = 'n';
       i.dateTime = DateTime.parse(i.date);
-      if (i.dateTime.difference(DateTime.now()).inDays.abs() > 9) {
+      int _diff = i.dateTime.difference(DateTime.now()).inDays.abs();
+      if (_diff > 2 && i.expired != 'y') {
         i.expired = 'y';
+        await DBHelper.update('items', i.toMap());
       }
-      await DBHelper.update('items', i.toMap());
+      if (_diff <= 2 && i.expired == 'y') {
+        i.expired = 'n';
+        await DBHelper.update('items', i.toMap());
+      }
     });
   }
 
