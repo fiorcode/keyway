@@ -281,12 +281,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
                                       style: TextStyle(color: Colors.red)),
                                 ),
                                 FlatButton(
-                                  onPressed: () {
-                                    items.delete(_item);
-                                    Navigator.of(context).popUntil(
-                                      ModalRoute.withName(
-                                          ItemsListScreen.routeName),
-                                    );
+                                  onPressed: () async {
+                                    items.delete(_item).then(
+                                          (_) => Navigator.of(context).popUntil(
+                                            ModalRoute.withName(
+                                              ItemsListScreen.routeName,
+                                            ),
+                                          ),
+                                        );
                                   },
                                   child: Text('DELETE',
                                       style: TextStyle(color: Colors.red)),
