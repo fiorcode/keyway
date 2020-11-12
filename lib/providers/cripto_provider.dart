@@ -10,25 +10,25 @@ import 'package:keyway/models/user.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
+  SharedPreferences _pref;
   String _key;
   String _mk;
   e.Encrypter _crypter;
   e.Encrypted _mkCrypted;
 
   CriptoProvider() {
-    //RESOLVE THIS SITUATION
-    unlock('Qwe123!');
+    lock();
   }
 
   bool get locked => _locked;
 
   Future<String> _getMasterKey() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref = await SharedPreferences.getInstance();
     return _pref.getString('masterKey');
   }
 
   Future<bool> isMasterKey() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref = await SharedPreferences.getInstance();
     return _pref.getBool('isMasterKey') ?? false;
   }
 
@@ -53,7 +53,7 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<bool> initialSetup(String password) async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref = await SharedPreferences.getInstance();
     _setKey(password);
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
 
@@ -80,7 +80,7 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<void> setMasterKey() async {
-    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref = await SharedPreferences.getInstance();
     final _userData = await DBHelper.getData('user_data');
     String _encMK = _userData
         .map(
