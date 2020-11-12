@@ -19,26 +19,27 @@ class _DataScreenState extends State<DataScreen> {
   Future getOldItems;
   Future getDeletedItems;
 
-  _getOldItems() async {
+  Future<void> _getOldItems() async {
     items = Provider.of<ItemProvider>(context, listen: false);
     return await items.fetchAndSetOldItems();
   }
 
-  _getDeletedItems() async {
+  Future<void> _getDeletedItems() async {
     items = Provider.of<ItemProvider>(context, listen: false);
     return await items.fetchAndSetDeletedItems();
   }
 
-  Future onReturn() async {
-    setState(() {
-      getOldItems = _getOldItems();
-      getDeletedItems = _getDeletedItems();
-    });
+  onReturn() async {
+    getOldItems = _getOldItems();
+    getDeletedItems = _getDeletedItems();
+    setState(() {});
   }
 
   @override
   void initState() {
+    cripto = Provider.of<CriptoProvider>(context, listen: false);
     getDeletedItems = _getDeletedItems();
+    getOldItems = _getOldItems();
     super.initState();
   }
 
@@ -48,7 +49,7 @@ class _DataScreenState extends State<DataScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(),
       body: FutureBuilder(
-        future: getDeletedItems,
+        future: getOldItems,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -58,7 +59,7 @@ class _DataScreenState extends State<DataScreen> {
             case (ConnectionState.done):
               return Stack(
                 children: [
-                  items.deletedItems.length <= 0
+                  items.oldItems.length <= 0
                       ? Center(
                           child: Icon(
                             Icons.blur_on,
@@ -68,15 +69,14 @@ class _DataScreenState extends State<DataScreen> {
                         )
                       : ListView.builder(
                           padding: EdgeInsets.all(8),
-                          itemCount: items.deletedItems.length,
+                          itemCount: items.oldItems.length,
                           itemBuilder: (ctx, i) {
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 1),
                               child: cripto.locked
-                                  ? AlphaLockedCard(
-                                      alpha: items.deletedItems[i])
+                                  ? AlphaLockedCard(alpha: items.oldItems[i])
                                   : AlphaUnlockedCard(
-                                      alpha: items.deletedItems[i],
+                                      alpha: items.oldItems[i],
                                       onReturn: onReturn,
                                     ),
                             );
