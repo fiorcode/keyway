@@ -59,7 +59,7 @@ class DBHelper {
     return db.query(table, where: '$col = ?', whereArgs: [val]);
   }
 
-  static Future checkRepeated(Map<String, Object> data) async {
+  static Future setRepeated(Map<String, Object> data) async {
     final db = await DBHelper.database();
     return await db.update(
       itemsTable,
