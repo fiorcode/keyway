@@ -59,40 +59,23 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
               ? Colors.orange
               : Colors.green,
       elevation: 8,
-      shape: StadiumBorder(
-          // side: BorderSide(
-          //   width: 0.4,
-          //   color: widget.alpha.repeated == 'y'
-          //       ? Colors.red
-          //       : widget.alpha.expired == 'y'
-          //           ? Colors.orange
-          //           : Colors.green,
-          // ),
-          ),
+      shape: StadiumBorder(),
       child: ListTile(
         dense: true,
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: widget.alpha.repeated == 'y'
-              ? Colors.red
-              : widget.alpha.expired == 'y'
-                  ? Colors.orange
-                  : Colors.green,
-          child: CircleAvatar(
-            radius: 23,
-            backgroundColor: widget.alpha.color != null
-                ? Color(widget.alpha.color)
-                : Colors.grey,
-            child: Text(
-              widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
-                  ? widget.alpha.title.substring(0, 1).toUpperCase()
-                  : '',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: _setAvatarLetterColor(),
-              ),
+          backgroundColor: widget.alpha.color != null
+              ? Color(widget.alpha.color)
+              : Colors.grey,
+          child: Text(
+            widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
+                ? widget.alpha.title.substring(0, 1).toUpperCase()
+                : '',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: _setAvatarLetterColor(),
             ),
           ),
         ),
