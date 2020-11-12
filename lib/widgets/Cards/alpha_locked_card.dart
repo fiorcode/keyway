@@ -28,21 +28,17 @@ class AlphaLockedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: Colors.grey,
-          child: CircleAvatar(
-            radius: 22,
-            backgroundColor: alpha.color != null
-                ? Color(alpha.color).withAlpha(96)
-                : Colors.grey,
-            child: Text(
-              alpha.title != null ?? alpha.title.isNotEmpty
-                  ? alpha.title.substring(0, 1).toUpperCase()
-                  : '',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: _setAvatarLetterColor(),
-              ),
+          backgroundColor: alpha.color != null
+              ? Color(alpha.color).withAlpha(96)
+              : Colors.grey,
+          child: Text(
+            alpha.title != null ?? alpha.title.isNotEmpty
+                ? alpha.title.substring(0, 1).toUpperCase()
+                : '',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: _setAvatarLetterColor(),
             ),
           ),
         ),
@@ -60,7 +56,7 @@ class AlphaLockedCard extends StatelessWidget {
           backgroundColor: Colors.grey,
           label: Text(
             alpha.shortDate != null ? alpha.shortDate : '',
-            style: TextStyle(fontSize: 10, color: Colors.white),
+            style: TextStyle(fontSize: 12, color: Colors.white),
           ),
         ),
       ),
