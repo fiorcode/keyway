@@ -18,6 +18,8 @@ import 'package:keyway/widgets/color_picker.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 import 'package:keyway/widgets/Cards/alpha_preview_card.dart';
 
+enum Mode { Create, Edit }
+
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
 
@@ -166,7 +168,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         centerTitle: true,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         title: cripto.locked
             ? IconButton(
                 icon: Icon(
@@ -185,15 +189,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
+              padding: const EdgeInsets.all(32.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 48, vertical: 16),
-                    child: TitleTextField(_titleCtrler, _ctrlersChanged),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Wrap(
@@ -237,6 +236,11 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         ),
                       ],
                     ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 48, vertical: 16),
+                    child: TitleTextField(_titleCtrler, _ctrlersChanged),
                   ),
                   if (_username)
                     Padding(

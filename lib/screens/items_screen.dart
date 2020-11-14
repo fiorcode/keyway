@@ -46,11 +46,15 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
         centerTitle: true,
         leading: cripto.locked
             ? null
             : IconButton(
-                icon: Icon(Icons.widgets),
+                icon: Icon(
+                  Icons.widgets,
+                  color: Theme.of(context).primaryColor,
+                ),
                 onPressed: () => Navigator.of(context)
                     .pushNamed(DashboardScreen.routeName)
                     .then((_) => onReturn()),
@@ -83,7 +87,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             ? null
             : [
                 IconButton(
-                  icon: Icon(Icons.add),
+                  icon: Icon(
+                    Icons.add,
+                    color: Theme.of(context).primaryColor,
+                  ),
                   onPressed: () => Navigator.of(context)
                       .pushNamed(AlphaScreen.routeName)
                       .then((_) => onReturn()),
