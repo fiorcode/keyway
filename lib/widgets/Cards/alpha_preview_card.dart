@@ -17,48 +17,70 @@ class AlphaPreviewCard extends StatelessWidget {
               ? Colors.orange
               : Colors.green,
       elevation: 8,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8),
-          side: BorderSide(
-            width: 3,
-            color: alpha.repeated == 'y'
-                ? Colors.red
-                : alpha.expired == 'y'
-                    ? Colors.orange
-                    : Colors.green,
-          )),
+      shape: StadiumBorder(),
       child: ListTile(
+        dense: true,
+        contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
-          backgroundColor:
-              alpha.color != null ? Color(alpha.color) : Colors.grey,
+          radius: 24,
+          backgroundColor: alpha.color == null || alpha.color == 0
+              ? Colors.grey
+              : Color(alpha.color),
           child: Text(
             alpha.title != null ?? alpha.title.isNotEmpty
                 ? alpha.title.substring(0, 1).toUpperCase()
-                : '',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                : 'T',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-        title: Text(alpha.title != null ? alpha.title : ''),
-        subtitle: Text(alpha.shortDate != null ? alpha.shortDate : ''),
+        title: Text(
+          alpha.title != null ? alpha.title : 'Title',
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w300,
+            color: Colors.black,
+          ),
+        ),
         onTap: null,
-        trailing: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                child: Icon(Icons.copy_rounded),
-                onTap: null,
+        trailing: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 32,
+                width: 32,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.copy,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  heroTag: null,
+                  onPressed: null,
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: GestureDetector(
-                child: Icon(Icons.remove_red_eye_outlined),
-                onTap: null,
+              SizedBox(width: 8),
+              SizedBox(
+                height: 32,
+                width: 32,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.grey,
+                  child: Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: Colors.white,
+                    size: 16,
+                  ),
+                  heroTag: null,
+                  onPressed: null,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

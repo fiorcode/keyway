@@ -51,7 +51,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   Widget build(BuildContext context) {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Card(
-      color: Colors.grey[400],
+      //color: Colors.grey[400],
       clipBehavior: Clip.antiAlias,
       shadowColor: widget.alpha.repeated == 'y'
           ? Colors.red

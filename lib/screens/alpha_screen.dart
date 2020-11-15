@@ -146,6 +146,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
   @override
   void initState() {
     super.initState();
+    cripto = Provider.of<CriptoProvider>(context, listen: false);
+    items = Provider.of<ItemProvider>(context, listen: false);
   }
 
   @override
@@ -163,8 +165,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    cripto = Provider.of<CriptoProvider>(context, listen: false);
-    items = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -193,53 +193,50 @@ class _AlphaScreenState extends State<AlphaScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Wrap(
-                      spacing: 8,
-                      children: <Widget>[
-                        FloatingActionButton(
-                          backgroundColor: _username ? null : Colors.grey,
-                          child: Icon(Icons.account_circle, size: 32),
-                          heroTag: null,
-                          onPressed: () => setState(() {
-                            _username = !_username;
-                            _userCtrler.clear();
-                          }),
-                        ),
-                        FloatingActionButton(
-                          backgroundColor: _password ? null : Colors.grey,
-                          child: Text(
-                            '*',
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.bold,
-                            ),
+                  Wrap(
+                    spacing: 8,
+                    children: <Widget>[
+                      FloatingActionButton(
+                        backgroundColor: _username ? null : Colors.grey,
+                        child: Icon(Icons.account_circle, size: 32),
+                        heroTag: null,
+                        onPressed: () => setState(() {
+                          _username = !_username;
+                          _userCtrler.clear();
+                        }),
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: _password ? null : Colors.grey,
+                        child: Text(
+                          '*',
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
                           ),
-                          heroTag: null,
-                          onPressed: () => setState(() {
-                            _password = !_password;
-                            _passCtrler.clear();
-                          }),
                         ),
-                        FloatingActionButton(
-                          backgroundColor: _pin ? null : Colors.grey,
-                          child: Icon(Icons.dialpad, size: 32),
-                          heroTag: null,
-                          onPressed: () => setState(() => _pin = !_pin),
-                        ),
-                        FloatingActionButton(
-                          backgroundColor: _ip ? null : Colors.grey,
-                          child: Icon(Icons.language, size: 32),
-                          heroTag: null,
-                          onPressed: () => setState(() => _ip = !_ip),
-                        ),
-                      ],
-                    ),
+                        heroTag: null,
+                        onPressed: () => setState(() {
+                          _password = !_password;
+                          _passCtrler.clear();
+                        }),
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: _pin ? null : Colors.grey,
+                        child: Icon(Icons.dialpad, size: 32),
+                        heroTag: null,
+                        onPressed: () => setState(() => _pin = !_pin),
+                      ),
+                      FloatingActionButton(
+                        backgroundColor: _ip ? null : Colors.grey,
+                        child: Icon(Icons.language, size: 32),
+                        heroTag: null,
+                        onPressed: () => setState(() => _ip = !_ip),
+                      ),
+                    ],
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 48, vertical: 16),
+                        horizontal: 64, vertical: 16),
                     child: TitleTextField(_titleCtrler, _ctrlersChanged),
                   ),
                   if (_username)
@@ -264,7 +261,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: IpTextField(_ipCtrler),
                     ),
-                  if (_titleCtrler.text.isNotEmpty) AlphaPreviewCard(_item),
+                  AlphaPreviewCard(_item),
                   if (_titleCtrler.text.isNotEmpty) SizedBox(height: 16),
                   if (_titleCtrler.text.isNotEmpty)
                     ColorPicker(_item.color, _setColor),

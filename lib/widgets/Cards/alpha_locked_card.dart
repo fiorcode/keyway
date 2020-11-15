@@ -18,7 +18,7 @@ class AlphaLockedCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.grey[400],
+      color: Colors.grey[200],
       clipBehavior: Clip.antiAlias,
       shadowColor: Colors.grey[700],
       elevation: 8,
