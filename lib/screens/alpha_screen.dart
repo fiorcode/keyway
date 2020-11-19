@@ -14,7 +14,6 @@ import 'package:keyway/widgets/TextFields/pin_text_field.dart';
 import 'package:keyway/widgets/TextFields/title_text_field.dart';
 import 'package:keyway/widgets/TextFields/username_text_field.dart';
 import 'package:keyway/widgets/check_board.dart';
-import 'package:keyway/widgets/color_picker.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 import 'package:keyway/widgets/Cards/alpha_preview_card.dart';
 
@@ -137,12 +136,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
   }
 
-  _setColor(int color) {
-    setState(() {
-      _item.color = color;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -197,8 +190,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     spacing: 8,
                     children: <Widget>[
                       FloatingActionButton(
-                        backgroundColor: _username ? null : Colors.grey,
-                        child: Icon(Icons.account_circle, size: 32),
+                        backgroundColor: _username ? Colors.white : Colors.grey,
+                        child: Icon(
+                          Icons.account_circle,
+                          size: _username ? 32 : 24,
+                          color: _username ? Colors.grey : Colors.white,
+                        ),
                         heroTag: null,
                         onPressed: () => setState(() {
                           _username = !_username;
@@ -206,12 +203,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         }),
                       ),
                       FloatingActionButton(
-                        backgroundColor: _password ? null : Colors.grey,
+                        backgroundColor: _password ? Colors.white : Colors.grey,
                         child: Text(
                           '*',
+                          textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 32,
+                            fontSize: _password ? 32 : 24,
                             fontWeight: FontWeight.bold,
+                            color: _password ? Colors.grey : Colors.white,
                           ),
                         ),
                         heroTag: null,
@@ -221,14 +220,22 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         }),
                       ),
                       FloatingActionButton(
-                        backgroundColor: _pin ? null : Colors.grey,
-                        child: Icon(Icons.dialpad, size: 32),
+                        backgroundColor: _pin ? Colors.white : Colors.grey,
+                        child: Icon(
+                          Icons.dialpad,
+                          size: _pin ? 32 : 24,
+                          color: _pin ? Colors.grey : Colors.white,
+                        ),
                         heroTag: null,
                         onPressed: () => setState(() => _pin = !_pin),
                       ),
                       FloatingActionButton(
-                        backgroundColor: _ip ? null : Colors.grey,
-                        child: Icon(Icons.language, size: 32),
+                        backgroundColor: _ip ? Colors.white : Colors.grey,
+                        child: Icon(
+                          Icons.language,
+                          size: _ip ? 32 : 24,
+                          color: _ip ? Colors.grey : Colors.white,
+                        ),
                         heroTag: null,
                         onPressed: () => setState(() => _ip = !_ip),
                       ),
@@ -236,35 +243,37 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 64, vertical: 16),
+                      horizontal: 64,
+                      vertical: 12,
+                    ),
                     child: TitleTextField(_titleCtrler, _ctrlersChanged),
                   ),
                   if (_username)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: UsernameTextField(_userCtrler),
                     ),
                   if (_password)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PasswordTextField(_passCtrler, _ctrlersChanged),
                     ),
                   if (_passCtrler.text.isNotEmpty)
                     CheckBoard(password: _passCtrler.text),
                   if (_pin)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PinTextField(_pinCtrler),
                     ),
                   if (_ip)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 12),
                       child: IpTextField(_ipCtrler),
                     ),
-                  AlphaPreviewCard(_item),
-                  if (_titleCtrler.text.isNotEmpty) SizedBox(height: 16),
-                  if (_titleCtrler.text.isNotEmpty)
-                    ColorPicker(_item.color, _setColor),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    child: AlphaPreviewCard(_item),
+                  ),
                   if (widget.item != null)
                     FlatButton(
                       onPressed: () {

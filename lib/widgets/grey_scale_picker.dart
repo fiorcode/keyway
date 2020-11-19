@@ -1,41 +1,27 @@
 import 'package:flutter/material.dart';
 
-class ColorPicker extends StatefulWidget {
-  ColorPicker(this.color, this.change);
+class GreyScalePicker extends StatefulWidget {
+  GreyScalePicker(this.color, this.change);
 
-  final Function change;
   final int color;
+  final Function change;
 
   @override
-  _ColorPickerState createState() => _ColorPickerState();
+  _GreyScalePickerState createState() => _GreyScalePickerState();
 }
 
-class _ColorPickerState extends State<ColorPicker> {
+class _GreyScalePickerState extends State<GreyScalePicker> {
   double _value;
   Color _color;
 
-  _setColor(double val) {
-    if (val <= 85)
-      _color = Color.fromARGB(255, 255, 0, (val * 3).toInt());
-    else if (val <= 170)
-      _color = Color.fromARGB(255, 255 - ((val - 85) * 3).toInt(), 0, 255);
-    else if (val <= 255)
-      _color = Color.fromARGB(255, 0, ((val - 170) * 3).toInt(), 255);
-    else if (val <= 340)
-      _color = Color.fromARGB(255, 0, 255, 255 - ((val - 255) * 3).toInt());
-    else if (val <= 425)
-      _color = Color.fromARGB(255, ((val - 340) * 3).toInt(), 255, 0);
-    else if (val <= 510)
-      _color = Color.fromARGB(255, 255, 255 - ((val - 425) * 3).toInt(), 0);
-  }
+  _setColor(double val) =>
+      _color = Color.fromARGB(255, val.toInt(), val.toInt(), val.toInt());
 
   _setValue(Color col) {
-    if (col.red == 255 && col.green == 0) _value = col.blue / 3;
-    if (col.blue == 255 && col.green == 0) _value = (col.red / 3) + 85;
-    if (col.blue == 255 && col.red == 0) _value = (col.green / 3) + 170;
-    if (col.green == 255 && col.red == 0) _value = (col.blue / 3) + 255;
-    if (col.green == 255 && col.blue == 0) _value = (col.red / 3) + 340;
-    if (col.red == 255 && col.blue == 0) _value = (col.green / 3) + 425;
+    if (col.red == col.green && col.green == col.blue)
+      _value = col.red.toDouble();
+    else
+      _value = 0;
   }
 
   @override
@@ -61,7 +47,7 @@ class _ColorPickerState extends State<ColorPicker> {
       ),
       child: Slider(
         min: 0,
-        max: 510,
+        max: 255,
         value: _value == null ? 0 : _value,
         onChanged: (value) {
           _value = value;
@@ -111,13 +97,9 @@ class GradientRectSliderTrackShape extends SliderTrackShape
     }
 
     LinearGradient gradient = LinearGradient(colors: [
-      Colors.red,
-      Colors.purple,
-      Colors.blue,
-      Colors.cyan,
-      Colors.green,
-      Colors.yellow,
-      Colors.red,
+      Colors.black,
+      Colors.grey,
+      Colors.white,
     ]);
 
     final Rect trackRect = getPreferredRect(
