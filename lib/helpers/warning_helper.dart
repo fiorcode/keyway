@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WarningHelper {
-  passRepeatedWarning(BuildContext context, Function f) async {
+  static passRepeatedWarning(BuildContext context, Function f) async {
     showDialog(
       context: context,
       builder: (context) {

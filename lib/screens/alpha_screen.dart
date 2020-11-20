@@ -33,8 +33,8 @@ class AlphaScreen extends StatefulWidget {
 class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider cripto;
   ItemProvider items;
-
   Alpha _item;
+  Mode _mode = Mode.Create;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -48,6 +48,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
   bool _ip = false;
 
   bool _unlocking = false;
+
+  _ctrlersChanged() {
+    setState(() {
+      _item.title = _titleCtrler.text;
+    });
+  }
 
   _lockSwitch() {
     setState(() {
@@ -96,30 +102,48 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
   }
 
-  _save() async {
+  bool _emptyFields() =>
+      _item.username.isEmpty ||
+      _item.password.isEmpty ||
+      _item.pin.isEmpty ||
+      _item.ip.isEmpty;
+
+  bool _filedsChanged() {
+    if (widget.item == null) return true;
+    if (_item.title != widget.item.title) return true;
+    if (_item.username != widget.item.username) return true;
+    if (_item.password != widget.item.password) return true;
+    if (_item.pin != widget.item.pin) return true;
+    if (_item.ip != widget.item.ip) return true;
+    return false;
+  }
+
+  void _save() async {
     try {
       _createItem();
-      if (_item.password.isNotEmpty) {
-        if (await items.checkPassRepeated(_item.password)) {
-          WarningHelper().passRepeatedWarning(context, _saveRepeated);
-        } else {
+      if (!_emptyFields() && _filedsChanged()) {
+        switch (_mode) {
+          case Mode.Create:
+            break;
+          default:
+            _saveChanges();
+        }
+        if (await items.repeatedPass(_item.password))
+          WarningHelper.passRepeatedWarning(context, _saveRepeated);
+        else {
           if (_item.id != null)
-            items.update(_item);
+            await items.update(_item);
           else
-            items.insert(_item);
+            await items.insert(_item);
           Navigator.of(context).pop();
         }
-      } else {
-        if (_item.id != null)
-          items.update(_item);
-        else
-          items.insert(_item);
-        Navigator.of(context).pop();
       }
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
+
+  void _saveChanges() {}
 
   _saveRepeated() {
     if (_item.id != null)
@@ -130,30 +154,21 @@ class _AlphaScreenState extends State<AlphaScreen> {
         .popUntil(ModalRoute.withName(ItemsListScreen.routeName));
   }
 
-  _ctrlersChanged() {
-    setState(() {
-      _item.title = _titleCtrler.text;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
     cripto = Provider.of<CriptoProvider>(context, listen: false);
     items = Provider.of<ItemProvider>(context, listen: false);
-  }
-
-  @override
-  void didChangeDependencies() {
     if (widget.item != null) {
+      _mode = Mode.Edit;
       _item = widget.item;
       _loadItem();
     } else {
+      _mode = Mode.Create;
       _username = true;
       _password = true;
       _item = Alpha();
     }
-    super.didChangeDependencies();
   }
 
   @override

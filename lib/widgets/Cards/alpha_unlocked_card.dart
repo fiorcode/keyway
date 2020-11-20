@@ -47,17 +47,46 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     return (255 - bgDelta > 105) ? Colors.white : Colors.black;
   }
 
+  void _passToClipBoard() {
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
+    Clipboard.setData(
+            ClipboardData(text: cripto.doDecrypt(widget.alpha.password)))
+        .then(
+      (_) => Scaffold.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Copied'),
+          duration: Duration(seconds: 1),
+        ),
+      ),
+    );
+  }
+
+  Text _setTitle() {
+    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
+    return Text(
+      _showPass ? cripto.doDecrypt(widget.alpha.password) : widget.alpha.title,
+      style: TextStyle(
+        fontSize: 22,
+        fontWeight: FontWeight.w300,
+        color: Colors.black,
+      ),
+    );
+  }
+
+  Color _setWarningColor() => widget.alpha.repeated == 'y'
+      ? Colors.red
+      : widget.alpha.expired == 'y'
+          ? Colors.orange
+          : Colors.green;
+
+  void _switchShowPass() => setState(() => _showPass = !_showPass);
+
   @override
   Widget build(BuildContext context) {
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Card(
-      //color: Colors.grey[400],
       clipBehavior: Clip.antiAlias,
-      shadowColor: widget.alpha.repeated == 'y'
-          ? Colors.red
-          : widget.alpha.expired == 'y'
-              ? Colors.orange
-              : Colors.green,
+      shadowColor: _setWarningColor(),
       elevation: 8,
       shape: StadiumBorder(),
       child: ListTile(
@@ -79,66 +108,36 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
             ),
           ),
         ),
-        title: _showPass
-            ? Text(
-                cripto.doDecrypt(widget.alpha.password),
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black,
-                ),
-              )
-            : Text(
-                widget.alpha.title != null ? widget.alpha.title : '',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w300,
-                  color: Colors.black,
-                ),
-              ),
+        title: _setTitle(),
         onTap: _onTap,
         trailing: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(4.0),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
-                height: 32,
-                width: 32,
+                height: 48,
+                width: 48,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.grey,
-                  child: Icon(
-                    Icons.copy,
-                    color: Colors.white,
-                    size: 16,
-                  ),
+                  backgroundColor: Colors.grey[200],
+                  child: Icon(Icons.copy, color: _setWarningColor(), size: 24),
                   heroTag: null,
-                  onPressed: () => Clipboard.setData(ClipboardData(
-                          text: cripto.doDecrypt(widget.alpha.password)))
-                      .then(
-                    (_) => Scaffold.of(context).showSnackBar(
-                      SnackBar(
-                        backgroundColor: Colors.green,
-                        content: Text('Copied'),
-                        duration: Duration(seconds: 1),
-                      ),
-                    ),
-                  ),
+                  onPressed: _passToClipBoard,
                 ),
               ),
-              SizedBox(width: 8),
+              SizedBox(width: 4),
               SizedBox(
-                height: 32,
-                width: 32,
+                height: 48,
+                width: 48,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.grey,
+                  backgroundColor: Colors.grey[200],
                   child: Icon(
                     Icons.remove_red_eye_outlined,
-                    color: Colors.white,
-                    size: 16,
+                    color: _setWarningColor(),
+                    size: 24,
                   ),
                   heroTag: null,
-                  onPressed: () => setState(() => _showPass = !_showPass),
+                  onPressed: _switchShowPass,
                 ),
               ),
             ],

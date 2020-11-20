@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/item.dart';
+
+import '../../models/item.dart';
 
 class AlphaLockedCard extends StatelessWidget {
   const AlphaLockedCard({Key key, this.alpha}) : super(key: key);
@@ -13,6 +14,19 @@ class AlphaLockedCard extends StatelessWidget {
     return (255 - bgDelta > 105)
         ? Colors.white.withAlpha(96)
         : Colors.black.withAlpha(96);
+  }
+
+  _onTap(BuildContext context) {
+    Scaffold.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Unlock first, please.',
+          textAlign: TextAlign.center,
+        ),
+        duration: Duration(seconds: 1),
+      ),
+    );
   }
 
   @override
@@ -51,7 +65,7 @@ class AlphaLockedCard extends StatelessWidget {
             color: Colors.black,
           ),
         ),
-        onTap: () {},
+        onTap: () => _onTap(context),
         trailing: Chip(
           backgroundColor: Colors.grey,
           label: Text(
