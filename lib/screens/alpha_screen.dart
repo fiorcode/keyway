@@ -62,21 +62,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   _createItem() {
-    try {
-      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-      _item.username =
-          _userCtrler.text.isEmpty ? '' : cripto.doCrypt(_userCtrler.text);
-      _item.password =
-          _passCtrler.text.isEmpty ? '' : cripto.doCrypt(_passCtrler.text);
-      _item.pin =
-          _pinCtrler.text.isEmpty ? '' : cripto.doCrypt(_pinCtrler.text);
-      _item.ip = _ipCtrler.text.isEmpty ? '' : cripto.doCrypt(_ipCtrler.text);
-      _item.dateTime = DateTime.now().toUtc();
-      _item.date = _item.dateTime.toIso8601String();
-      _item.shortDate = dateFormat.format(_item.dateTime.toLocal());
-    } catch (error) {
-      ErrorHelper.errorDialog(context, error);
-    }
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+    _item.username = cripto.doCrypt(_userCtrler.text);
+    _item.password = cripto.doCrypt(_passCtrler.text);
+    _item.pin = cripto.doCrypt(_pinCtrler.text);
+    _item.ip = cripto.doCrypt(_ipCtrler.text);
+    _item.dateTime = DateTime.now().toUtc();
+    _item.date = _item.dateTime.toIso8601String();
+    _item.shortDate = dateFormat.format(_item.dateTime.toLocal());
   }
 
   _loadItem() {
@@ -120,39 +113,67 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   void _save() async {
     try {
+      if (_emptyFields()) return;
       _createItem();
-      if (!_emptyFields() && _filedsChanged()) {
-        switch (_mode) {
-          case Mode.Create:
-            break;
-          default:
-            _saveChanges();
-        }
-        if (await items.repeatedPass(_item.password))
-          WarningHelper.passRepeatedWarning(context, _saveRepeated);
-        else {
-          if (_item.id != null)
-            await items.update(_item);
-          else
-            await items.insert(_item);
-          Navigator.of(context).pop();
-        }
+      switch (_mode) {
+        case Mode.Create:
+          if (await _checkRepeated()) return;
+          _insertAlpha();
+          break;
+        case Mode.Edit:
+          if (_filedsChanged()) _updateAlpha();
+          break;
+        default:
+          return;
+        // if (await items.repeatedPass(_item.password))
+        //   WarningHelper.passRepeatedWarning(context, _saveRepeated);
+        // else {
+        //   if (_item.id != null)
+        //     await items.update(_item);
+        //   else
+        //     await items.insert(_item);
+        //   Navigator.of(context).pop();
+        // }
       }
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
 
-  void _saveChanges() {}
-
-  _saveRepeated() {
-    if (_item.id != null)
-      items.updateRepeated(_item);
-    else
-      items.insertRepeated(_item);
-    Navigator.of(context)
-        .popUntil(ModalRoute.withName(ItemsListScreen.routeName));
+  Future<bool> _checkRepeated() async {
+    if (_passCtrler.text.isNotEmpty) {
+      if (await items.verifyRepeatedPass(_passCtrler.text)) {
+        if (await WarningHelper.repeatedWarning(context, 'Password')) {
+          _item.repeated = 'y';
+          items.setRepeated('password', _passCtrler.text);
+        } else
+          return true;
+      }
+    }
+    if (_pinCtrler.text.isNotEmpty) {
+      if (await items.verifyRepeatedPin(_pinCtrler.text)) {
+        if (await WarningHelper.repeatedWarning(context, 'Pin')) {
+          _item.repeated = 'y';
+          items.setRepeated('pin', _pinCtrler.text);
+        } else
+          return true;
+      }
+    }
+    return false;
   }
+
+  void _insertAlpha() {}
+
+  void _updateAlpha() {}
+
+  // _saveRepeated() {
+  //   if (_item.id != null)
+  //     items.updateRepeated(_item);
+  //   else
+  //     items.insertRepeated(_item);
+  //   Navigator.of(context)
+  //       .popUntil(ModalRoute.withName(ItemsListScreen.routeName));
+  // }
 
   @override
   void initState() {

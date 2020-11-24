@@ -97,11 +97,15 @@ class CriptoProvider with ChangeNotifier {
     _pref.setBool('isMasterKey', true);
   }
 
-  String doCrypt(String value) =>
-      _crypter.encrypt(value, iv: e.IV.fromLength(16)).base64;
+  String doCrypt(String value) {
+    if (value.isEmpty || value == null) return '';
+    return _crypter.encrypt(value, iv: e.IV.fromLength(16)).base64;
+  }
 
-  String doDecrypt(String value) =>
-      _crypter.decrypt64(value, iv: e.IV.fromLength(16));
+  String doDecrypt(String value) {
+    if (value.isEmpty || value == null) return '';
+    return _crypter.decrypt64(value, iv: e.IV.fromLength(16));
+  }
 
   _setKey(String password) {
     _key = password;

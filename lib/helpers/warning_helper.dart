@@ -2,23 +2,29 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WarningHelper {
-  static passRepeatedWarning(BuildContext context, Function f) async {
-    showDialog(
+  static repeatedWarning(BuildContext context, String field) async {
+    showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Password repeated', textAlign: TextAlign.center),
+          title: Text('$field repeated', textAlign: TextAlign.center),
           content: Text(
-            'This password is already in use, do you want to save it anyway?',
+            'This $field is already in use, do you want to save it anyway?',
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
             FlatButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                Navigator.of(context).pop();
+                return false;
+              },
               child: Text('CANCEL'),
             ),
             FlatButton(
-              onPressed: f,
+              onPressed: () {
+                Navigator.of(context).pop();
+                return true;
+              },
               child: Text('SAVE', style: TextStyle(color: Colors.red)),
             ),
           ],

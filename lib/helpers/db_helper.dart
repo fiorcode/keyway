@@ -6,8 +6,8 @@ import 'package:sqflite/sqlite_api.dart';
 class DBHelper {
   static const String userDataTable = "user_data";
   static const String itemsTable = "items";
-  static const String oldItemsTable = "old_items";
-  static const String deletedItemsTable = "deleted_items";
+  static const String oldsTable = "old_items";
+  static const String deletedTable = "deleted_items";
 
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
@@ -59,13 +59,13 @@ class DBHelper {
     return db.query(table, where: '$col = ?', whereArgs: [val]);
   }
 
-  static Future setRepeated(Map<String, Object> data) async {
+  static Future<int> setRepeated(String column, String value) async {
     final db = await DBHelper.database();
     return await db.update(
       itemsTable,
       {'repeated': 'y'},
-      where: 'password = ?',
-      whereArgs: [data['password']],
+      where: '$column = ?',
+      whereArgs: [value],
     );
   }
 
@@ -108,7 +108,7 @@ class DBHelper {
     repeated TEXT,
     expired TEXT)''';
 
-  static const createOldItemsTable = '''CREATE TABLE $oldItemsTable(
+  static const createOldItemsTable = '''CREATE TABLE $oldsTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     username TEXT,
@@ -122,7 +122,7 @@ class DBHelper {
     expired TEXT,
     item_id INTEGER)''';
 
-  static const createDeletedItemsTable = '''CREATE TABLE $deletedItemsTable(
+  static const createDeletedItemsTable = '''CREATE TABLE $deletedTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     username TEXT,
