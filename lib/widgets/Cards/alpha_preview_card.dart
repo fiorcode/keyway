@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/grey_scale_picker.dart';
 
 import '../../models/item.dart';
 import '../color_picker.dart';
+import '../grey_scale_picker.dart';
 
 class AlphaPreviewCard extends StatefulWidget {
   AlphaPreviewCard(this.alpha);
@@ -26,11 +26,6 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
       children: [
         Card(
           clipBehavior: Clip.antiAlias,
-          shadowColor: widget.alpha.repeated == 'y'
-              ? Colors.red
-              : widget.alpha.expired == 'y'
-                  ? Colors.orange
-                  : Colors.green,
           elevation: 8,
           shape: StadiumBorder(),
           child: ListTile(
@@ -43,9 +38,9 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                       ? Colors.grey
                       : Color(widget.alpha.color),
               child: Text(
-                widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
-                    ? widget.alpha.title.substring(0, 1).toUpperCase()
-                    : 'T',
+                widget.alpha.title.isEmpty
+                    ? 'T'
+                    : widget.alpha.title.substring(0, 1).toUpperCase(),
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -53,7 +48,7 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
               ),
             ),
             title: Text(
-              widget.alpha.title != null ? widget.alpha.title : 'Title',
+              widget.alpha.title.isEmpty ? 'Title' : widget.alpha.title,
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w300,
@@ -71,11 +66,7 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                     width: 48,
                     child: FloatingActionButton(
                       backgroundColor: Colors.grey[200],
-                      child: Icon(
-                        Icons.copy,
-                        color: Colors.green,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.copy, size: 24),
                       heroTag: null,
                       onPressed: null,
                     ),
@@ -86,11 +77,7 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                     width: 48,
                     child: FloatingActionButton(
                       backgroundColor: Colors.grey[200],
-                      child: Icon(
-                        Icons.remove_red_eye_outlined,
-                        color: Colors.green,
-                        size: 24,
-                      ),
+                      child: Icon(Icons.remove_red_eye_outlined, size: 24),
                       heroTag: null,
                       onPressed: null,
                     ),

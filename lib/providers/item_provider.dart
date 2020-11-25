@@ -55,18 +55,16 @@ class ItemProvider with ChangeNotifier {
       await DBHelper.getItemById(item.id).then(
         (value) async {
           OldAlpha old = OldAlpha.fromAlpha(Alpha.fromMap(value.first));
-          if (old.password != item.password || old.pin != item.pin) {
-            await DBHelper.insert(DBHelper.oldsTable, old.toMap());
-            await DBHelper.update(DBHelper.itemsTable, item.toMap());
-            if (await verifyRepeatedPass(item.password))
-              await DBHelper.setRepeated('password', item.password);
-            else {
-              if (item.repeated == 'y') {
-                item.repeated = 'n';
-                await DBHelper.update(DBHelper.itemsTable, item.toMap());
-              }
-            }
-          }
+          await DBHelper.insert(DBHelper.oldsTable, old.toMap());
+          await DBHelper.update(DBHelper.itemsTable, item.toMap());
+          // if (await verifyRepeatedPass(item.password))
+          //   await DBHelper.setRepeated('password', item.password);
+          // else {
+          //   if (item.repeated == 'y') {
+          //     item.repeated = 'n';
+          //     await DBHelper.update(DBHelper.itemsTable, item.toMap());
+          //   }
+          // }
         },
       );
 
@@ -74,7 +72,7 @@ class ItemProvider with ChangeNotifier {
     if (item.repeated == 'n')
       await DBHelper.delete(DBHelper.itemsTable, item.id);
     else
-      await DBHelper.deleteRepeated(item.toMap());
+      await DBHelper.refreshRepetedPassword(item.password);
     DeletedAlpha delete = DeletedAlpha.fromAlpha(item);
     await DBHelper.insert(DBHelper.deletedTable, delete.toMap());
     _items.removeWhere((element) => element.id == item.id);
@@ -102,30 +100,14 @@ class ItemProvider with ChangeNotifier {
     return false;
   }
 
-  // Future<bool> updateRepeatedPass(String s) async {
-  //   if (s.isEmpty) return false;
-  //   var _items = await DBHelper.getByValue(DBHelper.itemsTable, 'password', s);
-  //   if (_items.length > 1) return true;
-  //   var _old = await DBHelper.getByValue(DBHelper.oldsTable, 'password', s);
-  //   if (_old.length > 1) return true;
-  //   var _del = await DBHelper.getByValue(DBHelper.deletedTable, 'password', s);
-  //   if (_del.length > 1) return true;
-  //   return false;
-  // }
-
-  // Future<bool> updateRepeatedPin(String p) async {
-  //   if (p.isEmpty) return false;
-  //   var _items = await DBHelper.getByValue(DBHelper.itemsTable, 'pin', p);
-  //   if (_items.length > 1) return true;
-  //   var _old = await DBHelper.getByValue(DBHelper.oldsTable, 'pin', p);
-  //   if (_old.length > 1) return true;
-  //   var _del = await DBHelper.getByValue(DBHelper.deletedTable, 'pin', p);
-  //   if (_del.length > 1) return true;
-  //   return false;
-  // }
-
   Future<void> setRepeated(String column, String value) async =>
       await DBHelper.setRepeated(column, value);
+
+  Future<void> refreshRepetedPassword(String p) async {
+    List<Map<String, dynamic>> _list =
+        await DBHelper.getByValue(DBHelper.itemsTable, 'password', p);
+    if (_list.length < 2) DBHelper.refreshRepetedPassword(p);
+  }
 
   Future<void> removeItems() async => await DBHelper.removeDB();
 

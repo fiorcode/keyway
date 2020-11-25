@@ -34,14 +34,16 @@ class Alpha extends Item {
   String password;
   String pin;
   String ip;
+  String strong;
 
   Alpha(
       {int id,
-      String title,
-      this.username,
-      this.password,
-      this.pin,
-      this.ip,
+      String title = '',
+      this.username = '',
+      this.password = '',
+      this.pin = '',
+      this.ip = '',
+      this.strong = '',
       String date,
       String shortDate,
       int color = 0,
@@ -54,6 +56,7 @@ class Alpha extends Item {
     password = map['password'];
     pin = map['pin'];
     ip = map['ip'];
+    strong = map['strong'];
   }
 
   Map<String, dynamic> toMap() {
@@ -67,6 +70,7 @@ class Alpha extends Item {
       'date_short': shortDate,
       'color': color,
       'repeated': repeated,
+      'strong': strong,
       'expired': expired,
     };
     if (id != null) map['id'] = id;
@@ -87,8 +91,9 @@ class OldAlpha extends Alpha {
     String date,
     String shortDate,
     int color = 0,
-    String repeated = 'n',
-    String expired = 'n',
+    String repeated,
+    String strong,
+    String expired,
     this.itemId,
   }) : super();
 
@@ -102,6 +107,7 @@ class OldAlpha extends Alpha {
     this.shortDate = a.shortDate;
     this.color = a.color;
     this.repeated = a.repeated;
+    this.strong = a.strong;
     this.expired = a.expired;
     this.itemId = a.id;
   }
@@ -111,6 +117,7 @@ class OldAlpha extends Alpha {
     password = map['password'];
     pin = map['pin'];
     ip = map['ip'];
+    strong = map['strong'];
     itemId = map['item_id'];
   }
 
@@ -125,6 +132,7 @@ class OldAlpha extends Alpha {
       'date_short': shortDate,
       'color': color,
       'repeated': repeated,
+      'strong': strong,
       'expired': expired,
       'item_id': itemId,
     };
@@ -148,8 +156,9 @@ class DeletedAlpha extends Alpha {
     String shortDate,
     this.deletedDate,
     int color = 0,
-    String repeated = 'n',
-    String expired = 'n',
+    String repeated,
+    String strong,
+    String expired,
     this.itemId,
   }) : super();
 
@@ -164,6 +173,7 @@ class DeletedAlpha extends Alpha {
     this.deletedDate = DateTime.now().toIso8601String();
     this.color = a.color;
     this.repeated = a.repeated;
+    this.strong = a.strong;
     this.expired = a.expired;
     this.itemId = a.id;
   }
@@ -174,6 +184,7 @@ class DeletedAlpha extends Alpha {
     pin = map['pin'];
     ip = map['ip'];
     itemId = map['item_id'];
+    strong = map['strong'];
     deletedDate = map['date_deleted'];
   }
 
@@ -189,6 +200,7 @@ class DeletedAlpha extends Alpha {
       'date_deleted': deletedDate,
       'color': color,
       'repeated': repeated,
+      'strong': strong,
       'expired': expired,
       'item_id': itemId,
     };

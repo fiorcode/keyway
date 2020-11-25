@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WarningHelper {
-  static repeatedWarning(BuildContext context, String field) async {
-    showDialog<bool>(
+  static Future<bool> repeatedWarning(
+      BuildContext context, String field) async {
+    return showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
@@ -15,15 +16,13 @@ class WarningHelper {
           actions: <Widget>[
             FlatButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                return false;
+                Navigator.of(context).pop(false);
               },
               child: Text('CANCEL'),
             ),
             FlatButton(
               onPressed: () {
-                Navigator.of(context).pop();
-                return true;
+                Navigator.of(context).pop(true);
               },
               child: Text('SAVE', style: TextStyle(color: Colors.red)),
             ),

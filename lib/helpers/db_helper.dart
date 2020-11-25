@@ -51,12 +51,9 @@ class DBHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getByValue(
-    String table,
-    String col,
-    String val,
-  ) async {
+      String table, String col, String v) async {
     final db = await DBHelper.database();
-    return db.query(table, where: '$col = ?', whereArgs: [val]);
+    return db.query(table, where: '$col = ?', whereArgs: [v]);
   }
 
   static Future<int> setRepeated(String column, String value) async {
@@ -69,19 +66,14 @@ class DBHelper {
     );
   }
 
-  static Future deleteRepeated(Map<String, Object> data) async {
+  static Future<void> refreshRepetedPassword(String p) async {
     final db = await DBHelper.database();
-    await delete(itemsTable, data['id']);
-    List<Map<String, dynamic>> _list =
-        await getByValue(itemsTable, 'password', data['password']);
-    if (_list.length < 2) {
-      return await db.update(
-        itemsTable,
-        {'repeated': 'n'},
-        where: 'password = ?',
-        whereArgs: [data['password']],
-      );
-    }
+    return await db.update(
+      itemsTable,
+      {'repeated': 'n'},
+      where: 'password = ?',
+      whereArgs: [p],
+    );
   }
 
   static Future<void> removeDB() async {
@@ -106,6 +98,7 @@ class DBHelper {
     date_short TEXT,
     color INTEGER,
     repeated TEXT,
+    strong TEXT,
     expired TEXT)''';
 
   static const createOldItemsTable = '''CREATE TABLE $oldsTable(
@@ -119,6 +112,7 @@ class DBHelper {
     date_short TEXT,
     color INTEGER,
     repeated TEXT,
+    strong TEXT,
     expired TEXT,
     item_id INTEGER)''';
 
@@ -134,6 +128,7 @@ class DBHelper {
     date_deleted TEXT,
     color INTEGER,
     repeated TEXT,
+    strong TEXT,
     expired TEXT,
     item_id INTEGER)''';
 }

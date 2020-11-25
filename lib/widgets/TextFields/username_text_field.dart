@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 class UsernameTextField extends StatelessWidget {
-  const UsernameTextField(this.ctrler);
+  const UsernameTextField(this.ctrler, this.function);
 
   final TextEditingController ctrler;
+  final Function function;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class UsernameTextField extends StatelessWidget {
         fillColor: Theme.of(context).backgroundColor,
         labelText: 'Username',
       ),
+      onChanged: (_) => function(),
     );
   }
 }
