@@ -18,7 +18,15 @@ class _BackupScreenState extends State<BackupScreen> {
     drive.trySignInSilently();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).backgroundColor,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        title: Image(
+          image: AssetImage('assets/drive_logo.png'),
+          height: AppBar().preferredSize.height * .60,
+        ),
+        centerTitle: true,
+      ),
       body: FutureBuilder(
         future: drive.trySignInSilently(),
         builder: (ctx, snap) => snap.connectionState == ConnectionState.waiting
@@ -43,26 +51,33 @@ class SignedInBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(32.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Image(
-            image: AssetImage('assets/drive_logo.png'),
-            height: MediaQuery.of(context).size.width / 4,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(32.0),
+          child: Column(
+            children: [
+              Text(
+                'GOOGLE DRIVE \nFILE \nSTATUS',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black45,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: BackupStatusCard(),
+              ),
+            ],
           ),
-          Text(
-            'GOOGLE DRIVE FILE STATUS',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.black45,
-            ),
-          ),
-          BackupStatusCard(),
-          Center(
+        ),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
             child: RaisedButton(
               onPressed: () => drive.handleSignOut(),
               child: Padding(
@@ -86,11 +101,12 @@ class SignedInBody extends StatelessWidget {
                 ),
               ),
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(32)),
+                borderRadius: BorderRadius.circular(32),
+              ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

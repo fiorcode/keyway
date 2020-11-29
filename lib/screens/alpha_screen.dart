@@ -116,10 +116,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
           await _items.insert(_item);
           break;
         case Mode.Edit:
-          if (_item.password != widget.item.password) {
+          if (_passCtrler.text != widget.item.password) {
             if (await _checkRepeatedPass()) return;
           }
-          if (_item.pin != widget.item.pin) {
+          if (_pinCtrler.text != widget.item.pin) {
             if (await _checkRepeatedPin()) return;
           }
           if (_filedsChanged()) {

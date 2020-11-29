@@ -19,27 +19,17 @@ class _DashboardCardState extends State<DashboardCard> {
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Card(
-          color: Theme.of(context).primaryColor,
           clipBehavior: Clip.antiAlias,
           elevation: 8,
           shadowColor: Colors.grey,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(4.0),
             side: BorderSide(width: 3, color: Colors.grey),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: widget.icon,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Center(child: widget.title),
-              )
-            ],
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [widget.icon, widget.title],
           ),
         ),
       ),

@@ -57,14 +57,6 @@ class ItemProvider with ChangeNotifier {
           OldAlpha old = OldAlpha.fromAlpha(Alpha.fromMap(value.first));
           await DBHelper.insert(DBHelper.oldsTable, old.toMap());
           await DBHelper.update(DBHelper.itemsTable, item.toMap());
-          // if (await verifyRepeatedPass(item.password))
-          //   await DBHelper.setRepeated('password', item.password);
-          // else {
-          //   if (item.repeated == 'y') {
-          //     item.repeated = 'n';
-          //     await DBHelper.update(DBHelper.itemsTable, item.toMap());
-          //   }
-          // }
         },
       );
 
