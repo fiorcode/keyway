@@ -5,19 +5,15 @@ import 'package:intl/intl.dart';
 import 'package:keyway/providers/drive_provider.dart';
 
 class BackupStatusCard extends StatefulWidget {
+  const BackupStatusCard({Key key, this.drive}) : super(key: key);
+  final DriveProvider drive;
+
   @override
   _BackupStatusCardState createState() => _BackupStatusCardState();
 }
 
 class _BackupStatusCardState extends State<BackupStatusCard> {
   Future _status;
-  bool _working = false;
-
-  _work(Future f) async {
-    setState(() => _working = true);
-    await f;
-    setState(() => _working = false);
-  }
 
   _checkStatus() async =>
       await Provider.of<DriveProvider>(context, listen: false).checkStatus();
@@ -30,7 +26,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
 
   @override
   Widget build(BuildContext context) {
-    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     return FutureBuilder(
       future: _status,
@@ -41,12 +36,12 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
           case (ConnectionState.waiting):
             return Card(
               clipBehavior: Clip.antiAlias,
-              elevation: 6,
+              elevation: 8,
               shadowColor: Colors.orange,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
                 side: const BorderSide(
-                  width: 2,
+                  width: 3,
                   color: Colors.orange,
                 ),
               ),
@@ -78,75 +73,46 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
           case (ConnectionState.done):
             return Card(
               clipBehavior: Clip.antiAlias,
-              elevation: 6,
-              shadowColor: drive.fileFound ? Colors.green : Colors.red,
+              elevation: 8,
+              shadowColor: widget.drive.fileFound ? Colors.green : Colors.red,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
                 side: BorderSide(
-                  width: 2,
-                  color: drive.fileFound ? Colors.green : Colors.red,
+                  width: 4,
+                  color: widget.drive.fileFound ? Colors.green : Colors.red,
                 ),
               ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(height: 16),
-                        Icon(
-                          drive.fileFound ? Icons.cloud_done : Icons.cloud_off,
-                          color: drive.fileFound ? Colors.green : Colors.red,
-                          size: 64,
-                        ),
-                        Text(
-                          drive.fileFound ? 'File Found' : 'File Not Found',
-                          style: TextStyle(
-                            color: drive.fileFound ? Colors.green : Colors.red,
-                          ),
-                        ),
-                        SizedBox(height: 8),
-                        Text(
-                          drive.fileFound
-                              ? 'Last time uploaded: ${dateFormat.format(drive.modifiedDate)}'
-                              : 'Last time uploaded: Never',
-                          style: TextStyle(
-                            color: Colors.black54,
-                          ),
-                        ),
-                        ButtonBar(
-                          alignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            FlatButton(
-                              onPressed: () => _work(drive.uploadDB()),
-                              child: Text(
-                                'UPLOAD',
-                                style: TextStyle(color: Colors.black87),
-                              ),
-                            ),
-                            if (drive.fileFound)
-                              FlatButton(
-                                onPressed: () => _work(drive.downloadDB()),
-                                child: Text(
-                                  'DOWNLOAD',
-                                  style: TextStyle(color: Colors.black87),
-                                ),
-                              ),
-                            if (drive.fileFound)
-                              FlatButton(
-                                onPressed: () => _work(drive.deleteDB()),
-                                child: Text(
-                                  'DELETE',
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ),
-                          ],
-                        ),
-                      ],
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Icon(
+                      widget.drive.fileFound
+                          ? Icons.cloud_done
+                          : Icons.cloud_off,
+                      color: widget.drive.fileFound ? Colors.green : Colors.red,
+                      size: 64,
                     ),
-                  ),
-                  if (_working) LinearProgressIndicator(minHeight: 6),
-                ],
+                    Text(
+                      widget.drive.fileFound ? 'File Found' : 'File Not Found',
+                      style: TextStyle(
+                        color:
+                            widget.drive.fileFound ? Colors.green : Colors.red,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Text(
+                      widget.drive.fileFound
+                          ? 'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}'
+                          : 'Last time uploaded: Never',
+                      style: TextStyle(
+                        color: Colors.black54,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             );
           default:

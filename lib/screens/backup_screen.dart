@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/warning_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
 import 'package:keyway/widgets/Cards/backup_status_card.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BackupScreen extends StatefulWidget {
   static const routeName = '/backup';
@@ -12,10 +14,26 @@ class BackupScreen extends StatefulWidget {
 }
 
 class _BackupScreenState extends State<BackupScreen> {
+  Future _silently;
+  DriveProvider _drive;
+  SharedPreferences _pref;
+
+  void _loadPreferences() async {
+    _pref = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _trySilently() async => await _drive.trySignInSilently();
+
+  @override
+  void initState() {
+    _loadPreferences();
+    _drive = Provider.of<DriveProvider>(context, listen: false);
+    _silently = _trySilently();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
-    drive.trySignInSilently();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -28,85 +46,224 @@ class _BackupScreenState extends State<BackupScreen> {
         centerTitle: true,
       ),
       body: FutureBuilder(
-        future: drive.trySignInSilently(),
-        builder: (ctx, snap) => snap.connectionState == ConnectionState.waiting
-            ? Center(child: CircularProgressIndicator())
-            : Consumer<DriveProvider>(
-                child: NoSignedInBody(drive: drive),
-                builder: (ctx, dp, ch) =>
-                    dp.currentUser == null ? ch : SignedInBody(drive: drive),
-              ),
+        future: _silently,
+        builder: (ctx, snap) {
+          switch (snap.connectionState) {
+            case ConnectionState.none:
+              return Center(child: Text('none'));
+              break;
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+              break;
+            case ConnectionState.done:
+              return _drive.currentUser == null
+                  ? NoSignedInBody(drive: _drive)
+                  : SignedInBody(drive: _drive, pref: _pref);
+              break;
+            default:
+              return Center(child: Text('default'));
+          }
+        },
       ),
     );
   }
 }
 
-class SignedInBody extends StatelessWidget {
+class SignedInBody extends StatefulWidget {
   const SignedInBody({
     Key key,
     @required this.drive,
+    @required this.pref,
   }) : super(key: key);
 
   final DriveProvider drive;
+  final SharedPreferences pref;
+
+  @override
+  _SignedInBodyState createState() => _SignedInBodyState();
+}
+
+class _SignedInBodyState extends State<SignedInBody> {
+  bool _working = false;
+
+  Future<void> _uploadDB() async {
+    setState(() => _working = true);
+    await widget.drive.uploadDB();
+    setState(() => _working = false);
+  }
+
+  Future<void> _deleteDB(BuildContext context) async {
+    if (await WarningHelper.deleteWarning(context)) {
+      setState(() => _working = true);
+      await widget.drive.deleteDB();
+      setState(() => _working = false);
+    }
+  }
+
+  bool _automaticUpdates() {
+    bool _au = widget.pref.getBool('AutomaticUploads');
+    if (_au != null) return _au;
+    widget.pref.setBool('AutomaticUploads', false);
+    return false;
+  }
+
+  Future<void> _automaticUpdatesSwitch() async {
+    bool _au = widget.pref.getBool('AutomaticUploads');
+    if (_au != null) {
+      if (_au)
+        widget.pref.setBool('AutomaticUploads', false);
+      else {
+        widget.pref.setBool('AutomaticUploads', true);
+        _uploadDB();
+      }
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(32.0),
+    return SingleChildScrollView(
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'GOOGLE DRIVE \nFILE \nSTATUS',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black45,
+              Container(
+                height: MediaQuery.of(context).size.height * .6,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'FILE STATUS',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black45,
+                      ),
+                    ),
+                    Container(
+                      height: 192,
+                      width: MediaQuery.of(context).size.width * .75,
+                      padding: const EdgeInsets.all(16.0),
+                      child: BackupStatusCard(drive: widget.drive),
+                    ),
+                    if (_working)
+                      Center(
+                        child: CircularProgressIndicator(
+                          backgroundColor: Colors.orange[400],
+                        ),
+                      ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('Automatic uploads'),
+                              Switch(
+                                activeColor: Theme.of(context).primaryColor,
+                                value: _automaticUpdates(),
+                                onChanged: (_) => _automaticUpdatesSwitch(),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                    if (!widget.pref.getBool('AutomaticUploads') && !_working)
+                      ButtonTheme(
+                        height: 48,
+                        child: RaisedButton.icon(
+                          color: Colors.orange[400],
+                          onPressed: _uploadDB,
+                          icon: Icon(
+                            Icons.upload_rounded,
+                            color: Colors.white,
+                            size: 32,
+                          ),
+                          label: Text(
+                            'Upload',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                            ),
+                          ),
+                          shape: StadiumBorder(),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: BackupStatusCard(),
+              Column(
+                children: [
+                  if (widget.drive.fileFound && !_working)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 32.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FloatingActionButton(
+                            backgroundColor: Colors.blue[900],
+                            onPressed: () {},
+                            child: Icon(
+                              Icons.download_rounded,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                          SizedBox(width: 16),
+                          FloatingActionButton(
+                            backgroundColor: Colors.red,
+                            onPressed: () => _deleteDB(context),
+                            child: Icon(
+                              Icons.delete_forever_rounded,
+                              color: Colors.white,
+                              size: 32,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  RaisedButton(
+                    onPressed: () => widget.drive.handleSignOut(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Image(
+                            image: AssetImage('assets/google_logo.png'),
+                            height: 32,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Text(
+                              'Sign Out',
+                              style: TextStyle(color: Colors.red),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Center(
-            child: RaisedButton(
-              onPressed: () => drive.handleSignOut(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Image(
-                      image: AssetImage('assets/google_logo.png'),
-                      height: 32,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        'Sign Out',
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(32),
-              ),
-            ),
-          ),
-        ),
-      ],
+      ),
     );
   }
 }

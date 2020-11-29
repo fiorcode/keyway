@@ -98,7 +98,7 @@ class DriveProvider with ChangeNotifier {
     return _db;
   }
 
-  Future checkStatus() async {
+  Future<void> checkStatus() async {
     try {
       if (_lastCheck != null) {
         var secSinceLastCheck =
@@ -117,7 +117,7 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future downloadDB() async {
+  Future<void> downloadDB() async {
     try {
       api.File _db = await _getDB();
       if (_db != null) {
@@ -140,7 +140,7 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future uploadDB() async {
+  Future<void> uploadDB() async {
     try {
       final _dbPath = await sql.getDatabasesPath();
       final _localDB = File('$_dbPath/kw.db');
