@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
-import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
-import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
-import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/helpers/db_helper.dart';
+import 'package:keyway/helpers/warning_helper.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -14,32 +12,109 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
-  CriptoProvider cripto;
-  ItemProvider items;
-  Future getOldItems;
-  Future getDeletedItems;
+  Future<int> _dbSize;
+  Future<DateTime> _dbLastModified;
 
-  Future<void> _getOldItems() async {
-    items = Provider.of<ItemProvider>(context, listen: false);
-    return await items.fetchAndSetOldItems();
+  // ItemProvider _items;
+  // Future _getOldItems;
+  // Future _getDeletedItems;
+
+  // Future<void> _getOld() async => await _items.fetchAndSetOldItems();
+
+  // Future<void> _getDeleted() async => await _items.fetchAndSetDeletedItems();
+
+  // onReturn() async {
+  //   _getOldItems = _getOld();
+  //   _getDeletedItems = _getDeleted();
+  //   setState(() {});
+  // }
+
+  Future<int> _getDBSize() async => await DBHelper.dbSize();
+
+  Future<DateTime> _getLastModified() async => await DBHelper.dbLastModified();
+
+  FutureBuilder _setDBSize() {
+    return FutureBuilder(
+      future: _dbSize,
+      builder: (ctx, snap) {
+        switch (snap.connectionState) {
+          case ConnectionState.waiting:
+            return Text('Size: Calculating...');
+            break;
+          case ConnectionState.done:
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Size: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '${snap.data} Bytes',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            );
+            break;
+          default:
+            return Text('Size: Unknown');
+        }
+      },
+    );
   }
 
-  Future<void> _getDeletedItems() async {
-    items = Provider.of<ItemProvider>(context, listen: false);
-    return await items.fetchAndSetDeletedItems();
+  FutureBuilder _setDBLastModified() {
+    return FutureBuilder(
+      future: _dbLastModified,
+      builder: (ctx, snap) {
+        switch (snap.connectionState) {
+          case ConnectionState.waiting:
+            return Text('Last Modified: Calculating...');
+            break;
+          case ConnectionState.done:
+            DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+            return Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Last Modified: ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w900,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '${dateFormat.format(snap.data)}',
+                  style: TextStyle(fontSize: 14),
+                ),
+              ],
+            );
+            break;
+          default:
+            return Text('Last Modified: Unknown');
+        }
+      },
+    );
   }
 
-  onReturn() async {
-    getOldItems = _getOldItems();
-    getDeletedItems = _getDeletedItems();
-    setState(() {});
+  Future<void> _deleteDB(BuildContext context) async {
+    if (await WarningHelper.deleteDBWarning(context)) {}
   }
 
   @override
   void initState() {
-    cripto = Provider.of<CriptoProvider>(context, listen: false);
-    getDeletedItems = _getDeletedItems();
-    getOldItems = _getOldItems();
+    // _items = Provider.of<ItemProvider>(context, listen: false);
+    // _getDeletedItems = _getDeleted();
+    // _getOldItems = _getOld();
+    _dbSize = _getDBSize();
+    _dbLastModified = _getLastModified();
     super.initState();
   }
 
@@ -51,46 +126,158 @@ class _DataScreenState extends State<DataScreen> {
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
-      body: FutureBuilder(
-        future: getOldItems,
-        builder: (ctx, snap) {
-          switch (snap.connectionState) {
-            case ConnectionState.none:
-              return Center(child: Text('none'));
-            case (ConnectionState.waiting):
-              return Center(child: CircularProgressIndicator());
-            case (ConnectionState.done):
-              return Stack(
-                children: [
-                  items.oldItems.length <= 0
-                      ? Center(
-                          child: Icon(
-                            Icons.blur_on,
-                            size: 128,
-                            color: Colors.white54,
-                          ),
-                        )
-                      : ListView.builder(
-                          padding: EdgeInsets.all(8),
-                          itemCount: items.oldItems.length,
-                          itemBuilder: (ctx, i) {
-                            return Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 1),
-                              child: cripto.locked
-                                  ? AlphaLockedCard(alpha: items.oldItems[i])
-                                  : AlphaUnlockedCard(
-                                      alpha: items.oldItems[i],
-                                      onReturn: onReturn,
-                                    ),
-                            );
-                          },
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            children: [
+              Card(
+                clipBehavior: Clip.antiAlias,
+                elevation: 8,
+                shadowColor: Colors.grey,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16.0),
+                  side: BorderSide(width: 3, color: Colors.white),
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Colors.grey[100],
+                        Colors.grey[300],
+                        Colors.grey[600],
+                      ],
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          'Local Database Status',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 18),
                         ),
-                ],
-              );
-            default:
-              return Center(child: Text('default'));
-          }
-        },
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.donut_small,
+                            size: 92,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                        ),
+                        Column(
+                          children: [
+                            Chip(label: _setDBSize()),
+                            Chip(label: _setDBLastModified()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ButtonTheme(
+                  height: 48,
+                  minWidth: 128,
+                  shape: StadiumBorder(
+                    side: BorderSide(width: 3, color: Colors.white),
+                  ),
+                  child: RaisedButton.icon(
+                    color: Theme.of(context).backgroundColor,
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.history,
+                      color: Theme.of(context).primaryColor,
+                      size: 32,
+                    ),
+                    label: Row(
+                      children: [
+                        Text(
+                          'Items History',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(width: 24),
+                        Icon(Icons.keyboard_arrow_right, size: 32)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ButtonTheme(
+                  height: 48,
+                  minWidth: 128,
+                  shape: StadiumBorder(
+                    side: BorderSide(width: 3, color: Colors.white),
+                  ),
+                  child: RaisedButton.icon(
+                    color: Theme.of(context).backgroundColor,
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.remove_circle,
+                      color: Theme.of(context).primaryColor,
+                      size: 32,
+                    ),
+                    label: Row(
+                      children: [
+                        Text(
+                          'Removed Items',
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 16,
+                          ),
+                        ),
+                        SizedBox(width: 24),
+                        Icon(Icons.keyboard_arrow_right, size: 32)
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ButtonTheme(
+                  height: 48,
+                  minWidth: 128,
+                  shape: StadiumBorder(
+                    side: BorderSide(width: 3, color: Colors.red[200]),
+                  ),
+                  child: RaisedButton.icon(
+                    color: Colors.red,
+                    onPressed: () => _deleteDB(context),
+                    icon: Icon(
+                      Icons.delete_forever,
+                      color: Colors.white,
+                      size: 32,
+                    ),
+                    label: Text(
+                      'Delete Database',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w800,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

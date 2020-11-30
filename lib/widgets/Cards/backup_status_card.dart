@@ -76,42 +76,74 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
               elevation: 8,
               shadowColor: widget.drive.fileFound ? Colors.green : Colors.red,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(16.0),
                 side: BorderSide(
-                  width: 4,
+                  width: 3,
                   color: widget.drive.fileFound ? Colors.green : Colors.red,
                 ),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Icon(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white,
                       widget.drive.fileFound
-                          ? Icons.cloud_done
-                          : Icons.cloud_off,
-                      color: widget.drive.fileFound ? Colors.green : Colors.red,
-                      size: 64,
-                    ),
-                    Text(
-                      widget.drive.fileFound ? 'File Found' : 'File Not Found',
-                      style: TextStyle(
+                          ? Colors.green[100]
+                          : Colors.red[200],
+                      widget.drive.fileFound
+                          ? Colors.green[200]
+                          : Colors.red[200],
+                    ],
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        'Drive File Status',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: widget.drive.fileFound
+                              ? Colors.green
+                              : Colors.red,
+                        ),
+                      ),
+                      Icon(
+                        widget.drive.fileFound
+                            ? Icons.cloud_done
+                            : Icons.cloud_off,
                         color:
                             widget.drive.fileFound ? Colors.green : Colors.red,
-                        fontWeight: FontWeight.w600,
+                        size: 64,
                       ),
-                    ),
-                    Text(
-                      widget.drive.fileFound
-                          ? 'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}'
-                          : 'Last time uploaded: Never',
-                      style: TextStyle(
-                        color: Colors.black54,
+                      Text(
+                        widget.drive.fileFound
+                            ? 'File Found'
+                            : 'File Not Found',
+                        style: TextStyle(
+                          color: widget.drive.fileFound
+                              ? Colors.green
+                              : Colors.red,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    ),
-                  ],
+                      Text(
+                        widget.drive.fileFound
+                            ? 'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}'
+                            : 'Last time uploaded: Never',
+                        style: TextStyle(
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             );

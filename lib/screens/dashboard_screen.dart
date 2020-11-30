@@ -19,7 +19,10 @@ class DashboardScreen extends StatelessWidget {
         color: Theme.of(context).backgroundColor,
         child: GridView.count(
           crossAxisCount: 2,
-          childAspectRatio: 1.2,
+          crossAxisSpacing: 8,
+          childAspectRatio: 1.1,
+          mainAxisSpacing: 8,
+          padding: EdgeInsets.all(16.0),
           children: [
             DashboardCard(
               icon: Icon(Icons.cloud_upload, color: _primary, size: 64),

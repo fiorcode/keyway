@@ -27,9 +27,23 @@ class _BackupScreenState extends State<BackupScreen> {
   @override
   void initState() {
     _loadPreferences();
-    _drive = Provider.of<DriveProvider>(context, listen: false);
-    _silently = _trySilently();
     super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _drive = Provider.of<DriveProvider>(context, listen: true);
+    _silently = _trySilently();
+    super.didChangeDependencies();
+  }
+
+  Widget _setAppBarTitle() {
+    return _drive.currentUser != null ?? _drive.currentUser.photoUrl != null
+        ? CircleAvatar(
+            backgroundImage: NetworkImage(_drive.currentUser.photoUrl),
+            radius: AppBar().preferredSize.height * .40,
+          )
+        : null;
   }
 
   @override
@@ -39,10 +53,7 @@ class _BackupScreenState extends State<BackupScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        title: Image(
-          image: AssetImage('assets/drive_logo.png'),
-          height: AppBar().preferredSize.height * .60,
-        ),
+        title: _setAppBarTitle(),
         centerTitle: true,
       ),
       body: FutureBuilder(
@@ -92,8 +103,16 @@ class _SignedInBodyState extends State<SignedInBody> {
     setState(() => _working = false);
   }
 
-  Future<void> _deleteDB(BuildContext context) async {
-    if (await WarningHelper.deleteWarning(context)) {
+  Future<void> _downloadDB(BuildContext context) async {
+    if (await WarningHelper.downloadWarning(context)) {
+      setState(() => _working = true);
+      await widget.drive.downloadDB();
+      setState(() => _working = false);
+    }
+  }
+
+  Future<void> _deleteBackup(BuildContext context) async {
+    if (await WarningHelper.deleteBackupWarning(context)) {
       setState(() => _working = true);
       await widget.drive.deleteDB();
       setState(() => _working = false);
@@ -128,78 +147,63 @@ class _SignedInBodyState extends State<SignedInBody> {
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                height: MediaQuery.of(context).size.height * .6,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'FILE STATUS',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 32,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black45,
-                      ),
-                    ),
-                    Container(
-                      height: 192,
-                      width: MediaQuery.of(context).size.width * .75,
-                      padding: const EdgeInsets.all(16.0),
-                      child: BackupStatusCard(drive: widget.drive),
-                    ),
-                    if (_working)
-                      Center(
-                        child: CircularProgressIndicator(
-                          backgroundColor: Colors.orange[400],
-                        ),
-                      ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Column(
-                        children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text('Automatic uploads'),
-                              Switch(
-                                activeColor: Theme.of(context).primaryColor,
-                                value: _automaticUpdates(),
-                                onChanged: (_) => _automaticUpdatesSwitch(),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                    if (!widget.pref.getBool('AutomaticUploads') && !_working)
-                      ButtonTheme(
-                        height: 48,
-                        child: RaisedButton.icon(
-                          color: Colors.orange[400],
-                          onPressed: _uploadDB,
-                          icon: Icon(
-                            Icons.upload_rounded,
-                            color: Colors.white,
-                            size: 32,
-                          ),
-                          label: Text(
-                            'Upload',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                            ),
-                          ),
-                          shape: StadiumBorder(),
-                        ),
-                      ),
-                  ],
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Image(
+                  image: AssetImage('assets/drive_logo.png'),
+                  height: 92,
                 ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: BackupStatusCard(drive: widget.drive),
+                  ),
+                  if (_working)
+                    Center(
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.orange[400],
+                      ),
+                    ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Automatic uploads'),
+                      Switch(
+                        activeColor: Theme.of(context).primaryColor,
+                        value: _automaticUpdates(),
+                        onChanged: (_) => _automaticUpdatesSwitch(),
+                      ),
+                    ],
+                  ),
+                  if (!widget.pref.getBool('AutomaticUploads') && !_working)
+                    ButtonTheme(
+                      height: 48,
+                      child: RaisedButton.icon(
+                        color: Colors.orange[400],
+                        onPressed: _uploadDB,
+                        icon: Icon(
+                          Icons.upload_rounded,
+                          color: Colors.white,
+                          size: 32,
+                        ),
+                        label: Text(
+                          'Upload',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
+                        ),
+                        shape: StadiumBorder(),
+                      ),
+                    ),
+                ],
               ),
               Column(
                 children: [
@@ -212,7 +216,8 @@ class _SignedInBodyState extends State<SignedInBody> {
                         children: [
                           FloatingActionButton(
                             backgroundColor: Colors.blue[900],
-                            onPressed: () {},
+                            heroTag: null,
+                            onPressed: () => _downloadDB(context),
                             child: Icon(
                               Icons.download_rounded,
                               color: Colors.white,
@@ -222,7 +227,8 @@ class _SignedInBodyState extends State<SignedInBody> {
                           SizedBox(width: 16),
                           FloatingActionButton(
                             backgroundColor: Colors.red,
-                            onPressed: () => _deleteDB(context),
+                            heroTag: null,
+                            onPressed: () => _deleteBackup(context),
                             child: Icon(
                               Icons.delete_forever_rounded,
                               color: Colors.white,

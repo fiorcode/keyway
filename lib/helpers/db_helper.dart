@@ -20,6 +20,18 @@ class DBHelper {
     }, version: 1);
   }
 
+  static Future<int> dbSize() async {
+    final _dbPath = await sql.getDatabasesPath();
+    File _localFile = File('$_dbPath/kw.db');
+    return _localFile.length();
+  }
+
+  static Future<DateTime> dbLastModified() async {
+    final _dbPath = await sql.getDatabasesPath();
+    File _localFile = File('$_dbPath/kw.db');
+    return _localFile.lastModified();
+  }
+
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final db = await DBHelper.database();
     return db.query(table);

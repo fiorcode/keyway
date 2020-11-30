@@ -47,7 +47,6 @@ class DriveProvider with ChangeNotifier {
       if (await checkInternet()) {
         await _googleSignIn.signIn();
         _currentUser = _googleSignIn.currentUser;
-        notifyListeners();
       } else
         throw _connectionStatus;
     } catch (error) {
@@ -74,7 +73,6 @@ class DriveProvider with ChangeNotifier {
       );
       await _googleSignIn.signInSilently();
       _currentUser = _googleSignIn.currentUser;
-      notifyListeners();
     } else
       throw _connectionStatus;
   }
