@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/helpers/warning_helper.dart';
+import 'package:keyway/screens/items_history_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -14,20 +15,6 @@ class DataScreen extends StatefulWidget {
 class _DataScreenState extends State<DataScreen> {
   Future<int> _dbSize;
   Future<DateTime> _dbLastModified;
-
-  // ItemProvider _items;
-  // Future _getOldItems;
-  // Future _getDeletedItems;
-
-  // Future<void> _getOld() async => await _items.fetchAndSetOldItems();
-
-  // Future<void> _getDeleted() async => await _items.fetchAndSetDeletedItems();
-
-  // onReturn() async {
-  //   _getOldItems = _getOld();
-  //   _getDeletedItems = _getDeleted();
-  //   setState(() {});
-  // }
 
   Future<int> _getDBSize() async => await DBHelper.dbSize();
 
@@ -110,9 +97,6 @@ class _DataScreenState extends State<DataScreen> {
 
   @override
   void initState() {
-    // _items = Provider.of<ItemProvider>(context, listen: false);
-    // _getDeletedItems = _getDeleted();
-    // _getOldItems = _getOld();
     _dbSize = _getDBSize();
     _dbLastModified = _getLastModified();
     super.initState();
@@ -192,7 +176,8 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                   child: RaisedButton.icon(
                     color: Theme.of(context).backgroundColor,
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context)
+                        .pushNamed(ItemsHistoryScreen.routeName),
                     icon: Icon(
                       Icons.history,
                       color: Theme.of(context).primaryColor,

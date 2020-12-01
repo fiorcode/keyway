@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/screens/items_history_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/drive_provider.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
+          ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
         },
       ),
     );

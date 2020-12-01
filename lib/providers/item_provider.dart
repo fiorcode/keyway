@@ -24,15 +24,13 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> fetchAndSetOldItems() async {
-    _oldItems.clear();
-    await _fetchAndSetOld();
+    Iterable<Alpha> _iterOld;
+    await DBHelper.getData(DBHelper.oldsTable).then((data) {
+      _oldItems.clear();
+      _iterOld = data.map((e) => Alpha.fromMap(e));
+    });
+    _oldItems.addAll(_iterOld.toList());
     _oldItems.sort((a, b) => b.date.compareTo(a.date));
-    notifyListeners();
-  }
-
-  Future<void> _fetchAndSetOld() async {
-    final _alphaList = await DBHelper.getData(DBHelper.oldsTable);
-    _oldItems.addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
   }
 
   Future<void> fetchAndSetDeletedItems() async {
