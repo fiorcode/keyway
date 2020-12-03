@@ -4,10 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
-import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 import 'package:keyway/widgets/empty_items.dart';
+import 'package:keyway/widgets/Cards/alpha_historyList_card.dart';
 
 class ItemsHistoryScreen extends StatefulWidget {
   static const routeName = '/items-history';
@@ -23,7 +22,7 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getOld() async => await _items.fetchAndSetOldItems();
+  Future<void> _getOld() async => await _items.fetchItemsWithHistory();
 
   onReturn() {
     _getOldItems = _getOld();
@@ -84,21 +83,19 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.oldItems.length <= 10
+                    _items.itemsWithHistory.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(8),
-                            itemCount: _items.items.length,
+                            itemCount: _items.itemsWithHistory.length,
                             itemBuilder: (ctx, i) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
-                                child: _cripto.locked
-                                    ? AlphaLockedCard(alpha: _items.items[i])
-                                    : AlphaUnlockedCard(
-                                        alpha: _items.items[i],
-                                        onReturn: onReturn,
-                                      ),
+                                child: AlphaHistoryListCard(
+                                  alpha: _items.itemsWithHistory[i],
+                                  onReturn: onReturn,
+                                ),
                               );
                             },
                           ),

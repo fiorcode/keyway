@@ -5,14 +5,14 @@ import '../models/item.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
-  List<Item> _oldItems = [];
+  List<Item> _itemsWithHistory = [];
   List<Item> _deletedItems = [];
 
   List<Item> get items => [..._items];
-  List<Item> get oldItems => [..._oldItems];
+  List<Item> get itemsWithHistory => [..._itemsWithHistory];
   List<Item> get deletedItems => [..._deletedItems];
 
-  Future<void> fetchAndSetItems() async {
+  Future<void> fetchItems() async {
     Iterable<Alpha> _iter;
     await DBHelper.getData(DBHelper.itemsTable).then((data) {
       _items.clear();
@@ -23,14 +23,14 @@ class ItemProvider with ChangeNotifier {
     _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> fetchAndSetOldItems() async {
-    Iterable<Alpha> _iterOld;
-    await DBHelper.getData(DBHelper.oldsTable).then((data) {
-      _oldItems.clear();
-      _iterOld = data.map((e) => Alpha.fromMap(e));
+  Future<void> fetchItemsWithHistory() async {
+    Iterable<Alpha> _iterIWH;
+    await DBHelper.getItemsWithHistory().then((data) {
+      _itemsWithHistory.clear();
+      _iterIWH = data.map((e) => Alpha.fromMap(e));
     });
-    _oldItems.addAll(_iterOld.toList());
-    _oldItems.sort((a, b) => b.date.compareTo(a.date));
+    _itemsWithHistory.addAll(_iterIWH.toList());
+    _itemsWithHistory.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> fetchAndSetDeletedItems() async {
@@ -91,7 +91,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> setRepeated(String column, String value) async =>
-      await DBHelper.setRepeated(column, value);
+      await DBHelper.setItemRepeated(column, value);
 
   Future<void> refreshRepetedPassword(String p) async {
     List<Map<String, dynamic>> _list =

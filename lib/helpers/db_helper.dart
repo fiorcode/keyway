@@ -68,7 +68,7 @@ class DBHelper {
     return db.query(table, where: '$col = ?', whereArgs: [v]);
   }
 
-  static Future<int> setRepeated(String column, String value) async {
+  static Future<int> setItemRepeated(String column, String value) async {
     final db = await DBHelper.database();
     return await db.update(
       itemsTable,
@@ -86,6 +86,12 @@ class DBHelper {
       where: 'password = ?',
       whereArgs: [p],
     );
+  }
+
+  static Future<List<Map<String, dynamic>>> getItemsWithHistory() async {
+    final db = await DBHelper.database();
+    return await db.rawQuery(
+        'SELECT $itemsTable.id, $itemsTable.title, $itemsTable.username, $itemsTable.password, $itemsTable.pin, $itemsTable.ip, $itemsTable.date, $itemsTable.date_short, $itemsTable.color, $itemsTable.repeated, $itemsTable.strong, $itemsTable.expired FROM $itemsTable JOIN $oldsTable ON $itemsTable.id = $oldsTable.item_id GROUP BY $itemsTable.id');
   }
 
   static Future<void> removeDB() async {

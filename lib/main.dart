@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
+          ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
         },
       ),
     );

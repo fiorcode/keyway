@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/error_helper.dart';
-import '../providers/cripto_provider.dart';
-import '../providers/item_provider.dart';
-import '../screens/alpha_screen.dart';
-import '../screens/dashboard_screen.dart';
-import '../widgets/unlock_container.dart';
-import '../widgets/Cards/alpha_locked_card.dart';
-import '../widgets/Cards/alpha_unlocked_card.dart';
+import 'package:keyway/helpers/error_helper.dart';
+import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
+import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
 import 'package:keyway/widgets/empty_items.dart';
+import 'package:keyway/widgets/unlock_container.dart';
+import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/providers/item_provider.dart';
 
-class ItemsListScreen extends StatefulWidget {
-  static const routeName = '/items';
+class ItemHistoryScreen extends StatefulWidget {
+  static const routeName = '/item-history';
+  const ItemHistoryScreen({Key key, this.itemId}) : super(key: key);
+
+  final int itemId;
 
   @override
-  _ItemsListScreenState createState() => _ItemsListScreenState();
+  _ItemHistoryScreenState createState() => _ItemHistoryScreenState();
 }
 
-class _ItemsListScreenState extends State<ItemsListScreen> {
+class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
   bool _unlocking = false;
@@ -52,18 +53,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
+        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
-        leading: _cripto.locked
-            ? null
-            : IconButton(
-                icon: Icon(
-                  Icons.widgets,
-                  color: Theme.of(context).primaryColor,
-                ),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(DashboardScreen.routeName)
-                    .then((_) => onReturn()),
-              ),
         title: _cripto.locked
             ? IconButton(
                 icon: Icon(
@@ -71,10 +62,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
                 // onPressed: cripto.locked ? _lockSwitch : null,
-                onPressed: () {
-                  _cripto.unlock('Qwe123!');
-                  setState(() {});
-                },
+                onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : _items.items.length > 10
                 ? IconButton(
@@ -83,24 +71,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   )
                 : IconButton(
                     icon: Icon(Icons.lock_open_sharp, color: Colors.green),
-                    onPressed: () {
-                      _cripto.lock();
-                      setState(() {});
-                    },
+                    onPressed: () => _cripto.lock(),
                   ),
-        actions: _cripto.locked
-            ? null
-            : [
-                IconButton(
-                  icon: Icon(
-                    Icons.add,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AlphaScreen.routeName)
-                      .then((_) => onReturn()),
-                ),
-              ],
       ),
       body: FutureBuilder(
         future: getItems,
