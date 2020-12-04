@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/helpers/warning_helper.dart';
+import 'package:keyway/screens/deleted_items_screen.dart';
 import 'package:keyway/screens/items_history_screen.dart';
 
 class DataScreen extends StatefulWidget {
@@ -210,16 +211,17 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                   child: RaisedButton.icon(
                     color: Theme.of(context).backgroundColor,
-                    onPressed: () {},
+                    onPressed: () => Navigator.of(context)
+                        .pushNamed(DeletedItemsScreen.routeName),
                     icon: Icon(
-                      Icons.remove_circle,
+                      Icons.delete,
                       color: Theme.of(context).primaryColor,
                       size: 32,
                     ),
                     label: Row(
                       children: [
                         Text(
-                          'Removed Items',
+                          'Deleted Items',
                           style: TextStyle(
                             color: Theme.of(context).primaryColor,
                             fontWeight: FontWeight.w800,

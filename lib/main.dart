@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/screens/deleted_items_screen.dart';
 import 'package:keyway/screens/items_history_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.grey,
           primaryColor: Colors.grey[800],
-          primaryColorLight: Colors.grey[200],
+          primaryColorLight: Colors.grey[100],
           accentColor: Colors.white,
           backgroundColor: Colors.grey[200],
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
+          DeletedItemsScreen.routeName: (ctx) => DeletedItemsScreen(),
         },
       ),
     );

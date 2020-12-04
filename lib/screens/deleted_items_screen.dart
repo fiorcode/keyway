@@ -4,28 +4,30 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/widgets/unlock_container.dart';
+import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
+import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
 import 'package:keyway/widgets/empty_items.dart';
-import 'package:keyway/widgets/Cards/alpha_historyList_card.dart';
+import 'package:keyway/widgets/unlock_container.dart';
 
-class ItemsHistoryScreen extends StatefulWidget {
-  static const routeName = '/items-history';
+class DeletedItemsScreen extends StatefulWidget {
+  static const routeName = '/deleted-items';
+
   @override
-  _ItemsHistoryScreenState createState() => _ItemsHistoryScreenState();
+  _DeletedItemsScreenState createState() => _DeletedItemsScreenState();
 }
 
-class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
+class _DeletedItemsScreenState extends State<DeletedItemsScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
   bool _unlocking = false;
-  Future _getOldItems;
+  Future getDeletedItems;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getOld() async => await _items.fetchItemsWithHistory();
+  Future<void> _getDeletedItems() async => await _items.fetchDeletedItems();
 
   onReturn() {
-    _getOldItems = _getOld();
+    getDeletedItems = _getDeletedItems();
     setState(() {});
   }
 
@@ -38,7 +40,7 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context);
-    _getOldItems = _getOld();
+    getDeletedItems = _getDeletedItems();
     super.didChangeDependencies();
   }
 
@@ -57,7 +59,10 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
                 // onPressed: cripto.locked ? _lockSwitch : null,
-                onPressed: () => _cripto.unlock('Qwe123!'),
+                onPressed: () {
+                  _cripto.unlock('Qwe123!');
+                  setState(() {});
+                },
               )
             : _items.items.length > 10
                 ? IconButton(
@@ -66,11 +71,14 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
                   )
                 : IconButton(
                     icon: Icon(Icons.lock_open_sharp, color: Colors.green),
-                    onPressed: () => _cripto.lock(),
+                    onPressed: () {
+                      _cripto.lock();
+                      setState(() {});
+                    },
                   ),
       ),
       body: FutureBuilder(
-        future: _getOldItems,
+        future: getDeletedItems,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -83,20 +91,20 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.itemsWithHistory.length <= 0
+                    _items.deletedItems.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
-                            padding: EdgeInsets.all(8),
-                            itemCount: _items.itemsWithHistory.length,
+                            padding: EdgeInsets.all(12.0),
+                            itemCount: _items.deletedItems.length,
                             itemBuilder: (ctx, i) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 1),
-                                child: AlphaHistoryListCard(
-                                  item: _items.itemsWithHistory[i],
-                                  onReturn: onReturn,
-                                ),
-                              );
+                              return _cripto.locked
+                                  ? AlphaLockedCard(
+                                      alpha: _items.deletedItems[i],
+                                    )
+                                  : AlphaUnlockedCard(
+                                      alpha: _items.deletedItems[i],
+                                      onReturn: onReturn,
+                                    );
                             },
                           ),
                     if (_unlocking && _cripto.locked)

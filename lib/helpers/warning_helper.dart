@@ -79,6 +79,53 @@ class WarningHelper {
     );
   }
 
+  static Future<bool> deleteItemWarning(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.red[400],
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Icon(Icons.warning, color: Colors.white, size: 92),
+              SizedBox(height: 8),
+              Text(
+                ' Delete item',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'You\'re about to delete this item. \n\nDo you want to proceed?',
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.white),
+          ),
+          actions: [
+            FlatButton(
+              color: Colors.white,
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text('CANCEL'),
+            ),
+            SizedBox(width: 24),
+            FlatButton(
+              color: Colors.redAccent[100],
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(
+                'DELETE ITEM',
+                style: TextStyle(color: Colors.red[900]),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   static Future<bool> deleteBackupWarning(BuildContext context) async {
     return showDialog<bool>(
       context: context,

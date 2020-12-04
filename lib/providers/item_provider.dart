@@ -6,10 +6,12 @@ import '../models/item.dart';
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
   List<Item> _itemsWithHistory = [];
+  List<Item> _itemHistory = [];
   List<Item> _deletedItems = [];
 
   List<Item> get items => [..._items];
   List<Item> get itemsWithHistory => [..._itemsWithHistory];
+  List<Item> get itemHistory => [..._itemHistory];
   List<Item> get deletedItems => [..._deletedItems];
 
   Future<void> fetchItems() async {
@@ -24,26 +26,39 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> fetchItemsWithHistory() async {
-    Iterable<Alpha> _iterIWH;
+    Iterable<OldAlpha> _iterIWH;
+    Iterable<DeletedAlpha> _iterDIWH;
+    _itemsWithHistory.clear();
     await DBHelper.getItemsWithHistory().then((data) {
-      _itemsWithHistory.clear();
-      _iterIWH = data.map((e) => Alpha.fromMap(e));
+      _iterIWH = data.map((e) => OldAlpha.fromMap(e));
     });
     _itemsWithHistory.addAll(_iterIWH.toList());
+    await DBHelper.getDeletedItemsWithHistory().then((data) {
+      _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
+    });
+    _itemsWithHistory.addAll(_iterDIWH.toList());
     _itemsWithHistory.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> fetchAndSetDeletedItems() async {
-    _deletedItems.clear();
-    await _fetchAndSetDeleted();
-    _deletedItems.sort((a, b) => b.date.compareTo(a.date));
-    notifyListeners();
+  Future<void> fetchItemHistory(int itemId) async {
+    Iterable<OldAlpha> _iterIH;
+    await DBHelper.getByValue(DBHelper.oldsTable, 'item_id', itemId)
+        .then((data) {
+      _itemHistory.clear();
+      _iterIH = data.map((e) => OldAlpha.fromMap(e));
+    });
+    _itemHistory.addAll(_iterIH.toList());
+    _itemHistory.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> _fetchAndSetDeleted() async {
-    final _alphaList = await DBHelper.getData(DBHelper.deletedTable);
-    _deletedItems
-        .addAll(_alphaList.map((item) => Alpha.fromMap(item)).toList());
+  Future<void> fetchDeletedItems() async {
+    Iterable<DeletedAlpha> _iterDI;
+    await DBHelper.getData(DBHelper.deletedTable).then((data) {
+      _deletedItems.clear();
+      _iterDI = data.map((e) => DeletedAlpha.fromMap(e));
+    });
+    _deletedItems.addAll(_iterDI.toList());
+    _deletedItems.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> insert(Alpha item) async =>

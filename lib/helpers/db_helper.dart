@@ -63,7 +63,7 @@ class DBHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getByValue(
-      String table, String col, String v) async {
+      String table, String col, dynamic v) async {
     final db = await DBHelper.database();
     return db.query(table, where: '$col = ?', whereArgs: [v]);
   }
@@ -90,8 +90,26 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getItemsWithHistory() async {
     final db = await DBHelper.database();
-    return await db.rawQuery(
-        'SELECT $itemsTable.id, $itemsTable.title, $itemsTable.username, $itemsTable.password, $itemsTable.pin, $itemsTable.ip, $itemsTable.date, $itemsTable.date_short, $itemsTable.color, $itemsTable.repeated, $itemsTable.strong, $itemsTable.expired FROM $itemsTable JOIN $oldsTable ON $itemsTable.id = $oldsTable.item_id GROUP BY $itemsTable.id');
+    return await db.rawQuery('''SELECT 
+        $itemsTable.id, $itemsTable.title, $itemsTable.username, 
+        $itemsTable.password, $itemsTable.pin, $itemsTable.ip, 
+        $itemsTable.date, $itemsTable.date_short, $itemsTable.color, 
+        $itemsTable.repeated, $itemsTable.strong, $itemsTable.expired 
+        FROM $itemsTable 
+        JOIN $oldsTable ON $itemsTable.id = $oldsTable.item_id 
+        GROUP BY $itemsTable.id''');
+  }
+
+  static Future<List<Map<String, dynamic>>> getDeletedItemsWithHistory() async {
+    final db = await DBHelper.database();
+    return await db.rawQuery('''SELECT 
+        $deletedTable.id, $deletedTable.title, $deletedTable.username, 
+        $deletedTable.password, $deletedTable.pin, $deletedTable.ip, 
+        $deletedTable.date, $deletedTable.date_short, $deletedTable.color, 
+        $deletedTable.repeated, $deletedTable.strong, $deletedTable.expired, $deletedTable.item_id 
+        FROM $deletedTable 
+        JOIN $oldsTable ON $deletedTable.item_id = $oldsTable.item_id 
+        GROUP BY $deletedTable.id''');
   }
 
   static Future<void> removeDB() async {

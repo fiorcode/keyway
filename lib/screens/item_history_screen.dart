@@ -23,14 +23,15 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
   bool _unlocking = false;
-  Future getItems;
+  Future getItemHistory;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItems() async => await _items.fetchItems();
+  Future<void> _getItemHistory() async =>
+      await _items.fetchItemHistory(widget.itemId);
 
   onReturn() {
-    getItems = _getItems();
+    getItemHistory = _getItemHistory();
     setState(() {});
   }
 
@@ -43,7 +44,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context);
-    getItems = _getItems();
+    getItemHistory = _getItemHistory();
     super.didChangeDependencies();
   }
 
@@ -75,7 +76,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                   ),
       ),
       body: FutureBuilder(
-        future: getItems,
+        future: getItemHistory,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -88,16 +89,17 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.items.length <= 0
+                    _items.itemHistory.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(12.0),
-                            itemCount: _items.items.length,
+                            itemCount: _items.itemHistory.length,
                             itemBuilder: (ctx, i) {
                               return _cripto.locked
-                                  ? AlphaLockedCard(alpha: _items.items[i])
+                                  ? AlphaLockedCard(
+                                      alpha: _items.itemHistory[i])
                                   : AlphaUnlockedCard(
-                                      alpha: _items.items[i],
+                                      alpha: _items.itemHistory[i],
                                       onReturn: onReturn,
                                     );
                             },

@@ -8,7 +8,6 @@ import '../providers/item_provider.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
-import '../screens/items_screen.dart';
 import '../widgets/presets_wrap.dart';
 import '../widgets/TextFields/ip_text_field.dart';
 import '../widgets/TextFields/password_text_field.dart';
@@ -193,32 +192,11 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
   }
 
-  void _delete(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Delete item'),
-          content: Text('Are you sure you want to delete this item?'),
-          actions: <Widget>[
-            FlatButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('CANCEL', style: TextStyle(color: Colors.red)),
-            ),
-            FlatButton(
-              onPressed: () => _deleteConfirmed(context),
-              child: Text('DELETE', style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    );
+  void _delete(BuildContext context) async {
+    if (await WarningHelper.deleteItemWarning(context)) {
+      _items.delete(_item).then((_) => Navigator.of(context).pop());
+    }
   }
-
-  void _deleteConfirmed(BuildContext context) => _items.delete(_item).then(
-        (_) => Navigator.of(context)
-            .popUntil(ModalRoute.withName(ItemsListScreen.routeName)),
-      );
 
   @override
   void initState() {
@@ -243,8 +221,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
-        centerTitle: true,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        centerTitle: true,
         title: _cripto.locked
             ? IconButton(
                 icon: Icon(
@@ -317,12 +295,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     child: AlphaPreviewCard(_item),
                   ),
                   if (widget.item != null)
-                    FlatButton(
+                    FloatingActionButton(
+                      backgroundColor: Colors.red,
                       onPressed: () => _delete(context),
-                      child: Text(
-                        'DELETE',
-                        style: TextStyle(color: Colors.red),
-                      ),
+                      child: Icon(Icons.delete, color: Colors.white),
                     ),
                 ],
               ),
