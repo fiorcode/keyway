@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+import 'package:intl/intl.dart';
+import 'package:keyway/providers/cripto_provider.dart';
 
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
@@ -129,6 +132,60 @@ class ItemProvider with ChangeNotifier {
         await DBHelper.update('items', i.toMap());
       }
     });
+  }
+
+  Future<void> mockData(CriptoProvider _cripto) async {
+    List<String> _titles = [
+      'Facebook',
+      'Instagram',
+      'Spotify',
+      'Github',
+      'Discord',
+      'Google',
+      'Steam',
+      'Hotmail',
+      'Siglo21'
+    ];
+    List<String> _users = [
+      'FacebookUser',
+      'InstagramUser',
+      'SpotifyUser',
+      'GithubUser',
+      'DiscordUser',
+      'GoogleUser',
+      'SteamUser',
+      'HotmailUser',
+      'Siglo21User'
+    ];
+    List<String> _passes = [
+      'FacebookPass',
+      'InstagramPass',
+      'SpotifyPass',
+      'GithubPass',
+      'DiscordPass',
+      'GooglePass',
+      'SteamPass',
+      'HotmailPass',
+      'Siglo21Pass'
+    ];
+    Random _ran = Random(59986674);
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+    _cripto.unlock('Qwe123!');
+    for (int i = 0; i < _titles.length; i++) {
+      DateTime _date = DateTime(2020, _ran.nextInt(11) + 1);
+      insert(Alpha(
+          title: _titles[i],
+          username: _cripto.doCrypt(_users[i]),
+          password: _cripto.doCrypt(_passes[i]),
+          pin: '',
+          ip: '',
+          strong: _titles[i].contains('g') ? 'TRUE' : 'FALSE',
+          date: _date.toIso8601String(),
+          shortDate: dateFormat.format(_date),
+          color: _ran.nextInt(4294967295),
+          repeated: 'n',
+          expired: _date.month < 7 ? 'y' : 'n'));
+    }
   }
 
   void dispose() {
