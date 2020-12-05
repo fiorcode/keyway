@@ -107,7 +107,7 @@ class CriptoProvider with ChangeNotifier {
     return _crypter.decrypt64(value, iv: e.IV.fromLength(16));
   }
 
-  _setKey(String password) {
+  void _setKey(String password) {
     _key = password;
     int _i = 0;
     while (_key.length < 32) {

@@ -12,21 +12,25 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  CriptoProvider _cripto;
+  ItemProvider _item;
+
   @override
   void initState() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    _item = Provider.of<ItemProvider>(context, listen: false);
     checkFirstRun();
     super.initState();
   }
 
   checkFirstRun() async {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     if (await _cripto.isMasterKey()) {
-      ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
-      if (_item.items.length <= 0)
-        await _item.mockData(_cripto).then((value) => Navigator.of(context)
+      await _item.fetchItems();
+      if (_item.items.length <= 0) {
+        Future<void> _mock = _item.mockData(_cripto);
+        _mock.then((value) => Navigator.of(context)
             .pushReplacementNamed(ItemsListScreen.routeName));
-      else
+      } else
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } else {
       Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);

@@ -69,10 +69,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
                 // onPressed: cripto.locked ? _lockSwitch : null,
-                onPressed: () {
-                  _cripto.unlock('Qwe123!');
-                  setState(() {});
-                },
+                onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : _items.items.length > 10
                 ? IconButton(

@@ -123,13 +123,13 @@ class ItemProvider with ChangeNotifier {
     _items.cast<Alpha>().forEach((i) async {
       i.dateTime = DateTime.parse(i.date);
       int _diff = i.dateTime.difference(DateTime.now()).inDays.abs();
-      if (_diff > 2 && i.expired != 'y') {
+      if (_diff > 180 && i.expired != 'y') {
         i.expired = 'y';
-        await DBHelper.update('items', i.toMap());
+        await DBHelper.update(DBHelper.itemsTable, i.toMap());
       }
-      if (_diff <= 2 && i.expired == 'y') {
+      if (_diff <= 180 && i.expired == 'y') {
         i.expired = 'n';
-        await DBHelper.update('items', i.toMap());
+        await DBHelper.update(DBHelper.itemsTable, i.toMap());
       }
     });
   }
