@@ -114,7 +114,7 @@ class _SignedInBodyState extends State<SignedInBody> {
   Future<void> _deleteBackup(BuildContext context) async {
     if (await WarningHelper.deleteBackupWarning(context)) {
       setState(() => _working = true);
-      await widget.drive.deleteDB();
+      await widget.drive.deleteDriveDB();
       setState(() => _working = false);
     }
   }

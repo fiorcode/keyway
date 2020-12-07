@@ -16,6 +16,7 @@ class SetPasswordScreen extends StatefulWidget {
 }
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
+  CriptoProvider _cripto;
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
 
@@ -25,7 +26,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   bool _strong = false;
   bool _equals = false;
 
-  _checkPassword() =>
+  void _checkPassword() =>
       setState(() => _strong = PasswordHelper.isStrong(_passCtrler.text));
 
   _checkConfirmPassword() =>
@@ -45,10 +46,10 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   _setPassword() async {
     try {
-      CriptoProvider cripto =
-          Provider.of<CriptoProvider>(context, listen: false);
-      if (await cripto.initialSetup(_passCtrler.text))
+      _cripto = Provider.of<CriptoProvider>(context, listen: false);
+      if (await _cripto.initialSetup(_passCtrler.text)) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+      }
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }

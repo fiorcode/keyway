@@ -166,7 +166,7 @@ class DriveProvider with ChangeNotifier {
     }
   }
 
-  Future deleteDB() async {
+  Future deleteDriveDB() async {
     try {
       api.File _db = await _getDB();
       api.DriveApi drive = await _getApi();

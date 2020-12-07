@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyway/screens/deleted_items_screen.dart';
-import 'package:keyway/screens/items_history_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'screens/items_history_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
@@ -16,6 +15,7 @@ import 'screens/alpha_screen.dart';
 import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
+import 'screens/deleted_items_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,6 +41,7 @@ class MyApp extends StatelessWidget {
         ),
         home: SplashScreen(),
         routes: {
+          SplashScreen.routeName: (ctx) => SplashScreen(),
           SetPasswordScreen.routeName: (ctx) => SetPasswordScreen(),
           RestoreScreen.routeName: (ctx) => RestoreScreen(),
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
@@ -19,6 +20,8 @@ class DBHelper {
       await db.execute(createDeletedItemsTable);
     }, version: 1);
   }
+
+  static Future<String> dbPath() async => await sql.getDatabasesPath();
 
   static Future<int> dbSize() async {
     final _dbPath = await sql.getDatabasesPath();
@@ -112,9 +115,17 @@ class DBHelper {
         GROUP BY $deletedTable.id''');
   }
 
-  static Future<void> removeDB() async {
-    final dbPath = await sql.getDatabasesPath();
-    File('$dbPath/kw.db').delete();
+  static Future<bool> removeDB() async {
+    try {
+      // database().then((db) => db.close());
+      final _dbPath = await sql.getDatabasesPath();
+      sql.deleteDatabase(_dbPath);
+      //File('$_dbPath/kw.db').delete();
+      SharedPreferences _pref = await SharedPreferences.getInstance();
+      return await _pref.clear();
+    } catch (e) {
+      throw e;
+    }
   }
 
   static const createUserDataTable = '''CREATE TABLE $userDataTable(

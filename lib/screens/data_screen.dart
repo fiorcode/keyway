@@ -5,6 +5,7 @@ import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/helpers/warning_helper.dart';
 import 'package:keyway/screens/deleted_items_screen.dart';
 import 'package:keyway/screens/items_history_screen.dart';
+import 'package:keyway/screens/splash_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -30,6 +31,7 @@ class _DataScreenState extends State<DataScreen> {
             return Text('Size: Calculating...');
             break;
           case ConnectionState.done:
+            String _size = snap.data == null ? '-' : '${snap.data} Bytes';
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -42,10 +44,7 @@ class _DataScreenState extends State<DataScreen> {
                     fontSize: 14,
                   ),
                 ),
-                Text(
-                  '${snap.data} Bytes',
-                  style: TextStyle(fontSize: 14),
-                ),
+                Text(_size, style: TextStyle(fontSize: 14)),
               ],
             );
             break;
@@ -66,6 +65,8 @@ class _DataScreenState extends State<DataScreen> {
             break;
           case ConnectionState.done:
             DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+            String _date =
+                snap.data == null ? '-' : dateFormat.format(snap.data);
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -78,10 +79,7 @@ class _DataScreenState extends State<DataScreen> {
                     fontSize: 14,
                   ),
                 ),
-                Text(
-                  '${dateFormat.format(snap.data)}',
-                  style: TextStyle(fontSize: 14),
-                ),
+                Text(_date, style: TextStyle(fontSize: 14)),
               ],
             );
             break;
@@ -93,7 +91,12 @@ class _DataScreenState extends State<DataScreen> {
   }
 
   Future<void> _deleteDB(BuildContext context) async {
-    if (await WarningHelper.deleteDBWarning(context)) {}
+    if (await WarningHelper.deleteDBWarning(context)) {
+      if (await DBHelper.removeDB()) {
+        Navigator.of(context)
+            .pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
+      }
+    }
   }
 
   @override

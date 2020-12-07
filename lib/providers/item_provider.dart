@@ -117,7 +117,12 @@ class ItemProvider with ChangeNotifier {
     if (_list.length < 2) DBHelper.refreshRepetedPassword(p);
   }
 
-  Future<void> removeItems() async => await DBHelper.removeDB();
+  Future<void> removeItems() async {
+    _items.clear();
+    _itemsWithHistory.clear();
+    _itemHistory.clear();
+    _deletedItems.clear();
+  }
 
   Future<void> _checkExpirations() async {
     _items.cast<Alpha>().forEach((i) async {
