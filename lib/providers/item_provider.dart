@@ -67,14 +67,18 @@ class ItemProvider with ChangeNotifier {
   Future<void> insert(Alpha item) async =>
       await DBHelper.insert(DBHelper.itemsTable, item.toMap());
 
-  Future<void> update(Alpha item) async =>
-      await DBHelper.getItemById(item.id).then(
-        (value) async {
-          OldAlpha old = OldAlpha.fromAlpha(Alpha.fromMap(value.first));
+  Future<void> update(Alpha item) async {
+    await DBHelper.getItemById(item.id).then(
+      (value) async {
+        Alpha _a = Alpha.fromMap(value.first);
+        if (_a.savePrevious(item)) {
+          OldAlpha old = OldAlpha.fromAlpha(_a);
           await DBHelper.insert(DBHelper.oldsTable, old.toMap());
-          await DBHelper.update(DBHelper.itemsTable, item.toMap());
-        },
-      );
+        }
+      },
+    );
+    await DBHelper.update(DBHelper.itemsTable, item.toMap());
+  }
 
   Future<void> delete(Alpha item) async {
     if (item.repeated == 'n')
@@ -175,7 +179,7 @@ class ItemProvider with ChangeNotifier {
     ];
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    _cripto.unlock('Qwe123!');
+    await _cripto.unlock('Qwe123!');
     for (int i = 0; i < _titles.length; i++) {
       DateTime _date = DateTime(2020, _ran.nextInt(11) + 1);
       insert(Alpha(

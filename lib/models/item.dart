@@ -76,6 +76,14 @@ class Alpha extends Item {
     if (id != null) map['id'] = id;
     return map;
   }
+
+  bool savePrevious(Alpha a) {
+    if (this.username != a.username) return true;
+    if (this.password != a.password) return true;
+    if (this.pin != a.pin) return true;
+    if (this.ip != a.ip) return true;
+    return false;
+  }
 }
 
 class OldAlpha extends Alpha {

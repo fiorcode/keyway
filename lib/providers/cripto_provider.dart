@@ -22,15 +22,11 @@ class CriptoProvider with ChangeNotifier {
 
   bool get locked => _locked;
 
-  Future<String> _getMasterKey() async {
-    _pref = await SharedPreferences.getInstance();
-    return _pref.getString('masterKey');
-  }
+  Future<String> _getMasterKey() async =>
+      (await SharedPreferences.getInstance()).getString('masterKey');
 
-  Future<bool> isMasterKey() async {
-    _pref = await SharedPreferences.getInstance();
-    return _pref.getBool('isMasterKey') ?? false;
-  }
+  Future<bool> isMasterKey() async =>
+      (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
   Future<void> unlock(String password) async {
     _setKey(password);
