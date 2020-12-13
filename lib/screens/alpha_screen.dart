@@ -59,6 +59,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
     _item.password = _cripto.doCrypt(_passCtrler.text);
     _item.pin = _cripto.doCrypt(_pinCtrler.text);
     _item.ip = _cripto.doCrypt(_ipCtrler.text);
+  }
+
+  void _setDate() {
     _item.dateTime = DateTime.now().toUtc();
     _item.date = _item.dateTime.toIso8601String();
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
@@ -110,16 +113,19 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _set();
       switch (_mode) {
         case Mode.Create:
+          _setDate();
           if (await _checkRepeatedPass()) return;
           if (await _checkRepeatedPin()) return;
           await _items.insert(_item);
           break;
         case Mode.Edit:
-          if (_passCtrler.text != widget.item.password) {
+          if (_item.password != widget.item.password) {
             if (await _checkRepeatedPass()) return;
+            _setDate();
           }
-          if (_pinCtrler.text != widget.item.pin) {
+          if (_item.pin != widget.item.pin) {
             if (await _checkRepeatedPin()) return;
+            _setDate();
           }
           if (_filedsChanged()) {
             await _items.update(_item);

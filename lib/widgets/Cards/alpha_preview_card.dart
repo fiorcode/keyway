@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../../models/item.dart';
 import '../color_picker.dart';
+// import '../color_alpha_picker.dart';
 import '../grey_scale_picker.dart';
+import '../../screens/search_image_screen.dart';
 
 class AlphaPreviewCard extends StatefulWidget {
   AlphaPreviewCard(this.alpha);
@@ -26,11 +28,12 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
       color: Colors.white54,
       elevation: 8,
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
-          side: BorderSide(
-            color: Theme.of(context).primaryColor,
-            width: 3,
-          )),
+        borderRadius: BorderRadius.circular(8.0),
+        side: BorderSide(
+          color: Theme.of(context).primaryColor,
+          width: 3,
+        ),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Column(
@@ -100,8 +103,17 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
             ),
             SizedBox(height: 24),
             ColorPicker(widget.alpha.color, _setColor),
+            // SizedBox(height: 12),
+            // ColorAlphaPicker(widget.alpha.color, _setColor),
             SizedBox(height: 12),
             GreyScalePicker(widget.alpha.color, _setColor),
+            SizedBox(height: 12),
+            FlatButton.icon(
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(SearchImageScreen.routeName),
+              icon: Icon(Icons.image_rounded),
+              label: Text('Search image'),
+            )
           ],
         ),
       ),
