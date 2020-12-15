@@ -75,10 +75,10 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setWarningColor() => widget.alpha.repeated == 'y'
-      ? Colors.red
+      ? Colors.red[300]
       : widget.alpha.expired == 'y'
-          ? Colors.orange
-          : Colors.green;
+          ? Colors.orange[300]
+          : Colors.green[300];
 
   void _switchShowPass() => setState(() => _showPass = !_showPass);
 
@@ -119,8 +119,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                 height: 48,
                 width: 48,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.grey[200],
-                  child: Icon(Icons.copy, color: _setWarningColor(), size: 24),
+                  backgroundColor: _setWarningColor(),
+                  child: Icon(Icons.copy, color: Colors.grey[200], size: 24),
                   heroTag: null,
                   onPressed: _passToClipBoard,
                 ),
@@ -130,10 +130,10 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                 height: 48,
                 width: 48,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.grey[200],
+                  backgroundColor: _setWarningColor(),
                   child: Icon(
                     Icons.remove_red_eye_outlined,
-                    color: _setWarningColor(),
+                    color: Colors.grey[200],
                     size: 24,
                   ),
                   heroTag: null,

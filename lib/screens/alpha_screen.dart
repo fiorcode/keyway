@@ -64,6 +64,11 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   Future<List<String>> _usernamesList() async => await _items.getUsers();
 
+  void _selectUsername(String u) {
+    _userCtrler.text = u;
+    _userListSwitch();
+  }
+
   void _set() {
     _item.username = _cripto.doCrypt(_userCtrler.text);
     _item.password = _cripto.doCrypt(_passCtrler.text);
@@ -79,7 +84,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   void _load() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
     setState(() {
       _titleCtrler.text = _item.title;
       if (_item.username.isNotEmpty) {
@@ -209,14 +213,13 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   void _delete(BuildContext context) async {
-    if (await WarningHelper.deleteItemWarning(context)) {
-      _items.delete(_item).then((_) => Navigator.of(context).pop());
-    }
+    bool _warning = await WarningHelper.deleteItemWarning(context);
+    _warning = _warning == null ? false : _warning;
+    if (_warning) _items.delete(_item).then((_) => Navigator.of(context).pop());
   }
 
   @override
   void initState() {
-    super.initState();
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
@@ -229,7 +232,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
     if (widget.item != null) {
       _mode = Mode.Edit;
-      _item = widget.item;
+      _item = widget.item.clone();
       _load();
     } else {
       _mode = Mode.Create;
@@ -237,6 +240,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _password = true;
       _item = Alpha(color: Colors.grey.value);
     }
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _cripto = Provider.of<CriptoProvider>(context);
+    _items = Provider.of<ItemProvider>(context);
+    super.didChangeDependencies();
   }
 
   @override
@@ -263,7 +274,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   Icons.lock_outline,
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                onPressed: _cripto.locked ? _lockSwitch : null,
+                // onPressed: _cripto.locked ? _lockSwitch : null,
+                onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : null,
         actions: [
@@ -304,10 +316,19 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   if (_username)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: UsernameTextField(
-                        _userCtrler,
-                        _ctrlersChanged,
-                        _userListSwitch,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: UsernameTextField(
+                              _userCtrler,
+                              _ctrlersChanged,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.list_rounded),
+                            onPressed: _userListSwitch,
+                          )
+                        ],
                       ),
                     ),
                   if (_password)
@@ -357,6 +378,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       _userCtrler,
                       _userListSwitch,
                       snap.data,
+                      _selectUsername,
                     );
                     break;
                   default:

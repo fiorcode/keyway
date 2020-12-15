@@ -77,6 +77,23 @@ class Alpha extends Item {
     return map;
   }
 
+  Alpha clone() {
+    return Alpha(
+      id: this.id,
+      title: this.title,
+      username: this.username,
+      password: this.password,
+      pin: this.pin,
+      ip: this.ip,
+      date: this.date,
+      shortDate: this.shortDate,
+      color: this.color,
+      repeated: this.repeated,
+      strong: this.strong,
+      expired: this.expired,
+    );
+  }
+
   bool savePrevious(Alpha a) {
     if (this.username != a.username) return true;
     if (this.password != a.password) return true;

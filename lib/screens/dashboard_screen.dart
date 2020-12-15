@@ -42,6 +42,15 @@ class DashboardScreen extends StatelessWidget {
               goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
             ),
             DashboardCard(
+              icon:
+                  Icon(Icons.settings_applications, color: _primary, size: 64),
+              title: Text(
+                'Options',
+                style: TextStyle(color: _primary, fontSize: 20),
+              ),
+              goTo: () {},
+            ),
+            DashboardCard(
               icon: Icon(Icons.monetization_on, color: _primary, size: 64),
               title: Text(
                 'Donate',
