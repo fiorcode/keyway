@@ -71,6 +71,14 @@ class DBHelper {
     return db.query(table, where: '$col = ?', whereArgs: [v]);
   }
 
+  static Future<List<Map<String, dynamic>>> getUsernames() async {
+    final db = await DBHelper.database();
+    return await db.rawQuery('''SELECT 
+        $itemsTable.username
+        FROM $itemsTable
+        GROUP BY $itemsTable.username''');
+  }
+
   static Future<int> setItemRepeated(String column, String value) async {
     final db = await DBHelper.database();
     return await db.update(

@@ -8,7 +8,6 @@ import 'providers/item_provider.dart';
 import 'screens/items_history_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
-import 'screens/search_image_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
 import 'screens/items_screen.dart';
@@ -53,7 +52,6 @@ class MyApp extends StatelessWidget {
           ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           DeletedItemsScreen.routeName: (ctx) => DeletedItemsScreen(),
-          SearchImageScreen.routeName: (ctx) => SearchImageScreen(),
         },
       ),
     );

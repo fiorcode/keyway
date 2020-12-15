@@ -143,6 +143,14 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
+  Future<List<String>> getUsers() async {
+    Iterable<String> _iter;
+    await DBHelper.getUsernames().then((data) {
+      _iter = data.map((e) => e['username']);
+    });
+    return _iter.toList();
+  }
+
   Future<void> mockData(CriptoProvider _cripto) async {
     List<String> _titles = [
       'Facebook',

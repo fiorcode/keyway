@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 
 class UnlockContainer extends StatefulWidget {
-  UnlockContainer(this.func);
-  final Function func;
+  UnlockContainer(this.function);
+  final Function function;
   @override
   _UnlockContainerState createState() => _UnlockContainerState();
 }
@@ -17,15 +17,17 @@ class _UnlockContainerState extends State<UnlockContainer> {
   bool _obscure = true;
 
   void _isEmpty() {
-    setState(() {
-      _empty = _ctrler.text.isEmpty;
-    });
+    setState(() => _empty = _ctrler.text.isEmpty);
   }
 
   void _obscureSwitch() {
-    setState(() {
-      _obscure = !_obscure;
-    });
+    setState(() => _obscure = !_obscure);
+  }
+
+  @override
+  void dispose() {
+    _ctrler.dispose();
+    super.dispose();
   }
 
   @override
@@ -67,7 +69,7 @@ class _UnlockContainerState extends State<UnlockContainer> {
                         onTap: () {
                           try {
                             _cProv.unlock(_ctrler.text);
-                            widget.func();
+                            widget.function();
                           } catch (error) {
                             Scaffold.of(context).showSnackBar(
                               SnackBar(

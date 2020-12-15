@@ -17,6 +17,7 @@ import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_preview_card.dart';
+import '../widgets/Cards/user_list_card.dart';
 
 enum Mode { Create, Edit }
 
@@ -36,6 +37,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
   ItemProvider _items;
   Alpha _item;
   Mode _mode = Mode.Create;
+  Future _getUsernames;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -43,16 +45,24 @@ class _AlphaScreenState extends State<AlphaScreen> {
   final _pinCtrler = TextEditingController();
   final _ipCtrler = TextEditingController();
 
+  FocusNode _passFocusNode;
+  bool _passFNSwitch = false;
+
   bool _username = false;
   bool _password = false;
   bool _pin = false;
   bool _ip = false;
 
+  bool _viewUsersList = false;
   bool _unlocking = false;
 
   void _ctrlersChanged() => setState(() => _item.title = _titleCtrler.text);
 
+  void _userListSwitch() => setState(() => _viewUsersList = !_viewUsersList);
+
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
+
+  Future<List<String>> _usernamesList() async => await _items.getUsers();
 
   void _set() {
     _item.username = _cripto.doCrypt(_userCtrler.text);
@@ -209,6 +219,14 @@ class _AlphaScreenState extends State<AlphaScreen> {
     super.initState();
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
+    _getUsernames = _usernamesList();
+    _passFocusNode = FocusNode();
+    _passFocusNode.addListener(() {
+      if (_passFocusNode.hasFocus)
+        setState(() => _passFNSwitch = true);
+      else
+        setState(() => _passFNSwitch = false);
+    });
     if (widget.item != null) {
       _mode = Mode.Edit;
       _item = widget.item;
@@ -217,8 +235,18 @@ class _AlphaScreenState extends State<AlphaScreen> {
       _mode = Mode.Create;
       _username = true;
       _password = true;
-      _item = Alpha();
+      _item = Alpha(color: Colors.grey.value);
     }
+  }
+
+  @override
+  void dispose() {
+    _titleCtrler.dispose();
+    _userCtrler.dispose();
+    _passCtrler.dispose();
+    _ipCtrler.dispose();
+    _passFocusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -276,15 +304,21 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   if (_username)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: UsernameTextField(_userCtrler, _ctrlersChanged),
+                      child: UsernameTextField(
+                        _userCtrler,
+                        _ctrlersChanged,
+                        _userListSwitch,
+                      ),
                     ),
                   if (_password)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: PasswordTextField(_passCtrler, _ctrlersChanged),
+                      child: PasswordTextField(
+                          _passCtrler, _ctrlersChanged, _passFocusNode),
                     ),
                   if (_passCtrler.text.isNotEmpty &&
-                      !PasswordHelper.isStrong(_passCtrler.text))
+                      !PasswordHelper.isStrong(_passCtrler.text) &&
+                      _passFNSwitch)
                     CheckBoard(password: _passCtrler.text),
                   if (_pin)
                     Padding(
@@ -304,12 +338,32 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     FloatingActionButton(
                       backgroundColor: Colors.red,
                       onPressed: () => _delete(context),
-                      child: Icon(Icons.delete, color: Colors.white),
+                      child: Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.white,
+                      ),
                     ),
                 ],
               ),
             ),
           ),
+          if (_viewUsersList && !_cripto.locked)
+            FutureBuilder(
+              future: _getUsernames,
+              builder: (ctx, snap) {
+                switch (snap.connectionState) {
+                  case ConnectionState.done:
+                    return UserListCard(
+                      _userCtrler,
+                      _userListSwitch,
+                      snap.data,
+                    );
+                    break;
+                  default:
+                    return CircularProgressIndicator();
+                }
+              },
+            ),
           if (_unlocking && _cripto.locked) UnlockContainer(_lockSwitch),
         ],
       ),

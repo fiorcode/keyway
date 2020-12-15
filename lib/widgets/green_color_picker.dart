@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
 
-class ColorAlphaPicker extends StatefulWidget {
-  ColorAlphaPicker(this.color, this.change);
+class GreenColorPicker extends StatefulWidget {
+  GreenColorPicker(this.color, this.change);
 
   final Function change;
   final Color color;
 
   @override
-  _ColorAlphaPickerState createState() => _ColorAlphaPickerState();
+  _GreenColorPickerState createState() => _GreenColorPickerState();
 }
 
-class _ColorAlphaPickerState extends State<ColorAlphaPicker> {
+class _GreenColorPickerState extends State<GreenColorPicker> {
   double _value;
   Color _color;
 
-  _setColor(double val) {
-    setState(() => _color = _color.withAlpha(val.toInt()));
-  }
+  _setColor(double val) => _color = _color.withGreen(val.toInt());
 
-  _setValue(Color col) {
-    setState(() => _value = _color.alpha.toDouble());
-  }
+  _setValue(Color col) => _value = col.green.toDouble();
 
   @override
   void initState() {
@@ -29,7 +25,7 @@ class _ColorAlphaPickerState extends State<ColorAlphaPicker> {
       _setValue(_color);
     } else {
       _color = Colors.grey;
-      _value = 255;
+      _value = 0;
     }
     super.initState();
   }
@@ -39,7 +35,7 @@ class _ColorAlphaPickerState extends State<ColorAlphaPicker> {
     if (widget.color != _color) _color = widget.color;
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
-        trackShape: GradientRectSliderTrackShape(_color),
+        trackShape: GradientRectSliderTrackShape(),
         trackHeight: 4.0,
         thumbColor: Colors.white,
         thumbShape: RoundSliderThumbShape(enabledThumbRadius: 12.0),
@@ -61,8 +57,7 @@ class _ColorAlphaPickerState extends State<ColorAlphaPicker> {
 class GradientRectSliderTrackShape extends SliderTrackShape
     with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
-  const GradientRectSliderTrackShape(this.color);
-  final Color color;
+  const GradientRectSliderTrackShape();
 
   @override
   void paint(
@@ -97,9 +92,15 @@ class GradientRectSliderTrackShape extends SliderTrackShape
     }
 
     LinearGradient gradient = LinearGradient(colors: [
-      color.withAlpha(0),
-      color.withAlpha(128),
-      color.withAlpha(255),
+      Colors.green[100],
+      Colors.green[200],
+      Colors.green[300],
+      Colors.green[400],
+      Colors.green,
+      Colors.green[600],
+      Colors.green[700],
+      Colors.green[800],
+      Colors.green[900],
     ]);
 
     final Rect trackRect = getPreferredRect(

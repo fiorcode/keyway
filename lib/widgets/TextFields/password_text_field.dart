@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField(this.ctrler, this.function);
+  PasswordTextField(this.ctrler, this.function, this.focus);
 
   final TextEditingController ctrler;
   final Function function;
+  final FocusNode focus;
 
   @override
   _PasswordTextFieldState createState() => _PasswordTextFieldState();
@@ -34,6 +35,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
     return TextField(
       autocorrect: false,
       controller: widget.ctrler,
+      focusNode: widget.focus,
       decoration: InputDecoration(
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(

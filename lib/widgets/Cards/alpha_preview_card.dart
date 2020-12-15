@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../models/item.dart';
-import '../color_picker.dart';
-// import '../color_alpha_picker.dart';
-import '../grey_scale_picker.dart';
-import '../../screens/search_image_screen.dart';
+import '../color_alpha_picker.dart';
+import '../red_color_picker.dart';
+import '../green_color_picker.dart';
+import '../blue_color_picker.dart';
 
 class AlphaPreviewCard extends StatefulWidget {
   AlphaPreviewCard(this.alpha);
@@ -16,10 +16,17 @@ class AlphaPreviewCard extends StatefulWidget {
 }
 
 class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
+  Color _color;
+
   _setColor(int color) {
-    setState(() {
-      widget.alpha.color = color;
-    });
+    setState(() => _color = Color(color));
+    widget.alpha.color = color;
+  }
+
+  @override
+  void initState() {
+    if (_color == null) _color = Color(widget.alpha.color);
+    super.initState();
   }
 
   @override
@@ -47,10 +54,7 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 contentPadding: EdgeInsets.all(4),
                 leading: CircleAvatar(
                   radius: 24,
-                  backgroundColor:
-                      widget.alpha.color == null || widget.alpha.color == 0
-                          ? Colors.grey
-                          : Color(widget.alpha.color),
+                  backgroundColor: _color == null ? Colors.grey : _color,
                   child: Text(
                     widget.alpha.title.isEmpty
                         ? 'T'
@@ -101,19 +105,17 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 ),
               ),
             ),
-            SizedBox(height: 24),
-            ColorPicker(widget.alpha.color, _setColor),
-            // SizedBox(height: 12),
-            // ColorAlphaPicker(widget.alpha.color, _setColor),
+            // SizedBox(height: 24),
+            // ColorPicker(widget.alpha.color, _setColor),
             SizedBox(height: 12),
-            GreyScalePicker(widget.alpha.color, _setColor),
+            RedColorPicker(_color, _setColor),
             SizedBox(height: 12),
-            FlatButton.icon(
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(SearchImageScreen.routeName),
-              icon: Icon(Icons.image_rounded),
-              label: Text('Search image'),
-            )
+            GreenColorPicker(_color, _setColor),
+            SizedBox(height: 12),
+            BlueColorPicker(_color, _setColor),
+            SizedBox(height: 12),
+            ColorAlphaPicker(_color, _setColor)
+            // GreyScalePicker(widget.alpha.color, _setColor),
           ],
         ),
       ),
