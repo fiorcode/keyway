@@ -120,19 +120,19 @@ class _SignedInBodyState extends State<SignedInBody> {
   }
 
   bool _automaticUpdates() {
-    bool _au = widget.pref.getBool('AutomaticUploads');
+    bool _au = widget.pref.getBool('automatic_uploads');
     if (_au != null) return _au;
-    widget.pref.setBool('AutomaticUploads', false);
+    widget.pref.setBool('automatic_uploads', false);
     return false;
   }
 
   Future<void> _automaticUpdatesSwitch() async {
-    bool _au = widget.pref.getBool('AutomaticUploads');
+    bool _au = widget.pref.getBool('automatic_uploads');
     if (_au != null) {
       if (_au)
-        widget.pref.setBool('AutomaticUploads', false);
+        widget.pref.setBool('automatic_uploads', false);
       else {
-        widget.pref.setBool('AutomaticUploads', true);
+        widget.pref.setBool('automatic_uploads', true);
         _uploadDB();
       }
     }
@@ -181,7 +181,7 @@ class _SignedInBodyState extends State<SignedInBody> {
                       ),
                     ],
                   ),
-                  if (!widget.pref.getBool('AutomaticUploads') && !_working)
+                  if (!widget.pref.getBool('automatic_uploads') && !_working)
                     ButtonTheme(
                       height: 48,
                       child: RaisedButton.icon(
