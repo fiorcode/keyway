@@ -6,129 +6,134 @@ import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
   static const String userDataTable = "user_data";
-  static const String itemsTable = "items";
-  static const String oldsTable = "old_items";
-  static const String deletedTable = "deleted_items";
+  static const String alphaTable = "alpha";
+  static const String oldAlphaTable = "old_alpha";
+  static const String deletedAlphaTable = "deleted_alpha";
 
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-    return sql.openDatabase(path.join(dbPath, 'kw.db'),
-        onCreate: (db, version) async {
-      await db.execute(createItemsTable);
-      await db.execute(createUserDataTable);
-      await db.execute(createOldItemsTable);
-      await db.execute(createDeletedItemsTable);
-    }, version: 1);
+    return sql.openDatabase(
+      path.join(dbPath, 'kw.db'),
+      onCreate: (db, version) async {
+        await db.execute(createAlphaTable);
+        await db.execute(createUserDataTable);
+        await db.execute(createOldAlphaTable);
+        await db.execute(createDeletedAlphaTable);
+      },
+      version: 1,
+    );
   }
 
   static Future<String> dbPath() async => await sql.getDatabasesPath();
 
   static Future<int> dbSize() async {
     final _dbPath = await sql.getDatabasesPath();
-    File _localFile = File('$_dbPath/kw.db');
-    return _localFile.length();
+    return File('$_dbPath/kw.db').length();
   }
 
   static Future<DateTime> dbLastModified() async {
     final _dbPath = await sql.getDatabasesPath();
-    File _localFile = File('$_dbPath/kw.db');
-    return _localFile.lastModified();
+    return File('$_dbPath/kw.db').lastModified();
   }
 
-  static Future<List<Map<String, dynamic>>> getData(String table) async {
-    final db = await DBHelper.database();
-    return db.query(table);
-  }
+  static Future<List<Map<String, dynamic>>> getData(String table) async =>
+      (await DBHelper.database()).query(table);
 
-  static Future<void> insert(String table, Map<String, Object> data) async {
-    final db = await DBHelper.database();
-    db.insert(
-      table,
-      data,
-      conflictAlgorithm: sql.ConflictAlgorithm.replace,
-    );
-  }
+  static Future<void> insert(String table, Map<String, Object> data) async =>
+      (await DBHelper.database()).insert(
+        table,
+        data,
+        conflictAlgorithm: sql.ConflictAlgorithm.replace,
+      );
 
-  static Future<int> update(String table, Map<String, Object> data) async {
-    final db = await DBHelper.database();
-    return await db
-        .update(table, data, where: 'id = ?', whereArgs: [data['id']]);
-  }
+  static Future<int> update(String table, Map<String, Object> data) async =>
+      (await DBHelper.database()).update(
+        table,
+        data,
+        where: 'id = ?',
+        whereArgs: [data['id']],
+      );
 
-  static Future<void> delete(String table, int id) async {
-    final db = await DBHelper.database();
-    db.delete(table, where: 'id = ?', whereArgs: [id]);
-  }
+  static Future<void> delete(String table, int id) async =>
+      (await DBHelper.database()).delete(
+        table,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
 
-  static Future<List<Map<String, dynamic>>> getItemById(int id) async {
-    final db = await DBHelper.database();
-    return db.query(itemsTable, where: 'id = ?', whereArgs: [id]);
-  }
+  static Future<List<Map<String, dynamic>>> getById(
+          String table, int id) async =>
+      (await DBHelper.database()).query(
+        table,
+        where: 'id = ?',
+        whereArgs: [id],
+      );
 
   static Future<List<Map<String, dynamic>>> getByValue(
-      String table, String col, dynamic v) async {
-    final db = await DBHelper.database();
-    return db.query(table, where: '$col = ?', whereArgs: [v]);
-  }
+          String table, String col, dynamic value) async =>
+      (await DBHelper.database()).query(
+        table,
+        where: '$col = ?',
+        whereArgs: [value],
+      );
 
-  static Future<List<Map<String, dynamic>>> getUsernames() async {
-    final db = await DBHelper.database();
-    return await db.rawQuery('''SELECT 
-        $itemsTable.username
-        FROM $itemsTable
-        GROUP BY $itemsTable.username''');
-  }
+  static Future<List<Map<String, dynamic>>> getUsernames() async =>
+      (await DBHelper.database()).rawQuery('''SELECT 
+        $alphaTable.username
+        FROM $alphaTable
+        GROUP BY $alphaTable.username''');
 
-  static Future<int> setItemRepeated(String column, String value) async {
-    final db = await DBHelper.database();
-    return await db.update(
-      itemsTable,
-      {'repeated': 'y'},
-      where: '$column = ?',
-      whereArgs: [value],
-    );
-  }
+  static Future<int> setPassStatus(
+          String table, String pass, String status) async =>
+      (await DBHelper.database()).update(
+        table,
+        {'pass_status': status},
+        where: 'password = ?',
+        whereArgs: [pass],
+      );
 
-  static Future<void> refreshRepetedPassword(String p) async {
-    final db = await DBHelper.database();
-    return await db.update(
-      itemsTable,
-      {'repeated': 'n'},
-      where: 'password = ?',
-      whereArgs: [p],
-    );
-  }
+  static Future<int> setPinStatus(
+          String table, String pin, String status) async =>
+      (await DBHelper.database()).update(
+        table,
+        {'pin_status': status},
+        where: 'pin = ?',
+        whereArgs: [pin],
+      );
 
-  static Future<List<Map<String, dynamic>>> getItemsWithHistory() async {
-    final db = await DBHelper.database();
-    return await db.rawQuery('''SELECT 
-        $itemsTable.id, $itemsTable.title, $itemsTable.username, 
-        $itemsTable.password, $itemsTable.pin, $itemsTable.ip, 
-        $itemsTable.date, $itemsTable.date_short, $itemsTable.color, 
-        $itemsTable.repeated, $itemsTable.strong, $itemsTable.expired 
-        FROM $itemsTable 
-        JOIN $oldsTable ON $itemsTable.id = $oldsTable.item_id 
-        GROUP BY $itemsTable.id''');
-  }
+  static Future<void> refreshRepetedPassword(String pass) async =>
+      (await DBHelper.database()).update(
+        alphaTable,
+        {'pass_status': ''},
+        where: 'password = ?',
+        whereArgs: [pass],
+      );
 
-  static Future<List<Map<String, dynamic>>> getDeletedItemsWithHistory() async {
-    final db = await DBHelper.database();
-    return await db.rawQuery('''SELECT 
-        $deletedTable.id, $deletedTable.title, $deletedTable.username, 
-        $deletedTable.password, $deletedTable.pin, $deletedTable.ip, 
-        $deletedTable.date, $deletedTable.date_short, $deletedTable.color, 
-        $deletedTable.repeated, $deletedTable.strong, $deletedTable.expired, $deletedTable.item_id 
-        FROM $deletedTable 
-        JOIN $oldsTable ON $deletedTable.item_id = $oldsTable.item_id 
-        GROUP BY $deletedTable.id''');
-  }
+  static Future<List<Map<String, dynamic>>> getItemsWithHistory() async =>
+      (await DBHelper.database()).rawQuery('''SELECT 
+        $alphaTable.id, $alphaTable.title, $alphaTable.username, 
+        $alphaTable.password, $alphaTable.pin, $alphaTable.ip, 
+        $alphaTable.date, $alphaTable.date_short, $alphaTable.color, 
+        $alphaTable.repeated, $alphaTable.strong, $alphaTable.expired 
+        FROM $alphaTable 
+        JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id 
+        GROUP BY $alphaTable.id''');
+
+  static Future<List<Map<String, dynamic>>>
+      getDeletedItemsWithHistory() async =>
+          (await DBHelper.database()).rawQuery('''SELECT 
+        $deletedAlphaTable.id, $deletedAlphaTable.title, $deletedAlphaTable.username, 
+        $deletedAlphaTable.password, $deletedAlphaTable.pin, $deletedAlphaTable.ip, 
+        $deletedAlphaTable.date, $deletedAlphaTable.date_short, $deletedAlphaTable.color, 
+        $deletedAlphaTable.repeated, $deletedAlphaTable.strong, $deletedAlphaTable.expired, $deletedAlphaTable.item_id 
+        FROM $deletedAlphaTable 
+        JOIN $oldAlphaTable ON $deletedAlphaTable.item_id = $oldAlphaTable.item_id 
+        GROUP BY $deletedAlphaTable.id''');
 
   static Future<bool> removeDB() async {
     try {
-      // database().then((db) => db.close());
       final _dbPath = await sql.getDatabasesPath();
       sql.deleteDatabase(_dbPath);
-      //File('$_dbPath/kw.db').delete();
       SharedPreferences _pref = await SharedPreferences.getInstance();
       return await _pref.clear();
     } catch (e) {
@@ -142,48 +147,60 @@ class DBHelper {
     surname TEXT,
     enc_mk TEXT)''';
 
-  static const createItemsTable = '''CREATE TABLE $itemsTable(
+  static const createAlphaTable = '''CREATE TABLE $alphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     username TEXT,
     password TEXT,
     pin TEXT,
     ip TEXT,
+    long_text TEXT,
     date TEXT,
     date_short TEXT,
     color INTEGER,
-    repeated TEXT,
-    strong TEXT,
-    expired TEXT)''';
-
-  static const createOldItemsTable = '''CREATE TABLE $oldsTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    username TEXT,
-    password TEXT,
-    pin TEXT,
-    ip TEXT,
-    date TEXT,
-    date_short TEXT,
-    color INTEGER,
-    repeated TEXT,
-    strong TEXT,
+    color_letter INTEGER,
+    pass_status TEXT,
+    pin_status TEXT,
+    pass_level TEXT,
     expired TEXT,
+    expired_lapse TEXT)''';
+
+  static const createOldAlphaTable = '''CREATE TABLE $oldAlphaTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT,
+    username TEXT,
+    password TEXT,
+    pin TEXT,
+    ip TEXT,
+    long_text TEXT,
+    date TEXT,
+    date_short TEXT,
+    color INTEGER,
+    color_letter INTEGER,
+    pass_status TEXT,
+    pin_status TEXT,
+    pass_level TEXT,
+    expired TEXT,
+    expired_lapse TEXT,
     item_id INTEGER)''';
 
-  static const createDeletedItemsTable = '''CREATE TABLE $deletedTable(
+  static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     username TEXT,
     password TEXT,
     pin TEXT,
     ip TEXT,
+    long_text TEXT,
     date TEXT,
     date_short TEXT,
     date_deleted TEXT,
     color INTEGER,
-    repeated TEXT,
-    strong TEXT,
+    color_letter INTEGER,
+    pass_status TEXT,
+    pin_status TEXT,
+    pass_level TEXT,
     expired TEXT,
+    expired_lapse TEXT,
     item_id INTEGER)''';
 }
