@@ -22,7 +22,7 @@ class _DataScreenState extends State<DataScreen> {
 
   Future<DateTime> _getLastModified() async => await DBHelper.dbLastModified();
 
-  FutureBuilder _setDBSize() {
+  FutureBuilder<int> _setDBSize() {
     return FutureBuilder(
       future: _dbSize,
       builder: (ctx, snap) {
@@ -55,7 +55,7 @@ class _DataScreenState extends State<DataScreen> {
     );
   }
 
-  FutureBuilder _setDBLastModified() {
+  FutureBuilder<DateTime> _setDBLastModified() {
     return FutureBuilder(
       future: _dbLastModified,
       builder: (ctx, snap) {
