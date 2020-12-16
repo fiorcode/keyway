@@ -24,9 +24,9 @@ enum Mode { Create, Edit }
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
 
-  AlphaScreen({this.item});
+  AlphaScreen({this.alpha});
 
-  final Alpha item;
+  final Alpha alpha;
 
   @override
   _AlphaScreenState createState() => _AlphaScreenState();
@@ -35,7 +35,7 @@ class AlphaScreen extends StatefulWidget {
 class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
-  Alpha _item;
+  Alpha _alpha;
   Mode _mode = Mode.Create;
   Future _getUsernames;
 
@@ -44,6 +44,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _ipCtrler = TextEditingController();
+  final _longTextCtrler = TextEditingController();
 
   FocusNode _passFocusNode;
   bool _passFNSwitch = false;
@@ -52,11 +53,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
   bool _password = false;
   bool _pin = false;
   bool _ip = false;
+  bool _longText = false;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _ctrlersChanged() => setState(() => _item.title = _titleCtrler.text);
+  void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() => _viewUsersList = !_viewUsersList);
 
@@ -70,37 +72,42 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   void _set() {
-    _item.username = _cripto.doCrypt(_userCtrler.text);
-    _item.password = _cripto.doCrypt(_passCtrler.text);
-    _item.pin = _cripto.doCrypt(_pinCtrler.text);
-    _item.ip = _cripto.doCrypt(_ipCtrler.text);
+    _alpha.username = _cripto.doCrypt(_userCtrler.text);
+    _alpha.password = _cripto.doCrypt(_passCtrler.text);
+    _alpha.pin = _cripto.doCrypt(_pinCtrler.text);
+    _alpha.ip = _cripto.doCrypt(_ipCtrler.text);
+    _alpha.longText = _cripto.doCrypt(_longTextCtrler.text);
   }
 
   void _setDate() {
-    _item.dateTime = DateTime.now().toUtc();
-    _item.date = _item.dateTime.toIso8601String();
+    _alpha.dateTime = DateTime.now().toUtc();
+    _alpha.date = _alpha.dateTime.toIso8601String();
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    _item.shortDate = dateFormat.format(_item.dateTime.toLocal());
+    _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
   }
 
   void _load() {
     setState(() {
-      _titleCtrler.text = _item.title;
-      if (_item.username.isNotEmpty) {
-        _userCtrler.text = _cripto.doDecrypt(_item.username);
+      _titleCtrler.text = _alpha.title;
+      if (_alpha.username.isNotEmpty) {
+        _userCtrler.text = _cripto.doDecrypt(_alpha.username);
         _username = true;
       }
-      if (_item.password.isNotEmpty) {
-        _passCtrler.text = _cripto.doDecrypt(_item.password);
+      if (_alpha.password.isNotEmpty) {
+        _passCtrler.text = _cripto.doDecrypt(_alpha.password);
         _password = true;
       }
-      if (_item.pin.isNotEmpty) {
-        _pinCtrler.text = _cripto.doDecrypt(_item.pin);
+      if (_alpha.pin.isNotEmpty) {
+        _pinCtrler.text = _cripto.doDecrypt(_alpha.pin);
         _pin = true;
       }
-      if (_item.ip.isNotEmpty) {
-        _ipCtrler.text = _cripto.doDecrypt(_item.ip);
+      if (_alpha.ip.isNotEmpty) {
+        _ipCtrler.text = _cripto.doDecrypt(_alpha.ip);
         _ip = true;
+      }
+      if (_alpha.longText.isNotEmpty) {
+        _longTextCtrler.text = _cripto.doDecrypt(_alpha.longText);
+        _longText = true;
       }
     });
   }
@@ -109,16 +116,19 @@ class _AlphaScreenState extends State<AlphaScreen> {
     return _userCtrler.text.isNotEmpty ||
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
-        _ipCtrler.text.isNotEmpty;
+        _ipCtrler.text.isNotEmpty ||
+        _longTextCtrler.text.isNotEmpty;
   }
 
   bool _filedsChanged() {
-    if (_item.title != _titleCtrler.text) return true;
-    if (_item.username != _userCtrler.text) return true;
-    if (_item.password != _passCtrler.text) return true;
-    if (_item.pin != _pinCtrler.text) return true;
-    if (_item.ip != _ipCtrler.text) return true;
-    if (_item.color != widget.item.color) return true;
+    if (_alpha.title != _titleCtrler.text) return true;
+    if (_alpha.username != _userCtrler.text) return true;
+    if (_alpha.password != _passCtrler.text) return true;
+    if (_alpha.pin != _pinCtrler.text) return true;
+    if (_alpha.ip != _ipCtrler.text) return true;
+    if (_alpha.longText != _longTextCtrler.text) return true;
+    if (_alpha.color != widget.alpha.color) return true;
+    if (_alpha.colorLetter != widget.alpha.colorLetter) return true;
     return false;
   }
 
@@ -130,22 +140,22 @@ class _AlphaScreenState extends State<AlphaScreen> {
           _setDate();
           if (await _checkRepeatedPass()) return;
           if (await _checkRepeatedPin()) return;
-          await _items.insert(_item);
+          await _items.insert(_alpha);
           break;
         case Mode.Edit:
-          if (_item.password != widget.item.password) {
+          if (_alpha.password != widget.alpha.password) {
             if (await _checkRepeatedPass()) return;
             _setDate();
           }
-          if (_item.pin != widget.item.pin) {
+          if (_alpha.pin != widget.alpha.pin) {
             if (await _checkRepeatedPin()) return;
             _setDate();
           }
           if (_filedsChanged()) {
-            await _items.update(_item);
+            await _items.update(_alpha);
           }
-          if (widget.item.repeated == 'y')
-            _items.refreshRepetedPassword(widget.item.password);
+          if (widget.alpha.passStatus == 'REPEATED')
+            _items.refreshRepetedPassword(widget.alpha.password);
           break;
         default:
           return;
@@ -158,64 +168,84 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   Future<bool> _checkRepeatedPass() async {
     if (_passCtrler.text.isNotEmpty) {
-      if (await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text))) {
+      bool _warning =
+          await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text));
+      _warning = _warning == null ? false : _warning;
+      if (_warning) {
         if (await WarningHelper.repeatedWarning(context, 'Password')) {
-          _item.repeated = 'y';
-          _items.setRepeated('password', _cripto.doCrypt(_passCtrler.text));
+          _alpha.passStatus = 'REPEATED';
+          _items.setPassStatus(
+            _cripto.doCrypt(_passCtrler.text),
+            _alpha.passStatus,
+          );
         } else
           return true;
       } else
-        _item.repeated = 'n';
+        _alpha.passStatus = '';
     }
     return false;
   }
 
   Future<bool> _checkRepeatedPin() async {
     if (_pinCtrler.text.isNotEmpty) {
-      if (await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text))) {
+      bool _warning =
+          await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text));
+      _warning = _warning == null ? false : _warning;
+      if (_warning) {
         if (await WarningHelper.repeatedWarning(context, 'Pin')) {
-          _item.repeated = 'y';
-          _items.setRepeated('pin', _cripto.doCrypt(_pinCtrler.text));
+          _alpha.pinStatus = 'REPEATED';
+          _items.setPassStatus(
+            _cripto.doCrypt(_pinCtrler.text),
+            _alpha.pinStatus,
+          );
         } else
           return true;
       } else
-        _item.repeated = 'n';
+        _alpha.pinStatus = '';
     }
     return false;
   }
 
-  void usernameSwitch() {
+  void _usernameSwitch() {
     setState(() {
       _userCtrler.clear();
       _username = !_username;
     });
   }
 
-  void passwordSwitch() {
+  void _passwordSwitch() {
     setState(() {
       _passCtrler.clear();
       _password = !_password;
     });
   }
 
-  void pinSwitch() {
+  void _pinSwitch() {
     setState(() {
       _pinCtrler.clear();
       _pin = !_pin;
     });
   }
 
-  void ipSwitch() {
+  void _ipSwitch() {
     setState(() {
       _ipCtrler.clear();
       _ip = !_ip;
     });
   }
 
+  void _longTextSwitch() {
+    setState(() {
+      _longTextCtrler.clear();
+      _longText = !_longText;
+    });
+  }
+
   void _delete(BuildContext context) async {
     bool _warning = await WarningHelper.deleteItemWarning(context);
     _warning = _warning == null ? false : _warning;
-    if (_warning) _items.delete(_item).then((_) => Navigator.of(context).pop());
+    if (_warning)
+      _items.delete(_alpha).then((_) => Navigator.of(context).pop());
   }
 
   @override
@@ -230,15 +260,15 @@ class _AlphaScreenState extends State<AlphaScreen> {
       else
         setState(() => _passFNSwitch = false);
     });
-    if (widget.item != null) {
+    if (widget.alpha != null) {
       _mode = Mode.Edit;
-      _item = widget.item.clone();
+      _alpha = widget.alpha.clone();
       _load();
     } else {
       _mode = Mode.Create;
       _username = true;
       _password = true;
-      _item = Alpha(color: Colors.grey.value);
+      _alpha = Alpha(color: Colors.grey.value);
     }
     super.initState();
   }
@@ -301,10 +331,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     password: _password,
                     pin: _pin,
                     ip: _ip,
-                    usernameSwitch: usernameSwitch,
-                    passwordSwitch: passwordSwitch,
-                    pinSwitch: pinSwitch,
-                    ipSwitch: ipSwitch,
+                    longText: _longText,
+                    usernameSwitch: _usernameSwitch,
+                    passwordSwitch: _passwordSwitch,
+                    pinSwitch: _pinSwitch,
+                    ipSwitch: _ipSwitch,
+                    longTextSwitch: _longTextSwitch,
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
@@ -351,11 +383,16 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: IpTextField(_ipCtrler),
                     ),
+                  if (_longText)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      child: Text('NOT DONE YET'),
+                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: AlphaPreviewCard(_item),
+                    child: AlphaPreviewCard(_alpha),
                   ),
-                  if (widget.item != null)
+                  if (widget.alpha != null)
                     FloatingActionButton(
                       backgroundColor: Colors.red,
                       onPressed: () => _delete(context),
