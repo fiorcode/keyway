@@ -35,7 +35,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AlphaScreen(item: widget.alpha),
+        builder: (context) => AlphaScreen(alpha: widget.alpha),
       ),
     ).then((_) => widget.onReturn());
   }
@@ -74,9 +74,10 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
-  Color _setWarningColor() => widget.alpha.repeated == 'y'
+  Color _setWarningColor() => (widget.alpha.passStatus == 'REPEATED' ||
+          widget.alpha.pinStatus == 'REPEATED')
       ? Colors.red[300]
-      : widget.alpha.expired == 'y'
+      : widget.alpha.expired == 'YES'
           ? Colors.orange[300]
           : Colors.green[300];
 
