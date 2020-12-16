@@ -9,7 +9,7 @@ import '../screens/dashboard_screen.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_locked_card.dart';
 import '../widgets/Cards/alpha_unlocked_card.dart';
-import 'package:keyway/widgets/empty_items.dart';
+import '../widgets/empty_items.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
