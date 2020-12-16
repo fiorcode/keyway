@@ -1,12 +1,13 @@
 abstract class Item {
   int id;
   String title;
-  DateTime dateTime;
+  DateTime dateTime; // ???
   String date;
   String shortDate;
   int color;
-  String repeated;
+  int colorLetter;
   String expired;
+  String expiredLapse;
 
   Item(
     this.id,
@@ -14,8 +15,9 @@ abstract class Item {
     this.date,
     this.shortDate,
     this.color,
-    this.repeated,
+    this.colorLetter,
     this.expired,
+    this.expiredLapse,
   );
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -24,8 +26,9 @@ abstract class Item {
     date = map['date'];
     shortDate = map['date_short'];
     color = map['color'];
-    repeated = map['repeated'];
+    colorLetter = map['color_letter'];
     expired = map['expired'];
+    expiredLapse = map['expired_lapse'];
   }
 }
 
@@ -34,29 +37,47 @@ class Alpha extends Item {
   String password;
   String pin;
   String ip;
-  String strong;
+  String longText;
+  String passStatus;
+  String pinStatus;
+  String passLevel;
 
-  Alpha(
-      {int id,
-      String title = '',
-      this.username = '',
-      this.password = '',
-      this.pin = '',
-      this.ip = '',
-      this.strong = '',
-      String date,
-      String shortDate,
-      int color = 0,
-      String repeated = 'n',
-      String expired = 'n'})
-      : super(id, title, date, shortDate, color, repeated, expired);
+  Alpha({
+    int id,
+    String title = '',
+    this.username = '',
+    this.password = '',
+    this.pin = '',
+    this.ip = '',
+    this.longText = '',
+    this.passStatus = '',
+    this.pinStatus = '',
+    this.passLevel = '',
+    String date,
+    String shortDate,
+    int color = 0,
+    int colorLetter = 0,
+    String expired = '',
+    String expiredLapse = '',
+  }) : super(
+          id,
+          title,
+          date,
+          shortDate,
+          color,
+          colorLetter,
+          expired,
+          expiredLapse,
+        );
 
   Alpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
     password = map['password'];
     pin = map['pin'];
     ip = map['ip'];
-    strong = map['strong'];
+    longText = map['long_text'];
+    passStatus = map['pass_status'];
+    pinStatus = map['pin_status'];
   }
 
   Map<String, dynamic> toMap() {
@@ -66,12 +87,16 @@ class Alpha extends Item {
       'password': password,
       'pin': pin,
       'ip': ip,
+      'long_text': longText,
       'date': date,
       'date_short': shortDate,
       'color': color,
-      'repeated': repeated,
-      'strong': strong,
+      'color_letter': colorLetter,
+      'pass_status': passStatus,
+      'pin_status': pinStatus,
+      'pass_level': passLevel,
       'expired': expired,
+      'expired_lapse': expiredLapse,
     };
     if (id != null) map['id'] = id;
     return map;
@@ -85,12 +110,16 @@ class Alpha extends Item {
       password: this.password,
       pin: this.pin,
       ip: this.ip,
+      longText: this.longText,
       date: this.date,
       shortDate: this.shortDate,
       color: this.color,
-      repeated: this.repeated,
-      strong: this.strong,
+      colorLetter: this.colorLetter,
+      passStatus: this.passStatus,
+      pinStatus: this.pinStatus,
+      passLevel: this.passLevel,
       expired: this.expired,
+      expiredLapse: this.expiredLapse,
     );
   }
 
@@ -99,6 +128,7 @@ class Alpha extends Item {
     if (this.password != a.password) return true;
     if (this.pin != a.pin) return true;
     if (this.ip != a.ip) return true;
+    if (this.longText != a.longText) return true;
     return false;
   }
 }
@@ -113,12 +143,16 @@ class OldAlpha extends Alpha {
     String password,
     String pin,
     String ip,
+    String longText,
     String date,
     String shortDate,
     int color = 0,
-    String repeated,
-    String strong,
+    int colorLetter = 0,
+    String passStatus,
+    String pinStatus,
+    String passLevel,
     String expired,
+    String expiredLapse,
     this.itemId,
   }) : super();
 
@@ -127,13 +161,17 @@ class OldAlpha extends Alpha {
     this.username = a.username;
     this.password = a.password;
     this.pin = a.pin;
-    this.ip = a.pin;
+    this.ip = a.ip;
+    this.longText = a.longText;
     this.date = a.date;
     this.shortDate = a.shortDate;
     this.color = a.color;
-    this.repeated = a.repeated;
-    this.strong = a.strong;
+    this.colorLetter = a.colorLetter;
+    this.passStatus = a.passStatus;
+    this.pinStatus = a.pinStatus;
+    this.passLevel = a.passLevel;
     this.expired = a.expired;
+    this.expiredLapse = a.expiredLapse;
     this.itemId = a.id;
   }
 
@@ -142,7 +180,10 @@ class OldAlpha extends Alpha {
     password = map['password'];
     pin = map['pin'];
     ip = map['ip'];
-    strong = map['strong'];
+    longText = map['long_text'];
+    passStatus = map['pass_status'];
+    pinStatus = map['pin_status'];
+    passLevel = map['pass_level'];
     itemId = map['item_id'];
   }
 
@@ -153,12 +194,16 @@ class OldAlpha extends Alpha {
       'password': password,
       'pin': pin,
       'ip': ip,
+      'long_text': longText,
       'date': date,
       'date_short': shortDate,
       'color': color,
-      'repeated': repeated,
-      'strong': strong,
+      'color_letter': colorLetter,
+      'pass_status': passStatus,
+      'pin_status': pinStatus,
+      'pass_level': passLevel,
       'expired': expired,
+      'expired_lapse': expiredLapse,
       'item_id': itemId,
     };
     if (id != null) map['id'] = id;
@@ -177,13 +222,17 @@ class DeletedAlpha extends Alpha {
     String password,
     String pin,
     String ip,
+    String longText,
     String date,
     String shortDate,
-    this.deletedDate,
     int color = 0,
-    String repeated,
-    String strong,
+    int colorLetter = 0,
+    String passStatus,
+    String pinStatus,
+    String passLevel,
     String expired,
+    String expiredLapse,
+    this.deletedDate,
     this.itemId,
   }) : super();
 
@@ -192,14 +241,18 @@ class DeletedAlpha extends Alpha {
     this.username = a.username;
     this.password = a.password;
     this.pin = a.pin;
-    this.ip = a.pin;
+    this.ip = a.ip;
+    this.longText = a.longText;
     this.date = a.date;
     this.shortDate = a.shortDate;
-    this.deletedDate = DateTime.now().toIso8601String();
+    this.deletedDate = DateTime.now().toUtc().toIso8601String();
     this.color = a.color;
-    this.repeated = a.repeated;
-    this.strong = a.strong;
+    this.colorLetter = a.colorLetter;
+    this.passStatus = a.passStatus;
+    this.pinStatus = a.pinStatus;
+    this.passLevel = a.passLevel;
     this.expired = a.expired;
+    this.expiredLapse = a.expiredLapse;
     this.itemId = a.id;
   }
 
@@ -208,8 +261,10 @@ class DeletedAlpha extends Alpha {
     password = map['password'];
     pin = map['pin'];
     ip = map['ip'];
-    itemId = map['item_id'];
-    strong = map['strong'];
+    longText = map['long_text'];
+    passStatus = map['pass_status'];
+    pinStatus = map['pin_status'];
+    passLevel = map['pass_level'];
     deletedDate = map['date_deleted'];
   }
 
@@ -220,13 +275,17 @@ class DeletedAlpha extends Alpha {
       'password': password,
       'pin': pin,
       'ip': ip,
+      'long_text': longText,
       'date': date,
       'date_short': shortDate,
-      'date_deleted': deletedDate,
       'color': color,
-      'repeated': repeated,
-      'strong': strong,
+      'color_letter': colorLetter,
+      'pass_status': passStatus,
+      'pin_status': pinStatus,
+      'pass_level': passLevel,
       'expired': expired,
+      'expired_lapse': expiredLapse,
+      'date_deleted': deletedDate,
       'item_id': itemId,
     };
     if (id != null) map['id'] = id;
