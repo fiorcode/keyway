@@ -105,8 +105,6 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 ),
               ),
             ),
-            // SizedBox(height: 24),
-            // ColorPicker(widget.alpha.color, _setColor),
             SizedBox(height: 12),
             RedColorPicker(_color, _setColor),
             SizedBox(height: 12),
@@ -115,7 +113,6 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
             BlueColorPicker(_color, _setColor),
             SizedBox(height: 12),
             ColorAlphaPicker(_color, _setColor)
-            // GreyScalePicker(widget.alpha.color, _setColor),
           ],
         ),
       ),
