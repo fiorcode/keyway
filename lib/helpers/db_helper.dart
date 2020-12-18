@@ -109,23 +109,25 @@ class DBHelper {
         whereArgs: [pass],
       );
 
-  static Future<List<Map<String, dynamic>>> getItemsWithHistory() async =>
+  static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $alphaTable.id, $alphaTable.title, $alphaTable.username, 
-        $alphaTable.password, $alphaTable.pin, $alphaTable.ip, 
-        $alphaTable.date, $alphaTable.date_short, $alphaTable.color, 
-        $alphaTable.repeated, $alphaTable.strong, $alphaTable.expired 
+        $alphaTable.password, $alphaTable.pin, $alphaTable.ip,
+        $alphaTable.long_text, $alphaTable.date, $alphaTable.date_short, 
+        $alphaTable.color, $alphaTable.color_letter, $alphaTable.pass_status,
+        $alphaTable.pin_status, $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse 
         FROM $alphaTable 
         JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id 
         GROUP BY $alphaTable.id''');
 
-  static Future<List<Map<String, dynamic>>>
-      getDeletedItemsWithHistory() async =>
-          (await DBHelper.database()).rawQuery('''SELECT 
+  static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
+      (await DBHelper.database()).rawQuery('''SELECT 
         $deletedAlphaTable.id, $deletedAlphaTable.title, $deletedAlphaTable.username, 
-        $deletedAlphaTable.password, $deletedAlphaTable.pin, $deletedAlphaTable.ip, 
-        $deletedAlphaTable.date, $deletedAlphaTable.date_short, $deletedAlphaTable.color, 
-        $deletedAlphaTable.repeated, $deletedAlphaTable.strong, $deletedAlphaTable.expired, $deletedAlphaTable.item_id 
+        $deletedAlphaTable.password, $deletedAlphaTable.pin, $deletedAlphaTable.ip,
+        $deletedAlphaTable.long_text, $deletedAlphaTable.date, $deletedAlphaTable.date_short, 
+        $deletedAlphaTable.date_deleted, $deletedAlphaTable.color, $deletedAlphaTable.color_letter, 
+        $deletedAlphaTable.pass_status, $deletedAlphaTable.pin_status, $deletedAlphaTable.pass_level,
+        $deletedAlphaTable.expired, $deletedAlphaTable.expired_lapse, $deletedAlphaTable.item_id 
         FROM $deletedAlphaTable 
         JOIN $oldAlphaTable ON $deletedAlphaTable.item_id = $oldAlphaTable.item_id 
         GROUP BY $deletedAlphaTable.id''');

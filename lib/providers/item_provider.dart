@@ -32,11 +32,11 @@ class ItemProvider with ChangeNotifier {
     Iterable<OldAlpha> _iterIWH;
     Iterable<DeletedAlpha> _iterDIWH;
     _itemsWithHistory.clear();
-    await DBHelper.getItemsWithHistory().then((data) {
+    await DBHelper.getAlphaWithOlds().then((data) {
       _iterIWH = data.map((e) => OldAlpha.fromMap(e));
     });
     _itemsWithHistory.addAll(_iterIWH.toList());
-    await DBHelper.getDeletedItemsWithHistory().then((data) {
+    await DBHelper.getDeletedAlphaWithOlds().then((data) {
       _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
     });
     _itemsWithHistory.addAll(_iterDIWH.toList());

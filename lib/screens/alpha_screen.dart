@@ -14,6 +14,7 @@ import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
 import '../widgets/TextFields/username_text_field.dart';
+import '../widgets/TextFields/long_text_text_field.dart';
 import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_preview_card.dart';
@@ -386,7 +387,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
                   if (_longText)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Text('NOT DONE YET'),
+                      child: Container(
+                        height: 192.0,
+                        child: LongTextTextField(_longTextCtrler),
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
