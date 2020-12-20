@@ -135,21 +135,23 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   void _save() async {
     try {
+      if (await _checkPassStatus()) return;
+      if (await _checkPinStatus()) return;
       _set();
       switch (_mode) {
         case Mode.Create:
           _setDate();
-          if (await _checkRepeatedPass()) return;
-          if (await _checkRepeatedPin()) return;
+          //if (await _checkRepeatedPass()) return;
+          //if (await _checkRepeatedPin()) return;
           await _items.insert(_alpha);
           break;
         case Mode.Edit:
           if (_alpha.password != widget.alpha.password) {
-            if (await _checkRepeatedPass()) return;
+            //if (await _checkRepeatedPass()) return;
             _setDate();
           }
           if (_alpha.pin != widget.alpha.pin) {
-            if (await _checkRepeatedPin()) return;
+            //if (await _checkRepeatedPin()) return;
             _setDate();
           }
           if (_filedsChanged()) {
@@ -157,12 +159,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
           }
           // if (widget.alpha.passStatus == 'REPEATED')
           //_items.refreshRepetedPassword(widget.alpha.password);
-          if (_alpha.passStatus == 'REPEATED')
-            _items.refreshPassRepeted(_alpha.password);
           break;
         default:
           return;
       }
+      // var _list = _items.getPassRepeted(_alpha.password);
+      // if (_alpha.passStatus == 'REPEATED') if (_alpha.pinStatus == 'REPEATED')
       Navigator.of(context).pop();
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
@@ -170,62 +172,82 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    // if (_passCtrler.text.isEmpty) return false;
+    if (_mode == Mode.Edit) {
+      if (widget.alpha.password == _alpha.password) return false;
+    }
+    _alpha.passStatus = '';
     if (await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
         _alpha.passStatus = 'REPEATED';
-        _items.setPassStatus(
-          _cripto.doCrypt(_passCtrler.text),
-          _alpha.passStatus,
-        );
-      } else
+        //THIS SHOULD BE AFTER THE INSERT/UPDATE
+        _items.setPassRepeted(_alpha.password);
+      } else {
         return true;
-    }
-    _alpha.passStatus = '';
-    return false;
-  }
-
-  Future<bool> _checkRepeatedPass() async {
-    if (_passCtrler.text.isNotEmpty) {
-      bool _warning =
-          await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text));
-      _warning = _warning == null ? false : _warning;
-      if (_warning) {
-        if (await WarningHelper.repeatedWarning(context, 'Password')) {
-          _alpha.passStatus = 'REPEATED';
-          _items.setPassStatus(
-            _cripto.doCrypt(_passCtrler.text),
-            _alpha.passStatus,
-          );
-        } else
-          return true;
-      } else
-        _alpha.passStatus = '';
+      }
     }
     return false;
   }
 
-  Future<bool> _checkRepeatedPin() async {
-    if (_pinCtrler.text.isNotEmpty) {
-      bool _warning =
-          await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text));
+  Future<bool> _checkPinStatus() async {
+    if (_mode == Mode.Edit) {
+      if (widget.alpha.pin == _alpha.pin) return false;
+    }
+    _alpha.pinStatus = '';
+    if (await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text))) {
+      bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
-        if (await WarningHelper.repeatedWarning(context, 'Pin')) {
-          _alpha.pinStatus = 'REPEATED';
-          _items.setPassStatus(
-            _cripto.doCrypt(_pinCtrler.text),
-            _alpha.pinStatus,
-          );
-        } else
-          return true;
-      } else
-        _alpha.pinStatus = '';
+        _alpha.pinStatus = 'REPEATED';
+        //THIS SHOULD BE AFTER THE INSERT/UPDATE
+        _items.setPinRepeted(_alpha.pin);
+      } else {
+        return true;
+      }
     }
     return false;
   }
+
+  // Future<bool> _checkRepeatedPass() async {
+  //   if (_passCtrler.text.isNotEmpty) {
+  //     bool _warning =
+  //         await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text));
+  //     _warning = _warning == null ? false : _warning;
+  //     if (_warning) {
+  //       if (await WarningHelper.repeatedWarning(context, 'Password')) {
+  //         _alpha.passStatus = 'REPEATED';
+  //         _items.setPassStatus(
+  //           _cripto.doCrypt(_passCtrler.text),
+  //           _alpha.passStatus,
+  //         );
+  //       } else
+  //         return true;
+  //     } else
+  //       _alpha.passStatus = '';
+  //   }
+  //   return false;
+  // }
+
+  // Future<bool> _checkRepeatedPin() async {
+  //   if (_pinCtrler.text.isNotEmpty) {
+  //     bool _warning =
+  //         await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text));
+  //     _warning = _warning == null ? false : _warning;
+  //     if (_warning) {
+  //       if (await WarningHelper.repeatedWarning(context, 'Pin')) {
+  //         _alpha.pinStatus = 'REPEATED';
+  //         _items.setPassStatus(
+  //           _cripto.doCrypt(_pinCtrler.text),
+  //           _alpha.pinStatus,
+  //         );
+  //       } else
+  //         return true;
+  //     } else
+  //       _alpha.pinStatus = '';
+  //   }
+  //   return false;
+  // }
 
   void _usernameSwitch() {
     setState(() {
