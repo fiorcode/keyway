@@ -135,9 +135,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   void _save() async {
     try {
+      _set();
       if (await _checkPassStatus()) return;
       if (await _checkPinStatus()) return;
-      _set();
       switch (_mode) {
         case Mode.Create:
           _setDate();
