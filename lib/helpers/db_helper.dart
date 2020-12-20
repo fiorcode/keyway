@@ -101,13 +101,25 @@ class DBHelper {
         whereArgs: [pin],
       );
 
-  static Future<void> setPassRepeted(String p) async =>
-      (await DBHelper.database()).update(
-        alphaTable,
-        {'pass_status': 'REPEATED'},
-        where: 'password = ? pass_status = ?',
-        whereArgs: [p, ''],
-      );
+  // static Future<void> setPassRepeted(String p) async =>
+  //     (await DBHelper.database()).update(
+  //       alphaTable,
+  //       {'pass_status': 'REPEATED'},
+  //       where: 'password = ? pass_status = ?',
+  //       whereArgs: [p, ''],
+  //     );
+
+  static Future<int> setPassRepeted(String p) async {
+    return await (await DBHelper.database()).rawUpdate(
+      '''UPDATE 
+        $alphaTable
+        SET pass_status = ?
+        WHERE password = ? 
+        AND pass_status = ?''',
+      ['REPEATED', '$p', '""'],
+    );
+    //return ch;
+  }
 
   static Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
       (await DBHelper.database()).query(
