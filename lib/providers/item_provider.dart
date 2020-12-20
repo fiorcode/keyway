@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 import 'package:intl/intl.dart';
-import 'package:keyway/providers/cripto_provider.dart';
 
+import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
 
@@ -85,7 +85,7 @@ class ItemProvider with ChangeNotifier {
     if (item.passStatus != 'REPEATED')
       await DBHelper.delete(DBHelper.alphaTable, item.id);
     else
-      await DBHelper.refreshPassRepeted(item.password);
+      await DBHelper.setPassRepeted(item.password);
     DeletedAlpha delete = DeletedAlpha.fromAlpha(item);
     await DBHelper.insert(DBHelper.deletedAlphaTable, delete.toMap());
     _items.removeWhere((element) => element.id == item.id);
@@ -125,8 +125,13 @@ class ItemProvider with ChangeNotifier {
   //   if (_list.length < 2) DBHelper.refreshPassRepeted(p);
   // }
 
-  Future<void> refreshPassRepeted(String p) async =>
-      await DBHelper.refreshPassRepeted(p);
+  Future<void> setPassRepeted(String p) async =>
+      await DBHelper.setPassRepeted(p);
+
+  Future<void> setPinRepeted(String p) async => await DBHelper.setPinRepeted(p);
+
+  Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
+      await DBHelper.getPassRepeted(p);
 
   Future<void> removeItems() async {
     _items.clear();
