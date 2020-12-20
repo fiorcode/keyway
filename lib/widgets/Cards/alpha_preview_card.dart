@@ -67,6 +67,8 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 ),
                 title: Text(
                   widget.alpha.title.isEmpty ? 'Title' : widget.alpha.title,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.w300,

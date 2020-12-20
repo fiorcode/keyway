@@ -34,6 +34,8 @@ class AlphaHistoryListCard extends StatelessWidget {
   Text _setTitle() {
     return Text(
       item.title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
       style: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w300,

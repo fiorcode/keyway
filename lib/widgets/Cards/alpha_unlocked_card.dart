@@ -66,6 +66,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Text(
       _showPass ? cripto.doDecrypt(widget.alpha.password) : widget.alpha.title,
+      overflow: TextOverflow.ellipsis,
+      maxLines: 1,
       style: TextStyle(
         fontSize: 22,
         fontWeight: FontWeight.w300,

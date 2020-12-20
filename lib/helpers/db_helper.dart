@@ -101,12 +101,12 @@ class DBHelper {
         whereArgs: [pin],
       );
 
-  static Future<void> refreshRepetedPassword(String pass) async =>
+  static Future<void> refreshPassRepeted(String pass) async =>
       (await DBHelper.database()).update(
         alphaTable,
-        {'pass_status': ''},
-        where: 'password = ?',
-        whereArgs: [pass],
+        {'pass_status': 'REPEATED'},
+        where: 'password = ?, pass_status = ?',
+        whereArgs: [pass, ''],
       );
 
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>

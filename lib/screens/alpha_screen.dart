@@ -155,8 +155,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
           if (_filedsChanged()) {
             await _items.update(_alpha);
           }
-          if (widget.alpha.passStatus == 'REPEATED')
-            _items.refreshRepetedPassword(widget.alpha.password);
+          // if (widget.alpha.passStatus == 'REPEATED')
+          //_items.refreshRepetedPassword(widget.alpha.password);
+          if (_alpha.passStatus == 'REPEATED')
+            _items.refreshPassRepeted(_alpha.password);
           break;
         default:
           return;
@@ -165,6 +167,24 @@ class _AlphaScreenState extends State<AlphaScreen> {
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
+  }
+
+  Future<bool> _checkPassStatus() async {
+    // if (_passCtrler.text.isEmpty) return false;
+    if (await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text))) {
+      bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
+      _warning = _warning == null ? false : _warning;
+      if (_warning) {
+        _alpha.passStatus = 'REPEATED';
+        _items.setPassStatus(
+          _cripto.doCrypt(_passCtrler.text),
+          _alpha.passStatus,
+        );
+      } else
+        return true;
+    }
+    _alpha.passStatus = '';
+    return false;
   }
 
   Future<bool> _checkRepeatedPass() async {

@@ -58,6 +58,8 @@ class AlphaLockedCard extends StatelessWidget {
         ),
         title: Text(
           alpha.title != null ? alpha.title : '',
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
           textAlign: TextAlign.start,
           style: TextStyle(
             fontSize: 22,
