@@ -209,46 +209,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
     return false;
   }
 
-  // Future<bool> _checkRepeatedPass() async {
-  //   if (_passCtrler.text.isNotEmpty) {
-  //     bool _warning =
-  //         await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text));
-  //     _warning = _warning == null ? false : _warning;
-  //     if (_warning) {
-  //       if (await WarningHelper.repeatedWarning(context, 'Password')) {
-  //         _alpha.passStatus = 'REPEATED';
-  //         _items.setPassStatus(
-  //           _cripto.doCrypt(_passCtrler.text),
-  //           _alpha.passStatus,
-  //         );
-  //       } else
-  //         return true;
-  //     } else
-  //       _alpha.passStatus = '';
-  //   }
-  //   return false;
-  // }
-
-  // Future<bool> _checkRepeatedPin() async {
-  //   if (_pinCtrler.text.isNotEmpty) {
-  //     bool _warning =
-  //         await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text));
-  //     _warning = _warning == null ? false : _warning;
-  //     if (_warning) {
-  //       if (await WarningHelper.repeatedWarning(context, 'Pin')) {
-  //         _alpha.pinStatus = 'REPEATED';
-  //         _items.setPassStatus(
-  //           _cripto.doCrypt(_pinCtrler.text),
-  //           _alpha.pinStatus,
-  //         );
-  //       } else
-  //         return true;
-  //     } else
-  //       _alpha.pinStatus = '';
-  //   }
-  //   return false;
-  // }
-
   void _usernameSwitch() {
     setState(() {
       _userCtrler.clear();
