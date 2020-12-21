@@ -80,15 +80,15 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.update(DBHelper.alphaTable, a.toMap());
   }
 
-  Future<void> delete(Alpha item) async {
+  Future<void> delete(Alpha a) async {
     // REFRESH REPEATED STATUS
-    if (item.passStatus != 'REPEATED')
-      await DBHelper.delete(DBHelper.alphaTable, item.id);
+    if (a.passStatus != 'REPEATED')
+      await DBHelper.delete(DBHelper.alphaTable, a.id);
     else
-      await DBHelper.setPassRepeted(item.password);
-    DeletedAlpha delete = DeletedAlpha.fromAlpha(item);
+      await DBHelper.setPassRepeted(a.password);
+    DeletedAlpha delete = DeletedAlpha.fromAlpha(a);
     await DBHelper.insert(DBHelper.deletedAlphaTable, delete.toMap());
-    _items.removeWhere((element) => element.id == item.id);
+    _items.removeWhere((element) => element.id == a.id);
   }
 
   Future<bool> verifyRepeatedPass(String s) async {
