@@ -28,7 +28,7 @@ class ItemProvider with ChangeNotifier {
     _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> fetchItemsWithHistory() async {
+  Future<void> fetchItemsWithOlds() async {
     Iterable<OldAlpha> _iterIWH;
     Iterable<DeletedAlpha> _iterDIWH;
     _itemsWithHistory.clear();
@@ -43,7 +43,7 @@ class ItemProvider with ChangeNotifier {
     _itemsWithHistory.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> fetchItemHistory(int itemId) async {
+  Future<void> fetchItemOlds(int itemId) async {
     Iterable<OldAlpha> _iterIH;
     await DBHelper.getByValue(DBHelper.oldAlphaTable, 'item_id', itemId)
         .then((data) {
@@ -67,71 +67,78 @@ class ItemProvider with ChangeNotifier {
   Future<void> insert(Alpha a) async =>
       await DBHelper.insert(DBHelper.alphaTable, a.toMap());
 
-  Future<void> update(Alpha a) async {
+  Future<void> updateAlpha(Alpha a) async {
+    Alpha _prev;
     await DBHelper.getById(DBHelper.alphaTable, a.id).then(
-      (items) async {
-        Alpha _a = Alpha.fromMap(items.first);
-        if (_a.savePrevious(a)) {
-          OldAlpha old = OldAlpha.fromAlpha(_a);
-          await DBHelper.insert(DBHelper.oldAlphaTable, old.toMap());
+      (_list) async {
+        _prev = Alpha.fromMap(_list.first);
+        if (_prev.savePrevious(a)) {
+          OldAlpha _old = OldAlpha.fromAlpha(_prev);
+          await DBHelper.insert(DBHelper.oldAlphaTable, _old.toMap());
         }
       },
+    ).then(
+      (_) async => await DBHelper.update(DBHelper.alphaTable, a.toMap()).then(
+        (_) async {
+          await DBHelper.repeatedAlpha(_prev.password).then(
+            (_list2) async {
+              if (_list2.length == 1) {
+                Alpha _a = Alpha.fromMap(_list2.first);
+                _a.passStatus = '';
+                await DBHelper.update(DBHelper.alphaTable, _a.toMap());
+              }
+            },
+          );
+        },
+      ),
     );
-    await DBHelper.update(DBHelper.alphaTable, a.toMap());
   }
 
-  Future<void> delete(Alpha a) async {
-    // REFRESH REPEATED STATUS
-    if (a.passStatus != 'REPEATED')
-      await DBHelper.delete(DBHelper.alphaTable, a.id);
-    else
-      await DBHelper.setPassRepeted(a.password);
-    DeletedAlpha delete = DeletedAlpha.fromAlpha(a);
-    await DBHelper.insert(DBHelper.deletedAlphaTable, delete.toMap());
-    _items.removeWhere((element) => element.id == a.id);
+  Future<void> deleteAlpha(Alpha a) async {
+    DeletedAlpha _deleted = DeletedAlpha.fromAlpha(a);
+    await DBHelper.insert(DBHelper.deletedAlphaTable, _deleted.toMap()).then(
+      (_) async => await DBHelper.delete(DBHelper.alphaTable, a.id).then(
+        (_) {
+          _items.removeWhere((e) => e.id == a.id);
+          notifyListeners();
+        },
+      ),
+    );
   }
 
-  Future<bool> verifyRepeatedPass(String s) async {
-    if (s.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password', s))
+  Future<bool> isPasswordRepeated(String pass) async {
+    if (pass.isEmpty) return false;
+    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password', pass))
         .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'password', s))
+    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'password', pass))
         .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.deletedAlphaTable, 'password', s))
+    if ((await DBHelper.getByValue(
+            DBHelper.deletedAlphaTable, 'password', pass))
         .isNotEmpty) return true;
     return false;
   }
 
-  Future<bool> verifyRepeatedPin(String p) async {
-    if (p.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin', p)).isNotEmpty)
+  Future<bool> isPinRepeated(String pin) async {
+    if (pin.isEmpty) return false;
+    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin', pin)).isNotEmpty)
       return true;
-    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin', p))
+    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin', pin))
         .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.deletedAlphaTable, 'pin', p))
+    if ((await DBHelper.getByValue(DBHelper.deletedAlphaTable, 'pin', pin))
         .isNotEmpty) return true;
     return false;
   }
 
-  Future<void> setPassStatus(String pass, String status) async =>
+  Future<int> setPassStatus(String pass, String status) async =>
       await DBHelper.setPassStatus(DBHelper.alphaTable, pass, status);
 
-  Future<void> setPinStatus(String pin, String status) async =>
+  Future<int> setPinStatus(String pin, String status) async =>
       await DBHelper.setPinStatus(DBHelper.alphaTable, pin, status);
-
-  // Future<void> refreshRepetedPassword(String p) async {
-  //   List<Map<String, dynamic>> _list =
-  //       await DBHelper.getByValue(DBHelper.alphaTable, 'password', p);
-  //   if (_list.length < 2) DBHelper.refreshPassRepeted(p);
-  // }
 
   Future<void> setPassRepeted(String p) async =>
       await DBHelper.setPassRepeted(p);
 
   Future<void> setPinRepeted(String p) async => await DBHelper.setPinRepeted(p);
-
-  Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
-      await DBHelper.getPassRepeted(p);
 
   Future<void> removeItems() async {
     _items.clear();
