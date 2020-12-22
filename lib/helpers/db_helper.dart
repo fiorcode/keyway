@@ -39,7 +39,7 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getData(String table) async =>
       (await DBHelper.database()).query(table);
 
-  static Future<void> insert(String table, Map<String, Object> data) async =>
+  static Future<int> insert(String table, Map<String, Object> data) async =>
       (await DBHelper.database()).insert(
         table,
         data,
@@ -111,11 +111,20 @@ class DBHelper {
         ['REPEATED', '$p', ''],
       );
 
-  static Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
-      (await DBHelper.database()).query(
-        alphaTable,
-        where: 'password = ?, pass_status = ?',
-        whereArgs: [p, ''],
+  // static Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
+  //     (await DBHelper.database()).query(
+  //       alphaTable,
+  //       where: 'password = ?, pass_status = ?',
+  //       whereArgs: [p, ''],
+  //     );
+
+  static Future<List<Map<String, dynamic>>> repeatedAlpha(String p) async =>
+      (await DBHelper.database()).rawQuery(
+        '''SELECT *
+        FROM $alphaTable
+        WHERE password = ?
+        AND pass_status = ?''',
+        ['$p', 'REPEATED'],
       );
 
   static Future<void> setPinRepeted(String p) async =>
@@ -127,12 +136,7 @@ class DBHelper {
       );
 
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
-      (await DBHelper.database()).rawQuery('''SELECT 
-        $alphaTable.id, $alphaTable.title, $alphaTable.username, 
-        $alphaTable.password, $alphaTable.pin, $alphaTable.ip,
-        $alphaTable.long_text, $alphaTable.date, $alphaTable.date_short, 
-        $alphaTable.color, $alphaTable.color_letter, $alphaTable.pass_status,
-        $alphaTable.pin_status, $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse 
+      (await DBHelper.database()).rawQuery('''SELECT * 
         FROM $alphaTable 
         JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id 
         GROUP BY $alphaTable.id''');
