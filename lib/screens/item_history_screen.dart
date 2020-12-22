@@ -28,7 +28,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<void> _getItemHistory() async =>
-      await _items.fetchItemHistory(widget.itemId);
+      await _items.fetchItemOlds(widget.itemId);
 
   onReturn() {
     getItemHistory = _getItemHistory();
