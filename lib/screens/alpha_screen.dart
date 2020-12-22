@@ -155,7 +155,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
             _setDate();
           }
           if (_filedsChanged()) {
-            await _items.update(_alpha);
+            await _items.updateAlpha(_alpha);
           }
           // if (widget.alpha.passStatus == 'REPEATED')
           //_items.refreshRepetedPassword(widget.alpha.password);
@@ -176,7 +176,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (widget.alpha.password == _alpha.password) return false;
     }
     _alpha.passStatus = '';
-    if (await _items.verifyRepeatedPass(_cripto.doCrypt(_passCtrler.text))) {
+    if (await _items.isPasswordRepeated(_cripto.doCrypt(_passCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
@@ -195,7 +195,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (widget.alpha.pin == _alpha.pin) return false;
     }
     _alpha.pinStatus = '';
-    if (await _items.verifyRepeatedPin(_cripto.doCrypt(_pinCtrler.text))) {
+    if (await _items.isPinRepeated(_cripto.doCrypt(_pinCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
@@ -248,7 +248,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
     bool _warning = await WarningHelper.deleteItemWarning(context);
     _warning = _warning == null ? false : _warning;
     if (_warning)
-      _items.delete(_alpha).then((_) => Navigator.of(context).pop());
+      _items.deleteAlpha(_alpha).then((_) => Navigator.of(context).pop());
   }
 
   @override
