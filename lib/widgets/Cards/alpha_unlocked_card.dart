@@ -20,7 +20,7 @@ class AlphaUnlockedCard extends StatefulWidget {
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   bool _showPass = false;
 
-  _onTap() {
+  void _onTap() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     if (cripto.locked) {
       Scaffold.of(context).showSnackBar(
@@ -76,12 +76,22 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
-  Color _setWarningColor() => (widget.alpha.passStatus == 'REPEATED' ||
-          widget.alpha.pinStatus == 'REPEATED')
-      ? Colors.red[300]
-      : widget.alpha.expired == 'YES'
-          ? Colors.orange[300]
-          : Colors.green[300];
+  Color _setWarningColor() {
+    return (widget.alpha.passStatus == 'REPEATED' ||
+            widget.alpha.pinStatus == 'REPEATED')
+        ? Colors.red[300]
+        : widget.alpha.expired == 'YES'
+            ? Colors.orange[300]
+            : Colors.grey[100];
+  }
+
+  Color _setIconColor() {
+    return (widget.alpha.passStatus == 'REPEATED' ||
+            widget.alpha.pinStatus == 'REPEATED' ||
+            widget.alpha.expired == 'YES')
+        ? Colors.grey[200]
+        : Colors.grey;
+  }
 
   void _switchShowPass() => setState(() => _showPass = !_showPass);
 
@@ -123,7 +133,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                 width: 48,
                 child: FloatingActionButton(
                   backgroundColor: _setWarningColor(),
-                  child: Icon(Icons.copy, color: Colors.grey[200], size: 24),
+                  child: Icon(Icons.copy, color: _setIconColor(), size: 24),
                   heroTag: null,
                   onPressed: _passToClipBoard,
                 ),
@@ -136,7 +146,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                   backgroundColor: _setWarningColor(),
                   child: Icon(
                     Icons.remove_red_eye_outlined,
-                    color: Colors.grey[200],
+                    color: _setIconColor(),
                     size: 24,
                   ),
                   heroTag: null,
