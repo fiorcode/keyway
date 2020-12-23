@@ -83,17 +83,17 @@ class _ItemsHistoryScreenState extends State<ItemsHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.itemsWithHistory.length <= 0
+                    _items.itemsWithOlds.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(8),
-                            itemCount: _items.itemsWithHistory.length,
+                            itemCount: _items.itemsWithOlds.length,
                             itemBuilder: (ctx, i) {
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
                                 child: AlphaHistoryListCard(
-                                  item: _items.itemsWithHistory[i],
+                                  item: _items.itemsWithOlds[i],
                                   onReturn: onReturn,
                                 ),
                               );
