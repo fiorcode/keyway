@@ -14,15 +14,15 @@ class _PinTextFieldState extends State<PinTextField> {
   bool _obscure = true;
 
   void _isEmpty() {
-    setState(() {
-      _empty = widget.ctrler.text.isEmpty;
-    });
+    setState(() => _empty = widget.ctrler.text.isEmpty);
   }
 
-  void _obscureSwitch() {
-    setState(() {
-      _obscure = !_obscure;
-    });
+  void _obscureSwitch() => setState(() => _obscure = !_obscure);
+
+  @override
+  void initState() {
+    _empty = widget.ctrler.text.isEmpty;
+    super.initState();
   }
 
   @override
@@ -45,9 +45,7 @@ class _PinTextFieldState extends State<PinTextField> {
         prefixIcon: _empty
             ? null
             : InkWell(
-                child: Icon(
-                  Icons.visibility,
-                ),
+                child: Icon(Icons.visibility),
                 onTap: _obscureSwitch,
               ),
         suffixIcon: _empty
