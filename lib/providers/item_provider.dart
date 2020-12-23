@@ -8,13 +8,13 @@ import '../models/item.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
-  List<Item> _itemsWithHistory = [];
-  List<Item> _itemHistory = [];
+  List<Item> _itemsWithOlds = [];
+  List<Item> _itemOlds = [];
   List<Item> _deletedItems = [];
 
   List<Item> get items => [..._items];
-  List<Item> get itemsWithHistory => [..._itemsWithHistory];
-  List<Item> get itemHistory => [..._itemHistory];
+  List<Item> get itemsWithOlds => [..._itemsWithOlds];
+  List<Item> get itemOlds => [..._itemOlds];
   List<Item> get deletedItems => [..._deletedItems];
 
   Future<void> fetchItems() async {
@@ -31,27 +31,27 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchItemsWithOlds() async {
     Iterable<OldAlpha> _iterIWH;
     Iterable<DeletedAlpha> _iterDIWH;
-    _itemsWithHistory.clear();
+    _itemsWithOlds.clear();
     await DBHelper.getAlphaWithOlds().then((data) {
       _iterIWH = data.map((e) => OldAlpha.fromMap(e));
     });
-    _itemsWithHistory.addAll(_iterIWH.toList());
+    _itemsWithOlds.addAll(_iterIWH.toList());
     await DBHelper.getDeletedAlphaWithOlds().then((data) {
       _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
     });
-    _itemsWithHistory.addAll(_iterDIWH.toList());
-    _itemsWithHistory.sort((a, b) => b.date.compareTo(a.date));
+    _itemsWithOlds.addAll(_iterDIWH.toList());
+    _itemsWithOlds.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> fetchItemOlds(int itemId) async {
     Iterable<OldAlpha> _iterIH;
     await DBHelper.getByValue(DBHelper.oldAlphaTable, 'item_id', itemId)
         .then((data) {
-      _itemHistory.clear();
+      _itemOlds.clear();
       _iterIH = data.map((e) => OldAlpha.fromMap(e));
+      _itemOlds.addAll(_iterIH.toList());
+      _itemOlds.sort((a, b) => b.date.compareTo(a.date));
     });
-    _itemHistory.addAll(_iterIH.toList());
-    _itemHistory.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> fetchDeletedItems() async {
@@ -129,21 +129,34 @@ class ItemProvider with ChangeNotifier {
     return false;
   }
 
-  Future<int> setPassStatus(String pass, String status) async =>
-      await DBHelper.setPassStatus(DBHelper.alphaTable, pass, status);
+  Future<int> setPassStatus(String table, String pass, String status) async =>
+      await DBHelper.setPassStatus(table, pass, status);
 
-  Future<int> setPinStatus(String pin, String status) async =>
-      await DBHelper.setPinStatus(DBHelper.alphaTable, pin, status);
+  Future<int> setPinStatus(String table, String pin, String status) async =>
+      await DBHelper.setPinStatus(table, pin, status);
 
-  Future<void> setPassRepeted(String p) async =>
-      await DBHelper.setPassRepeted(p);
+  Future<void> setAlphaPassRepeted(String pass) async =>
+      await DBHelper.setPassRepeted(DBHelper.alphaTable, pass);
 
-  Future<void> setPinRepeted(String p) async => await DBHelper.setPinRepeted(p);
+  Future<void> setOldAlphaPassRepeted(String pass) async =>
+      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, pass);
+
+  Future<void> setDeletedAlphaPassRepeted(String pass) async =>
+      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, pass);
+
+  Future<void> setAlphaPinRepeted(String pin) async =>
+      await DBHelper.setPinRepeted(DBHelper.alphaTable, pin);
+
+  Future<void> setOldAlphaPinRepeted(String pin) async =>
+      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pin);
+
+  Future<void> setDeletedAlphaPinRepeted(String pin) async =>
+      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pin);
 
   Future<void> removeItems() async {
     _items.clear();
-    _itemsWithHistory.clear();
-    _itemHistory.clear();
+    _itemsWithOlds.clear();
+    _itemOlds.clear();
     _deletedItems.clear();
   }
 
@@ -180,7 +193,11 @@ class ItemProvider with ChangeNotifier {
       'Google',
       'Steam',
       'Hotmail',
-      'Siglo21'
+      'Siglo21',
+      'BNA Pin',
+      'BBVA Pin',
+      'SantaCruz Pin',
+      'Windows Pin',
     ];
     List<String> _users = [
       'FacebookUser',
@@ -191,7 +208,11 @@ class ItemProvider with ChangeNotifier {
       'GoogleUser',
       'SteamUser',
       'HotmailUser',
-      'Siglo21User'
+      'Siglo21User',
+      'BNA User HB',
+      'BBVA User HB',
+      'SantaCruz User HB',
+      '',
     ];
     List<String> _passes = [
       'FacebookPass',
@@ -202,7 +223,30 @@ class ItemProvider with ChangeNotifier {
       'GooglePass',
       'SteamPass',
       'HotmailPass',
-      'Siglo21Pass'
+      'Siglo21Pass',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+    ];
+    List<String> _pins = [
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '',
+      '2518',
+      '4592',
+      '6275',
+      '3358',
+      '9967',
+      '1558',
     ];
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
@@ -218,16 +262,16 @@ class ItemProvider with ChangeNotifier {
           title: _titles[i],
           username: _cripto.doCrypt(_users[i]),
           password: _cripto.doCrypt(_passes[i]),
-          pin: '',
+          pin: _cripto.doCrypt(_pins[i]),
           ip: '',
           longText: '',
           date: _date.toIso8601String(),
           shortDate: dateFormat.format(_date),
           color: _ran.nextInt(4294967295),
           colorLetter: _ran.nextInt(4294967295),
-          passStatus: _titles[i].contains('g') ? 'REPEATED' : '',
+          passStatus: '',
           pinStatus: '',
-          passLevel: _titles[i].contains('g') ? 'WEAK' : 'STRONG',
+          passLevel: 'WEAK',
           expired: _date.month < 7 ? 'YES' : 'NO',
           expiredLapse: '${_ran.nextInt(365).toString()} DAYS',
         ),
