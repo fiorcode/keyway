@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
-import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
-import 'package:keyway/widgets/empty_items.dart';
-import 'package:keyway/widgets/unlock_container.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/widgets/Cards/alpha_old_card.dart';
+import 'package:keyway/widgets/empty_items.dart';
+import 'package:keyway/widgets/unlock_container.dart';
 
 class ItemHistoryScreen extends StatefulWidget {
   static const routeName = '/item-history';
@@ -23,7 +22,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
   bool _unlocking = false;
-  Future getItemHistory;
+  Future getItemOlds;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -31,7 +30,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
       await _items.fetchItemOlds(widget.itemId);
 
   onReturn() {
-    getItemHistory = _getItemHistory();
+    getItemOlds = _getItemHistory();
     setState(() {});
   }
 
@@ -44,7 +43,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context);
-    getItemHistory = _getItemHistory();
+    getItemOlds = _getItemHistory();
     super.didChangeDependencies();
   }
 
@@ -76,7 +75,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                   ),
       ),
       body: FutureBuilder(
-        future: getItemHistory,
+        future: getItemOlds,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -89,19 +88,16 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.itemHistory.length <= 0
+                    _items.itemOlds.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(12.0),
-                            itemCount: _items.itemHistory.length,
+                            itemCount: _items.itemOlds.length,
                             itemBuilder: (ctx, i) {
-                              return _cripto.locked
-                                  ? AlphaLockedCard(
-                                      alpha: _items.itemHistory[i])
-                                  : AlphaUnlockedCard(
-                                      alpha: _items.itemHistory[i],
-                                      onReturn: onReturn,
-                                    );
+                              return AlphaOldCard(
+                                alpha: _items.itemOlds[i],
+                                onReturn: onReturn,
+                              );
                             },
                           ),
                     if (_unlocking && _cripto.locked)
