@@ -141,30 +141,16 @@ class _AlphaScreenState extends State<AlphaScreen> {
       switch (_mode) {
         case Mode.Create:
           _setDate();
-          //if (await _checkRepeatedPass()) return;
-          //if (await _checkRepeatedPin()) return;
           await _items.insert(_alpha);
           break;
         case Mode.Edit:
-          if (_alpha.password != widget.alpha.password) {
-            //if (await _checkRepeatedPass()) return;
-            _setDate();
-          }
-          if (_alpha.pin != widget.alpha.pin) {
-            //if (await _checkRepeatedPin()) return;
-            _setDate();
-          }
-          if (_filedsChanged()) {
-            await _items.updateAlpha(_alpha);
-          }
-          // if (widget.alpha.passStatus == 'REPEATED')
-          //_items.refreshRepetedPassword(widget.alpha.password);
+          if (_alpha.password != widget.alpha.password) _setDate();
+          if (_alpha.pin != widget.alpha.pin) _setDate();
+          if (_filedsChanged()) await _items.updateAlpha(_alpha);
           break;
         default:
           return;
       }
-      // var _list = _items.getPassRepeted(_alpha.password);
-      // if (_alpha.passStatus == 'REPEATED') if (_alpha.pinStatus == 'REPEATED')
       Navigator.of(context).pop();
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
@@ -182,7 +168,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (_warning) {
         _alpha.passStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        _items.setPassRepeted(_alpha.password);
+        _items.setAlphaPassRepeted(_alpha.password);
+        _items.setOldAlphaPassRepeted(_alpha.password);
+        _items.setDeletedAlphaPassRepeted(_alpha.password);
       } else {
         return true;
       }
@@ -201,7 +189,9 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (_warning) {
         _alpha.pinStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        _items.setPinRepeted(_alpha.pin);
+        _items.setAlphaPinRepeted(_alpha.pin);
+        _items.setOldAlphaPinRepeted(_alpha.pin);
+        _items.setDeletedAlphaPinRepeted(_alpha.pin);
       } else {
         return true;
       }
