@@ -4,10 +4,9 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
-import 'package:keyway/widgets/Cards/alpha_locked_card.dart';
-import 'package:keyway/widgets/Cards/alpha_unlocked_card.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/unlock_container.dart';
+import 'package:keyway/widgets/Cards/alpha_deleted_card.dart';
 
 class DeletedItemsScreen extends StatefulWidget {
   static const routeName = '/deleted-items';
@@ -26,7 +25,7 @@ class _DeletedItemsScreenState extends State<DeletedItemsScreen> {
 
   Future<void> _getDeletedItems() async => await _items.fetchDeletedItems();
 
-  onReturn() {
+  void _onReturn() {
     getDeletedItems = _getDeletedItems();
     setState(() {});
   }
@@ -97,14 +96,10 @@ class _DeletedItemsScreenState extends State<DeletedItemsScreen> {
                             padding: EdgeInsets.all(12.0),
                             itemCount: _items.deletedItems.length,
                             itemBuilder: (ctx, i) {
-                              return _cripto.locked
-                                  ? AlphaLockedCard(
-                                      alpha: _items.deletedItems[i],
-                                    )
-                                  : AlphaUnlockedCard(
-                                      alpha: _items.deletedItems[i],
-                                      onReturn: onReturn,
-                                    );
+                              return AlphaDeletedCard(
+                                alpha: _items.deletedItems[i],
+                                onReturn: _onReturn,
+                              );
                             },
                           ),
                     if (_unlocking && _cripto.locked)
