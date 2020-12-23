@@ -101,22 +101,25 @@ class DBHelper {
         whereArgs: [pin],
       );
 
-  static Future<int> setPassRepeted(String p) async =>
+  static Future<int> setPassRepeted(String table, String p) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
-        $alphaTable
+        $table
         SET pass_status = ?
         WHERE password = ? 
         AND pass_status = ?''',
         ['REPEATED', '$p', ''],
       );
 
-  // static Future<List<Map<String, dynamic>>> getPassRepeted(String p) async =>
-  //     (await DBHelper.database()).query(
-  //       alphaTable,
-  //       where: 'password = ?, pass_status = ?',
-  //       whereArgs: [p, ''],
-  //     );
+  static Future<int> setPinRepeted(String table, String pin) async =>
+      await (await DBHelper.database()).rawUpdate(
+        '''UPDATE 
+        $table
+        SET pass_status = ?
+        WHERE password = ? 
+        AND pass_status = ?''',
+        ['REPEATED', '$pin', ''],
+      );
 
   static Future<List<Map<String, dynamic>>> repeatedAlpha(String p) async =>
       (await DBHelper.database()).rawQuery(
@@ -127,16 +130,13 @@ class DBHelper {
         ['$p', 'REPEATED'],
       );
 
-  static Future<void> setPinRepeted(String p) async =>
-      (await DBHelper.database()).update(
-        alphaTable,
-        {'pin_status': 'REPEATED'},
-        where: 'pin = ?, pin_status = ?',
-        whereArgs: [p, ''],
-      );
-
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
-      (await DBHelper.database()).rawQuery('''SELECT * 
+      (await DBHelper.database()).rawQuery('''SELECT 
+      $alphaTable.id, $alphaTable.title, $alphaTable.username, 
+        $alphaTable.password, $alphaTable.pin, $alphaTable.ip,
+        $alphaTable.long_text, $alphaTable.date, $alphaTable.date_short, 
+        $alphaTable.color, $alphaTable.color_letter, $alphaTable.pass_status,
+        $alphaTable.pin_status, $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse
         FROM $alphaTable 
         JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id 
         GROUP BY $alphaTable.id''');
