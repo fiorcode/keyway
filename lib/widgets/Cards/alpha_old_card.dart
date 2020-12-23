@@ -1,0 +1,144 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import 'package:keyway/models/item.dart';
+import 'package:keyway/providers/cripto_provider.dart';
+
+class AlphaOldCard extends StatefulWidget {
+  const AlphaOldCard({Key key, this.alpha, this.onReturn}) : super(key: key);
+
+  final OldAlpha alpha;
+  final Function onReturn;
+
+  @override
+  _AlphaOldCardState createState() => _AlphaOldCardState();
+}
+
+class _AlphaOldCardState extends State<AlphaOldCard> {
+  CriptoProvider _cripto;
+  bool _showPass = false;
+
+  Color _setAvatarLetterColor() {
+    Color _color = Color(widget.alpha.color);
+    double bgDelta =
+        _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
+    return (255 - bgDelta > 105) ? Colors.white : Colors.black;
+  }
+
+  void _passToClipBoard() {
+    Clipboard.setData(
+            ClipboardData(text: _cripto.doDecrypt(widget.alpha.password)))
+        .then(
+      (_) => Scaffold.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.green,
+          content: Text('Copied'),
+          duration: Duration(seconds: 1),
+        ),
+      ),
+    );
+  }
+
+  Text _setTitle() => Text(
+        _showPass
+            ? _cripto.doDecrypt(widget.alpha.password)
+            : widget.alpha.title,
+        overflow: TextOverflow.ellipsis,
+        maxLines: 1,
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.w300,
+          color: Colors.black,
+        ),
+      );
+
+  Color _setWarningColor() {
+    return (widget.alpha.passStatus == 'REPEATED' ||
+            widget.alpha.pinStatus == 'REPEATED')
+        ? Colors.red[300]
+        : Colors.grey[100];
+  }
+
+  Color _setIconColor() {
+    return (widget.alpha.passStatus == 'REPEATED' ||
+            widget.alpha.pinStatus == 'REPEATED')
+        ? Colors.grey[200]
+        : Colors.grey;
+  }
+
+  void _switchShowPass() => setState(() => _showPass = !_showPass);
+
+  @override
+  void didChangeDependencies() {
+    _cripto = Provider.of<CriptoProvider>(context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      shadowColor: _setWarningColor(),
+      elevation: 8,
+      shape: StadiumBorder(
+        side: BorderSide(width: 2, color: Colors.grey),
+      ),
+      child: ListTile(
+        dense: true,
+        contentPadding: EdgeInsets.all(4),
+        leading: CircleAvatar(
+          radius: 24,
+          backgroundColor: widget.alpha.color != null
+              ? Color(widget.alpha.color).withOpacity(0.33)
+              : Colors.grey,
+          child: Text(
+            widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
+                ? widget.alpha.title.substring(0, 1).toUpperCase()
+                : '',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: _setAvatarLetterColor(),
+            ),
+          ),
+        ),
+        title: _setTitle(),
+        onTap: null,
+        trailing: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                height: 48,
+                width: 48,
+                child: FloatingActionButton(
+                  backgroundColor: _setWarningColor(),
+                  child: Icon(Icons.copy, color: _setIconColor(), size: 24),
+                  heroTag: null,
+                  onPressed: _passToClipBoard,
+                ),
+              ),
+              SizedBox(width: 4),
+              SizedBox(
+                height: 48,
+                width: 48,
+                child: FloatingActionButton(
+                  backgroundColor: _setWarningColor(),
+                  child: Icon(
+                    Icons.remove_red_eye_outlined,
+                    color: _setIconColor(),
+                    size: 24,
+                  ),
+                  heroTag: null,
+                  onPressed: _switchShowPass,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
