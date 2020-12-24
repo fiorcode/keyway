@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/alpha_view_screen.dart';
 
 class AlphaDeletedCard extends StatefulWidget {
   const AlphaDeletedCard({Key key, this.alpha, this.onReturn})
@@ -68,7 +69,18 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
         : Colors.grey;
   }
 
-  void _switchShowPass() => setState(() => _showPass = !_showPass);
+  void _switchShowPass() {
+    if (widget.alpha.password.isNotEmpty)
+      setState(() => _showPass = !_showPass);
+    else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AlphaViewScreen(alpha: widget.alpha),
+        ),
+      ).then((_) => widget.onReturn());
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -108,36 +120,39 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
         onTap: null,
         trailing: Padding(
           padding: const EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(Icons.copy, color: _setIconColor(), size: 24),
-                  heroTag: null,
-                  onPressed: _passToClipBoard,
+          child: _cripto.locked
+              ? null
+              : Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    SizedBox(
+                      height: 48,
+                      width: 48,
+                      child: FloatingActionButton(
+                        backgroundColor: _setWarningColor(),
+                        child:
+                            Icon(Icons.copy, color: _setIconColor(), size: 24),
+                        heroTag: null,
+                        onPressed: _passToClipBoard,
+                      ),
+                    ),
+                    SizedBox(width: 4),
+                    SizedBox(
+                      height: 48,
+                      width: 48,
+                      child: FloatingActionButton(
+                        backgroundColor: _setWarningColor(),
+                        child: Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: _setIconColor(),
+                          size: 24,
+                        ),
+                        heroTag: null,
+                        onPressed: _switchShowPass,
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-              SizedBox(width: 4),
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color: _setIconColor(),
-                    size: 24,
-                  ),
-                  heroTag: null,
-                  onPressed: _switchShowPass,
-                ),
-              ),
-            ],
-          ),
         ),
       ),
     );
