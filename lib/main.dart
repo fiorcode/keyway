@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'screens/alpha_view_screen.dart';
 import 'screens/items_history_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
@@ -47,6 +48,7 @@ class MyApp extends StatelessWidget {
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
           AlphaScreen.routeName: (ctx) => AlphaScreen(),
+          AlphaViewScreen.routeName: (ctx) => AlphaViewScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
