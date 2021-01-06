@@ -19,7 +19,7 @@ class AlphaDeletedCard extends StatefulWidget {
 
 class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
   CriptoProvider _cripto;
-  bool _showPass = false;
+  bool _visible = false;
 
   Color _setAvatarLetterColor() {
     Color _color = Color(widget.alpha.color);
@@ -43,17 +43,30 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
   }
 
   Text _setTitle() => Text(
-        _showPass
+        _visible
             ? _cripto.doDecrypt(widget.alpha.password)
             : widget.alpha.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: TextStyle(
-          fontSize: 22,
+          fontSize: _visible ? 16 : 22,
           fontWeight: FontWeight.w300,
           color: Colors.black,
         ),
       );
+
+  Text _setSubTitle() => _visible
+      ? Text(
+          widget.alpha.username.isNotEmpty
+              ? _cripto.doDecrypt(widget.alpha.username)
+              : widget.alpha.shortDate,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: 14,
+          ),
+        )
+      : null;
 
   Color _setWarningColor() {
     return (widget.alpha.passStatus == 'REPEATED' ||
@@ -69,9 +82,9 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
         : Colors.grey;
   }
 
-  void _switchShowPass() {
+  void _showPass() {
     if (widget.alpha.password.isNotEmpty)
-      setState(() => _showPass = !_showPass);
+      setState(() => _visible = !_visible);
     else {
       Navigator.push(
         context,
@@ -117,6 +130,7 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
           ),
         ),
         title: _setTitle(),
+        subtitle: _setSubTitle(),
         onTap: null,
         trailing: Padding(
           padding: const EdgeInsets.all(4.0),
@@ -148,7 +162,7 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
                           size: 24,
                         ),
                         heroTag: null,
-                        onPressed: _switchShowPass,
+                        onPressed: _showPass,
                       ),
                     ),
                   ],
