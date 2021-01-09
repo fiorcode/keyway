@@ -122,18 +122,22 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         horizontal: 64,
                         vertical: 12,
                       ),
-                      child: Text(
-                        widget.alpha.title,
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Text(
+                          widget.alpha.title,
+                          style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                     if (_username)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Expanded(
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
                           child: Text(
                             _alpha.username,
                             style: TextStyle(
@@ -147,50 +151,62 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                     if (_password)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          _alpha.password,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 64,
-                            fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            _alpha.password,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 64,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     if (_pin)
                       Padding(
                         padding: const EdgeInsets.all(32.0),
-                        child: Text(
-                          _alpha.pin,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 64,
-                            fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            _alpha.pin,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 64,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     if (_ip)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Text(
-                          _alpha.ip,
-                          style: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 64,
-                            fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            _alpha.ip,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 64,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     if (_longText)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Container(
-                          height: 192.0,
-                          child: Text(
-                            _alpha.longText,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
+                        child: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Container(
+                            height: 192.0,
+                            child: Text(
+                              _alpha.longText,
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 64,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
