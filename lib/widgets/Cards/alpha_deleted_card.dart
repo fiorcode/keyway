@@ -42,31 +42,33 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
     );
   }
 
-  Text _setTitle() => Text(
-        _visible
-            ? _cripto.doDecrypt(widget.alpha.password)
-            : widget.alpha.title,
-        overflow: TextOverflow.ellipsis,
-        maxLines: 1,
-        style: TextStyle(
-          fontSize: _visible ? 16 : 22,
-          fontWeight: FontWeight.w300,
-          color: Colors.black,
-        ),
-      );
-
-  Text _setSubTitle() => _visible
-      ? Text(
-          widget.alpha.username.isNotEmpty
-              ? _cripto.doDecrypt(widget.alpha.username)
-              : widget.alpha.shortDate,
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: 14,
+  Column _setTitle() => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            _visible
+                ? _cripto.doDecrypt(widget.alpha.password)
+                : widget.alpha.title,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: _visible ? 16 : 22,
+              fontWeight: FontWeight.w300,
+              color: Colors.black,
+            ),
           ),
-        )
-      : null;
+          Text(
+            _visible ?? widget.alpha.username.isNotEmpty
+                ? _cripto.doDecrypt(widget.alpha.username)
+                : widget.alpha.shortDate,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 1,
+            style: TextStyle(
+              fontSize: 12,
+            ),
+          )
+        ],
+      );
 
   Color _setWarningColor() {
     return (widget.alpha.passStatus == 'REPEATED' ||
@@ -130,7 +132,6 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
           ),
         ),
         title: _setTitle(),
-        subtitle: _setSubTitle(),
         onTap: null,
         trailing: Padding(
           padding: const EdgeInsets.all(4.0),
