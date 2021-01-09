@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/screens/alpha_view_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/screens/alpha_screen.dart';
@@ -95,6 +96,13 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
 
   void _switchShowPass() => setState(() => _showPass = !_showPass);
 
+  void _showPassLongPressed() => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AlphaViewScreen(alpha: widget.alpha),
+        ),
+      ).then((_) => widget.onReturn());
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -142,15 +150,18 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
               SizedBox(
                 height: 48,
                 width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color: _setIconColor(),
-                    size: 24,
+                child: InkWell(
+                  onLongPress: _showPassLongPressed,
+                  child: FloatingActionButton(
+                    backgroundColor: _setWarningColor(),
+                    child: Icon(
+                      Icons.remove_red_eye_outlined,
+                      color: _setIconColor(),
+                      size: 24,
+                    ),
+                    heroTag: null,
+                    onPressed: _switchShowPass,
                   ),
-                  heroTag: null,
-                  onPressed: _switchShowPass,
                 ),
               ),
             ],
