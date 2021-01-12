@@ -127,85 +127,137 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         child: Text(
                           widget.alpha.title,
                           style: TextStyle(
-                            fontSize: 32,
+                            fontSize: 48,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
                     ),
+                    if (_username) Text('Username'),
                     if (_username)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Text(
-                            _alpha.username,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _alpha.username,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    if (_password) Text('Password'),
                     if (_password)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Text(
-                            _alpha.password,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _alpha.password,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    if (_pin) Text('Pin'),
                     if (_pin)
                       Padding(
-                        padding: const EdgeInsets.all(32.0),
+                        padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Text(
-                            _alpha.pin,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _alpha.pin,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    if (_ip) Text('IP'),
                     if (_ip)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Text(
-                            _alpha.ip,
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 64,
-                              fontWeight: FontWeight.bold,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _alpha.ip,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ),
                       ),
+                    if (_longText) Text('Long Text'),
                     if (_longText)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
                           child: Container(
-                            height: 192.0,
-                            child: Text(
-                              _alpha.longText,
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 64,
-                                fontWeight: FontWeight.bold,
+                            decoration: BoxDecoration(
+                              color: Colors.white38,
+                              border: Border.all(),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                _alpha.longText,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 36,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
                           ),
