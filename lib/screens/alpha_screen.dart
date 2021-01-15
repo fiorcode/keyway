@@ -121,13 +121,17 @@ class _AlphaScreenState extends State<AlphaScreen> {
         _longTextCtrler.text.isNotEmpty;
   }
 
-  bool _filedsChanged() {
-    if (_alpha.title != _titleCtrler.text) return true;
-    if (_alpha.username != _userCtrler.text) return true;
-    if (_alpha.password != _passCtrler.text) return true;
-    if (_alpha.pin != _pinCtrler.text) return true;
-    if (_alpha.ip != _ipCtrler.text) return true;
-    if (_alpha.longText != _longTextCtrler.text) return true;
+  bool _wasChanged() {
+    if (_alpha.title != widget.alpha.title) return true;
+    if (_alpha.username != widget.alpha.username) return true;
+    if (_alpha.password != widget.alpha.password) return true;
+    if (_alpha.pin != widget.alpha.pin) return true;
+    if (_alpha.ip != widget.alpha.ip) return true;
+    if (_alpha.longText != widget.alpha.longText) return true;
+    return false;
+  }
+
+  bool _avatarChanged() {
     if (_alpha.color != widget.alpha.color) return true;
     if (_alpha.colorLetter != widget.alpha.colorLetter) return true;
     return false;
@@ -144,9 +148,11 @@ class _AlphaScreenState extends State<AlphaScreen> {
           await _items.insert(_alpha);
           break;
         case Mode.Edit:
-          if (_alpha.password != widget.alpha.password) _setDate();
-          if (_alpha.pin != widget.alpha.pin) _setDate();
-          if (_filedsChanged()) await _items.updateAlpha(_alpha);
+          if (_wasChanged()) {
+            _setDate();
+          }
+          if (_wasChanged() || _avatarChanged())
+            await _items.updateAlpha(_alpha);
           break;
         default:
           return;
