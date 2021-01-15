@@ -4,11 +4,12 @@ import 'package:provider/provider.dart';
 
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/old_alpha_view_screen.dart';
 
 class AlphaOldCard extends StatefulWidget {
-  const AlphaOldCard({Key key, this.alpha, this.onReturn}) : super(key: key);
+  const AlphaOldCard({Key key, this.oldAlpha, this.onReturn}) : super(key: key);
 
-  final OldAlpha alpha;
+  final OldAlpha oldAlpha;
   final Function onReturn;
 
   @override
@@ -20,7 +21,7 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
   bool _showPass = false;
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(widget.alpha.color);
+    Color _color = Color(widget.oldAlpha.color);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105) ? Colors.white : Colors.black;
@@ -28,7 +29,7 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
 
   void _passToClipBoard() {
     Clipboard.setData(
-            ClipboardData(text: _cripto.doDecrypt(widget.alpha.password)))
+            ClipboardData(text: _cripto.doDecrypt(widget.oldAlpha.password)))
         .then(
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -42,8 +43,8 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
 
   Text _setTitle() => Text(
         _showPass
-            ? _cripto.doDecrypt(widget.alpha.password)
-            : widget.alpha.title,
+            ? _cripto.doDecrypt(widget.oldAlpha.password)
+            : widget.oldAlpha.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: TextStyle(
@@ -54,20 +55,27 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
       );
 
   Color _setWarningColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
-            widget.alpha.pinStatus == 'REPEATED')
+    return (widget.oldAlpha.passStatus == 'REPEATED' ||
+            widget.oldAlpha.pinStatus == 'REPEATED')
         ? Colors.red[300]
         : Colors.grey[100];
   }
 
   Color _setIconColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
-            widget.alpha.pinStatus == 'REPEATED')
+    return (widget.oldAlpha.passStatus == 'REPEATED' ||
+            widget.oldAlpha.pinStatus == 'REPEATED')
         ? Colors.grey[200]
         : Colors.grey;
   }
 
-  void _switchShowPass() => setState(() => _showPass = !_showPass);
+  // void _switchShowPass() => setState(() => _showPass = !_showPass);
+
+  void _switchShowPass() => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => OldAlphaViewScreen(oldAlpha: widget.oldAlpha),
+        ),
+      ).then((_) => widget.onReturn());
 
   @override
   void didChangeDependencies() {
@@ -89,12 +97,12 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: widget.alpha.color != null
-              ? Color(widget.alpha.color).withOpacity(0.33)
+          backgroundColor: widget.oldAlpha.color != null
+              ? Color(widget.oldAlpha.color).withOpacity(0.33)
               : Colors.grey,
           child: Text(
-            widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
-                ? widget.alpha.title.substring(0, 1).toUpperCase()
+            widget.oldAlpha.title != null ?? widget.oldAlpha.title.isNotEmpty
+                ? widget.oldAlpha.title.substring(0, 1).toUpperCase()
                 : '',
             style: TextStyle(
               fontSize: 24,
