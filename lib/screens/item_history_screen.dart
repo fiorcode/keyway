@@ -95,7 +95,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                             itemCount: _items.itemOlds.length,
                             itemBuilder: (ctx, i) {
                               return AlphaOldCard(
-                                alpha: _items.itemOlds[i],
+                                oldAlpha: _items.itemOlds[i],
                                 onReturn: onReturn,
                               );
                             },
