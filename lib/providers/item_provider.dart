@@ -7,15 +7,15 @@ import '../helpers/db_helper.dart';
 import '../models/item.dart';
 
 class ItemProvider with ChangeNotifier {
-  List<Item> _items = [];
-  List<Item> _itemsWithOlds = [];
-  List<Item> _itemOlds = [];
-  List<Item> _deletedItems = [];
+  List<dynamic> _items = [];
+  List<dynamic> _itemsWithOlds = [];
+  List<OldAlpha> _itemOlds = [];
+  List<DeletedAlpha> _deletedItems = [];
 
-  List<Item> get items => [..._items];
-  List<Item> get itemsWithOlds => [..._itemsWithOlds];
-  List<Item> get itemOlds => [..._itemOlds];
-  List<Item> get deletedItems => [..._deletedItems];
+  List<dynamic> get items => [..._items];
+  List<dynamic> get itemsWithOlds => [..._itemsWithOlds];
+  List<OldAlpha> get itemOlds => [..._itemOlds];
+  List<DeletedAlpha> get deletedItems => [..._deletedItems];
 
   Future<void> fetchItems() async {
     Iterable<Alpha> _iter;
@@ -72,8 +72,8 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getById(DBHelper.alphaTable, a.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
-        if (_prev.savePrevious(a)) {
-          OldAlpha _old = OldAlpha.fromAlpha(_prev);
+        OldAlpha _old = _prev.saveOld(a);
+        if (_old != null) {
           await DBHelper.insert(DBHelper.oldAlphaTable, _old.toMap());
         }
       },
