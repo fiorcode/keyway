@@ -123,7 +123,8 @@ class Alpha extends Item {
     );
   }
 
-  bool savePrevious(Alpha a) {
+  bool _savePrevious(Alpha a) {
+    if (this.title != a.title) return true;
     if (this.username != a.username) return true;
     if (this.password != a.password) return true;
     if (this.pin != a.pin) return true;
@@ -131,19 +132,85 @@ class Alpha extends Item {
     if (this.longText != a.longText) return true;
     return false;
   }
+
+  OldAlpha saveOld(Alpha a) {
+    if (_savePrevious(a)) {
+      OldAlpha _old = OldAlpha.fromAlpha(a);
+      if (this.title != a.title) _old.titleChange = 'changed';
+      if (this.username != a.username) {
+        if (a.username == '')
+          _old.usernameChange = 'deleted';
+        else if (this.username == '')
+          _old.usernameChange = 'added';
+        else
+          _old.usernameChange = 'updated';
+      } else
+        _old.username = '';
+      if (this.password != a.password) {
+        if (a.password == '')
+          _old.passwordChange = 'deleted';
+        else if (this.password == '')
+          _old.passwordChange = 'added';
+        else
+          _old.passwordChange = 'updated';
+      } else
+        _old.password = '';
+      if (this.pin != a.pin) {
+        if (a.pin == '')
+          _old.pinChange = 'deleted';
+        else if (this.pin == '')
+          _old.pinChange = 'added';
+        else
+          _old.pinChange = 'updated';
+      } else
+        _old.pin = '';
+      if (this.ip != a.ip) {
+        if (a.ip == '')
+          _old.ipChange = 'deleted';
+        else if (this.ip == '')
+          _old.ipChange = 'added';
+        else
+          _old.ipChange = 'updated';
+      } else
+        _old.ip = '';
+      if (this.longText != a.longText) {
+        if (a.longText == '')
+          _old.longTextChange = 'deleted';
+        else if (this.longText == '')
+          _old.longTextChange = 'added';
+        else
+          _old.longTextChange = 'updated';
+      } else
+        _old.longText = '';
+      return _old;
+    } else
+      return null;
+  }
 }
 
 class OldAlpha extends Alpha {
   int itemId;
+  String titleChange;
+  String usernameChange;
+  String passwordChange;
+  String pinChange;
+  String ipChange;
+  String longTextChange;
 
   OldAlpha({
     int id,
     String title,
+    String titleChange,
     String username,
+    String usernameChange,
     String password,
+    String passwordChange,
     String pin,
+    String pinChange,
     String ip,
+    String ipChange,
     String longText,
+    String longTextChange,
     String date,
     String shortDate,
     int color = 0,
@@ -176,11 +243,17 @@ class OldAlpha extends Alpha {
   }
 
   OldAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
+    titleChange = map['title_change'];
     username = map['username'];
+    usernameChange = map['username_change'];
     password = map['password'];
+    passwordChange = map['password_change'];
     pin = map['pin'];
+    pinChange = map['pin_change'];
     ip = map['ip'];
+    ipChange = map['ip_change'];
     longText = map['long_text'];
+    longTextChange = map['long_text_change'];
     passStatus = map['pass_status'];
     pinStatus = map['pin_status'];
     passLevel = map['pass_level'];
@@ -190,11 +263,17 @@ class OldAlpha extends Alpha {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'title': title,
+      'title_change': titleChange,
       'username': username,
+      'username_change': usernameChange,
       'password': password,
+      'password_change': passwordChange,
       'pin': pin,
+      'pin_change': pinChange,
       'ip': ip,
+      'ip_change': ipChange,
       'long_text': longText,
+      'long_text_change': longTextChange,
       'date': date,
       'date_short': shortDate,
       'color': color,
@@ -208,6 +287,33 @@ class OldAlpha extends Alpha {
     };
     if (id != null) map['id'] = id;
     return map;
+  }
+
+  OldAlpha clone() {
+    return OldAlpha(
+      id: this.id,
+      title: this.title,
+      titleChange: this.titleChange,
+      username: this.username,
+      usernameChange: this.usernameChange,
+      password: this.password,
+      passwordChange: this.passwordChange,
+      pin: this.pin,
+      pinChange: this.pinChange,
+      ip: this.ip,
+      ipChange: this.ipChange,
+      longText: this.longText,
+      longTextChange: this.longTextChange,
+      date: this.date,
+      shortDate: this.shortDate,
+      color: this.color,
+      colorLetter: this.colorLetter,
+      passStatus: this.passStatus,
+      pinStatus: this.pinStatus,
+      passLevel: this.passLevel,
+      expired: this.expired,
+      expiredLapse: this.expiredLapse,
+    );
   }
 }
 
@@ -266,6 +372,7 @@ class DeletedAlpha extends Alpha {
     pinStatus = map['pin_status'];
     passLevel = map['pass_level'];
     deletedDate = map['date_deleted'];
+    itemId = map['item_id'];
   }
 
   Map<String, dynamic> toMap() {
