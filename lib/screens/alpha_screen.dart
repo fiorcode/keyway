@@ -148,9 +148,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
           await _items.insert(_alpha);
           break;
         case Mode.Edit:
-          if (_wasChanged()) {
-            _setDate();
-          }
+          if (_wasChanged()) _setDate();
           if (_wasChanged() || _avatarChanged())
             await _items.updateAlpha(_alpha);
           break;
