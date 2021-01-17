@@ -67,18 +67,19 @@ class ItemProvider with ChangeNotifier {
   Future<void> insert(Alpha a) async =>
       await DBHelper.insert(DBHelper.alphaTable, a.toMap());
 
-  Future<void> updateAlpha(Alpha a) async {
+  Future<void> updateAlpha(Alpha newAlpha) async {
     Alpha _prev;
-    await DBHelper.getById(DBHelper.alphaTable, a.id).then(
+    await DBHelper.getById(DBHelper.alphaTable, newAlpha.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
-        OldAlpha _old = _prev.saveOld(a);
-        if (_old != null) {
-          await DBHelper.insert(DBHelper.oldAlphaTable, _old.toMap());
+        OldAlpha _oldAlpha = _prev.saveOld(newAlpha);
+        if (_oldAlpha != null) {
+          await DBHelper.insert(DBHelper.oldAlphaTable, _oldAlpha.toMap());
         }
       },
     ).then(
-      (_) async => await DBHelper.update(DBHelper.alphaTable, a.toMap()).then(
+      (_) async =>
+          await DBHelper.update(DBHelper.alphaTable, newAlpha.toMap()).then(
         (_) async {
           await DBHelper.repeatedAlpha(_prev.password).then(
             (_list2) async {
