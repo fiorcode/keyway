@@ -135,7 +135,7 @@ class Alpha extends Item {
 
   OldAlpha saveOld(Alpha a) {
     if (_savePrevious(a)) {
-      OldAlpha _old = OldAlpha.fromAlpha(a);
+      OldAlpha _old = OldAlpha.fromAlpha(this);
       if (this.title != a.title) _old.titleChange = 'changed';
       if (this.username != a.username) {
         if (a.username == '')
@@ -200,17 +200,17 @@ class OldAlpha extends Alpha {
   OldAlpha({
     int id,
     String title,
-    String titleChange,
+    this.titleChange,
     String username,
-    String usernameChange,
+    this.usernameChange,
     String password,
-    String passwordChange,
+    this.passwordChange,
     String pin,
-    String pinChange,
+    this.pinChange,
     String ip,
-    String ipChange,
+    this.ipChange,
     String longText,
-    String longTextChange,
+    this.longTextChange,
     String date,
     String shortDate,
     int color = 0,
@@ -221,7 +221,24 @@ class OldAlpha extends Alpha {
     String expired,
     String expiredLapse,
     this.itemId,
-  }) : super();
+  }) : super(
+          id: id,
+          title: title,
+          username: username,
+          password: password,
+          pin: pin,
+          ip: ip,
+          longText: longText,
+          date: date,
+          shortDate: shortDate,
+          color: color,
+          colorLetter: colorLetter,
+          passStatus: passStatus,
+          pinStatus: pinStatus,
+          passLevel: passLevel,
+          expired: expired,
+          expiredLapse: expiredLapse,
+        );
 
   OldAlpha.fromAlpha(Alpha a) {
     this.title = a.title;
@@ -289,8 +306,8 @@ class OldAlpha extends Alpha {
     return map;
   }
 
-  OldAlpha clone() {
-    return OldAlpha(
+  OldAlpha cloneOld() {
+    var old = OldAlpha(
       id: this.id,
       title: this.title,
       titleChange: this.titleChange,
@@ -314,6 +331,7 @@ class OldAlpha extends Alpha {
       expired: this.expired,
       expiredLapse: this.expiredLapse,
     );
+    return old;
   }
 }
 
