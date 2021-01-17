@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
-import '../widgets/presets_wrap.dart';
 import '../widgets/unlock_container.dart';
 
 class OldAlphaViewScreen extends StatefulWidget {
@@ -64,6 +63,18 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
     }
   }
 
+  Color _setColor(String change) {
+    switch (change) {
+      case 'delted':
+        return Colors.red;
+        break;
+      case 'added':
+        return Colors.green;
+      default:
+        return Colors.orange;
+    }
+  }
+
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
@@ -108,21 +119,57 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
           SingleChildScrollView(
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.all(32.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    PresetsWrap(
-                      username: _username,
-                      password: _password,
-                      pin: _pin,
-                      ip: _ip,
-                      longText: _longText,
-                      usernameSwitch: null,
-                      passwordSwitch: null,
-                      pinSwitch: null,
-                      ipSwitch: null,
-                      longTextSwitch: null,
+                    Wrap(
+                      spacing: 4.0,
+                      children: [
+                        if (_username)
+                          Chip(
+                            label: Text(
+                              'Username ' + _oldAlpha.usernameChange,
+                            ),
+                          ),
+                        if (_password)
+                          Chip(
+                            avatar: Text(
+                              '*',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            backgroundColor:
+                                _setColor(_oldAlpha.passwordChange),
+                            label: Text(
+                              'Password ' + _oldAlpha.passwordChange,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            labelPadding: EdgeInsets.all(4.0),
+                          ),
+                        if (_pin)
+                          Chip(
+                            avatar: Icon(
+                              Icons.dialpad,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                            backgroundColor: _setColor(_oldAlpha.pinChange),
+                            label: Text(
+                              'Pin ' + _oldAlpha.pinChange,
+                              style: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            labelPadding: EdgeInsets.all(4.0),
+                          ),
+                      ],
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -170,38 +217,15 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                           ),
                         ),
                       ),
-                    if (_password)
-                      Container(
-                        //color: Colors.yellow,
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          border: Border.all(
-                            color: Colors.orange[800],
-                            width: 2.0,
-                          ),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Text(
-                            'Password ' + _oldAlpha.passwordChange,
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ),
-                    if (_password)
+                    if (_password & _oldAlpha.password.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white38,
-                              border: Border.all(color: Colors.white),
+                              color: Colors.white,
+                              //border: Border.all(color: Colors.grey),
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Padding(
@@ -210,17 +234,15 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                                 _oldAlpha.password,
                                 style: TextStyle(
                                   color: Colors.grey,
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 24,
+                                  //fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
                         ),
                       ),
-                    if (_pin) Text('Pin'),
-                    if (_pin) Text(_oldAlpha.pinChange),
-                    if (_pin)
+                    if (_pin & _oldAlpha.pin.isNotEmpty)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
