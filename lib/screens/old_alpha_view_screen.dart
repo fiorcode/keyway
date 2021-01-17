@@ -32,32 +32,42 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   void _load() {
-    if (_oldAlpha.usernameChange.isNotEmpty) {
-      _oldAlpha.username = _cripto.doDecrypt(_oldAlpha.username);
-      _username = true;
+    if (_oldAlpha.usernameChange != null) {
+      if (_oldAlpha.usernameChange.isNotEmpty) {
+        _oldAlpha.username = _cripto.doDecrypt(_oldAlpha.username);
+        _username = true;
+      }
     }
-    if (_oldAlpha.passwordChange.isNotEmpty) {
-      _oldAlpha.password = _cripto.doDecrypt(_oldAlpha.password);
-      _password = true;
+    if (_oldAlpha.passwordChange != null) {
+      if (_oldAlpha.passwordChange.isNotEmpty) {
+        _oldAlpha.password = _cripto.doDecrypt(_oldAlpha.password);
+        _password = true;
+      }
     }
-    if (_oldAlpha.pinChange.isNotEmpty) {
-      _oldAlpha.pin = _cripto.doDecrypt(_oldAlpha.pin);
-      _pin = true;
+    if (_oldAlpha.pinChange != null) {
+      if (_oldAlpha.pinChange.isNotEmpty) {
+        _oldAlpha.pin = _cripto.doDecrypt(_oldAlpha.pin);
+        _pin = true;
+      }
     }
-    if (_oldAlpha.ipChange.isNotEmpty) {
-      _oldAlpha.ip = _cripto.doDecrypt(_oldAlpha.ip);
-      _ip = true;
+    if (_oldAlpha.ipChange != null) {
+      if (_oldAlpha.ipChange.isNotEmpty) {
+        _oldAlpha.ip = _cripto.doDecrypt(_oldAlpha.ip);
+        _ip = true;
+      }
     }
-    if (_oldAlpha.longTextChange.isNotEmpty) {
-      _oldAlpha.longText = _cripto.doDecrypt(_oldAlpha.longText);
-      _longText = true;
+    if (_oldAlpha.longTextChange != null) {
+      if (_oldAlpha.longTextChange.isNotEmpty) {
+        _oldAlpha.longText = _cripto.doDecrypt(_oldAlpha.longText);
+        _longText = true;
+      }
     }
   }
 
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _oldAlpha = widget.oldAlpha.clone();
+    _oldAlpha = widget.oldAlpha.cloneOld();
     _load();
     super.initState();
   }
@@ -130,8 +140,11 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                         ),
                       ),
                     ),
-                    if (_username) Text('Username'),
-                    if (_username) Text(_oldAlpha.usernameChange),
+                    if (_username)
+                      Text(
+                        'Username ' + _oldAlpha.usernameChange,
+                        style: TextStyle(fontSize: 12),
+                      ),
                     if (_username)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -157,8 +170,29 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                           ),
                         ),
                       ),
-                    if (_password) Text('Password'),
-                    if (_password) Text(_oldAlpha.passwordChange),
+                    if (_password)
+                      Container(
+                        //color: Colors.yellow,
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          border: Border.all(
+                            color: Colors.orange[800],
+                            width: 2.0,
+                          ),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'Password ' + _oldAlpha.passwordChange,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
                     if (_password)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -167,7 +201,7 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                           child: Container(
                             decoration: BoxDecoration(
                               color: Colors.white38,
-                              border: Border.all(),
+                              border: Border.all(color: Colors.white),
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             child: Padding(
