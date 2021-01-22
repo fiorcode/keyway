@@ -50,9 +50,11 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
 
   void _passToClipBoard() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
-    Clipboard.setData(
-            ClipboardData(text: cripto.doDecrypt(widget.alpha.password)))
-        .then(
+    Clipboard.setData(ClipboardData(
+        text: cripto.doDecrypt(
+      widget.alpha.password,
+      widget.alpha.passwordIV,
+    ))).then(
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -66,7 +68,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   Text _setTitle() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     return Text(
-      _showPass ? cripto.doDecrypt(widget.alpha.password) : widget.alpha.title,
+      _showPass
+          ? cripto.doDecrypt(
+              widget.alpha.password,
+              widget.alpha.passwordIV,
+            )
+          : widget.alpha.title,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       style: TextStyle(
