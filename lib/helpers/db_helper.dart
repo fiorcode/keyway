@@ -28,7 +28,7 @@ class DBHelper {
 
   static Future<int> dbSize() async {
     final _dbPath = await sql.getDatabasesPath();
-    return File('$_dbPath/kw.db').length();
+    return await File('$_dbPath/kw.db').length();
   }
 
   static Future<DateTime> dbLastModified() async {
@@ -79,7 +79,7 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getUsernames() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
-        $alphaTable.username
+        $alphaTable.username, $alphaTable.username_iv
         FROM $alphaTable
         GROUP BY $alphaTable.username''');
 
@@ -132,20 +132,28 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
-      $alphaTable.id, $alphaTable.title, $alphaTable.username, 
-        $alphaTable.password, $alphaTable.pin, $alphaTable.ip,
-        $alphaTable.long_text, $alphaTable.date, $alphaTable.date_short, 
-        $alphaTable.color, $alphaTable.color_letter, $alphaTable.pass_status,
-        $alphaTable.pin_status, $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse
-        FROM $alphaTable 
-        JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id 
-        GROUP BY $alphaTable.id''');
+      $alphaTable.id, $alphaTable.title,
+      $alphaTable.username, $alphaTable.username_iv, $alphaTable.username_hash,
+      $alphaTable.password, $alphaTable.password_iv, $alphaTable.password_hash,
+      $alphaTable.pin, $alphaTable.pin_iv, $alphaTable.pin_hash,
+      $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.ip_hash,
+      $alphaTable.long_text, $alphaTable.long_text_iv, $alphaTable.long_text_hash,
+      $alphaTable.date, $alphaTable.date_short, $alphaTable.color,
+      $alphaTable.color_letter, $alphaTable.pass_status, $alphaTable.pin_status, 
+      $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse
+      FROM $alphaTable
+      JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id
+      GROUP BY $alphaTable.id''');
 
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
-        $deletedAlphaTable.id, $deletedAlphaTable.title, $deletedAlphaTable.username, 
-        $deletedAlphaTable.password, $deletedAlphaTable.pin, $deletedAlphaTable.ip,
-        $deletedAlphaTable.long_text, $deletedAlphaTable.date, $deletedAlphaTable.date_short, 
+        $deletedAlphaTable.id, $deletedAlphaTable.title,
+        $deletedAlphaTable.username, $deletedAlphaTable.username_iv, $deletedAlphaTable.username_hash,
+        $deletedAlphaTable.password, $deletedAlphaTable.password_iv, $deletedAlphaTable.password_hash, 
+        $deletedAlphaTable.pin, $deletedAlphaTable.pin_iv, $deletedAlphaTable.pin_hash, 
+        $deletedAlphaTable.ip, $deletedAlphaTable.ip_iv, $deletedAlphaTable.ip_hash,
+        $deletedAlphaTable.long_text, $deletedAlphaTable.long_text_iv, $deletedAlphaTable.long_text_hash,
+        $deletedAlphaTable.date, $deletedAlphaTable.date_short, 
         $deletedAlphaTable.date_deleted, $deletedAlphaTable.color, $deletedAlphaTable.color_letter, 
         $deletedAlphaTable.pass_status, $deletedAlphaTable.pin_status, $deletedAlphaTable.pass_level,
         $deletedAlphaTable.expired, $deletedAlphaTable.expired_lapse, $deletedAlphaTable.item_id 
@@ -168,16 +176,27 @@ class DBHelper {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     surname TEXT,
-    enc_mk TEXT)''';
+    enc_mk TEXT,
+    mk_iv)''';
 
   static const createAlphaTable = '''CREATE TABLE $alphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     username TEXT,
+    username_iv TEXT,
+    username_hash TEXT,
     password TEXT,
+    password_iv TEXT,
+    password_hash TEXT,
     pin TEXT,
+    pin_iv TEXT,
+    pin_hash TEXT,
     ip TEXT,
+    ip_iv TEXT,
+    ip_hashTEXT,
     long_text TEXT,
+    long_text_iv TEXT,
+    long_text_hash TEXT,
     date TEXT,
     date_short TEXT,
     color INTEGER,
@@ -193,14 +212,24 @@ class DBHelper {
     title TEXT,
     title_change TEXT,
     username TEXT,
+    username_iv TEXT,
+    username_hash TEXT,
     username_change TEXT,
     password TEXT,
+    password_iv TEXT,
+    password_hash TEXT,
     password_change TEXT,
     pin TEXT,
+    pin_iv TEXT,
+    pin_hash TEXT,
     pin_change TEXT,
     ip TEXT,
+    ip_iv TEXT,
+    ip_hashTEXT,
     ip_change TEXT,
     long_text TEXT,
+    long_text_iv TEXT,
+    long_text_hash TEXT,
     long_text_change TEXT,
     date TEXT,
     date_short TEXT,
@@ -215,12 +244,22 @@ class DBHelper {
 
   static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
+    title TEXT,    
     username TEXT,
+    username_iv TEXT,
+    username_hash TEXT,
     password TEXT,
+    password_iv TEXT,
+    password_hash TEXT,
     pin TEXT,
+    pin_iv TEXT,
+    pin_hash TEXT,
     ip TEXT,
+    ip_iv TEXT,
+    ip_hashTEXT,
     long_text TEXT,
+    long_text_iv TEXT,
+    long_text_hash TEXT,
     date TEXT,
     date_short TEXT,
     date_deleted TEXT,
