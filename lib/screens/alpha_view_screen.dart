@@ -35,23 +35,23 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
     setState(() {
       _alpha.title = _alpha.title;
       if (_alpha.username.isNotEmpty) {
-        _alpha.username = _cripto.doDecrypt(_alpha.username);
+        _alpha.username = _cripto.doDecrypt(_alpha.username, _alpha.usernameIV);
         _username = true;
       }
       if (_alpha.password.isNotEmpty) {
-        _alpha.password = _cripto.doDecrypt(_alpha.password);
+        _alpha.password = _cripto.doDecrypt(_alpha.password, _alpha.passwordIV);
         _password = true;
       }
       if (_alpha.pin.isNotEmpty) {
-        _alpha.pin = _cripto.doDecrypt(_alpha.pin);
+        _alpha.pin = _cripto.doDecrypt(_alpha.pin, _alpha.pinIV);
         _pin = true;
       }
       if (_alpha.ip.isNotEmpty) {
-        _alpha.ip = _cripto.doDecrypt(_alpha.ip);
+        _alpha.ip = _cripto.doDecrypt(_alpha.ip, _alpha.ipIV);
         _ip = true;
       }
       if (_alpha.longText.isNotEmpty) {
-        _alpha.longText = _cripto.doDecrypt(_alpha.longText);
+        _alpha.longText = _cripto.doDecrypt(_alpha.longText, _alpha.longTextIV);
         _longText = true;
       }
     });
