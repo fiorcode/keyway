@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:keyway/models/item.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cripto_provider.dart';
@@ -11,7 +12,7 @@ class UserListCard extends StatelessWidget {
   final TextEditingController ctrler;
   final Function userListSwitch;
   final Function selectUsername;
-  final List<String> list;
+  final List<Username> list;
 
   @override
   Widget build(BuildContext context) {
@@ -66,10 +67,10 @@ class UserListCard extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4.0),
                               ),
                               child: FlatButton(
-                                onPressed: () =>
-                                    selectUsername(_cripto.doDecrypt(e)),
+                                onPressed: () => selectUsername(_cripto
+                                    .doDecrypt(e.username, e.usernameIV)),
                                 child: Text(
-                                  _cripto.doDecrypt(e),
+                                  _cripto.doDecrypt(e.username, e.usernameIV),
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ),
