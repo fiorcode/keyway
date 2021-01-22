@@ -1,6 +1,11 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:crypto/crypto.dart';
+import 'package:encrypt/encrypt.dart' as e;
 
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
@@ -65,7 +70,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<List<String>> _usernamesList() async => await _items.getUsers();
+  Future<List<Username>> _usernamesList() async => await _items.getUsers();
 
   void _selectUsername(String u) {
     _userCtrler.text = u;
@@ -73,11 +78,29 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   void _set() {
-    _alpha.username = _cripto.doCrypt(_userCtrler.text);
-    _alpha.password = _cripto.doCrypt(_passCtrler.text);
-    _alpha.pin = _cripto.doCrypt(_pinCtrler.text);
-    _alpha.ip = _cripto.doCrypt(_ipCtrler.text);
-    _alpha.longText = _cripto.doCrypt(_longTextCtrler.text);
+    Random _ran = Random.secure();
+    _alpha.usernameHash =
+        sha256.convert(utf8.encode(_userCtrler.text)).toString();
+    _alpha.usernameIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
+
+    _alpha.passwordHash =
+        sha256.convert(utf8.encode(_passCtrler.text)).toString();
+    _alpha.passwordIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
+
+    _alpha.pinHash = sha256.convert(utf8.encode(_pinCtrler.text)).toString();
+    _alpha.pinIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
+
+    _alpha.ipHash = sha256.convert(utf8.encode(_ipCtrler.text)).toString();
+    _alpha.ipIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
+
+    _alpha.longTextHash =
+        sha256.convert(utf8.encode(_longTextCtrler.text)).toString();
+    _alpha.longTextIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.longText = _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
   }
 
   void _setDate() {
@@ -91,23 +114,26 @@ class _AlphaScreenState extends State<AlphaScreen> {
     setState(() {
       _titleCtrler.text = _alpha.title;
       if (_alpha.username.isNotEmpty) {
-        _userCtrler.text = _cripto.doDecrypt(_alpha.username);
+        _userCtrler.text =
+            _cripto.doDecrypt(_alpha.username, _alpha.usernameIV);
         _username = true;
       }
       if (_alpha.password.isNotEmpty) {
-        _passCtrler.text = _cripto.doDecrypt(_alpha.password);
+        _passCtrler.text =
+            _cripto.doDecrypt(_alpha.password, _alpha.passwordIV);
         _password = true;
       }
       if (_alpha.pin.isNotEmpty) {
-        _pinCtrler.text = _cripto.doDecrypt(_alpha.pin);
+        _pinCtrler.text = _cripto.doDecrypt(_alpha.pin, _alpha.pinIV);
         _pin = true;
       }
       if (_alpha.ip.isNotEmpty) {
-        _ipCtrler.text = _cripto.doDecrypt(_alpha.ip);
+        _ipCtrler.text = _cripto.doDecrypt(_alpha.ip, _alpha.ipIV);
         _ip = true;
       }
       if (_alpha.longText.isNotEmpty) {
-        _longTextCtrler.text = _cripto.doDecrypt(_alpha.longText);
+        _longTextCtrler.text =
+            _cripto.doDecrypt(_alpha.longText, _alpha.longTextIV);
         _longText = true;
       }
     });
@@ -166,7 +192,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (widget.alpha.password == _alpha.password) return false;
     }
     _alpha.passStatus = '';
-    if (await _items.isPasswordRepeated(_cripto.doCrypt(_passCtrler.text))) {
+    if (await _items.isPasswordRepeated(
+        sha256.convert(utf8.encode(_passCtrler.text)).toString())) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
@@ -187,7 +214,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
       if (widget.alpha.pin == _alpha.pin) return false;
     }
     _alpha.pinStatus = '';
-    if (await _items.isPinRepeated(_cripto.doCrypt(_pinCtrler.text))) {
+    if (await _items.isPinRepeated(
+        sha256.convert(utf8.encode(_pinCtrler.text)).toString())) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
