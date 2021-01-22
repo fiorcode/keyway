@@ -1,6 +1,9 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'dart:math';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:crypto/crypto.dart';
+import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
@@ -107,25 +110,27 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
-  Future<bool> isPasswordRepeated(String pass) async {
-    if (pass.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password', pass))
-        .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'password', pass))
+  Future<bool> isPasswordRepeated(String hash) async {
+    if (hash.isEmpty) return false;
+    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
-            DBHelper.deletedAlphaTable, 'password', pass))
+            DBHelper.oldAlphaTable, 'password_hash', hash))
+        .isNotEmpty) return true;
+    if ((await DBHelper.getByValue(
+            DBHelper.deletedAlphaTable, 'password_hash', hash))
         .isNotEmpty) return true;
     return false;
   }
 
-  Future<bool> isPinRepeated(String pin) async {
-    if (pin.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin', pin)).isNotEmpty)
-      return true;
-    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin', pin))
+  Future<bool> isPinRepeated(String hash) async {
+    if (hash.isEmpty) return false;
+    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash))
         .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.deletedAlphaTable, 'pin', pin))
+    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin_hash', hash))
+        .isNotEmpty) return true;
+    if ((await DBHelper.getByValue(
+            DBHelper.deletedAlphaTable, 'pin_hash', hash))
         .isNotEmpty) return true;
     return false;
   }
@@ -176,10 +181,10 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<List<String>> getUsers() async {
-    Iterable<String> _iter;
+  Future<List<Username>> getUsers() async {
+    Iterable<Username> _iter;
     await DBHelper.getUsernames().then((data) {
-      _iter = data.map((e) => e['username']);
+      _iter = data.map((e) => Username.fromMap(e));
     });
     return _iter.toList();
   }
@@ -252,6 +257,9 @@ class ItemProvider with ChangeNotifier {
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
+    String _ivUser = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    String _ivPass = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    String _ivPin = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
     for (int i = 0; i < _titles.length; i++) {
       DateTime _date = DateTime(
         2020,
@@ -261,11 +269,21 @@ class ItemProvider with ChangeNotifier {
       insert(
         Alpha(
           title: _titles[i],
-          username: _cripto.doCrypt(_users[i]),
-          password: _cripto.doCrypt(_passes[i]),
-          pin: _cripto.doCrypt(_pins[i]),
+          username: _cripto.doCrypt(_users[i], _ivUser),
+          usernameIV: _ivUser,
+          usernameHash: sha256.convert(utf8.encode(_users[i])).toString(),
+          password: _cripto.doCrypt(_passes[i], _ivPass),
+          passwordIV: _ivPass,
+          passwordHash: sha256.convert(utf8.encode(_passes[i])).toString(),
+          pin: _cripto.doCrypt(_pins[i], _ivPin),
+          pinIV: _ivPin,
+          pinHash: sha256.convert(utf8.encode(_pins[i])).toString(),
           ip: '',
+          ipIV: '',
+          ipHash: '',
           longText: '',
+          longTextIV: '',
+          longTextHash: '',
           date: _date.toIso8601String(),
           shortDate: dateFormat.format(_date),
           color: _ran.nextInt(4294967295),
