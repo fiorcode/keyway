@@ -28,9 +28,11 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
   }
 
   void _passToClipBoard() {
-    Clipboard.setData(
-            ClipboardData(text: _cripto.doDecrypt(widget.oldAlpha.password)))
-        .then(
+    Clipboard.setData(ClipboardData(
+        text: _cripto.doDecrypt(
+      widget.oldAlpha.password,
+      widget.oldAlpha.passwordIV,
+    ))).then(
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -43,7 +45,8 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
 
   Text _setTitle() => Text(
         _showPass
-            ? _cripto.doDecrypt(widget.oldAlpha.password)
+            ? _cripto.doDecrypt(
+                widget.oldAlpha.password, widget.oldAlpha.passwordIV)
             : widget.oldAlpha.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
