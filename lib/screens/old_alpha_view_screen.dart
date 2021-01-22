@@ -33,31 +33,34 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
   void _load() {
     if (_oldAlpha.usernameChange != null) {
       if (_oldAlpha.usernameChange.isNotEmpty) {
-        _oldAlpha.username = _cripto.doDecrypt(_oldAlpha.username);
+        _oldAlpha.username =
+            _cripto.doDecrypt(_oldAlpha.username, _oldAlpha.usernameIV);
         _username = true;
       }
     }
     if (_oldAlpha.passwordChange != null) {
       if (_oldAlpha.passwordChange.isNotEmpty) {
-        _oldAlpha.password = _cripto.doDecrypt(_oldAlpha.password);
+        _oldAlpha.password =
+            _cripto.doDecrypt(_oldAlpha.password, _oldAlpha.passwordIV);
         _password = true;
       }
     }
     if (_oldAlpha.pinChange != null) {
       if (_oldAlpha.pinChange.isNotEmpty) {
-        _oldAlpha.pin = _cripto.doDecrypt(_oldAlpha.pin);
+        _oldAlpha.pin = _cripto.doDecrypt(_oldAlpha.pin, _oldAlpha.pinIV);
         _pin = true;
       }
     }
     if (_oldAlpha.ipChange != null) {
       if (_oldAlpha.ipChange.isNotEmpty) {
-        _oldAlpha.ip = _cripto.doDecrypt(_oldAlpha.ip);
+        _oldAlpha.ip = _cripto.doDecrypt(_oldAlpha.ip, _oldAlpha.ipIV);
         _ip = true;
       }
     }
     if (_oldAlpha.longTextChange != null) {
       if (_oldAlpha.longTextChange.isNotEmpty) {
-        _oldAlpha.longText = _cripto.doDecrypt(_oldAlpha.longText);
+        _oldAlpha.longText =
+            _cripto.doDecrypt(_oldAlpha.longText, _oldAlpha.longTextIV);
         _longText = true;
       }
     }
