@@ -29,8 +29,9 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
   }
 
   void _passToClipBoard() {
-    Clipboard.setData(
-            ClipboardData(text: _cripto.doDecrypt(widget.alpha.password)))
+    Clipboard.setData(ClipboardData(
+            text: _cripto.doDecrypt(
+                widget.alpha.password, widget.alpha.passwordIV)))
         .then(
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
@@ -47,7 +48,8 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
         children: [
           Text(
             _visible
-                ? _cripto.doDecrypt(widget.alpha.password)
+                ? _cripto.doDecrypt(
+                    widget.alpha.password, widget.alpha.passwordIV)
                 : widget.alpha.title,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
@@ -59,7 +61,8 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
           ),
           Text(
             _visible ?? widget.alpha.username.isNotEmpty
-                ? _cripto.doDecrypt(widget.alpha.username)
+                ? _cripto.doDecrypt(
+                    widget.alpha.username, widget.alpha.usernameIV)
                 : widget.alpha.shortDate,
             overflow: TextOverflow.ellipsis,
             maxLines: 1,
