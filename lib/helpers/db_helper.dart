@@ -193,7 +193,7 @@ class DBHelper {
     pin_hash TEXT,
     ip TEXT,
     ip_iv TEXT,
-    ip_hashTEXT,
+    ip_hash TEXT,
     long_text TEXT,
     long_text_iv TEXT,
     long_text_hash TEXT,
