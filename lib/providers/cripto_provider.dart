@@ -115,12 +115,14 @@ class CriptoProvider with ChangeNotifier {
 
   String doCrypt(String value, String iv) {
     if (value.isEmpty || value == null) return '';
-    return _crypter.encrypt(value, iv: e.IV.fromBase64(iv)).base64;
+    var _iv = e.IV.fromBase16(iv);
+    var _iv2 = e.IV.fromLength(16);
+    return _crypter.encrypt(value, iv: _iv).base64;
   }
 
   String doDecrypt(String value, String iv) {
     if (value.isEmpty || value == null) return '';
-    return _crypter.decrypt64(value, iv: e.IV.fromBase64(iv));
+    return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
   }
 
   // void _setKey(String password) {
