@@ -257,9 +257,9 @@ class ItemProvider with ChangeNotifier {
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
-    String _ivUser = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
-    String _ivPass = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
-    String _ivPin = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    String _ivUser = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
+    String _ivPass = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
+    String _ivPin = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
     for (int i = 0; i < _titles.length; i++) {
       DateTime _date = DateTime(
         2020,
