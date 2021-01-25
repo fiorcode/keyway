@@ -70,19 +70,19 @@ class ItemProvider with ChangeNotifier {
   Future<void> insert(Alpha a) async =>
       await DBHelper.insert(DBHelper.alphaTable, a.toMap());
 
-  Future<void> updateAlpha(Alpha newAlpha) async {
+  Future<void> updateAlpha(Alpha alpha) async {
     Alpha _prev;
-    await DBHelper.getById(DBHelper.alphaTable, newAlpha.id).then(
+    await DBHelper.getById(DBHelper.alphaTable, alpha.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
-        OldAlpha _oldAlpha = _prev.saveOld(newAlpha);
+        OldAlpha _oldAlpha = _prev.saveOld(alpha);
         if (_oldAlpha != null) {
           await DBHelper.insert(DBHelper.oldAlphaTable, _oldAlpha.toMap());
         }
       },
     ).then(
       (_) async =>
-          await DBHelper.update(DBHelper.alphaTable, newAlpha.toMap()).then(
+          await DBHelper.update(DBHelper.alphaTable, alpha.toMap()).then(
         (_) async {
           await DBHelper.repeatedAlpha(_prev.password).then(
             (_list2) async {
@@ -257,27 +257,33 @@ class ItemProvider with ChangeNotifier {
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
-    String _ivUser = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
-    String _ivPass = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
-    String _ivPin = e.IV.fromSecureRandom(_ran.nextInt(16)).base16;
     for (int i = 0; i < _titles.length; i++) {
       DateTime _date = DateTime(
         2020,
         _ran.nextInt(11) + 1,
         _ran.nextInt(27) + 1,
       );
+      String _ivUser = e.IV.fromSecureRandom(16).base16;
+      String _ivPass = e.IV.fromSecureRandom(16).base16;
+      String _ivPin = e.IV.fromSecureRandom(16).base16;
       insert(
         Alpha(
           title: _titles[i],
           username: _cripto.doCrypt(_users[i], _ivUser),
-          usernameIV: _ivUser,
-          usernameHash: sha256.convert(utf8.encode(_users[i])).toString(),
+          usernameIV: _users[i].isEmpty ? '' : _ivUser,
+          usernameHash: _users[i].isEmpty
+              ? ''
+              : sha256.convert(utf8.encode(_users[i])).toString(),
           password: _cripto.doCrypt(_passes[i], _ivPass),
-          passwordIV: _ivPass,
-          passwordHash: sha256.convert(utf8.encode(_passes[i])).toString(),
+          passwordIV: _passes[i].isEmpty ? '' : _ivPass,
+          passwordHash: _passes[i].isEmpty
+              ? ''
+              : sha256.convert(utf8.encode(_passes[i])).toString(),
           pin: _cripto.doCrypt(_pins[i], _ivPin),
-          pinIV: _ivPin,
-          pinHash: sha256.convert(utf8.encode(_pins[i])).toString(),
+          pinIV: _pins[i].isEmpty ? '' : _ivPin,
+          pinHash: _pins[i].isEmpty
+              ? ''
+              : sha256.convert(utf8.encode(_pins[i])).toString(),
           ip: '',
           ipIV: '',
           ipHash: '',
