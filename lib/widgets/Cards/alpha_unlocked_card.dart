@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyway/screens/alpha_view_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/screens/alpha_screen.dart';
 import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/screens/alpha_edit_screen.dart';
+import 'package:keyway/screens/alpha_view_screen.dart';
 
 class AlphaUnlockedCard extends StatefulWidget {
   const AlphaUnlockedCard({Key key, this.alpha, this.onReturn})
@@ -36,7 +36,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AlphaScreen(alpha: widget.alpha),
+        builder: (context) => AlphaEditScreen(alpha: widget.alpha),
       ),
     ).then((_) => widget.onReturn());
   }
