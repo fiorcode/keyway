@@ -117,13 +117,14 @@ class WarningHelper {
                 child: Text('CANCEL', style: TextStyle(color: Colors.white)),
               ),
               FlatButton(
+                color: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(4.0)),
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
                   'DELETE ITEM',
-                  style: TextStyle(color: Colors.black),
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
             ],
