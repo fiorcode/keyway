@@ -133,7 +133,8 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     return false;
   }
 
-  String _doHash(String s) => sha256.convert(utf8.encode(s)).toString();
+  String _doHash(String s) =>
+      s.isEmpty ? '' : sha256.convert(utf8.encode(s)).toString();
 
   void _save() async {
     try {
@@ -148,8 +149,8 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       _alpha.longTextHash = _doHash(_longTextCtrler.text);
       _alpha.longText =
           _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
-      if (await _checkPassStatus()) return;
-      if (await _checkPinStatus()) return;
+      if (await _passwordRepeated()) return;
+      if (await _pinRepeated()) return;
       if (_wasChanged()) _setDate();
       if (_wasChanged() || _avatarChanged()) await _items.updateAlpha(_alpha);
       Navigator.of(context).pop();
@@ -158,7 +159,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     }
   }
 
-  Future<bool> _checkPassStatus() async {
+  Future<bool> _passwordRepeated() async {
     if (widget.alpha.password == _alpha.password) return false;
     _alpha.passStatus = '';
     if (await _items.isPasswordRepeated(_doHash(_passCtrler.text))) {
@@ -167,9 +168,9 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       if (_warning) {
         _alpha.passStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        _items.setAlphaPassRepeted(_alpha.password);
-        _items.setOldAlphaPassRepeted(_alpha.password);
-        _items.setDeletedAlphaPassRepeted(_alpha.password);
+        _items.setAlphaPassRepeted(_alpha.passwordHash);
+        _items.setOldAlphaPassRepeted(_alpha.passwordHash);
+        _items.setDeletedAlphaPassRepeted(_alpha.passwordHash);
       } else {
         return true;
       }
@@ -177,7 +178,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     return false;
   }
 
-  Future<bool> _checkPinStatus() async {
+  Future<bool> _pinRepeated() async {
     if (widget.alpha.pin == _alpha.pin) return false;
     _alpha.pinStatus = '';
     if (await _items.isPinRepeated(_doHash(_pinCtrler.text))) {
