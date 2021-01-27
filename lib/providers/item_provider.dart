@@ -141,23 +141,23 @@ class ItemProvider with ChangeNotifier {
   Future<int> setPinStatus(String table, String pin, String status) async =>
       await DBHelper.setPinStatus(table, pin, status);
 
-  Future<void> setAlphaPassRepeted(String pass) async =>
-      await DBHelper.setPassRepeted(DBHelper.alphaTable, pass);
+  Future<void> setAlphaPassRepeted(String passwordHash) async =>
+      await DBHelper.setPassRepeted(DBHelper.alphaTable, passwordHash);
 
-  Future<void> setOldAlphaPassRepeted(String pass) async =>
-      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, pass);
+  Future<void> setOldAlphaPassRepeted(String passwordHash) async =>
+      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, passwordHash);
 
-  Future<void> setDeletedAlphaPassRepeted(String pass) async =>
-      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, pass);
+  Future<void> setDeletedAlphaPassRepeted(String passwordHash) async =>
+      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, passwordHash);
 
-  Future<void> setAlphaPinRepeted(String pin) async =>
-      await DBHelper.setPinRepeted(DBHelper.alphaTable, pin);
+  Future<void> setAlphaPinRepeted(String pinHash) async =>
+      await DBHelper.setPinRepeted(DBHelper.alphaTable, pinHash);
 
-  Future<void> setOldAlphaPinRepeted(String pin) async =>
-      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pin);
+  Future<void> setOldAlphaPinRepeted(String pinHash) async =>
+      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pinHash);
 
-  Future<void> setDeletedAlphaPinRepeted(String pin) async =>
-      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pin);
+  Future<void> setDeletedAlphaPinRepeted(String pinHash) async =>
+      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pinHash);
 
   Future<void> removeItems() async {
     _items.clear();
