@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
 
@@ -26,7 +25,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
 
   @override
   Widget build(BuildContext context) {
-    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     return FutureBuilder(
       future: _status,
       builder: (ctx, snap) {
@@ -91,7 +89,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                       Colors.white,
                       widget.drive.fileFound
                           ? Colors.green[100]
-                          : Colors.red[200],
+                          : Colors.red[100],
                       widget.drive.fileFound
                           ? Colors.green[200]
                           : Colors.red[200],
@@ -132,14 +130,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                               ? Colors.green
                               : Colors.red,
                           fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      Text(
-                        widget.drive.fileFound
-                            ? 'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}'
-                            : 'Last time uploaded: Never',
-                        style: TextStyle(
-                          color: Colors.black54,
                         ),
                       ),
                     ],
