@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/warning_helper.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
+import 'package:keyway/helpers/warning_helper.dart';
 import 'package:keyway/providers/drive_provider.dart';
 import 'package:keyway/widgets/Cards/backup_status_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -39,9 +40,9 @@ class _BackupScreenState extends State<BackupScreen> {
 
   Widget _setAppBarTitle() {
     return _drive.currentUser != null ?? _drive.currentUser.photoUrl != null
-        ? CircleAvatar(
-            backgroundImage: NetworkImage(_drive.currentUser.photoUrl),
-            radius: AppBar().preferredSize.height * .40,
+        ? Image(
+            image: AssetImage('assets/drive_logo.png'),
+            height: AppBar().preferredSize.height * .75,
           )
         : null;
   }
@@ -95,6 +96,7 @@ class SignedInBody extends StatefulWidget {
 }
 
 class _SignedInBodyState extends State<SignedInBody> {
+  DriveProvider _drive;
   bool _working = false;
 
   Future<void> _uploadDB() async {
@@ -140,7 +142,14 @@ class _SignedInBodyState extends State<SignedInBody> {
   }
 
   @override
+  void didChangeDependencies() {
+    _drive = Provider.of<DriveProvider>(context, listen: true);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     return SingleChildScrollView(
       child: Center(
         child: Padding(
@@ -151,7 +160,7 @@ class _SignedInBodyState extends State<SignedInBody> {
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Image(
-                  image: AssetImage('assets/drive_logo.png'),
+                  image: NetworkImage(_drive.currentUser.photoUrl),
                   height: 92,
                 ),
               ),
@@ -167,6 +176,13 @@ class _SignedInBodyState extends State<SignedInBody> {
                     Center(
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.orange[400],
+                      ),
+                    ),
+                  if (widget.drive.fileFound)
+                    Text(
+                      'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}',
+                      style: TextStyle(
+                        color: Colors.black54,
                       ),
                     ),
                   Row(
