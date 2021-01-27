@@ -47,8 +47,10 @@ class DriveProvider with ChangeNotifier {
       if (await checkInternet()) {
         await _googleSignIn.signIn();
         _currentUser = _googleSignIn.currentUser;
-      } else
+      } else {
         throw _connectionStatus;
+      }
+      notifyListeners();
     } catch (error) {
       throw error;
     }
