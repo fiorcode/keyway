@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -67,34 +66,33 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   Future<List<Username>> _usernamesList() async => await _items.getUsers();
 
-  void _selectUsername(String u) {
-    _userCtrler.text = u;
+  void _selectUsername(String username) {
+    _userCtrler.text = username;
     _userListSwitch();
   }
 
   void _set() {
-    Random _ran = Random.secure();
     _alpha.usernameHash =
         sha256.convert(utf8.encode(_userCtrler.text)).toString();
-    _alpha.usernameIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
     _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
 
     _alpha.passwordHash =
         sha256.convert(utf8.encode(_passCtrler.text)).toString();
-    _alpha.passwordIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
     _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
 
     _alpha.pinHash = sha256.convert(utf8.encode(_pinCtrler.text)).toString();
-    _alpha.pinIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
     _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
 
     _alpha.ipHash = sha256.convert(utf8.encode(_ipCtrler.text)).toString();
-    _alpha.ipIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
     _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
 
     _alpha.longTextHash =
         sha256.convert(utf8.encode(_longTextCtrler.text)).toString();
-    _alpha.longTextIV = e.IV.fromSecureRandom(_ran.nextInt(32)).base64;
+    _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
     _alpha.longText = _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
   }
 
