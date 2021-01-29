@@ -12,10 +12,7 @@ import 'package:keyway/models/user.dart';
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
   SharedPreferences _pref;
-  String _key;
-  String _mk;
   e.Encrypter _crypter;
-  e.Encrypted _mkCrypted;
 
   CriptoProvider() {
     lock();
@@ -32,64 +29,54 @@ class CriptoProvider with ChangeNotifier {
   Future<bool> isMasterKey() async =>
       (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
-  Future<void> unlock(String password) async {
-    //_setKey(password);
-    String _hashedKey =
-        sha256.convert(utf8.encode(password)).toString().substring(0, 32);
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_hashedKey)));
-    _mkCrypted = e.Encrypted.fromBase64(await _getMasterKey());
-    _mk = _crypter.decrypt(
+  String doHash(String s) => sha256.convert(utf8.encode(s)).toString();
+
+  Future<void> unlock(String key) async {
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(doHash(key).substring(0, 32))));
+    e.Encrypted _mkCrypted = e.Encrypted.fromBase16(await _getMasterKey());
+    String _mk = _crypter.decrypt(
       _mkCrypted,
-      iv: e.IV.fromBase64(await _getMasterKeyIV()),
+      iv: e.IV.fromBase16(await _getMasterKeyIV()),
     );
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
-    _key = 'PASS*CLEARED';
     _mk = 'MASTER*KEY*CLEARED';
     _locked = false;
     notifyListeners();
   }
 
   void lock() {
-    _key = 'PASS*CLEARED';
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_key)));
-    _mk = 'MASTER*KEY*CLEARED';
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8('PASS*CLEARED')));
     _locked = true;
     notifyListeners();
   }
 
-  Future<bool> initialSetup(String password) async {
-    _pref = await SharedPreferences.getInstance();
-    // _setKey(password);
-    String _hashedKey =
-        sha256.convert(utf8.encode(password)).toString().substring(0, 32);
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_hashedKey)));
+  Future<bool> initialSetup(String key) async {
+    //CREATES A ENCRYPTER WITH THE USERS KEY
+    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(doHash(key).substring(0, 32))));
 
-    //CREATION OF MASTER KEY
-    // Random _random = Random.secure();
-    // List<int> _v = List<int>.generate(32, (i) => _random.nextInt(256));
-    // _mk = base64Url.encode(_v).substring(0, 32);
+    //GENERATES A RANDOM STRING TO BE USED AS MASTER KEY
+    List<int> _v = List<int>.generate(32, (i) => Random.secure().nextInt(256));
+    String _mk = base64Url.encode(_v).substring(0, 32);
 
     //ENCRYPT AND SAVE MASTER KEY
-    e.IV _iv = e.IV.fromSecureRandom(Random.secure().nextInt(16));
-    _mkCrypted = _crypter.encrypt(_hashedKey, iv: _iv);
-    _pref.setString('masterKey', _mkCrypted.base64);
-    _pref.setString('masterKeyIV', _iv.base64);
+    e.IV _iv = e.IV.fromSecureRandom(16);
+    e.Encrypted _mkCrypted = _crypter.encrypt(_mk, iv: _iv);
+    _pref = await SharedPreferences.getInstance();
+    _pref.setString('masterKey', _mkCrypted.base16);
+    _pref.setString('masterKeyIV', _iv.base16);
     _pref.setBool('isMasterKey', true);
 
     //SAVE MASTER KEY IN DATABASE
     DBHelper.insert(
       'user_data',
-      {
-        'enc_mk': _mkCrypted.base64,
-        'mk_iv': _iv.base64,
-      },
+      {'encrypted_mk': _mkCrypted.base16, 'mk_iv': _iv.base16},
     );
 
-    //CLEAN
-    // _random = Random.secure();
-    // _v = List<int>.generate(32, (i) => _random.nextInt(256));
+    _v.clear();
+    _mk = 'MASTER*KEY*CLEARED';
+    _mkCrypted = null;
 
-    unlock(password);
+    unlock(key);
 
     return true;
   }
@@ -97,17 +84,7 @@ class CriptoProvider with ChangeNotifier {
   Future<void> setMasterKey() async {
     _pref = await SharedPreferences.getInstance();
     final _userData = await DBHelper.getData('user_data');
-    User _user = _userData
-        .map(
-          (item) => User(
-            name: item['name'],
-            surname: item['surname'],
-            encMK: item['enc_mk'],
-            mkIV: item['mk_iv'],
-          ),
-        )
-        .toList()
-        .first;
+    User _user = User.fromMap(_userData.first);
     _pref.setString('masterKey', _user.encMK);
     _pref.setString('masterKeyIV', _user.mkIV);
     _pref.setBool('isMasterKey', true);
@@ -122,15 +99,6 @@ class CriptoProvider with ChangeNotifier {
     if (value.isEmpty || value == null) return '';
     return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
   }
-
-  // void _setKey(String password) {
-  //   _key = password;
-  //   int _i = 0;
-  //   while (_key.length < 32) {
-  //     _key = _key + _key[_i];
-  //     _i++;
-  //   }
-  // }
 
   void dispose() {
     super.dispose();
