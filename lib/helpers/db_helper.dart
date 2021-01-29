@@ -176,7 +176,7 @@ class DBHelper {
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT,
     surname TEXT,
-    enc_mk TEXT,
+    encrypted_mk TEXT,
     mk_iv)''';
 
   static const createAlphaTable = '''CREATE TABLE $alphaTable(
