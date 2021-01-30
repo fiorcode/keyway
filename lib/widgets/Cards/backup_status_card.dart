@@ -81,6 +81,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                 ),
               ),
               child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     begin: Alignment.topLeft,
