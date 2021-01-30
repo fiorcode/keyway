@@ -22,14 +22,13 @@ class _RestoreScreenState extends State<RestoreScreen> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     trySignInSilently = _trySignInSilently();
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
-    trySignInSilently = _trySignInSilently();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(),
