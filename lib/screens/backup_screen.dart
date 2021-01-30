@@ -38,15 +38,6 @@ class _BackupScreenState extends State<BackupScreen> {
     super.didChangeDependencies();
   }
 
-  Widget _setAppBarTitle() {
-    return _drive.currentUser != null ?? _drive.currentUser.photoUrl != null
-        ? Image(
-            image: AssetImage('assets/drive_logo.png'),
-            height: AppBar().preferredSize.height * .75,
-          )
-        : null;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,8 +45,16 @@ class _BackupScreenState extends State<BackupScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        title: _setAppBarTitle(),
-        centerTitle: true,
+        actions: [
+          FlatButton.icon(
+            icon: Image(
+              image: AssetImage('assets/google_logo.png'),
+              height: AppBar().preferredSize.height * .50,
+            ),
+            label: Text('Sign Out'),
+            onPressed: _drive.handleSignOut,
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: _silently,
@@ -151,140 +150,133 @@ class _SignedInBodyState extends State<SignedInBody> {
   Widget build(BuildContext context) {
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     return SingleChildScrollView(
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Image(
-                  image: NetworkImage(_drive.currentUser.photoUrl),
-                  height: 92,
+      child: Column(
+        children: [
+          if (_working)
+            Center(
+              child: LinearProgressIndicator(
+                backgroundColor: Colors.orange[400],
+              ),
+            ),
+          Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Image(
+                    image: NetworkImage(_drive.currentUser.photoUrl),
+                    height: 92,
+                  ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: BackupStatusCard(drive: widget.drive),
-                  ),
-                  if (_working)
-                    Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.orange[400],
-                      ),
-                    ),
-                  if (widget.drive.fileFound)
-                    Text(
-                      'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}',
-                      style: TextStyle(
-                        color: Colors.black54,
-                      ),
-                    ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('Automatic uploads'),
-                      Switch(
-                        activeColor: Theme.of(context).primaryColor,
-                        value: _automaticUpdates(),
-                        onChanged: (_) => _automaticUpdatesSwitch(),
-                      ),
-                    ],
-                  ),
-                  if (!widget.pref.getBool('automatic_uploads') && !_working)
-                    ButtonTheme(
-                      height: 48,
-                      child: RaisedButton.icon(
-                        color: Colors.orange[400],
-                        onPressed: _uploadDB,
-                        icon: Icon(
-                          Icons.upload_rounded,
-                          color: Colors.white,
-                          size: 32,
-                        ),
-                        label: Text(
-                          'Upload',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
-                          ),
-                        ),
-                        shape: StadiumBorder(),
-                      ),
-                    ),
-                ],
-              ),
-              Column(
-                children: [
-                  if (widget.drive.fileFound && !_working)
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 32.0),
-                      child: Row(
+                      padding: const EdgeInsets.all(16.0),
+                      child: BackupStatusCard(drive: widget.drive),
+                    ),
+                    if (widget.drive.fileFound)
+                      Text(
+                        'Last time uploaded: ${dateFormat.format(widget.drive.modifiedDate)}',
+                        style: TextStyle(color: Colors.black54),
+                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Automatic uploads'),
+                        Switch(
+                          activeColor: Theme.of(context).primaryColor,
+                          value: _automaticUpdates(),
+                          onChanged: (_) => _automaticUpdatesSwitch(),
+                        ),
+                      ],
+                    ),
+                    if (!widget.pref.getBool('automatic_uploads') && !_working)
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FloatingActionButton(
-                            backgroundColor: Colors.blue[900],
-                            heroTag: null,
-                            onPressed: () => _downloadDB(context),
-                            child: Icon(
-                              Icons.download_rounded,
-                              color: Colors.white,
-                              size: 32,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: ButtonTheme(
+                              height: 48,
+                              child: RaisedButton.icon(
+                                color: Colors.white,
+                                onPressed: _uploadDB,
+                                icon: Icon(
+                                  Icons.upload_rounded,
+                                  size: 32,
+                                ),
+                                label: Text(
+                                  'Upload',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                                shape: StadiumBorder(),
+                              ),
                             ),
                           ),
-                          SizedBox(width: 16),
-                          FloatingActionButton(
-                            backgroundColor: Colors.red,
-                            heroTag: null,
+                          if (widget.drive.fileFound && !_working)
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: ButtonTheme(
+                                height: 48,
+                                child: RaisedButton.icon(
+                                  color: Colors.white,
+                                  onPressed: () => _downloadDB(context),
+                                  icon: Icon(
+                                    Icons.download_rounded,
+                                    size: 32,
+                                  ),
+                                  label: Text(
+                                    'Download',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  shape: StadiumBorder(),
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    if (widget.drive.fileFound && !_working)
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ButtonTheme(
+                          height: 48,
+                          child: RaisedButton.icon(
+                            color: Colors.red,
                             onPressed: () => _deleteBackup(context),
-                            child: Icon(
+                            icon: Icon(
                               Icons.delete_forever_rounded,
                               color: Colors.white,
                               size: 32,
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  RaisedButton(
-                    onPressed: () => widget.drive.handleSignOut(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Image(
-                            image: AssetImage('assets/google_logo.png'),
-                            height: 32,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8.0),
-                            child: Text(
-                              'Sign Out',
-                              style: TextStyle(color: Colors.red),
+                            label: Text(
+                              'Delete',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                              ),
                             ),
-                          )
-                        ],
+                            shape: StadiumBorder(),
+                          ),
+                        ),
                       ),
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(32),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
