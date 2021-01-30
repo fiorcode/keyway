@@ -72,26 +72,23 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   void _set() {
-    _alpha.usernameHash =
-        sha256.convert(utf8.encode(_userCtrler.text)).toString();
+    _alpha.usernameHash = _cripto.doHash(_userCtrler.text);
     _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
     _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
 
-    _alpha.passwordHash =
-        sha256.convert(utf8.encode(_passCtrler.text)).toString();
+    _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
     _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
     _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
 
-    _alpha.pinHash = sha256.convert(utf8.encode(_pinCtrler.text)).toString();
+    _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
     _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
     _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
 
-    _alpha.ipHash = sha256.convert(utf8.encode(_ipCtrler.text)).toString();
+    _alpha.ipHash = _cripto.doHash(_ipCtrler.text);
     _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
     _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
 
-    _alpha.longTextHash =
-        sha256.convert(utf8.encode(_longTextCtrler.text)).toString();
+    _alpha.longTextHash = _cripto.doHash(_longTextCtrler.text);
     _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
     _alpha.longText = _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
   }
