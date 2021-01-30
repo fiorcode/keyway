@@ -33,10 +33,13 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() {});
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
+  void _goToDashboard() => Navigator.of(context)
+      .pushNamed(DashboardScreen.routeName)
+      .then((_) => onReturn());
+
+  void _goToAlpha() => Navigator.of(context)
+      .pushNamed(AlphaScreen.routeName)
+      .then((_) => onReturn());
 
   @override
   void didChangeDependencies() {
@@ -56,12 +59,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         centerTitle: true,
         leading: _cripto.locked
             ? null
-            : IconButton(
-                icon: Icon(Icons.widgets),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(DashboardScreen.routeName)
-                    .then((_) => onReturn()),
-              ),
+            : IconButton(icon: Icon(Icons.widgets), onPressed: _goToDashboard),
         title: _cripto.locked
             ? IconButton(
                 icon: Icon(
@@ -73,7 +71,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               )
             : _items.items.length > 10
                 ? IconButton(
-                    icon: Icon(Icons.search, color: Colors.green),
+                    icon: Icon(Icons.search),
                     onPressed: null,
                   )
                 : IconButton(
@@ -85,14 +83,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   ),
         actions: _cripto.locked
             ? null
-            : [
-                IconButton(
-                  icon: Icon(Icons.add),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(AlphaScreen.routeName)
-                      .then((_) => onReturn()),
-                ),
-              ],
+            : [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
       ),
       body: FutureBuilder(
         future: getItems,
