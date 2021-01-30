@@ -13,7 +13,6 @@ class RestoreBody extends StatefulWidget {
 
 class _RestoreBodyState extends State<RestoreBody> {
   Future _status;
-  Future _downloadDB;
   bool _downloading = false;
 
   _restore() async {
@@ -22,8 +21,7 @@ class _RestoreBodyState extends State<RestoreBody> {
       DriveProvider drive = Provider.of<DriveProvider>(context, listen: false);
       CriptoProvider cripto =
           Provider.of<CriptoProvider>(context, listen: false);
-      _downloadDB = drive.downloadDB();
-      _downloadDB.then((value) {
+      drive.downloadDB().then((value) {
         _downloading = false;
         cripto.setMasterKey();
         Navigator.of(context).pushNamedAndRemoveUntil(
