@@ -82,12 +82,14 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<void> setMasterKey() async {
-    _pref = await SharedPreferences.getInstance();
-    final _userData = await DBHelper.getData('user_data');
-    User _user = User.fromMap(_userData.first);
-    _pref.setString('masterKey', _user.encMK);
-    _pref.setString('masterKeyIV', _user.mkIV);
-    _pref.setBool('isMasterKey', true);
+    return SharedPreferences.getInstance().then((pref) {
+      DBHelper.getData('user_data').then((data) {
+        User _user = User.fromMap(data.first);
+        pref.setString('masterKey', _user.encMK);
+        pref.setString('masterKeyIV', _user.mkIV);
+        pref.setBool('isMasterKey', true);
+      });
+    });
   }
 
   String doCrypt(String value, String iv) {
