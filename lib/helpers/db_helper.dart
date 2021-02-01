@@ -135,28 +135,31 @@ class DBHelper {
       $alphaTable.id, $alphaTable.title,
       $alphaTable.username, $alphaTable.username_iv, $alphaTable.username_hash,
       $alphaTable.password, $alphaTable.password_iv, $alphaTable.password_hash,
-      $alphaTable.pin, $alphaTable.pin_iv, $alphaTable.pin_hash,
-      $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.ip_hash,
+      $alphaTable.password_date, $alphaTable.password_lapse,
+      $alphaTable.password_status, $alphaTable.password_level,
+      $alphaTable.pin, $alphaTable.pin_iv, $alphaTable.pin_hash, 
+      $alphaTable.pin_date, $alphaTable.pin_lapse, $alphaTable.pin_status,
+      $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.ip_hash, 
       $alphaTable.long_text, $alphaTable.long_text_iv, $alphaTable.long_text_hash,
-      $alphaTable.date, $alphaTable.date_short, $alphaTable.color,
-      $alphaTable.color_letter, $alphaTable.pass_status, $alphaTable.pin_status, 
-      $alphaTable.pass_level, $alphaTable.expired, $alphaTable.expired_lapse
+      $alphaTable.date, $alphaTable.date_short, $alphaTable.color, $alphaTable.color_letter
       FROM $alphaTable
       JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id
       GROUP BY $alphaTable.id''');
 
+//LEFT JOIN??
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $deletedAlphaTable.id, $deletedAlphaTable.title,
         $deletedAlphaTable.username, $deletedAlphaTable.username_iv, $deletedAlphaTable.username_hash,
-        $deletedAlphaTable.password, $deletedAlphaTable.password_iv, $deletedAlphaTable.password_hash, 
+        $deletedAlphaTable.password, $deletedAlphaTable.password_iv, $deletedAlphaTable.password_hash,
+        $deletedAlphaTable.password_date, $deletedAlphaTable.password_lapse, 
+        $deletedAlphaTable.password_status, $deletedAlphaTable.password_level,
         $deletedAlphaTable.pin, $deletedAlphaTable.pin_iv, $deletedAlphaTable.pin_hash, 
+        $deletedAlphaTable.pin_date, $deletedAlphaTable.pin_lapse, $deletedAlphaTable.pin_status,
         $deletedAlphaTable.ip, $deletedAlphaTable.ip_iv, $deletedAlphaTable.ip_hash,
         $deletedAlphaTable.long_text, $deletedAlphaTable.long_text_iv, $deletedAlphaTable.long_text_hash,
-        $deletedAlphaTable.date, $deletedAlphaTable.date_short, 
-        $deletedAlphaTable.date_deleted, $deletedAlphaTable.color, $deletedAlphaTable.color_letter, 
-        $deletedAlphaTable.pass_status, $deletedAlphaTable.pin_status, $deletedAlphaTable.pass_level,
-        $deletedAlphaTable.expired, $deletedAlphaTable.expired_lapse, $deletedAlphaTable.item_id 
+        $deletedAlphaTable.date, $deletedAlphaTable.date_short, $deletedAlphaTable.date_deleted, 
+        $deletedAlphaTable.color, $deletedAlphaTable.color_letter, $deletedAlphaTable.item_id         
         FROM $deletedAlphaTable 
         JOIN $oldAlphaTable ON $deletedAlphaTable.item_id = $oldAlphaTable.item_id 
         GROUP BY $deletedAlphaTable.id''');
@@ -188,9 +191,16 @@ class DBHelper {
     password TEXT,
     password_iv TEXT,
     password_hash TEXT,
+    password_date TEXT,
+    password_lapse TEXT,
+    password_status TEXT,
+    password_level TEXT,
     pin TEXT,
     pin_iv TEXT,
     pin_hash TEXT,
+    pin_date TEXT,
+    pin_lapse TEXT,
+    pin_status TEXT,
     ip TEXT,
     ip_iv TEXT,
     ip_hash TEXT,
@@ -200,12 +210,7 @@ class DBHelper {
     date TEXT,
     date_short TEXT,
     color INTEGER,
-    color_letter INTEGER,
-    pass_status TEXT,
-    pin_status TEXT,
-    pass_level TEXT,
-    expired TEXT,
-    expired_lapse TEXT)''';
+    color_letter INTEGER)''';
 
   static const createOldAlphaTable = '''CREATE TABLE $oldAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -218,10 +223,17 @@ class DBHelper {
     password TEXT,
     password_iv TEXT,
     password_hash TEXT,
+    password_date TEXT,
+    password_lapse TEXT,
+    password_status TEXT,
+    password_level TEXT,
     password_change TEXT,
     pin TEXT,
     pin_iv TEXT,
     pin_hash TEXT,
+    pin_date TEXT,
+    pin_lapse TEXT,
+    pin_status TEXT,
     pin_change TEXT,
     ip TEXT,
     ip_iv TEXT,
@@ -235,11 +247,6 @@ class DBHelper {
     date_short TEXT,
     color INTEGER,
     color_letter INTEGER,
-    pass_status TEXT,
-    pin_status TEXT,
-    pass_level TEXT,
-    expired TEXT,
-    expired_lapse TEXT,
     item_id INTEGER)''';
 
   static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
@@ -251,9 +258,16 @@ class DBHelper {
     password TEXT,
     password_iv TEXT,
     password_hash TEXT,
+    password_date TEXT,
+    password_lapse TEXT,
+    password_status TEXT,
+    password_level TEXT,
     pin TEXT,
     pin_iv TEXT,
     pin_hash TEXT,
+    pin_date TEXT,
+    pin_lapse TEXT,
+    pin_status TEXT,
     ip TEXT,
     ip_iv TEXT,
     ip_hash TEXT,
@@ -265,10 +279,5 @@ class DBHelper {
     date_deleted TEXT,
     color INTEGER,
     color_letter INTEGER,
-    pass_status TEXT,
-    pin_status TEXT,
-    pass_level TEXT,
-    expired TEXT,
-    expired_lapse TEXT,
     item_id INTEGER)''';
 }
