@@ -85,18 +85,15 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setWarningColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
+    return (widget.alpha.passwordStatus == 'REPEATED' ||
             widget.alpha.pinStatus == 'REPEATED')
         ? Colors.red[300]
-        : widget.alpha.expired == 'YES'
-            ? Colors.orange[300]
-            : Colors.grey[100];
+        : Colors.grey[100];
   }
 
   Color _setIconColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
-            widget.alpha.pinStatus == 'REPEATED' ||
-            widget.alpha.expired == 'YES')
+    return (widget.alpha.passwordStatus == 'REPEATED' ||
+            widget.alpha.pinStatus == 'REPEATED')
         ? Colors.grey[200]
         : Colors.grey;
   }
