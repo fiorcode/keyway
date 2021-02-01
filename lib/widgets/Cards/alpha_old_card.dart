@@ -58,14 +58,14 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
       );
 
   Color _setWarningColor() {
-    return (widget.oldAlpha.passStatus == 'REPEATED' ||
+    return (widget.oldAlpha.passwordStatus == 'REPEATED' ||
             widget.oldAlpha.pinStatus == 'REPEATED')
         ? Colors.red[300]
         : Colors.grey[100];
   }
 
   Color _setIconColor() {
-    return (widget.oldAlpha.passStatus == 'REPEATED' ||
+    return (widget.oldAlpha.passwordStatus == 'REPEATED' ||
             widget.oldAlpha.pinStatus == 'REPEATED')
         ? Colors.grey[200]
         : Colors.grey;
