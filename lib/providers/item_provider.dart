@@ -1,8 +1,6 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
@@ -27,7 +25,7 @@ class ItemProvider with ChangeNotifier {
       _iter = data.map((e) => Alpha.fromMap(e));
     });
     _items.addAll(_iter.toList());
-    await _checkExpirations();
+    // await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
@@ -88,7 +86,7 @@ class ItemProvider with ChangeNotifier {
             (_list2) async {
               if (_list2.length == 1) {
                 Alpha _a = Alpha.fromMap(_list2.first);
-                _a.passStatus = '';
+                _a.passwordStatus = '';
                 await DBHelper.update(DBHelper.alphaTable, _a.toMap());
               }
             },
@@ -166,20 +164,20 @@ class ItemProvider with ChangeNotifier {
     _deletedItems.clear();
   }
 
-  Future<void> _checkExpirations() async {
-    _items.cast<Alpha>().forEach((i) async {
-      i.dateTime = DateTime.parse(i.date);
-      int _diff = i.dateTime.difference(DateTime.now()).inDays.abs();
-      if (_diff > 180 && i.expired != 'YES') {
-        i.expired = 'YES';
-        await DBHelper.update(DBHelper.alphaTable, i.toMap());
-      }
-      if (_diff <= 180 && i.expired == 'YES') {
-        i.expired = '';
-        await DBHelper.update(DBHelper.alphaTable, i.toMap());
-      }
-    });
-  }
+  // Future<void> _checkExpirations() async {
+  //   _items.cast<Alpha>().forEach((i) async {
+  //     i.dateTime = DateTime.parse(i.date);
+  //     int _diff = i.dateTime.difference(DateTime.now()).inDays.abs();
+  //     if (_diff > 180 && i.expired != 'YES') {
+  //       i.expired = 'YES';
+  //       await DBHelper.update(DBHelper.alphaTable, i.toMap());
+  //     }
+  //     if (_diff <= 180 && i.expired == 'YES') {
+  //       i.expired = '';
+  //       await DBHelper.update(DBHelper.alphaTable, i.toMap());
+  //     }
+  //   });
+  // }
 
   Future<List<Username>> getUsers() async {
     Iterable<Username> _iter;
@@ -271,19 +269,13 @@ class ItemProvider with ChangeNotifier {
           title: _titles[i],
           username: _cripto.doCrypt(_users[i], _ivUser),
           usernameIV: _users[i].isEmpty ? '' : _ivUser,
-          usernameHash: _users[i].isEmpty
-              ? ''
-              : sha256.convert(utf8.encode(_users[i])).toString(),
+          usernameHash: _users[i].isEmpty ? '' : _cripto.doHash(_users[i]),
           password: _cripto.doCrypt(_passes[i], _ivPass),
           passwordIV: _passes[i].isEmpty ? '' : _ivPass,
-          passwordHash: _passes[i].isEmpty
-              ? ''
-              : sha256.convert(utf8.encode(_passes[i])).toString(),
+          passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
           pin: _cripto.doCrypt(_pins[i], _ivPin),
           pinIV: _pins[i].isEmpty ? '' : _ivPin,
-          pinHash: _pins[i].isEmpty
-              ? ''
-              : sha256.convert(utf8.encode(_pins[i])).toString(),
+          pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
           ip: '',
           ipIV: '',
           ipHash: '',
@@ -294,11 +286,9 @@ class ItemProvider with ChangeNotifier {
           shortDate: dateFormat.format(_date),
           color: _ran.nextInt(4294967295),
           colorLetter: _ran.nextInt(4294967295),
-          passStatus: '',
+          passwordStatus: '',
           pinStatus: '',
-          passLevel: 'WEAK',
-          expired: _date.month < 7 ? 'YES' : 'NO',
-          expiredLapse: '${_ran.nextInt(365).toString()} DAYS',
+          passwordLevel: 'WEAK',
         ),
       );
     }
