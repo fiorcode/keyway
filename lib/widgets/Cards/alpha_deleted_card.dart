@@ -74,14 +74,14 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
       );
 
   Color _setWarningColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
+    return (widget.alpha.passwordStatus == 'REPEATED' ||
             widget.alpha.pinStatus == 'REPEATED')
         ? Colors.red[300]
         : Colors.grey[100];
   }
 
   Color _setIconColor() {
-    return (widget.alpha.passStatus == 'REPEATED' ||
+    return (widget.alpha.passwordStatus == 'REPEATED' ||
             widget.alpha.pinStatus == 'REPEATED')
         ? Colors.grey[200]
         : Colors.grey;
