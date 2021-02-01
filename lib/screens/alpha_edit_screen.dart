@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
-import 'package:encrypt/encrypt.dart' as e;
+//import 'package:encrypt/encrypt.dart' as e;
 
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
@@ -161,12 +161,12 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   Future<bool> _passwordRepeated() async {
     if (widget.alpha.password == _alpha.password) return false;
-    _alpha.passStatus = '';
+    _alpha.passwordStatus = '';
     if (await _items.isPasswordRepeated(_doHash(_passCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
-        _alpha.passStatus = 'REPEATED';
+        _alpha.passwordStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
         _items.setAlphaPassRepeted(_alpha.passwordHash);
         _items.setOldAlphaPassRepeted(_alpha.passwordHash);
