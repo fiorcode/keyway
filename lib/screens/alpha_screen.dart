@@ -122,13 +122,13 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    _alpha.passStatus = '';
+    _alpha.passwordStatus = '';
     if (await _items.isPasswordRepeated(
         sha256.convert(utf8.encode(_passCtrler.text)).toString())) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning) {
-        _alpha.passStatus = 'REPEATED';
+        _alpha.passwordStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
         _items.setAlphaPassRepeted(_alpha.password);
         _items.setOldAlphaPassRepeted(_alpha.password);
