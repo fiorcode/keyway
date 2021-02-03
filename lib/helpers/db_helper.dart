@@ -77,6 +77,12 @@ class DBHelper {
         whereArgs: [value],
       );
 
+  static Future<List<Map<String, dynamic>>> getItemsByTitle(
+          String title) async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $alphaTable
+        WHERE title LIKE \'%$title%\'''');
+
   static Future<List<Map<String, dynamic>>> getUsernames() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $alphaTable.username, $alphaTable.username_iv
@@ -87,7 +93,7 @@ class DBHelper {
           String table, String pass, String status) async =>
       (await DBHelper.database()).update(
         table,
-        {'pass_status': status},
+        {'password_status': status},
         where: 'password = ?',
         whereArgs: [pass],
       );
@@ -105,9 +111,9 @@ class DBHelper {
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
         $table
-        SET pass_status = ?
+        SET password_status = ?
         WHERE password_hash = ? 
-        AND pass_status = ?''',
+        AND password_status = ?''',
         ['REPEATED', '$passwordHash', ''],
       );
 
@@ -126,7 +132,7 @@ class DBHelper {
         '''SELECT *
         FROM $alphaTable
         WHERE password = ?
-        AND pass_status = ?''',
+        AND password_status = ?''',
         ['$p', 'REPEATED'],
       );
 
