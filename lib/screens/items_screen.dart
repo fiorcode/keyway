@@ -10,6 +10,7 @@ import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_locked_card.dart';
 import '../widgets/Cards/alpha_unlocked_card.dart';
 import '../widgets/empty_items.dart';
+import '../widgets/TextFields/search_bar_text_field.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -23,28 +24,52 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider _cripto;
   bool _unlocking = false;
   Future getItems;
+  TextEditingController _searchCtrler;
+  FocusNode _searchFocusNode;
+  bool _searching = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItems() async => await _items.fetchItems();
+  Future<void> _getItems() async {
+    await _items
+        .fetchItems(_searchCtrler.text == null ? '' : _searchCtrler.text);
+  }
 
-  onReturn() {
+  _onReturn() {
+    getItems = _getItems();
+    setState(() {});
+  }
+
+  void _searchSwitch() {
+    setState(() {
+      _searching = !_searching;
+      _searching ? _searchFocusNode.requestFocus() : _searchFocusNode.unfocus();
+      if (!_searching) _clearSearch();
+    });
+  }
+
+  // void _search() {}
+
+  void _clearSearch() {
+    _searchCtrler.clear();
     getItems = _getItems();
     setState(() {});
   }
 
   void _goToDashboard() => Navigator.of(context)
       .pushNamed(DashboardScreen.routeName)
-      .then((_) => onReturn());
+      .then((_) => _onReturn());
 
   void _goToAlpha() => Navigator.of(context)
       .pushNamed(AlphaScreen.routeName)
-      .then((_) => onReturn());
+      .then((_) => _onReturn());
 
   @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context);
+    _searchCtrler = TextEditingController();
+    _searchFocusNode = FocusNode();
     getItems = _getItems();
     super.didChangeDependencies();
   }
@@ -69,18 +94,43 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 // onPressed: cripto.locked ? _lockSwitch : null,
                 onPressed: () => _cripto.unlock('Qwe123!'),
               )
-            : _items.items.length > 10
-                ? IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: null,
-                  )
-                : IconButton(
-                    icon: Icon(Icons.lock_open_sharp, color: Colors.green),
-                    onPressed: () {
-                      _cripto.lock();
-                      setState(() {});
-                    },
-                  ),
+            : FutureBuilder(
+                future: getItems,
+                builder: (ctx, snap) {
+                  switch (snap.connectionState) {
+                    case ConnectionState.done:
+                      if (_items.items.length > 10 || _searching) {
+                        if (_searching) {
+                          _searchFocusNode.requestFocus();
+                          return SearchBarTextField(
+                            _searchCtrler,
+                            _onReturn,
+                            _searchSwitch,
+                            _clearSearch,
+                            _searchFocusNode,
+                          );
+                        } else {
+                          return IconButton(
+                            icon: Icon(Icons.search),
+                            onPressed: _searchSwitch,
+                          );
+                        }
+                      }
+                      return IconButton(
+                        icon: Icon(Icons.lock_open_sharp, color: Colors.green),
+                        onPressed: () {
+                          _cripto.lock();
+                          setState(() {});
+                        },
+                      );
+                      break;
+                    default:
+                      return CircularProgressIndicator(
+                        backgroundColor: Colors.grey,
+                      );
+                  }
+                },
+              ),
         actions: _cripto.locked
             ? null
             : [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
@@ -109,7 +159,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                                   ? AlphaLockedCard(alpha: _items.items[i])
                                   : AlphaUnlockedCard(
                                       alpha: _items.items[i],
-                                      onReturn: onReturn,
+                                      onReturn: _onReturn,
                                     );
                             },
                           ),
