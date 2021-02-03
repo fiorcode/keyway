@@ -18,12 +18,16 @@ class ItemProvider with ChangeNotifier {
   List<OldAlpha> get itemOlds => [..._itemOlds];
   List<DeletedAlpha> get deletedItems => [..._deletedItems];
 
-  Future<void> fetchItems() async {
+  Future<void> fetchItems(String title) async {
     Iterable<Alpha> _iter;
-    await DBHelper.getData(DBHelper.alphaTable).then((data) {
-      _items.clear();
-      _iter = data.map((e) => Alpha.fromMap(e));
-    });
+    _items.clear();
+    if (title.isEmpty) {
+      await DBHelper.getData(DBHelper.alphaTable)
+          .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
+    } else {
+      await DBHelper.getItemsByTitle(title)
+          .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
+    }
     _items.addAll(_iter.toList());
     // await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
@@ -256,11 +260,8 @@ class ItemProvider with ChangeNotifier {
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
     for (int i = 0; i < _titles.length; i++) {
-      DateTime _date = DateTime(
-        2020,
-        _ran.nextInt(11) + 1,
-        _ran.nextInt(27) + 1,
-      );
+      DateTime _date =
+          DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
       String _ivUser = e.IV.fromSecureRandom(16).base16;
       String _ivPass = e.IV.fromSecureRandom(16).base16;
       String _ivPin = e.IV.fromSecureRandom(16).base16;
@@ -273,9 +274,16 @@ class ItemProvider with ChangeNotifier {
           password: _cripto.doCrypt(_passes[i], _ivPass),
           passwordIV: _passes[i].isEmpty ? '' : _ivPass,
           passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
+          passwordStatus: _passes[i].isEmpty ? '' : '',
+          passwordDate: _passes[i].isEmpty ? '' : _date.toIso8601String(),
+          passwordLapse: _passes[i].isEmpty ? '' : '',
+          passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
           pin: _cripto.doCrypt(_pins[i], _ivPin),
           pinIV: _pins[i].isEmpty ? '' : _ivPin,
           pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
+          pinDate: _pins[i].isEmpty ? '' : _date.toIso8601String(),
+          pinLapse: _pins[i].isEmpty ? '' : '',
+          pinStatus: _pins[i].isEmpty ? '' : '',
           ip: '',
           ipIV: '',
           ipHash: '',
@@ -284,11 +292,8 @@ class ItemProvider with ChangeNotifier {
           longTextHash: '',
           date: _date.toIso8601String(),
           shortDate: dateFormat.format(_date),
-          color: _ran.nextInt(4294967295),
-          colorLetter: _ran.nextInt(4294967295),
-          passwordStatus: '',
-          pinStatus: '',
-          passwordLevel: 'WEAK',
+          color: _ran.nextInt(4294967290),
+          colorLetter: _ran.nextInt(4294967290),
         ),
       );
     }
