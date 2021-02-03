@@ -19,7 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkFirstRun() async {
     if (await _cripto.isMasterKey()) {
-      _item.fetchItems().then((value) {
+      _item.fetchItems('').then((value) {
         if (_item.items.length <= 0) {
           _item.mockData(_cripto).then((value) => Navigator.of(context)
               .pushReplacementNamed(ItemsListScreen.routeName));
