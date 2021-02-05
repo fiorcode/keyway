@@ -25,13 +25,14 @@ class UserListCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(64),
             child: Card(
+              color: Colors.grey[200],
               clipBehavior: Clip.antiAlias,
               elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(16.0),
-                ),
-              ),
+              // shape: RoundedRectangleBorder(
+              //   borderRadius: BorderRadius.all(
+              //     Radius.circular(16.0),
+              //   ),
+              // ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -60,11 +61,15 @@ class UserListCard extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 color: Colors.grey[100],
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 2,
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.grey[200],
+                                    Colors.grey[100],
+                                    Colors.white,
+                                  ],
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
                                 ),
-                                borderRadius: BorderRadius.circular(4.0),
                               ),
                               child: FlatButton(
                                 onPressed: () => selectUsername(_cripto
