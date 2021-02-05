@@ -19,7 +19,8 @@ class AlphaUnlockedCard extends StatefulWidget {
 }
 
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
-  bool _showPass = false;
+  bool _showPassword = false;
+  int _showValue = 0;
 
   void _onTap() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
@@ -65,15 +66,37 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
-  Text _setTitle() {
+  String _title() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
+    switch (_showValue) {
+      case 1:
+        if (widget.alpha.password.isEmpty) continue two;
+        return cripto.doDecrypt(widget.alpha.password, widget.alpha.passwordIV);
+        break;
+      two:
+      case 2:
+        if (widget.alpha.pin.isEmpty) continue three;
+        return cripto.doDecrypt(widget.alpha.pin, widget.alpha.pinIV);
+        break;
+      three:
+      case 3:
+        if (widget.alpha.username.isEmpty) continue four;
+        return cripto.doDecrypt(widget.alpha.username, widget.alpha.usernameIV);
+        break;
+      four:
+      case 4:
+        if (widget.alpha.ip.isEmpty) continue cero;
+        return cripto.doDecrypt(widget.alpha.ip, widget.alpha.ipIV);
+        break;
+      cero:
+      default:
+        return widget.alpha.title;
+    }
+  }
+
+  Text _setTitle() {
     return Text(
-      _showPass
-          ? cripto.doDecrypt(
-              widget.alpha.password,
-              widget.alpha.passwordIV,
-            )
-          : widget.alpha.title,
+      _title(),
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       style: TextStyle(
@@ -98,7 +121,25 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         : Colors.grey;
   }
 
-  void _switchShowPass() => setState(() => _showPass = !_showPass);
+  void _switchShowValue() => setState(() {
+        // if (_showValue > 3) _showValue = 0;
+        if (widget.alpha.password.isEmpty)
+          _showValue++;
+        else
+          return;
+        if (widget.alpha.pin.isNotEmpty && _showValue == 1) {
+          _showValue++;
+          return;
+        }
+        if (widget.alpha.username.isNotEmpty && _showValue == 2) {
+          _showValue++;
+          return;
+        }
+        if (widget.alpha.ip.isNotEmpty && _showValue == 3) {
+          _showValue++;
+          return;
+        }
+      });
 
   void _showPassLongPressed() => Navigator.push(
         context,
@@ -164,7 +205,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                       size: 24,
                     ),
                     heroTag: null,
-                    onPressed: _switchShowPass,
+                    onPressed: _switchShowValue,
                   ),
                 ),
               ),
