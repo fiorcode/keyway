@@ -20,6 +20,7 @@ class AlphaUnlockedCard extends StatefulWidget {
 
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   int _showValue = 0;
+  String _subtitle = '';
 
   void _onTap() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
@@ -53,8 +54,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
-          content: Text('Copied'),
-          // content: Text(ClipboardData().text),
+          content: Text(_subtitle + ' copied'),
           duration: Duration(seconds: 1),
         ),
       ),
@@ -67,43 +67,59 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
       case 1:
         if (widget.alpha.password.isEmpty) continue two;
         _showValue = 1;
+        _subtitle = 'Password';
         return cripto.doDecrypt(widget.alpha.password, widget.alpha.passwordIV);
         break;
       two:
       case 2:
         if (widget.alpha.pin.isEmpty) continue three;
         _showValue = 2;
+        _subtitle = 'PIN';
         return cripto.doDecrypt(widget.alpha.pin, widget.alpha.pinIV);
         break;
       three:
       case 3:
         if (widget.alpha.username.isEmpty) continue four;
         _showValue = 3;
+        _subtitle = 'Username';
         return cripto.doDecrypt(widget.alpha.username, widget.alpha.usernameIV);
         break;
       four:
       case 4:
         if (widget.alpha.ip.isEmpty) continue cero;
         _showValue = 4;
+        _subtitle = 'IP';
         return cripto.doDecrypt(widget.alpha.ip, widget.alpha.ipIV);
         break;
       cero:
       default:
         _showValue = 0;
+        _subtitle = '';
         return widget.alpha.title;
     }
   }
 
-  Text _setTitle() {
-    return Text(
-      _title(),
-      overflow: TextOverflow.ellipsis,
-      maxLines: 1,
-      style: TextStyle(
-        fontSize: 22,
-        fontWeight: FontWeight.w300,
-        color: Colors.black,
-      ),
+  Column _setTitle() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          _title(),
+          overflow: TextOverflow.ellipsis,
+          maxLines: 1,
+          style: TextStyle(
+            fontSize: 22,
+            fontWeight: FontWeight.w300,
+            color: Colors.black,
+          ),
+        ),
+        if (_showValue != 0)
+          Text(
+            _subtitle,
+            style: TextStyle(color: Colors.grey),
+          ),
+      ],
     );
   }
 
