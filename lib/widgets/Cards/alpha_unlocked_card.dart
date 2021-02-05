@@ -19,7 +19,6 @@ class AlphaUnlockedCard extends StatefulWidget {
 }
 
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
-  bool _showPassword = false;
   int _showValue = 0;
 
   void _onTap() {
@@ -50,16 +49,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   void _passToClipBoard() {
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
-    Clipboard.setData(ClipboardData(
-        text: cripto.doDecrypt(
-      widget.alpha.password,
-      widget.alpha.passwordIV,
-    ))).then(
+    Clipboard.setData(ClipboardData(text: _title())).then(
       (_) => Scaffold.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: Text('Copied'),
+          // content: Text(ClipboardData().text),
           duration: Duration(seconds: 1),
         ),
       ),
@@ -71,25 +66,30 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     switch (_showValue) {
       case 1:
         if (widget.alpha.password.isEmpty) continue two;
+        _showValue = 1;
         return cripto.doDecrypt(widget.alpha.password, widget.alpha.passwordIV);
         break;
       two:
       case 2:
         if (widget.alpha.pin.isEmpty) continue three;
+        _showValue = 2;
         return cripto.doDecrypt(widget.alpha.pin, widget.alpha.pinIV);
         break;
       three:
       case 3:
         if (widget.alpha.username.isEmpty) continue four;
+        _showValue = 3;
         return cripto.doDecrypt(widget.alpha.username, widget.alpha.usernameIV);
         break;
       four:
       case 4:
         if (widget.alpha.ip.isEmpty) continue cero;
+        _showValue = 4;
         return cripto.doDecrypt(widget.alpha.ip, widget.alpha.ipIV);
         break;
       cero:
       default:
+        _showValue = 0;
         return widget.alpha.title;
     }
   }
@@ -121,25 +121,13 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         : Colors.grey;
   }
 
-  void _switchShowValue() => setState(() {
-        // if (_showValue > 3) _showValue = 0;
-        if (widget.alpha.password.isEmpty)
-          _showValue++;
-        else
-          return;
-        if (widget.alpha.pin.isNotEmpty && _showValue == 1) {
-          _showValue++;
-          return;
-        }
-        if (widget.alpha.username.isNotEmpty && _showValue == 2) {
-          _showValue++;
-          return;
-        }
-        if (widget.alpha.ip.isNotEmpty && _showValue == 3) {
-          _showValue++;
-          return;
-        }
-      });
+  void _switchShowValue() {
+    if (_showValue > 4)
+      _showValue = 0;
+    else
+      _showValue++;
+    setState(() {});
+  }
 
   void _showPassLongPressed() => Navigator.push(
         context,
@@ -181,16 +169,17 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(Icons.copy, color: _setIconColor(), size: 24),
-                  heroTag: null,
-                  onPressed: _passToClipBoard,
+              if (_showValue != 0)
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: FloatingActionButton(
+                    backgroundColor: _setWarningColor(),
+                    child: Icon(Icons.copy, color: _setIconColor(), size: 24),
+                    heroTag: null,
+                    onPressed: _passToClipBoard,
+                  ),
                 ),
-              ),
               SizedBox(width: 4),
               SizedBox(
                 height: 48,
