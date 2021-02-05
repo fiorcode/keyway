@@ -30,10 +30,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItems() async {
-    await _items
-        .fetchItems(_searchCtrler.text == null ? '' : _searchCtrler.text);
-  }
+  Future<void> _getItems() async => await _items.fetchItems(
+        _searchCtrler.text == null ? '' : _searchCtrler.text,
+      );
 
   _onReturn() {
     getItems = _getItems();
@@ -47,8 +46,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       if (!_searching) _clearSearch();
     });
   }
-
-  // void _search() {}
 
   void _clearSearch() {
     _searchCtrler.clear();
