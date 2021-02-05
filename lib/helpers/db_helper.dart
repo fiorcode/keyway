@@ -86,7 +86,8 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getUsernames() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $alphaTable.username, $alphaTable.username_iv
-        FROM $alphaTable
+        FROM $alphaTable 
+        WHERE $alphaTable.username <> ''
         GROUP BY $alphaTable.username''');
 
   static Future<int> setPassStatus(
