@@ -6,6 +6,7 @@ abstract class Item {
   String shortDate; //REMOVE
   int color;
   int colorLetter;
+  String tags;
 
   Item(
     this.id,
@@ -14,6 +15,7 @@ abstract class Item {
     this.shortDate,
     this.color,
     this.colorLetter,
+    this.tags,
   );
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ abstract class Item {
     shortDate = map['date_short'];
     color = map['color'];
     colorLetter = map['color_letter'];
+    tags = map['tags'];
   }
 }
 
@@ -79,6 +82,7 @@ class Alpha extends Item {
     String shortDate,
     int color = 0,
     int colorLetter = 0,
+    String tags,
   }) : super(
           id,
           title,
@@ -86,6 +90,7 @@ class Alpha extends Item {
           shortDate,
           color,
           colorLetter,
+          tags,
         );
 
   Alpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
@@ -142,6 +147,7 @@ class Alpha extends Item {
       'date_short': shortDate,
       'color': color,
       'color_letter': colorLetter,
+      'tags': tags,
     };
     if (id != null) map['id'] = id;
     return map;
@@ -177,6 +183,7 @@ class Alpha extends Item {
       shortDate: this.shortDate,
       color: this.color,
       colorLetter: this.colorLetter,
+      tags: this.tags,
     );
   }
 
@@ -289,6 +296,7 @@ class OldAlpha extends Alpha {
     String shortDate,
     int color = 0,
     int colorLetter = 0,
+    String tags,
     this.itemId,
   }) : super(
           id: id,
@@ -319,6 +327,7 @@ class OldAlpha extends Alpha {
           shortDate: shortDate,
           color: color,
           colorLetter: colorLetter,
+          tags: tags,
         );
 
   OldAlpha.fromAlpha(Alpha a) {
@@ -349,6 +358,7 @@ class OldAlpha extends Alpha {
     this.shortDate = a.shortDate;
     this.color = a.color;
     this.colorLetter = a.colorLetter;
+    this.tags = a.tags;
     this.itemId = a.id;
   }
 
@@ -381,6 +391,7 @@ class OldAlpha extends Alpha {
     longTextIV = map['long_text_iv'];
     longTextHash = map['long_text_hash'];
     longTextChange = map['long_text_change'];
+    tags = map['tags'];
     itemId = map['item_id'];
   }
 
@@ -417,6 +428,7 @@ class OldAlpha extends Alpha {
       'date_short': shortDate,
       'color': color,
       'color_letter': colorLetter,
+      'tags': tags,
       'item_id': itemId,
     };
     if (id != null) map['id'] = id;
@@ -459,6 +471,7 @@ class OldAlpha extends Alpha {
       shortDate: this.shortDate,
       color: this.color,
       colorLetter: this.colorLetter,
+      tags: this.tags,
     );
     return old;
   }
@@ -497,6 +510,7 @@ class DeletedAlpha extends Alpha {
     String shortDate,
     int color = 0,
     int colorLetter = 0,
+    String tags,
     this.deletedDate,
     this.itemId,
   }) : super(
@@ -528,6 +542,7 @@ class DeletedAlpha extends Alpha {
           shortDate: shortDate,
           color: color,
           colorLetter: colorLetter,
+          tags: tags,
         );
 
   DeletedAlpha.fromAlpha(Alpha a) {
@@ -559,6 +574,7 @@ class DeletedAlpha extends Alpha {
     this.deletedDate = DateTime.now().toUtc().toIso8601String();
     this.color = a.color;
     this.colorLetter = a.colorLetter;
+    this.tags = a.tags;
     this.itemId = a.id;
   }
 
@@ -585,6 +601,7 @@ class DeletedAlpha extends Alpha {
     longText = map['long_text'];
     longTextIV = map['long_text_iv'];
     longTextHash = map['long_text_hash'];
+    tags = map['tags'];
     deletedDate = map['date_deleted'];
     itemId = map['item_id'];
   }
@@ -618,6 +635,7 @@ class DeletedAlpha extends Alpha {
       'date_short': shortDate,
       'color': color,
       'color_letter': colorLetter,
+      'tags': tags,
       'date_deleted': deletedDate,
       'item_id': itemId,
     };
@@ -635,5 +653,25 @@ class Username {
     username = map['username'];
     usernameIV = map['username_iv'];
     usernameHash = map['username_hash'];
+  }
+}
+
+class Tag {
+  int id;
+  String tagName;
+
+  Tag(this.tagName);
+
+  Tag.fromMap(Map<String, dynamic> map) {
+    id = map['id'];
+    tagName = map['tag_name'];
+  }
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      'tag_name': tagName,
+    };
+    if (id != null) map['id'] = id;
+    return map;
   }
 }
