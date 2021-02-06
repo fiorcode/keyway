@@ -9,6 +9,7 @@ class DBHelper {
   static const String alphaTable = "alpha";
   static const String oldAlphaTable = "old_alpha";
   static const String deletedAlphaTable = "deleted_alpha";
+  static const String tagTable = "tag";
 
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
@@ -19,6 +20,7 @@ class DBHelper {
         await db.execute(createUserDataTable);
         await db.execute(createOldAlphaTable);
         await db.execute(createDeletedAlphaTable);
+        await db.execute(createTagTable);
       },
       version: 1,
     );
@@ -89,6 +91,9 @@ class DBHelper {
         FROM $alphaTable 
         WHERE $alphaTable.username <> ''
         GROUP BY $alphaTable.username''');
+
+  static Future<List<Map<String, dynamic>>> getTags() async =>
+      (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
 
   static Future<int> setPassStatus(
           String table, String pass, String status) async =>
@@ -217,7 +222,8 @@ class DBHelper {
     date TEXT,
     date_short TEXT,
     color INTEGER,
-    color_letter INTEGER)''';
+    color_letter INTEGER,
+    tags TEXT)''';
 
   static const createOldAlphaTable = '''CREATE TABLE $oldAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -254,7 +260,8 @@ class DBHelper {
     date_short TEXT,
     color INTEGER,
     color_letter INTEGER,
-    item_id INTEGER)''';
+    item_id INTEGER,
+    tags TEXT)''';
 
   static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -286,5 +293,10 @@ class DBHelper {
     date_deleted TEXT,
     color INTEGER,
     color_letter INTEGER,
-    item_id INTEGER)''';
+    item_id INTEGER,
+    tags TEXT)''';
+
+  static const createTagTable = '''CREATE TABLE $tagTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tag_name TEXT)''';
 }
