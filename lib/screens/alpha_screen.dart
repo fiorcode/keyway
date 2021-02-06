@@ -37,7 +37,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
   Alpha _alpha;
-  Future _getUsernames;
+  Future<List<Username>> _getUsernames;
+  Future<List<Tag>> _getTags;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -65,6 +66,8 @@ class _AlphaScreenState extends State<AlphaScreen> {
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<List<Username>> _usernamesList() async => await _items.getUsers();
+
+  Future<List<Tag>> _tagsList() async => await _items.getTags();
 
   void _selectUsername(String username) {
     _userCtrler.text = username;
@@ -194,11 +197,24 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
   }
 
+  List<Widget> _tags(List<Tag> tags) {
+    List<Chip> _chips = List<Chip>();
+    tags.forEach(
+      (tag) => _chips.add(
+        Chip(
+          label: Text(tag.tagName),
+        ),
+      ),
+    );
+    return _chips;
+  }
+
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
+    _getTags = _tagsList();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -276,6 +292,20 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     pinSwitch: _pinSwitch,
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
+                  ),
+                  FutureBuilder(
+                    future: _getTags,
+                    builder: (ctx, snap) {
+                      switch (snap.connectionState) {
+                        case ConnectionState.done:
+                          return Wrap(
+                            children: _tags(snap.data),
+                          );
+                          break;
+                        default:
+                          return CircularProgressIndicator();
+                      }
+                    },
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(
