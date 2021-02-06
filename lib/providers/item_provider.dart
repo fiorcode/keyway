@@ -191,6 +191,14 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
+  Future<List<Tag>> getTags() async {
+    Iterable<Tag> _iter;
+    await DBHelper.getTags().then((data) {
+      _iter = data.map((e) => Tag.fromMap(e));
+    });
+    return _iter.toList();
+  }
+
   Future<void> mockData(CriptoProvider _cripto) async {
     List<String> _titles = [
       'Facebook',
@@ -256,6 +264,15 @@ class ItemProvider with ChangeNotifier {
       '9967',
       '1558',
     ];
+    List<Tag> _tags = [
+      Tag('personal'),
+      Tag('work'),
+      Tag('family'),
+      Tag('social'),
+      Tag('gaming'),
+    ];
+    _tags.forEach(
+        (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
     Random _ran = Random(59986674);
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
