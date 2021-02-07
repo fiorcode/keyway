@@ -266,6 +266,7 @@ class ItemProvider with ChangeNotifier {
     ];
     List<Tag> _tags = [
       Tag('personal'),
+      Tag('shared'),
       Tag('work'),
       Tag('family'),
       Tag('social'),
@@ -277,6 +278,10 @@ class ItemProvider with ChangeNotifier {
     DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
     for (int i = 0; i < _titles.length; i++) {
+      String _tagsList = '';
+      for (int i = 0; i < 2; i++) {
+        _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
+      }
       DateTime _date =
           DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
       String _ivUser = e.IV.fromSecureRandom(16).base16;
@@ -311,6 +316,7 @@ class ItemProvider with ChangeNotifier {
           shortDate: dateFormat.format(_date),
           color: _ran.nextInt(4294967290),
           colorLetter: _ran.nextInt(4294967290),
+          tags: _tagsList,
         ),
       );
     }
