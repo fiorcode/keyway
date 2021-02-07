@@ -659,6 +659,7 @@ class Username {
 class Tag {
   int id;
   String tagName;
+  bool selected = false;
 
   Tag(this.tagName);
 
