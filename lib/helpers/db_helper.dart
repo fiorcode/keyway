@@ -6,6 +6,11 @@ import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
   static const String userDataTable = "user_data";
+  static const String usernameTable = "usernames";
+  static const String passwordTable = "passwords";
+  static const String pinTable = "pins";
+  static const String ipTable = "ips";
+  static const String longTextTable = "longtexts";
   static const String alphaTable = "alpha";
   static const String oldAlphaTable = "old_alpha";
   static const String deletedAlphaTable = "deleted_alpha";
@@ -193,6 +198,41 @@ class DBHelper {
     surname TEXT,
     encrypted_mk TEXT,
     mk_iv)''';
+
+  static const createUsernameTable = '''CREATE TABLE $usernameTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    username_iv TEXT,
+    username_hash TEXT)''';
+
+  static const createPasswordTable = '''CREATE TABLE $passwordTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    password TEXT,
+    password_iv TEXT,
+    password_hash TEXT,
+    password_date TEXT,
+    password_lapse TEXT,
+    password_level TEXT)''';
+
+  static const createPinTable = '''CREATE TABLE $pinTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pin TEXT,
+    pin_iv TEXT,
+    pin_hash TEXT,
+    pin_date TEXT,
+    pin_lapse TEXT)''';
+
+  static const createIpTable = '''CREATE TABLE $ipTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip TEXT,
+    ip_iv TEXT,
+    ip_hash TEXT)''';
+
+  static const createLognTextTable = '''CREATE TABLE $longTextTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    longtext TEXT,
+    longtext_iv TEXT,
+    longtext_hash TEXT)''';
 
   static const createAlphaTable = '''CREATE TABLE $alphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
