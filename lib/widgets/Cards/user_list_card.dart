@@ -1,8 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:keyway/models/item.dart';
 import 'package:provider/provider.dart';
 
+import 'package:keyway/models/username.dart';
 import '../../providers/cripto_provider.dart';
 
 class UserListCard extends StatelessWidget {

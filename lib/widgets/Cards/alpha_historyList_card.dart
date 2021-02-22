@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:keyway/models/item.dart';
+import 'package:keyway/models/deleted_alpha.dart';
 import 'package:keyway/screens/item_history_screen.dart';
 
 class AlphaHistoryListCard extends StatelessWidget {

@@ -6,9 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
-import '../models/item.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
+import '../models/alpha.dart';
+import '../models/tag.dart';
+import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -198,13 +200,26 @@ class _AlphaScreenState extends State<AlphaScreen> {
   }
 
   List<Widget> _tags(List<Tag> tags) {
-    List<Chip> _chips = List<Chip>();
+    List<Widget> _chips = List<Widget>();
     tags.forEach(
-      (tag) => _chips.add(
-        Chip(
-          label: Text(tag.tagName),
-        ),
-      ),
+      (tag) {
+        _chips.add(
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: Chip(
+              backgroundColor: tag.selected ? Colors.white : Colors.grey,
+              label: Text(
+                tag.tagName,
+                style: TextStyle(
+                  color: tag.selected ? Colors.grey : Colors.white,
+                  fontWeight: tag.selected ? FontWeight.bold : null,
+                ),
+              ),
+              elevation: tag.selected ? 8.0 : 0.0,
+            ),
+          ),
+        );
+      },
     );
     return _chips;
   }
@@ -298,8 +313,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     builder: (ctx, snap) {
                       switch (snap.connectionState) {
                         case ConnectionState.done:
-                          return Wrap(
-                            children: _tags(snap.data),
+                          return Container(
+                            height: 64.0,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: _tags(snap.data),
+                            ),
                           );
                           break;
                         default:

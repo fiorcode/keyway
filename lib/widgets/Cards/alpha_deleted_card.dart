@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/models/item.dart';
+import 'package:keyway/models/deleted_alpha.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/screens/alpha_view_screen.dart';
 

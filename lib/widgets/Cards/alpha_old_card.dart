@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/models/old_alpha.dart';
 import 'package:keyway/screens/old_alpha_view_screen.dart';
 
 class AlphaOldCard extends StatefulWidget {

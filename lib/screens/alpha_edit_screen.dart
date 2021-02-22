@@ -6,9 +6,11 @@ import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
 //import 'package:encrypt/encrypt.dart' as e;
 
-import '../models/item.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
+import '../models/alpha.dart';
+import '../models/tag.dart';
+import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';

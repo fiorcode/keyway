@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/item.dart';
 import '../providers/cripto_provider.dart';
+import '../models/old_alpha.dart';
 import '../widgets/unlock_container.dart';
 
 class OldAlphaViewScreen extends StatefulWidget {

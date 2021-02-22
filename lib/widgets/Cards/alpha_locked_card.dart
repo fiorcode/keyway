@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/item.dart';
+import 'package:keyway/models/alpha.dart';
 
 class AlphaLockedCard extends StatelessWidget {
   const AlphaLockedCard({Key key, this.alpha}) : super(key: key);

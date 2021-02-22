@@ -5,7 +5,12 @@ import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
-import '../models/item.dart';
+
+import '../models/alpha.dart';
+import '../models/deleted_alpha.dart';
+import '../models/old_alpha.dart';
+import '../models/username.dart';
+import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
   List<dynamic> _items = [];

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../models/item.dart';
+import 'package:keyway/models/alpha.dart';
 import '../color_alpha_picker.dart';
 import '../red_color_picker.dart';
 import '../green_color_picker.dart';
