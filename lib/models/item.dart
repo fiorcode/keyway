@@ -8,15 +8,15 @@ abstract class Item {
   int colorLetter;
   String tags;
 
-  Item(
+  Item({
     this.id,
-    this.title,
-    this.date,
-    this.shortDate,
+    this.title = '',
+    this.date = '',
+    this.shortDate = '',
     this.color,
     this.colorLetter,
-    this.tags,
-  );
+    this.tags = '',
+  });
 
   Item.fromMap(Map<String, dynamic> map) {
     id = map['id'];
