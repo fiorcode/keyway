@@ -54,15 +54,15 @@ class Alpha extends Item {
     String shortDate,
     int color = 0,
     int colorLetter = 0,
-    String tags,
+    String tags = '',
   }) : super(
-          id,
-          title,
-          date,
-          shortDate,
-          color,
-          colorLetter,
-          tags,
+          id: id,
+          title: title,
+          date: date,
+          shortDate: shortDate,
+          color: color,
+          colorLetter: colorLetter,
+          tags: tags,
         );
 
   Alpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
