@@ -254,8 +254,11 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
         _chips.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Chip(
-              backgroundColor: tag.selected ? Colors.white : Colors.grey,
+            child: ChoiceChip(
+              selected: tag.selected,
+              selectedColor: Colors.white,
+              onSelected: (selected) => selectTag(tag, selected),
+              // backgroundColor: tag.selected ? Colors.white : Colors.grey,
               label: Text(
                 tag.tagName,
                 style: TextStyle(
@@ -270,6 +273,15 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       },
     );
     return _chips;
+  }
+
+  void selectTag(Tag tag, bool selected) {
+    if (_alpha.tags.contains('<${tag.tagName}>')) {
+      _alpha.tags = _alpha.tags.replaceAll('<${tag.tagName}>', '');
+    } else {
+      _alpha.tags += '<${tag.tagName}>';
+    }
+    setState(() => tag.selected = selected);
   }
 
   @override
