@@ -62,6 +62,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
                 onTap: () => widget.ctrler.clear(),
               ),
       ),
+      maxLength: 128,
       obscureText: _obscure,
       onChanged: (_) => _onChange(),
     );
