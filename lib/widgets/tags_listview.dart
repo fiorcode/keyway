@@ -26,23 +26,23 @@ class _TagsListViewState extends State<TagsListView> {
     _chips = List<Widget>();
     tags.forEach(
       (tag) {
-        bool _selected = _widgetTags.contains('<${tag.tagName}>');
+        tag.selected = _widgetTags.contains('<${tag.tagName}>');
         _chips.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: _selected,
+              selected: tag.selected,
               selectedColor: Colors.white,
               onSelected: (selected) => tagTapped(tag, selected),
               label: Text(
                 tag.tagName,
                 style: TextStyle(
-                  color: _selected ? Colors.grey : Colors.white,
-                  fontWeight: _selected ? FontWeight.bold : null,
+                  color: tag.selected ? Colors.grey : Colors.white,
+                  fontWeight: tag.selected ? FontWeight.bold : null,
                 ),
               ),
-              elevation: _selected ? 8.0 : 0.0,
+              elevation: tag.selected ? 8.0 : 0.0,
             ),
           ),
         );
@@ -80,6 +80,7 @@ class _TagsListViewState extends State<TagsListView> {
             switch (snap.connectionState) {
               case ConnectionState.done:
                 return ListView(
+                  padding: EdgeInsets.all(4.0),
                   scrollDirection: Axis.horizontal,
                   children: _tags(snap.data),
                 );
