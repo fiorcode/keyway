@@ -11,7 +11,6 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/alpha.dart';
 import '../models/tag.dart';
-import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -27,8 +26,6 @@ import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
 
-enum Mode { Create, Edit }
-
 class AlphaScreen extends StatefulWidget {
   static const routeName = '/alpha';
 
@@ -40,7 +37,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
   Alpha _alpha;
-  Future<List<Username>> _getUsernames;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -66,8 +62,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   void _userListSwitch() => setState(() => _viewUsersList = !_viewUsersList);
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
-
-  Future<List<Username>> _usernamesList() async => await _items.getUsers();
 
   void _selectUsername(String username) {
     _userCtrler.text = username;
@@ -207,9 +201,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   @override
   void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _items = Provider.of<ItemProvider>(context, listen: false);
-    _getUsernames = _usernamesList();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -364,23 +355,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
             ),
           ),
           if (_viewUsersList && !_cripto.locked)
-            FutureBuilder(
-              future: _getUsernames,
-              builder: (ctx, snap) {
-                switch (snap.connectionState) {
-                  case ConnectionState.done:
-                    return UserListCard(
-                      _userCtrler,
-                      _userListSwitch,
-                      snap.data,
-                      _selectUsername,
-                    );
-                    break;
-                  default:
-                    return CircularProgressIndicator();
-                }
-              },
-            ),
+            UserListCard(_userCtrler, _userListSwitch, _selectUsername),
           if (_unlocking && _cripto.locked) UnlockContainer(_lockSwitch),
         ],
       ),
