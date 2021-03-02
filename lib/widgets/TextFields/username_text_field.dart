@@ -12,6 +12,7 @@ class UsernameTextField extends StatelessWidget {
       autocorrect: false,
       controller: ctrler,
       decoration: InputDecoration(
+        counterText: '',
         border: OutlineInputBorder(),
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(width: 1),
@@ -23,6 +24,7 @@ class UsernameTextField extends StatelessWidget {
         fillColor: Theme.of(context).backgroundColor,
         labelText: 'Username',
       ),
+      maxLength: 64,
       onChanged: (_) => function(),
     );
   }
