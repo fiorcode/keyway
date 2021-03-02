@@ -288,7 +288,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
-                  TagsListView(tagTap: _tagTap, tags: ''),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
@@ -342,6 +341,20 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Tags:',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Expanded(child: TagsListView(tagTap: _tagTap, tags: '')),
+                    ],
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: AlphaPreviewCard(_alpha),
