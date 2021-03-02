@@ -284,11 +284,10 @@ class ItemProvider with ChangeNotifier {
     await _cripto.unlock('Qwe123!');
     for (int i = 0; i < _titles.length; i++) {
       String _tagsList = '';
-      for (int i = 0; i < 2; i++) {
-        _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
-      }
-      DateTime _date =
-          DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
+      _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
+      String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
+      if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
+      DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
       String _ivUser = e.IV.fromSecureRandom(16).base16;
       String _ivPass = e.IV.fromSecureRandom(16).base16;
       String _ivPin = e.IV.fromSecureRandom(16).base16;
@@ -302,13 +301,13 @@ class ItemProvider with ChangeNotifier {
           passwordIV: _passes[i].isEmpty ? '' : _ivPass,
           passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
           passwordStatus: _passes[i].isEmpty ? '' : '',
-          passwordDate: _passes[i].isEmpty ? '' : _date.toIso8601String(),
+          passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
           passwordLapse: _passes[i].isEmpty ? '' : '',
           passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
           pin: _cripto.doCrypt(_pins[i], _ivPin),
           pinIV: _pins[i].isEmpty ? '' : _ivPin,
           pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
-          pinDate: _pins[i].isEmpty ? '' : _date.toIso8601String(),
+          pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
           pinLapse: _pins[i].isEmpty ? '' : '',
           pinStatus: _pins[i].isEmpty ? '' : '',
           ip: '',
@@ -317,8 +316,8 @@ class ItemProvider with ChangeNotifier {
           longText: '',
           longTextIV: '',
           longTextHash: '',
-          date: _date.toIso8601String(),
-          shortDate: dateFormat.format(_date),
+          date: _d.toIso8601String(),
+          shortDate: dateFormat.format(_d),
           color: _ran.nextInt(4294967290),
           colorLetter: _ran.nextInt(4294967290),
           tags: _tagsList,
