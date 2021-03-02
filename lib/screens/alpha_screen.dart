@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/tags_listview.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
@@ -40,7 +41,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   ItemProvider _items;
   Alpha _alpha;
   Future<List<Username>> _getUsernames;
-  Future<List<Tag>> _getTags;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -68,8 +68,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<List<Username>> _usernamesList() async => await _items.getUsers();
-
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
 
   void _selectUsername(String username) {
     _userCtrler.text = username;
@@ -199,41 +197,12 @@ class _AlphaScreenState extends State<AlphaScreen> {
     });
   }
 
-  List<Widget> _tags(List<Tag> tags) {
-    List<Widget> _chips = List<Widget>();
-    tags.forEach(
-      (tag) {
-        _chips.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ChoiceChip(
-              selected: tag.selected,
-              selectedColor: Colors.white,
-              onSelected: (selected) => selectTag(tag, selected),
-              // backgroundColor: tag.selected ? Colors.white : Colors.grey,
-              label: Text(
-                tag.tagName,
-                style: TextStyle(
-                  color: tag.selected ? Colors.grey : Colors.white,
-                  fontWeight: tag.selected ? FontWeight.bold : null,
-                ),
-              ),
-              elevation: tag.selected ? 8.0 : 0.0,
-            ),
-          ),
-        );
-      },
-    );
-    return _chips;
-  }
-
-  void selectTag(Tag tag, bool selected) {
+  void _tagTap(Tag tag) {
     if (_alpha.tags.contains('<${tag.tagName}>')) {
       _alpha.tags = _alpha.tags.replaceAll('<${tag.tagName}>', '');
     } else {
       _alpha.tags += '<${tag.tagName}>';
     }
-    setState(() => tag.selected = selected);
   }
 
   @override
@@ -241,7 +210,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
-    _getTags = _tagsList();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -320,24 +288,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
-                  FutureBuilder(
-                    future: _getTags,
-                    builder: (ctx, snap) {
-                      switch (snap.connectionState) {
-                        case ConnectionState.done:
-                          return Container(
-                            height: 64.0,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: _tags(snap.data),
-                            ),
-                          );
-                          break;
-                        default:
-                          return CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                  TagsListView(tagTap: _tagTap, tags: ''),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
