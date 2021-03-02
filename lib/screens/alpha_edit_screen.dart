@@ -413,7 +413,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     return UserListCard(
                       _userCtrler,
                       _userListSwitch,
-                      snap.data,
                       _selectUsername,
                     );
                     break;
