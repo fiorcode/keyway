@@ -15,6 +15,7 @@ import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
+import '../widgets/tags_listview.dart';
 import '../widgets/TextFields/ip_text_field.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
@@ -42,7 +43,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   ItemProvider _items;
   Alpha _alpha;
   Future<List<Username>> _getUsernames;
-  Future<List<Tag>> _getTags;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -70,8 +70,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<List<Username>> _usernamesList() async => await _items.getUsers();
-
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
 
   void _selectUsername(String u) {
     _userCtrler.text = u;
@@ -129,6 +127,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     if (_alpha.pin != widget.alpha.pin) return true;
     if (_alpha.ip != widget.alpha.ip) return true;
     if (_alpha.longText != widget.alpha.longText) return true;
+    if (_alpha.tags != widget.alpha.tags) return true;
     return false;
   }
 
@@ -244,44 +243,12 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       _items.deleteAlpha(_alpha).then((_) => Navigator.of(context).pop());
   }
 
-  List<Widget> _tags(List<Tag> tags) {
-    List<Widget> _chips = List<Widget>();
-    tags.forEach(
-      (tag) {
-        widget.alpha.tags.contains('<${tag.tagName}>')
-            ? tag.selected = true
-            : tag.selected = false;
-        _chips.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ChoiceChip(
-              selected: tag.selected,
-              selectedColor: Colors.white,
-              onSelected: (selected) => selectTag(tag, selected),
-              // backgroundColor: tag.selected ? Colors.white : Colors.grey,
-              label: Text(
-                tag.tagName,
-                style: TextStyle(
-                  color: tag.selected ? Colors.grey : Colors.white,
-                  fontWeight: tag.selected ? FontWeight.bold : null,
-                ),
-              ),
-              elevation: tag.selected ? 8.0 : 0.0,
-            ),
-          ),
-        );
-      },
-    );
-    return _chips;
-  }
-
-  void selectTag(Tag tag, bool selected) {
+  void _tagTap(Tag tag) {
     if (_alpha.tags.contains('<${tag.tagName}>')) {
       _alpha.tags = _alpha.tags.replaceAll('<${tag.tagName}>', '');
     } else {
       _alpha.tags += '<${tag.tagName}>';
     }
-    setState(() => tag.selected = selected);
   }
 
   @override
@@ -289,7 +256,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
-    _getTags = _tagsList();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -367,24 +333,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
-                  FutureBuilder(
-                    future: _getTags,
-                    builder: (ctx, snap) {
-                      switch (snap.connectionState) {
-                        case ConnectionState.done:
-                          return Container(
-                            height: 64.0,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: _tags(snap.data),
-                            ),
-                          );
-                          break;
-                        default:
-                          return CircularProgressIndicator();
-                      }
-                    },
-                  ),
+                  TagsListView(tagTap: _tagTap, tags: widget.alpha.tags),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
