@@ -170,98 +170,71 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ButtonTheme(
-                  height: 48,
-                  minWidth: 128,
-                  shape: StadiumBorder(
-                    side: BorderSide(width: 3, color: Colors.white),
-                  ),
-                  child: RaisedButton.icon(
-                    color: Theme.of(context).backgroundColor,
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(ItemsHistoryScreen.routeName),
-                    icon: Icon(
-                      Icons.history,
-                      color: Theme.of(context).primaryColor,
-                      size: 32,
-                    ),
-                    label: Row(
-                      children: [
-                        Text(
-                          'Items History',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(width: 24),
-                        Icon(Icons.keyboard_arrow_right, size: 32)
-                      ],
-                    ),
+              SizedBox(height: 32),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  primary: Colors.white,
+                  shape: StadiumBorder(),
+                ),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(ItemsHistoryScreen.routeName),
+                icon: Icon(
+                  Icons.history,
+                  color: Theme.of(context).primaryColor,
+                  size: 32,
+                ),
+                label: Text(
+                  'Items History',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ButtonTheme(
-                  height: 48,
-                  minWidth: 128,
-                  shape: StadiumBorder(
-                    side: BorderSide(width: 3, color: Colors.white),
-                  ),
-                  child: RaisedButton.icon(
-                    color: Theme.of(context).backgroundColor,
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(DeletedItemsScreen.routeName),
-                    icon: Icon(
-                      Icons.delete,
-                      color: Theme.of(context).primaryColor,
-                      size: 32,
-                    ),
-                    label: Row(
-                      children: [
-                        Text(
-                          'Deleted Items',
-                          style: TextStyle(
-                            color: Theme.of(context).primaryColor,
-                            fontWeight: FontWeight.w800,
-                            fontSize: 16,
-                          ),
-                        ),
-                        SizedBox(width: 24),
-                        Icon(Icons.keyboard_arrow_right, size: 32)
-                      ],
-                    ),
+              SizedBox(height: 16),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  primary: Colors.white,
+                  shape: StadiumBorder(),
+                ),
+                onPressed: () => Navigator.of(context)
+                    .pushNamed(DeletedItemsScreen.routeName),
+                icon: Icon(
+                  Icons.delete,
+                  color: Theme.of(context).primaryColor,
+                  size: 32,
+                ),
+                label: Text(
+                  'Deleted Items',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ButtonTheme(
-                  height: 48,
-                  minWidth: 128,
-                  shape: StadiumBorder(
-                    side: BorderSide(width: 3, color: Colors.red[200]),
-                  ),
-                  child: RaisedButton.icon(
-                    color: Colors.red,
-                    onPressed: () => _deleteDB(context),
-                    icon: Icon(
-                      Icons.delete_forever,
-                      color: Colors.white,
-                      size: 32,
-                    ),
-                    label: Text(
-                      'Delete Database',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 16,
-                      ),
-                    ),
+              SizedBox(height: 16),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  primary: Colors.red,
+                  shape: StadiumBorder(),
+                ),
+                onPressed: () => _deleteDB(context),
+                icon: Icon(
+                  Icons.delete_forever,
+                  color: Colors.white,
+                  size: 32,
+                ),
+                label: Text(
+                  'Delete Database',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
                   ),
                 ),
               ),
