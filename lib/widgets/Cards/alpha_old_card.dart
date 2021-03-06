@@ -33,7 +33,7 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
       widget.oldAlpha.password,
       widget.oldAlpha.passwordIV,
     ))).then(
-      (_) => Scaffold.of(context).showSnackBar(
+      (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: Text('Copied'),
