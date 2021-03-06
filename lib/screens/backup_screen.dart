@@ -46,7 +46,7 @@ class _BackupScreenState extends State<BackupScreen> {
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         actions: [
-          FlatButton.icon(
+          TextButton.icon(
             icon: Image(
               image: AssetImage('assets/google_logo.png'),
               height: AppBar().preferredSize.height * .50,
@@ -204,8 +204,10 @@ class _SignedInBodyState extends State<SignedInBody> {
                             padding: const EdgeInsets.all(8.0),
                             child: ButtonTheme(
                               height: 48,
-                              child: RaisedButton.icon(
-                                color: Colors.white,
+                              child: ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                    shape: StadiumBorder()),
                                 onPressed: _uploadDB,
                                 icon: Icon(
                                   Icons.upload_rounded,
@@ -218,7 +220,6 @@ class _SignedInBodyState extends State<SignedInBody> {
                                     fontSize: 16,
                                   ),
                                 ),
-                                shape: StadiumBorder(),
                               ),
                             ),
                           ),
@@ -227,8 +228,11 @@ class _SignedInBodyState extends State<SignedInBody> {
                               padding: const EdgeInsets.all(8.0),
                               child: ButtonTheme(
                                 height: 48,
-                                child: RaisedButton.icon(
-                                  color: Colors.white,
+                                child: ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                    shape: StadiumBorder(),
+                                  ),
                                   onPressed: () => _downloadDB(context),
                                   icon: Icon(
                                     Icons.download_rounded,
@@ -241,7 +245,6 @@ class _SignedInBodyState extends State<SignedInBody> {
                                       fontSize: 16,
                                     ),
                                   ),
-                                  shape: StadiumBorder(),
                                 ),
                               ),
                             ),
@@ -252,8 +255,11 @@ class _SignedInBodyState extends State<SignedInBody> {
                         padding: const EdgeInsets.all(8.0),
                         child: ButtonTheme(
                           height: 48,
-                          child: RaisedButton.icon(
-                            color: Colors.red,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                              shape: StadiumBorder(),
+                            ),
                             onPressed: () => _deleteBackup(context),
                             icon: Icon(
                               Icons.delete_forever_rounded,
@@ -268,7 +274,6 @@ class _SignedInBodyState extends State<SignedInBody> {
                                 fontSize: 16,
                               ),
                             ),
-                            shape: StadiumBorder(),
                           ),
                         ),
                       ),
@@ -308,7 +313,12 @@ class NoSignedInBody extends StatelessWidget {
               color: Theme.of(context).primaryColor,
             ),
           ),
-          RaisedButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
             onPressed: () => drive.handleSignIn(),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -329,9 +339,6 @@ class NoSignedInBody extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
             ),
           ),
         ],
