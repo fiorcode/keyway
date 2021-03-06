@@ -71,7 +71,7 @@ class _UnlockContainerState extends State<UnlockContainer> {
                             _cProv.unlock(_ctrler.text);
                             widget.function();
                           } catch (error) {
-                            Scaffold.of(context).showSnackBar(
+                            ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('Wrong Password'),
                                 duration: Duration(seconds: 2),
