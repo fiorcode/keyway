@@ -23,7 +23,12 @@ class NoSignedInBody extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          RaisedButton(
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+              ),
+            ),
             onPressed: () => drive.handleSignIn(),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -44,9 +49,6 @@ class NoSignedInBody extends StatelessWidget {
                   )
                 ],
               ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(32),
             ),
           ),
         ],
