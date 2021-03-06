@@ -12,7 +12,7 @@ class ErrorHelper {
             textAlign: TextAlign.center,
           ),
           actions: [
-            FlatButton(
+            TextButton(
               onPressed: () => Navigator.of(context).pop(),
               child: Text('Ok'),
             ),
