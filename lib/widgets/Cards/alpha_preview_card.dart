@@ -78,31 +78,19 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 onTap: null,
                 trailing: Padding(
                   padding: const EdgeInsets.all(4.0),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: FloatingActionButton(
-                          backgroundColor: Colors.grey[200],
-                          child: Icon(Icons.copy, size: 24),
-                          heroTag: null,
-                          onPressed: null,
-                        ),
+                  child: SizedBox(
+                    height: 48,
+                    width: 48,
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.grey[200],
+                      child: Icon(
+                        Icons.remove_red_eye_outlined,
+                        size: 24,
+                        color: Colors.grey,
                       ),
-                      SizedBox(width: 4),
-                      SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: FloatingActionButton(
-                          backgroundColor: Colors.grey[200],
-                          child: Icon(Icons.remove_red_eye_outlined, size: 24),
-                          heroTag: null,
-                          onPressed: null,
-                        ),
-                      ),
-                    ],
+                      heroTag: null,
+                      onPressed: null,
+                    ),
                   ),
                 ),
               ),
