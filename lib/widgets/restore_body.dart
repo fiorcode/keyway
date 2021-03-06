@@ -105,12 +105,14 @@ class _RestoreBodyState extends State<RestoreBody> {
                 ),
                 _downloading
                     ? CircularProgressIndicator()
-                    : RaisedButton(
+                    : ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          primary: drive.fileFound ? Colors.green : Colors.grey,
+                        ),
                         child: Text(
                           drive.fileFound ? 'Restore' : 'Setup a password',
                           style: TextStyle(color: Colors.white),
                         ),
-                        color: drive.fileFound ? Colors.green : Colors.grey,
                         onPressed: drive.fileFound
                             ? _restore
                             : () => Navigator.of(context).pop(),
