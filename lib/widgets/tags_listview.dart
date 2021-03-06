@@ -23,7 +23,7 @@ class _TagsListViewState extends State<TagsListView> {
   Future<List<Tag>> _tagsList() async => await _items.getTags();
 
   List<Widget> _tags(List<Tag> tags) {
-    _chips = List<Widget>();
+    _chips = <Widget>[];
     tags.forEach(
       (tag) {
         tag.selected = _widgetTags.contains('<${tag.tagName}>');
