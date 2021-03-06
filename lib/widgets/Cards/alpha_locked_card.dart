@@ -17,7 +17,7 @@ class AlphaLockedCard extends StatelessWidget {
   }
 
   _onTap(BuildContext context) {
-    Scaffold.of(context).showSnackBar(
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: Colors.red,
         content: Text(
