@@ -33,7 +33,7 @@ class _AlphaDeletedCardState extends State<AlphaDeletedCard> {
             text: _cripto.doDecrypt(
                 widget.alpha.password, widget.alpha.passwordIV)))
         .then(
-      (_) => Scaffold.of(context).showSnackBar(
+      (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: Text('Copied'),
