@@ -25,7 +25,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   void _onTap() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     if (cripto.locked) {
-      Scaffold.of(context).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
           content: Text('Please unlock'),
@@ -51,7 +51,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
 
   void _passToClipBoard() {
     Clipboard.setData(ClipboardData(text: _title())).then(
-      (_) => Scaffold.of(context).showSnackBar(
+      (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
           content: Text(_subtitle + ' copied'),
