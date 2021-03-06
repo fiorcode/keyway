@@ -144,7 +144,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   ),
                 ),
               if (_strong && _equals)
-                RaisedButton(onPressed: _setPassword, child: Text('CONTINUE')),
+                ElevatedButton(
+                    onPressed: _setPassword, child: Text('CONTINUE')),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -159,8 +160,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     ),
                   ),
                   SizedBox(height: 8),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        primary: Theme.of(context).primaryColor),
                     onPressed: () => Navigator.of(context)
                         .pushNamed(RestoreScreen.routeName),
                     child: Text(
