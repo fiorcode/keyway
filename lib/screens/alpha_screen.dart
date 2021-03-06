@@ -332,18 +332,22 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
+                  Text(
+                    'Tags:',
+                    style: TextStyle(
+                      fontSize: 14,
+                      //fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(
-                        'Tags:',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Expanded(
+                        child: TagsListView(tagTap: _tagTap, tags: ''),
                       ),
-                      Expanded(child: TagsListView(tagTap: _tagTap, tags: '')),
+                      IconButton(
+                          icon: Icon(Icons.add_box_rounded), onPressed: () {})
                     ],
                   ),
                   Padding(
