@@ -87,7 +87,7 @@ class _UserListCardState extends State<UserListCard> {
                                           end: Alignment.topCenter,
                                         ),
                                       ),
-                                      child: FlatButton(
+                                      child: TextButton(
                                         onPressed: () => widget.selectUsername(
                                             _cripto.doDecrypt(
                                                 e.username, e.usernameIV)),
