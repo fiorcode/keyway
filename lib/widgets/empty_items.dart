@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 class EmptyItems extends StatelessWidget {
   List<Widget> _characters() {
-    List<Widget> _list = List<Widget>();
+    List<Widget> _list = <Widget>[];
     double _randomDouble;
     const _chars =
         'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890!@';
