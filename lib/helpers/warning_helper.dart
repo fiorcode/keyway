@@ -14,13 +14,13 @@ class WarningHelper {
             textAlign: TextAlign.center,
           ),
           actions: <Widget>[
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
               child: Text('CANCEL'),
             ),
-            FlatButton(
+            TextButton(
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
@@ -59,14 +59,15 @@ class WarningHelper {
             style: TextStyle(color: Colors.white),
           ),
           actions: [
-            FlatButton(
-              color: Colors.white,
+            TextButton(
+              style: TextButton.styleFrom(backgroundColor: Colors.white),
               onPressed: () => Navigator.of(context).pop(false),
               child: Text('CANCEL'),
             ),
             SizedBox(width: 24),
-            FlatButton(
-              color: Colors.redAccent[100],
+            TextButton(
+              style:
+                  TextButton.styleFrom(backgroundColor: Colors.redAccent[100]),
               onPressed: () => Navigator.of(context).pop(true),
               child: Text(
                 'DELETE DATABASE',
@@ -109,17 +110,21 @@ class WarningHelper {
             ),
             actionsPadding: EdgeInsets.symmetric(horizontal: 8.0),
             actions: [
-              FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
                 ),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text('CANCEL', style: TextStyle(color: Colors.white)),
               ),
-              FlatButton(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
@@ -168,17 +173,21 @@ class WarningHelper {
               style: TextStyle(color: Colors.white),
             ),
             actions: [
-              FlatButton(
-                color: Colors.white,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
                 ),
                 onPressed: () => Navigator.of(context).pop(false),
                 child: Text('CANCEL', style: TextStyle(color: Colors.red)),
               ),
-              FlatButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(4.0)),
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
@@ -226,16 +235,17 @@ class WarningHelper {
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                FlatButton(
-                  color: Colors.white,
+                TextButton(
+                  style: TextButton.styleFrom(backgroundColor: Colors.white),
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
                   child: Text('CANCEL'),
                 ),
                 SizedBox(width: 48),
-                FlatButton(
-                  color: Colors.blueAccent[100],
+                TextButton(
+                  style: TextButton.styleFrom(
+                      backgroundColor: Colors.blueAccent[100]),
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },
