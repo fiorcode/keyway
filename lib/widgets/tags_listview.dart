@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/screens/tag_add_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/models/tag.dart';
@@ -22,7 +23,7 @@ class _TagsListViewState extends State<TagsListView> {
 
   Future<List<Tag>> _tagsList() async => await _items.getTags();
 
-  List<Widget> _tags(List<Tag> tags) {
+  List<Widget> _tags(List<Tag> tags, bool interact) {
     _chips = <Widget>[];
     tags.forEach(
       (tag) {
@@ -34,7 +35,9 @@ class _TagsListViewState extends State<TagsListView> {
               backgroundColor: Colors.grey,
               selected: tag.selected,
               selectedColor: Colors.white,
-              onSelected: (selected) => tagTapped(tag, selected),
+              onSelected: interact
+                  ? (selected) => tagTapped(tag, selected)
+                  : (selected) => null,
               label: Text(
                 tag.tagName,
                 style: TextStyle(
@@ -62,6 +65,12 @@ class _TagsListViewState extends State<TagsListView> {
     setState(() {});
   }
 
+  void _onReturn(Tag tag) {
+    tagTapped(tag, true);
+    _getTags = _tagsList();
+    setState(() {});
+  }
+
   @override
   void initState() {
     _items = Provider.of<ItemProvider>(context, listen: false);
@@ -79,10 +88,33 @@ class _TagsListViewState extends State<TagsListView> {
           builder: (ctx, snap) {
             switch (snap.connectionState) {
               case ConnectionState.done:
-                return ListView(
-                  padding: EdgeInsets.all(4.0),
-                  scrollDirection: Axis.horizontal,
-                  children: _tags(snap.data),
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: ListView(
+                        padding: EdgeInsets.all(4.0),
+                        scrollDirection: Axis.horizontal,
+                        children: _tags(snap.data, true),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(
+                        Icons.add_circle_outline_rounded,
+                        size: 32,
+                        color: Colors.grey,
+                      ),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TagAddScreen(
+                            tagsChips: _tags(snap.data, false),
+                          ),
+                        ),
+                      ).then((tag) => _onReturn(tag)),
+                    ),
+                  ],
                 );
                 break;
               default:
