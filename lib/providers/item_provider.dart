@@ -196,6 +196,9 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
+  Future<void> insertTag(Tag a) async =>
+      await DBHelper.insert(DBHelper.tagTable, a.toMap());
+
   Future<List<Tag>> getTags() async {
     Iterable<Tag> _iter;
     await DBHelper.getTags().then((data) {
