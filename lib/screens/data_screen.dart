@@ -6,6 +6,7 @@ import 'package:keyway/helpers/warning_helper.dart';
 import 'package:keyway/screens/deleted_items_screen.dart';
 import 'package:keyway/screens/items_history_screen.dart';
 import 'package:keyway/screens/splash_screen.dart';
+import 'package:keyway/screens/tags_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -171,6 +172,29 @@ class _DataScreenState extends State<DataScreen> {
                 ),
               ),
               SizedBox(height: 32),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  primary: Colors.white,
+                  shape: StadiumBorder(),
+                ),
+                onPressed: () =>
+                    Navigator.of(context).pushNamed(TagsScreen.routeName),
+                icon: Icon(
+                  Icons.tag,
+                  color: Theme.of(context).primaryColor,
+                  size: 32,
+                ),
+                label: Text(
+                  'Tags',
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 16,
+                  ),
+                ),
+              ),
+              SizedBox(height: 16),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
