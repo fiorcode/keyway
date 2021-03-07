@@ -18,6 +18,8 @@ import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
 import 'screens/deleted_items_screen.dart';
+import 'screens/tag_add_screen.dart';
+import 'screens/tags_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -56,6 +58,8 @@ class MyApp extends StatelessWidget {
           ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           DeletedItemsScreen.routeName: (ctx) => DeletedItemsScreen(),
+          TagsScreen.routeName: (ctx) => TagsScreen(),
+          TagAddScreen.routeName: (ctx) => TagAddScreen(),
         },
       ),
     );
