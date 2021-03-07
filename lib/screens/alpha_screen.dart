@@ -339,17 +339,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                       //fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: TagsListView(tagTap: _tagTap, tags: ''),
-                      ),
-                      IconButton(
-                          icon: Icon(Icons.add_box_rounded), onPressed: () {})
-                    ],
-                  ),
+                  TagsListView(tagTap: _tagTap, tags: ''),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: AlphaPreviewCard(_alpha),
