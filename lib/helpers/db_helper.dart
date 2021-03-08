@@ -176,6 +176,13 @@ class DBHelper {
         JOIN $oldAlphaTable ON $deletedAlphaTable.item_id = $oldAlphaTable.item_id 
         GROUP BY $deletedAlphaTable.id''');
 
+  static Future<void> removeTag(String tag) async =>
+      (await DBHelper.database()).rawQuery('''
+          UPDATE $alphaTable 
+          SET tags = REPLACE(tags, '<$tag>', '') 
+          WHERE tags LIKE '%<$tag>%'
+          ''');
+
   static Future<bool> removeDB() async {
     try {
       final _dbPath = await sql.getDatabasesPath();
