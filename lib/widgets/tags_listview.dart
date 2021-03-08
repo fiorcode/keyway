@@ -108,9 +108,7 @@ class _TagsListViewState extends State<TagsListView> {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => TagAddScreen(
-                            tagsChips: _tags(snap.data, false),
-                          ),
+                          builder: (context) => TagAddScreen(),
                         ),
                       ).then((tag) => _onReturn(tag)),
                     ),
