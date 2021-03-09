@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class UsernameTextField extends StatelessWidget {
-  const UsernameTextField(this.ctrler, this.function);
+  const UsernameTextField(this.ctrler, this.function, this.focus);
 
   final TextEditingController ctrler;
   final Function function;
+  final FocusNode focus;
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       autocorrect: false,
       controller: ctrler,
+      focusNode: focus,
       decoration: InputDecoration(
         counterText: '',
         border: OutlineInputBorder(),
