@@ -51,6 +51,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   final _ipCtrler = TextEditingController();
   final _longTextCtrler = TextEditingController();
 
+  FocusNode _userFocusNode;
   FocusNode _passFocusNode;
   bool _passFNSwitch = false;
 
@@ -65,7 +66,10 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
-  void _userListSwitch() => setState(() => _viewUsersList = !_viewUsersList);
+  void _userListSwitch() => setState(() {
+        if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
+        _viewUsersList = !_viewUsersList;
+      });
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -256,6 +260,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
+    _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -350,6 +355,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                             child: UsernameTextField(
                               _userCtrler,
                               _ctrlersChanged,
+                              _userFocusNode,
                             ),
                           ),
                           IconButton(
