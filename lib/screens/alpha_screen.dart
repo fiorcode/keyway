@@ -45,6 +45,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
   final _ipCtrler = TextEditingController();
   final _longTextCtrler = TextEditingController();
 
+  FocusNode _userFocusNode;
   FocusNode _passFocusNode;
   bool _passFNSwitch = false;
 
@@ -59,7 +60,10 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
-  void _userListSwitch() => setState(() => _viewUsersList = !_viewUsersList);
+  void _userListSwitch() => setState(() {
+        if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
+        _viewUsersList = !_viewUsersList;
+      });
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -201,6 +205,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
 
   @override
   void initState() {
+    _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
       if (_passFocusNode.hasFocus)
@@ -295,6 +300,7 @@ class _AlphaScreenState extends State<AlphaScreen> {
                             child: UsernameTextField(
                               _userCtrler,
                               _ctrlersChanged,
+                              _userFocusNode,
                             ),
                           ),
                           IconButton(
@@ -332,13 +338,6 @@ class _AlphaScreenState extends State<AlphaScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
-                  Text(
-                    'Tags:',
-                    style: TextStyle(
-                      fontSize: 14,
-                      //fontWeight: FontWeight.bold,
-                    ),
-                  ),
                   TagsListView(tagTap: _tagTap, tags: ''),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
