@@ -66,7 +66,7 @@ class _TagsListViewState extends State<TagsListView> {
   }
 
   void _onReturn(Tag tag) {
-    tagTapped(tag, true);
+    if (tag != null) tagTapped(tag, true);
     _getTags = _tagsList();
     setState(() {});
   }
@@ -88,32 +88,56 @@ class _TagsListViewState extends State<TagsListView> {
           builder: (ctx, snap) {
             switch (snap.connectionState) {
               case ConnectionState.done:
-                return Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.all(4.0),
-                        scrollDirection: Axis.horizontal,
-                        children: _tags(snap.data, true),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle_outline_rounded,
-                        size: 32,
-                        color: Colors.grey,
-                      ),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TagAddScreen(),
+                return (snap.data as List<Tag>).length > 0
+                    ? Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            'Tags:',
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 16,
+                            ),
+                          ),
+                          Expanded(
+                            child: ListView(
+                              padding: EdgeInsets.all(4.0),
+                              scrollDirection: Axis.horizontal,
+                              children: _tags(snap.data, true),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.add_circle_outline_rounded,
+                              size: 32,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TagAddScreen(),
+                              ),
+                            ).then((tag) => _onReturn(tag)),
+                          ),
+                        ],
+                      )
+                    : TextButton(
+                        onPressed: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => TagAddScreen(),
+                          ),
+                        ).then((tag) => _onReturn(tag)),
+                        child: Text(
+                          'Add tag',
+                          style: TextStyle(
+                            color: Colors.grey[800],
+                            fontSize: 16,
+                          ),
                         ),
-                      ).then((tag) => _onReturn(tag)),
-                    ),
-                  ],
-                );
+                      );
                 break;
               default:
                 return Center(child: CircularProgressIndicator());
