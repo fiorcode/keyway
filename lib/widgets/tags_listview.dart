@@ -131,7 +131,7 @@ class _TagsListViewState extends State<TagsListView> {
                           ),
                         ).then((tag) => _onReturn(tag)),
                         child: Text(
-                          'Add tag',
+                          'ADD NEW TAG',
                           style: TextStyle(
                             color: Colors.grey[800],
                             fontSize: 16,
