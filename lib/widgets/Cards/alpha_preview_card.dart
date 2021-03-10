@@ -16,16 +16,28 @@ class AlphaPreviewCard extends StatefulWidget {
 }
 
 class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
-  Color _color;
+  Color _fillColor = Colors.grey;
+  Color _fontColor = Colors.white;
+  bool _editingBackground = true;
 
-  _setColor(int color) {
-    setState(() => _color = Color(color));
+  _setFillColor(int color) {
+    setState(() => _fillColor = Color(color));
     widget.alpha.color = color;
   }
 
+  _setFontColor(int color) {
+    setState(() => _fontColor = Color(color));
+    widget.alpha.colorLetter = color;
+  }
+
+  void _editingSwitch() =>
+      setState(() => _editingBackground = !_editingBackground);
+
   @override
   void initState() {
-    if (_color == null) _color = Color(widget.alpha.color);
+    if (widget.alpha.color >= 0) _fillColor = Color(widget.alpha.color);
+    if (widget.alpha.colorLetter >= 0)
+      _fontColor = Color(widget.alpha.colorLetter);
     super.initState();
   }
 
@@ -45,6 +57,58 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.format_color_fill,
+                        color: _editingBackground ? Colors.grey : Colors.white,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 4.0,
+                        primary:
+                            _editingBackground ? Colors.white : Colors.grey,
+                      ),
+                      label: Text(
+                        'Fill',
+                        style: TextStyle(
+                          color:
+                              _editingBackground ? Colors.grey : Colors.white,
+                        ),
+                      ),
+                      onPressed: _editingBackground ? () {} : _editingSwitch,
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton.icon(
+                      icon: Icon(
+                        Icons.format_color_text,
+                        color: !_editingBackground ? Colors.grey : Colors.white,
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: !_editingBackground ? 4.0 : 0,
+                        primary:
+                            !_editingBackground ? Colors.white : Colors.grey,
+                      ),
+                      label: Text(
+                        'Font Color',
+                        style: TextStyle(
+                          color:
+                              !_editingBackground ? Colors.grey : Colors.white,
+                        ),
+                      ),
+                      onPressed: !_editingBackground ? () {} : _editingSwitch,
+                    ),
+                  ),
+                ),
+              ],
+            ),
             Card(
               clipBehavior: Clip.antiAlias,
               elevation: 8,
@@ -54,12 +118,13 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 contentPadding: EdgeInsets.all(4),
                 leading: CircleAvatar(
                   radius: 24,
-                  backgroundColor: _color == null ? Colors.grey : _color,
+                  backgroundColor: _fillColor,
                   child: Text(
                     widget.alpha.title.isEmpty
                         ? 'T'
                         : widget.alpha.title.substring(0, 1).toUpperCase(),
                     style: TextStyle(
+                      color: _fontColor,
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
@@ -96,13 +161,21 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
               ),
             ),
             SizedBox(height: 12),
-            RedColorPicker(_color, _setColor),
+            _editingBackground
+                ? RedColorPicker(_fillColor, _setFillColor)
+                : RedColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
-            GreenColorPicker(_color, _setColor),
+            _editingBackground
+                ? GreenColorPicker(_fillColor, _setFillColor)
+                : GreenColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
-            BlueColorPicker(_color, _setColor),
+            _editingBackground
+                ? BlueColorPicker(_fillColor, _setFillColor)
+                : BlueColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
-            ColorAlphaPicker(_color, _setColor)
+            _editingBackground
+                ? ColorAlphaPicker(_fillColor, _setFillColor)
+                : ColorAlphaPicker(_fontColor, _setFontColor),
           ],
         ),
       ),
