@@ -52,8 +52,8 @@ class Alpha extends Item {
     this.longTextHash = '',
     String date,
     String shortDate,
-    int color = 0,
-    int colorLetter = 0,
+    int color = -1,
+    int colorLetter = -1,
     String tags = '',
   }) : super(
           id: id,
