@@ -16,13 +16,13 @@ class _GreenColorPickerState extends State<GreenColorPicker> {
 
   _setColor(double val) => _color = _color.withGreen(val.toInt());
 
-  _setValue(Color col) => _value = col.green.toDouble();
+  // _setValue(Color col) => _value = col.green.toDouble();
 
   @override
   void initState() {
     if (widget.color != null) {
       _color = widget.color;
-      _setValue(_color);
+      _value = _color.green.toDouble();
     } else {
       _color = Colors.grey;
       _value = 0;
