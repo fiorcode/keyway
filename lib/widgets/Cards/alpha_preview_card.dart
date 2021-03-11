@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 
 import 'package:keyway/models/alpha.dart';
 import '../color_alpha_picker.dart';
+import '../letter_blue_color_picker.dart';
+import '../letter_color_alpha_picker.dart';
+import '../letter_green_color_picker.dart';
+import '../letter_red_color_picker.dart';
 import '../red_color_picker.dart';
 import '../green_color_picker.dart';
 import '../blue_color_picker.dart';
@@ -21,13 +25,13 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
   bool _editingBackground = true;
 
   _setFillColor(int color) {
-    setState(() => _fillColor = Color(color));
     widget.alpha.color = color;
+    setState(() => _fillColor = Color(color));
   }
 
   _setFontColor(int color) {
-    setState(() => _fontColor = Color(color));
     widget.alpha.colorLetter = color;
+    setState(() => _fontColor = Color(color));
   }
 
   void _editingSwitch() =>
@@ -163,19 +167,19 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
             SizedBox(height: 12),
             _editingBackground
                 ? RedColorPicker(_fillColor, _setFillColor)
-                : RedColorPicker(_fontColor, _setFontColor),
+                : LetterRedColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
             _editingBackground
                 ? GreenColorPicker(_fillColor, _setFillColor)
-                : GreenColorPicker(_fontColor, _setFontColor),
+                : LetterGreenColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
             _editingBackground
                 ? BlueColorPicker(_fillColor, _setFillColor)
-                : BlueColorPicker(_fontColor, _setFontColor),
+                : LetterBlueColorPicker(_fontColor, _setFontColor),
             SizedBox(height: 12),
             _editingBackground
                 ? ColorAlphaPicker(_fillColor, _setFillColor)
-                : ColorAlphaPicker(_fontColor, _setFontColor),
+                : LetterColorAlphaPicker(_fontColor, _setFontColor),
           ],
         ),
       ),
