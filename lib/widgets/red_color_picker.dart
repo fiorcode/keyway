@@ -14,19 +14,15 @@ class _RedColorPickerState extends State<RedColorPicker> {
   double _value;
   Color _color;
 
-  _setColor(double val) {
-    setState(() => _color = _color.withRed(val.toInt()));
-  }
+  _setColor(double val) => _color = _color.withRed(val.toInt());
 
-  _setValue(Color col) {
-    setState(() => _value = col.red.toDouble());
-  }
+  // _setValue(Color col) => _value = col.red.toDouble();
 
   @override
   void initState() {
     if (widget.color != null) {
       _color = widget.color;
-      _setValue(_color);
+      _value = _color.red.toDouble();
     } else {
       _color = Colors.grey;
       _value = 0;
