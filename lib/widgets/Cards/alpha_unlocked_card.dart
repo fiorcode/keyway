@@ -43,6 +43,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setAvatarLetterColor() {
+    if (widget.alpha.colorLetter >= 0) return Color(widget.alpha.colorLetter);
     Color _color = Color(widget.alpha.color);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
