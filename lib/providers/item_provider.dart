@@ -74,8 +74,19 @@ class ItemProvider with ChangeNotifier {
     _deletedItems.sort((a, b) => b.date.compareTo(a.date));
   }
 
-  Future<void> insert(Alpha a) async =>
-      await DBHelper.insert(DBHelper.alphaTable, a.toMap());
+  Future<void> insertAlpha(Alpha a) async {
+    await DBHelper.insert(DBHelper.alphaTable, a.toMap());
+    if (a.passwordStatus == 'REPEATED') {
+      await DBHelper.setPassRepeted(DBHelper.alphaTable, a.passwordHash);
+      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, a.passwordHash);
+      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, a.passwordHash);
+    }
+    if (a.pinStatus == 'REPEATED') {
+      await DBHelper.setPinRepeted(DBHelper.alphaTable, a.pinHash);
+      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, a.pinHash);
+      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, a.pinHash);
+    }
+  }
 
   Future<void> updateAlpha(Alpha alpha) async {
     Alpha _prev;
@@ -88,20 +99,22 @@ class ItemProvider with ChangeNotifier {
         }
       },
     ).then(
-      (_) async =>
-          await DBHelper.update(DBHelper.alphaTable, alpha.toMap()).then(
-        (_) async {
-          await DBHelper.repeatedAlpha(_prev.password).then(
-            (_list2) async {
-              if (_list2.length == 1) {
-                Alpha _a = Alpha.fromMap(_list2.first);
-                _a.passwordStatus = '';
-                await DBHelper.update(DBHelper.alphaTable, _a.toMap());
-              }
-            },
-          );
-        },
-      ),
+      (_) async {
+        await DBHelper.update(DBHelper.alphaTable, alpha.toMap()).then(
+          (_) async {
+            // TODO: FIX THIS!!!!!!!!!!!!!!!
+            await DBHelper.repeatedAlpha(_prev.password).then(
+              (_list2) async {
+                if (_list2.length == 1) {
+                  Alpha _a = Alpha.fromMap(_list2.first);
+                  _a.passwordStatus = '';
+                  await DBHelper.update(DBHelper.alphaTable, _a.toMap());
+                }
+              },
+            );
+          },
+        );
+      },
     );
   }
 
@@ -148,23 +161,23 @@ class ItemProvider with ChangeNotifier {
   Future<int> setPinStatus(String table, String pin, String status) async =>
       await DBHelper.setPinStatus(table, pin, status);
 
-  Future<void> setAlphaPassRepeted(String passwordHash) async =>
-      await DBHelper.setPassRepeted(DBHelper.alphaTable, passwordHash);
+  // Future<void> setAlphaPassRepeted(String passwordHash) async =>
+  //     await DBHelper.setPassRepeted(DBHelper.alphaTable, passwordHash);
 
-  Future<void> setOldAlphaPassRepeted(String passwordHash) async =>
-      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, passwordHash);
+  // Future<void> setOldAlphaPassRepeted(String passwordHash) async =>
+  //     await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, passwordHash);
 
-  Future<void> setDeletedAlphaPassRepeted(String passwordHash) async =>
-      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, passwordHash);
+  // Future<void> setDeletedAlphaPassRepeted(String passwordHash) async =>
+  //     await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, passwordHash);
 
-  Future<void> setAlphaPinRepeted(String pinHash) async =>
-      await DBHelper.setPinRepeted(DBHelper.alphaTable, pinHash);
+  // Future<void> setAlphaPinRepeted(String pinHash) async =>
+  //     await DBHelper.setPinRepeted(DBHelper.alphaTable, pinHash);
 
-  Future<void> setOldAlphaPinRepeted(String pinHash) async =>
-      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pinHash);
+  // Future<void> setOldAlphaPinRepeted(String pinHash) async =>
+  //     await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pinHash);
 
-  Future<void> setDeletedAlphaPinRepeted(String pinHash) async =>
-      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pinHash);
+  // Future<void> setDeletedAlphaPinRepeted(String pinHash) async =>
+  //     await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pinHash);
 
   Future<void> removeItems() async {
     _items.clear();
@@ -299,7 +312,7 @@ class ItemProvider with ChangeNotifier {
       String _ivUser = e.IV.fromSecureRandom(16).base16;
       String _ivPass = e.IV.fromSecureRandom(16).base16;
       String _ivPin = e.IV.fromSecureRandom(16).base16;
-      insert(
+      insertAlpha(
         Alpha(
           title: _titles[i],
           username: _cripto.doCrypt(_users[i], _ivUser),
