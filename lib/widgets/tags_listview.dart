@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/screens/tag_add_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'package:keyway/models/item.dart';
 import 'package:keyway/models/tag.dart';
 import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/screens/tag_add_screen.dart';
 
 class TagsListView extends StatefulWidget {
-  const TagsListView({Key key, this.tagTap, this.tags = ''}) : super(key: key);
+  const TagsListView({Key key, this.item}) : super(key: key);
 
-  final Function tagTap;
-  final String tags;
+  final Item item;
 
   @override
   _TagsListViewState createState() => _TagsListViewState();
@@ -61,7 +61,8 @@ class _TagsListViewState extends State<TagsListView> {
     } else {
       _widgetTags += '<${tag.tagName}>';
     }
-    widget.tagTap(tag);
+    // widget.tagTap(tag);
+    widget.item.addRemoveTag(tag.tagName);
     setState(() {});
   }
 
@@ -74,7 +75,7 @@ class _TagsListViewState extends State<TagsListView> {
   @override
   void initState() {
     _items = Provider.of<ItemProvider>(context, listen: false);
-    _widgetTags = widget.tags;
+    _widgetTags = widget.item.tags;
     _getTags = _tagsList();
     super.initState();
   }
