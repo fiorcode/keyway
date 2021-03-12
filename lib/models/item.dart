@@ -27,4 +27,12 @@ abstract class Item {
     colorLetter = map['color_letter'];
     tags = map['tags'];
   }
+
+  void addRemoveTag(String tag) {
+    if (this.tags.contains('<$tag>')) {
+      this.tags = this.tags.replaceAll('<$tag>', '');
+    } else {
+      this.tags += '<$tag>';
+    }
+  }
 }
