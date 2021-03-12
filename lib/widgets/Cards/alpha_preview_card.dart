@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:keyway/models/alpha.dart';
-import '../color_alpha_picker.dart';
-import '../letter_blue_color_picker.dart';
-import '../letter_color_alpha_picker.dart';
-import '../letter_green_color_picker.dart';
-import '../letter_red_color_picker.dart';
-import '../red_color_picker.dart';
-import '../green_color_picker.dart';
-import '../blue_color_picker.dart';
+import '../Pickers/color_alpha_picker.dart';
+import '../Pickers/letter_blue_color_picker.dart';
+import '../Pickers/letter_color_alpha_picker.dart';
+import '../Pickers/letter_green_color_picker.dart';
+import '../Pickers/letter_red_color_picker.dart';
+import '../Pickers/red_color_picker.dart';
+import '../Pickers/green_color_picker.dart';
+import '../Pickers/blue_color_picker.dart';
 
 class AlphaPreviewCard extends StatefulWidget {
   AlphaPreviewCard(this.alpha);
