@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:crypto/crypto.dart';
-//import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/alpha.dart';
-import '../models/tag.dart';
-import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -28,7 +25,7 @@ import '../widgets/Cards/alpha_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
 
 class AlphaEditScreen extends StatefulWidget {
-  static const routeName = '/alpha-edit';
+  static const routeName = '/edit-alpha';
 
   AlphaEditScreen({this.alpha});
 
@@ -42,7 +39,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
   Alpha _alpha;
-  Future<List<Username>> _getUsernames;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -72,8 +68,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       });
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
-
-  Future<List<Username>> _usernamesList() async => await _items.getUsers();
 
   void _selectUsername(String u) {
     _userCtrler.text = u;
@@ -175,10 +169,10 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       _warning = _warning == null ? false : _warning;
       if (_warning) {
         _alpha.passwordStatus = 'REPEATED';
-        //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        _items.setAlphaPassRepeted(_alpha.passwordHash);
-        _items.setOldAlphaPassRepeted(_alpha.passwordHash);
-        _items.setDeletedAlphaPassRepeted(_alpha.passwordHash);
+        // THIS SHOULD BE AFTER THE INSERT/UPDATE
+        // _items.setAlphaPassRepeted(_alpha.passwordHash);
+        // _items.setOldAlphaPassRepeted(_alpha.passwordHash);
+        // _items.setDeletedAlphaPassRepeted(_alpha.passwordHash);
       } else {
         return true;
       }
@@ -195,9 +189,9 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       if (_warning) {
         _alpha.pinStatus = 'REPEATED';
         //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        _items.setAlphaPinRepeted(_alpha.pin);
-        _items.setOldAlphaPinRepeted(_alpha.pin);
-        _items.setDeletedAlphaPinRepeted(_alpha.pin);
+        // _items.setAlphaPinRepeted(_alpha.pin);
+        // _items.setOldAlphaPinRepeted(_alpha.pin);
+        // _items.setDeletedAlphaPinRepeted(_alpha.pin);
       } else {
         return true;
       }
@@ -247,19 +241,10 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       _items.deleteAlpha(_alpha).then((_) => Navigator.of(context).pop());
   }
 
-  void _tagTap(Tag tag) {
-    if (_alpha.tags.contains('<${tag.tagName}>')) {
-      _alpha.tags = _alpha.tags.replaceAll('<${tag.tagName}>', '');
-    } else {
-      _alpha.tags += '<${tag.tagName}>';
-    }
-  }
-
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
-    _getUsernames = _usernamesList();
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
     _passFocusNode.addListener(() {
@@ -274,18 +259,13 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    _cripto = Provider.of<CriptoProvider>(context);
-    _items = Provider.of<ItemProvider>(context);
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     _titleCtrler.dispose();
     _userCtrler.dispose();
     _passCtrler.dispose();
+    _pinCtrler.dispose();
     _ipCtrler.dispose();
+    _longTextCtrler.dispose();
     _passFocusNode.dispose();
     super.dispose();
   }
@@ -338,7 +318,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
-                  TagsListView(tagTap: _tagTap, tags: widget.alpha.tags),
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
@@ -369,7 +348,10 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PasswordTextField(
-                          _passCtrler, _ctrlersChanged, _passFocusNode),
+                        _passCtrler,
+                        _ctrlersChanged,
+                        _passFocusNode,
+                      ),
                     ),
                   if (_passCtrler.text.isNotEmpty &&
                       !PasswordHelper.isStrong(_passCtrler.text) &&
@@ -393,40 +375,26 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
+                  // TagsListView(tagTap: _tagTap, tags: widget.alpha.tags),
+                  TagsListView(item: _alpha),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: AlphaPreviewCard(_alpha),
                   ),
-                  if (widget.alpha != null)
-                    FloatingActionButton(
-                      backgroundColor: Colors.red,
-                      onPressed: () => _delete(context),
-                      child: Icon(
-                        Icons.delete_forever_rounded,
-                        color: Colors.white,
-                      ),
+                  FloatingActionButton(
+                    backgroundColor: Colors.red,
+                    onPressed: () => _delete(context),
+                    child: Icon(
+                      Icons.delete_forever_rounded,
+                      color: Colors.white,
                     ),
+                  ),
                 ],
               ),
             ),
           ),
           if (_viewUsersList && !_cripto.locked)
-            FutureBuilder(
-              future: _getUsernames,
-              builder: (ctx, snap) {
-                switch (snap.connectionState) {
-                  case ConnectionState.done:
-                    return UserListCard(
-                      _userCtrler,
-                      _userListSwitch,
-                      _selectUsername,
-                    );
-                    break;
-                  default:
-                    return CircularProgressIndicator();
-                }
-              },
-            ),
+            UserListCard(_userCtrler, _userListSwitch, _selectUsername),
           if (_unlocking && _cripto.locked) UnlockContainer(_lockSwitch),
         ],
       ),
