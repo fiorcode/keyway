@@ -13,7 +13,7 @@ import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
 import 'screens/items_screen.dart';
-import 'screens/alpha_screen.dart';
+import 'screens/alpha_add_screen.dart';
 import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
           RestoreScreen.routeName: (ctx) => RestoreScreen(),
           ItemsListScreen.routeName: (ctx) => ItemsListScreen(),
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
-          AlphaScreen.routeName: (ctx) => AlphaScreen(),
+          AlphaAddScreen.routeName: (ctx) => AlphaAddScreen(),
           AlphaEditScreen.routeName: (ctx) => AlphaEditScreen(),
           AlphaViewScreen.routeName: (ctx) => AlphaViewScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
