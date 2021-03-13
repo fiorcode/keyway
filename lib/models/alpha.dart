@@ -4,7 +4,6 @@ import 'old_alpha.dart';
 class Alpha extends Item {
   String username;
   String usernameIV;
-  String usernameHash;
   String password;
   String passwordIV;
   String passwordHash;
@@ -20,17 +19,14 @@ class Alpha extends Item {
   String pinStatus;
   String ip;
   String ipIV;
-  String ipHash;
   String longText;
   String longTextIV;
-  String longTextHash;
 
   Alpha({
     int id,
     String title = '',
     this.username = '',
     this.usernameIV = '',
-    this.usernameHash = '',
     this.password = '',
     this.passwordIV = '',
     this.passwordHash = '',
@@ -46,10 +42,8 @@ class Alpha extends Item {
     this.pinStatus = '',
     this.ip = '',
     this.ipIV = '',
-    this.ipHash = '',
     this.longText = '',
     this.longTextIV = '',
-    this.longTextHash = '',
     String date,
     String shortDate,
     int color = -1,
@@ -68,7 +62,6 @@ class Alpha extends Item {
   Alpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
     usernameIV = map['username_iv'];
-    usernameHash = map['username_hash'];
     password = map['password'];
     passwordIV = map['password_iv'];
     passwordHash = map['password_hash'];
@@ -84,10 +77,8 @@ class Alpha extends Item {
     pinStatus = map['pin_status'];
     ip = map['ip'];
     ipIV = map['ip_iv'];
-    ipHash = map['ip_hash'];
     longText = map['long_text'];
     longTextIV = map['long_text_iv'];
-    longTextHash = map['long_text_hash'];
   }
 
   Map<String, dynamic> toMap() {
@@ -95,7 +86,6 @@ class Alpha extends Item {
       'title': title,
       'username': username,
       'username_iv': usernameIV,
-      'username_hash': usernameHash,
       'password': password,
       'password_iv': passwordIV,
       'password_hash': passwordHash,
@@ -111,10 +101,8 @@ class Alpha extends Item {
       'pin_status': pinStatus,
       'ip': ip,
       'ip_iv': ipIV,
-      'ip_hash': ipHash,
       'long_text': longText,
       'long_text_iv': longTextIV,
-      'long_text_hash': longTextHash,
       'date': date,
       'date_short': shortDate,
       'color': color,
@@ -131,7 +119,6 @@ class Alpha extends Item {
       title: this.title,
       username: this.username,
       usernameIV: this.usernameIV,
-      usernameHash: this.usernameHash,
       password: this.password,
       passwordIV: this.passwordIV,
       passwordHash: this.passwordHash,
@@ -147,10 +134,8 @@ class Alpha extends Item {
       pinStatus: this.pinStatus,
       ip: this.ip,
       ipIV: this.ipIV,
-      ipHash: this.ipHash,
       longText: this.longText,
       longTextIV: this.longTextIV,
-      longTextHash: this.longTextHash,
       date: this.date,
       shortDate: this.shortDate,
       color: this.color,
@@ -159,67 +144,28 @@ class Alpha extends Item {
     );
   }
 
-  bool _savePrevious(Alpha a) {
-    if (this.title != a.title) return true;
-    if (this.usernameHash != a.usernameHash) return true;
-    if (this.passwordHash != a.passwordHash) return true;
-    if (this.pinHash != a.pinHash) return true;
-    if (this.ipHash != a.ipHash) return true;
-    if (this.longTextHash != a.longTextHash) return true;
-    return false;
-  }
-
   OldAlpha saveOld(Alpha a) {
-    if (_savePrevious(a)) {
-      OldAlpha _old = OldAlpha.fromAlpha(this);
-      if (this.title != a.title) _old.titleChange = 'changed';
-      if (this.usernameHash != a.usernameHash) {
-        if (a.username == '')
-          _old.usernameChange = 'deleted';
-        else if (this.username == '')
-          _old.usernameChange = 'added';
-        else
-          _old.usernameChange = 'updated';
-      } else
-        _old.username = '';
-      if (this.passwordHash != a.passwordHash) {
-        if (a.password == '')
-          _old.passwordChange = 'deleted';
-        else if (this.password == '')
-          _old.passwordChange = 'added';
-        else
-          _old.passwordChange = 'updated';
-      } else
-        _old.password = '';
-      if (this.pinHash != a.pinHash) {
-        if (a.pin == '')
-          _old.pinChange = 'deleted';
-        else if (this.pin == '')
-          _old.pinChange = 'added';
-        else
-          _old.pinChange = 'updated';
-      } else
-        _old.pin = '';
-      if (this.ipHash != a.ipHash) {
-        if (a.ip == '')
-          _old.ipChange = 'deleted';
-        else if (this.ip == '')
-          _old.ipChange = 'added';
-        else
-          _old.ipChange = 'updated';
-      } else
-        _old.ip = '';
-      if (this.longTextHash != a.longTextHash) {
-        if (a.longText == '')
-          _old.longTextChange = 'deleted';
-        else if (this.longText == '')
-          _old.longTextChange = 'added';
-        else
-          _old.longTextChange = 'updated';
-      } else
-        _old.longText = '';
-      return _old;
-    } else
+    if (this.passwordHash == a.passwordHash && this.pinHash == a.pinHash)
       return null;
+    OldAlpha _old = OldAlpha.fromAlpha(this);
+    if (this.passwordHash != a.passwordHash) {
+      if (a.password == '')
+        _old.passwordChange = 'deleted';
+      else if (this.password == '')
+        _old.passwordChange = 'added';
+      else
+        _old.passwordChange = 'updated';
+    } else
+      _old.password = '';
+    if (this.pinHash != a.pinHash) {
+      if (a.pin == '')
+        _old.pinChange = 'deleted';
+      else if (this.pin == '')
+        _old.pinChange = 'added';
+      else
+        _old.pinChange = 'updated';
+    } else
+      _old.pin = '';
+    return _old;
   }
 }
