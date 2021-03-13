@@ -76,46 +76,40 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> insertAlpha(Alpha a) async {
     await DBHelper.insert(DBHelper.alphaTable, a.toMap());
-    if (a.passwordStatus == 'REPEATED') {
+    if (a.passwordStatus == 'REPEATED')
       await DBHelper.setPassRepeted(DBHelper.alphaTable, a.passwordHash);
-      await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, a.passwordHash);
-      await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, a.passwordHash);
-    }
-    if (a.pinStatus == 'REPEATED') {
+
+    if (a.pinStatus == 'REPEATED')
       await DBHelper.setPinRepeted(DBHelper.alphaTable, a.pinHash);
-      await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, a.pinHash);
-      await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, a.pinHash);
-    }
   }
 
-  Future<void> updateAlpha(Alpha alpha) async {
+  Future<void> updateAlpha(Alpha a) async {
     Alpha _prev;
-    await DBHelper.getById(DBHelper.alphaTable, alpha.id).then(
+    await DBHelper.getById(DBHelper.alphaTable, a.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
-        OldAlpha _oldAlpha = _prev.saveOld(alpha);
+        OldAlpha _oldAlpha = _prev.saveOld(a);
         if (_oldAlpha != null) {
           await DBHelper.insert(DBHelper.oldAlphaTable, _oldAlpha.toMap());
         }
       },
-    ).then(
-      (_) async {
-        await DBHelper.update(DBHelper.alphaTable, alpha.toMap()).then(
-          (_) async {
-            // TODO: FIX THIS!!!!!!!!!!!!!!!
-            await DBHelper.repeatedAlpha(_prev.password).then(
-              (_list2) async {
-                if (_list2.length == 1) {
-                  Alpha _a = Alpha.fromMap(_list2.first);
-                  _a.passwordStatus = '';
-                  await DBHelper.update(DBHelper.alphaTable, _a.toMap());
-                }
-              },
-            );
-          },
-        );
-      },
-    );
+    ).then((_) async {
+      await DBHelper.update(DBHelper.alphaTable, a.toMap()).then((_) async {
+        if (a.passwordStatus == 'REPEATED') {
+          await DBHelper.setPassRepeted(DBHelper.alphaTable, a.passwordHash);
+        }
+        if (a.pinStatus == 'REPEATED') {
+          await DBHelper.setPinRepeted(DBHelper.alphaTable, a.pinHash);
+        }
+        if (_prev.passwordHash != a.passwordHash) {
+          await DBHelper.unsetPassRepeted(
+              DBHelper.alphaTable, _prev.passwordHash);
+        }
+        if (_prev.pinHash != a.pinHash) {
+          await DBHelper.unsetPinRepeted(DBHelper.alphaTable, _prev.pinHash);
+        }
+      });
+    });
   }
 
   Future<void> deleteAlpha(Alpha a) async {
@@ -160,24 +154,6 @@ class ItemProvider with ChangeNotifier {
 
   Future<int> setPinStatus(String table, String pin, String status) async =>
       await DBHelper.setPinStatus(table, pin, status);
-
-  // Future<void> setAlphaPassRepeted(String passwordHash) async =>
-  //     await DBHelper.setPassRepeted(DBHelper.alphaTable, passwordHash);
-
-  // Future<void> setOldAlphaPassRepeted(String passwordHash) async =>
-  //     await DBHelper.setPassRepeted(DBHelper.oldAlphaTable, passwordHash);
-
-  // Future<void> setDeletedAlphaPassRepeted(String passwordHash) async =>
-  //     await DBHelper.setPassRepeted(DBHelper.deletedAlphaTable, passwordHash);
-
-  // Future<void> setAlphaPinRepeted(String pinHash) async =>
-  //     await DBHelper.setPinRepeted(DBHelper.alphaTable, pinHash);
-
-  // Future<void> setOldAlphaPinRepeted(String pinHash) async =>
-  //     await DBHelper.setPinRepeted(DBHelper.oldAlphaTable, pinHash);
-
-  // Future<void> setDeletedAlphaPinRepeted(String pinHash) async =>
-  //     await DBHelper.setPinRepeted(DBHelper.deletedAlphaTable, pinHash);
 
   Future<void> removeItems() async {
     _items.clear();
@@ -317,7 +293,6 @@ class ItemProvider with ChangeNotifier {
           title: _titles[i],
           username: _cripto.doCrypt(_users[i], _ivUser),
           usernameIV: _users[i].isEmpty ? '' : _ivUser,
-          usernameHash: _users[i].isEmpty ? '' : _cripto.doHash(_users[i]),
           password: _cripto.doCrypt(_passes[i], _ivPass),
           passwordIV: _passes[i].isEmpty ? '' : _ivPass,
           passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
@@ -333,10 +308,8 @@ class ItemProvider with ChangeNotifier {
           pinStatus: _pins[i].isEmpty ? '' : '',
           ip: '',
           ipIV: '',
-          ipHash: '',
           longText: '',
           longTextIV: '',
-          longTextHash: '',
           date: _d.toIso8601String(),
           shortDate: dateFormat.format(_d),
           color: _ran.nextInt(4294967290),
