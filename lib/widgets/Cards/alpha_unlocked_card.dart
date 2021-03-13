@@ -133,7 +133,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   Color _setIconColor() {
     return (widget.alpha.passwordStatus == 'REPEATED' ||
             widget.alpha.pinStatus == 'REPEATED')
-        ? Colors.red
+        ? Colors.grey[200]
         : Colors.grey;
   }
 
