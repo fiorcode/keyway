@@ -69,7 +69,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   }
 
   void _set() {
-    _alpha.usernameHash = _cripto.doHash(_userCtrler.text);
     _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
     _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
 
@@ -81,11 +80,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
     _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
 
-    _alpha.ipHash = _cripto.doHash(_ipCtrler.text);
     _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
     _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
 
-    _alpha.longTextHash = _cripto.doHash(_longTextCtrler.text);
     _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
     _alpha.longText = _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
   }
@@ -122,15 +119,10 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     if (await _items.isPasswordRepeated(_cripto.doHash(_passCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
-      if (_warning) {
+      if (_warning)
         _alpha.passwordStatus = 'REPEATED';
-        // THIS SHOULD BE AFTER THE INSERT/UPDATE
-        // _items.setAlphaPassRepeted(_alpha.password);
-        // _items.setOldAlphaPassRepeted(_alpha.password);
-        // _items.setDeletedAlphaPassRepeted(_alpha.password);
-      } else {
+      else
         return true;
-      }
     }
     return false;
   }
@@ -139,15 +131,10 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     if (await _items.isPinRepeated(_cripto.doHash(_pinCtrler.text))) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
-      if (_warning) {
+      if (_warning)
         _alpha.pinStatus = 'REPEATED';
-        //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        // _items.setAlphaPinRepeted(_alpha.pin);
-        // _items.setOldAlphaPinRepeted(_alpha.pin);
-        // _items.setDeletedAlphaPinRepeted(_alpha.pin);
-      } else {
+      else
         return true;
-      }
     }
     return false;
   }
