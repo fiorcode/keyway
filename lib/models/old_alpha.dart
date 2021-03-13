@@ -2,21 +2,15 @@ import 'alpha.dart';
 
 class OldAlpha extends Alpha {
   int itemId;
-  String titleChange;
-  String usernameChange;
   String passwordChange;
   String pinChange;
-  String ipChange;
-  String longTextChange;
 
   OldAlpha({
     int id,
     String title,
-    this.titleChange,
     String username,
     String usernameIV,
     String usernameHash,
-    this.usernameChange,
     String password,
     String passwordIV,
     String passwordHash,
@@ -35,11 +29,9 @@ class OldAlpha extends Alpha {
     String ip,
     String ipIV,
     String ipHash,
-    this.ipChange,
     String longTextIV,
     String longText,
     String longTextHash,
-    this.longTextChange,
     String date,
     String shortDate,
     int color = 0,
@@ -51,7 +43,6 @@ class OldAlpha extends Alpha {
           title: title,
           username: username,
           usernameIV: usernameIV,
-          usernameHash: usernameHash,
           password: password,
           passwordIV: passwordIV,
           passwordHash: passwordHash,
@@ -67,10 +58,8 @@ class OldAlpha extends Alpha {
           pinStatus: pinStatus,
           ip: ip,
           ipIV: ipIV,
-          ipHash: ipHash,
           longText: longText,
           longTextIV: longTextIV,
-          longTextHash: longTextHash,
           date: date,
           shortDate: shortDate,
           color: color,
@@ -82,7 +71,6 @@ class OldAlpha extends Alpha {
     this.title = a.title;
     this.username = a.username;
     this.usernameIV = a.usernameIV;
-    this.usernameHash = a.usernameHash;
     this.password = a.password;
     this.passwordIV = a.passwordIV;
     this.passwordHash = a.passwordHash;
@@ -98,10 +86,8 @@ class OldAlpha extends Alpha {
     this.pinStatus = a.pinStatus;
     this.ip = a.ip;
     this.ipIV = a.ipIV;
-    this.ipHash = a.ipHash;
     this.longText = a.longText;
     this.longTextIV = a.longTextIV;
-    this.longTextHash = a.longTextHash;
     this.date = a.date;
     this.shortDate = a.shortDate;
     this.color = a.color;
@@ -111,11 +97,8 @@ class OldAlpha extends Alpha {
   }
 
   OldAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
-    titleChange = map['title_change'];
     username = map['username'];
     usernameIV = map['username_iv'];
-    usernameHash = map['username_hash'];
-    usernameChange = map['username_change'];
     password = map['password'];
     passwordIV = map['password_iv'];
     passwordHash = map['password_hash'];
@@ -133,12 +116,8 @@ class OldAlpha extends Alpha {
     pinStatus = map['pin_status'];
     ip = map['ip'];
     ipIV = map['ip_iv'];
-    ipHash = map['ip_hash'];
-    ipChange = map['ip_change'];
     longText = map['long_text'];
     longTextIV = map['long_text_iv'];
-    longTextHash = map['long_text_hash'];
-    longTextChange = map['long_text_change'];
     tags = map['tags'];
     itemId = map['item_id'];
   }
@@ -146,11 +125,8 @@ class OldAlpha extends Alpha {
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
       'title': title,
-      'title_change': titleChange,
       'username': username,
       'username_iv': usernameIV,
-      'username_hash': usernameHash,
-      'username_change': usernameChange,
       'password': password,
       'password_iv': passwordIV,
       'password_hash': passwordHash,
@@ -166,12 +142,8 @@ class OldAlpha extends Alpha {
       'pin_change': pinChange,
       'ip': ip,
       'ip_iv': ipIV,
-      'ip_hash': ipHash,
-      'ip_change': ipChange,
       'long_text': longText,
       'long_text_iv': longTextIV,
-      'long_text_hash': longTextHash,
-      'long_text_change': longTextChange,
       'date': date,
       'date_short': shortDate,
       'color': color,
@@ -187,11 +159,8 @@ class OldAlpha extends Alpha {
     var old = OldAlpha(
       id: this.id,
       title: this.title,
-      titleChange: this.titleChange,
       username: this.username,
       usernameIV: this.usernameIV,
-      usernameHash: this.usernameHash,
-      usernameChange: this.usernameChange,
       password: this.password,
       passwordIV: this.passwordIV,
       passwordHash: this.passwordHash,
@@ -209,12 +178,8 @@ class OldAlpha extends Alpha {
       pinChange: this.pinChange,
       ip: this.ip,
       ipIV: this.ipIV,
-      ipHash: this.ipHash,
-      ipChange: this.ipChange,
       longText: this.longText,
       longTextIV: this.longTextIV,
-      longTextHash: this.longTextHash,
-      longTextChange: this.longTextChange,
       date: this.date,
       shortDate: this.shortDate,
       color: this.color,
