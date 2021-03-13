@@ -31,13 +31,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   void _load() {
-    if (_oldAlpha.usernameChange != null) {
-      if (_oldAlpha.usernameChange.isNotEmpty) {
-        _oldAlpha.username =
-            _cripto.doDecrypt(_oldAlpha.username, _oldAlpha.usernameIV);
-        _username = true;
-      }
-    }
     if (_oldAlpha.passwordChange != null) {
       if (_oldAlpha.passwordChange.isNotEmpty) {
         _oldAlpha.password =
@@ -49,19 +42,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
       if (_oldAlpha.pinChange.isNotEmpty) {
         _oldAlpha.pin = _cripto.doDecrypt(_oldAlpha.pin, _oldAlpha.pinIV);
         _pin = true;
-      }
-    }
-    if (_oldAlpha.ipChange != null) {
-      if (_oldAlpha.ipChange.isNotEmpty) {
-        _oldAlpha.ip = _cripto.doDecrypt(_oldAlpha.ip, _oldAlpha.ipIV);
-        _ip = true;
-      }
-    }
-    if (_oldAlpha.longTextChange != null) {
-      if (_oldAlpha.longTextChange.isNotEmpty) {
-        _oldAlpha.longText =
-            _cripto.doDecrypt(_oldAlpha.longText, _oldAlpha.longTextIV);
-        _longText = true;
       }
     }
   }
@@ -129,12 +109,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                     Wrap(
                       spacing: 4.0,
                       children: [
-                        if (_username)
-                          Chip(
-                            label: Text(
-                              'Username ' + _oldAlpha.usernameChange,
-                            ),
-                          ),
                         if (_password)
                           Chip(
                             avatar: Text(
@@ -190,11 +164,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                         ),
                       ),
                     ),
-                    if (_username)
-                      Text(
-                        'Username ' + _oldAlpha.usernameChange,
-                        style: TextStyle(fontSize: 12),
-                      ),
                     if (_username)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -271,7 +240,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                         ),
                       ),
                     if (_ip) Text('IP'),
-                    if (_ip) Text(_oldAlpha.ipChange),
                     if (_ip)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -298,7 +266,6 @@ class _OldAlphaViewScreenState extends State<OldAlphaViewScreen> {
                         ),
                       ),
                     if (_longText) Text('Long Text'),
-                    if (_longText) Text(_oldAlpha.longTextChange),
                     if (_longText)
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 12),
