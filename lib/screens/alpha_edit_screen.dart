@@ -140,15 +140,12 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   void _save() async {
     try {
-      _alpha.usernameHash = _doHash(_userCtrler.text);
       _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
       _alpha.passwordHash = _doHash(_passCtrler.text);
       _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
       _alpha.pinHash = _doHash(_pinCtrler.text);
       _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-      _alpha.ipHash = _doHash(_ipCtrler.text);
       _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
-      _alpha.longTextHash = _doHash(_longTextCtrler.text);
       _alpha.longText =
           _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
       if (await _passwordRepeated()) return;
