@@ -9,7 +9,6 @@ class DeletedAlpha extends Alpha {
     String title,
     String username,
     String usernameIV,
-    String usernameHash,
     String password,
     String passwordIV,
     String passwordHash,
@@ -25,10 +24,8 @@ class DeletedAlpha extends Alpha {
     String pinStatus,
     String ip,
     String ipIV,
-    String ipHash,
     String longText,
     String longTextIV,
-    String longTextHash,
     String date,
     String shortDate,
     int color = 0,
@@ -41,7 +38,6 @@ class DeletedAlpha extends Alpha {
           title: title,
           username: username,
           usernameIV: usernameIV,
-          usernameHash: usernameHash,
           password: password,
           passwordIV: passwordIV,
           passwordHash: passwordHash,
@@ -57,10 +53,8 @@ class DeletedAlpha extends Alpha {
           pinStatus: pinStatus,
           ip: ip,
           ipIV: ipIV,
-          ipHash: ipHash,
           longText: longText,
           longTextIV: longTextIV,
-          longTextHash: longTextHash,
           date: date,
           shortDate: shortDate,
           color: color,
@@ -72,7 +66,6 @@ class DeletedAlpha extends Alpha {
     this.title = a.title;
     this.username = a.username;
     this.usernameIV = a.usernameIV;
-    this.usernameHash = a.usernameHash;
     this.password = a.password;
     this.passwordIV = a.passwordIV;
     this.passwordHash = a.passwordHash;
@@ -88,10 +81,8 @@ class DeletedAlpha extends Alpha {
     this.pinStatus = a.pinStatus;
     this.ip = a.ip;
     this.ipIV = a.ipIV;
-    this.ipHash = a.ipHash;
     this.longText = a.longText;
     this.longTextIV = a.longTextIV;
-    this.longTextHash = a.longTextHash;
     this.date = a.date;
     this.shortDate = a.shortDate;
     this.deletedDate = DateTime.now().toUtc().toIso8601String();
@@ -104,7 +95,6 @@ class DeletedAlpha extends Alpha {
   DeletedAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
     username = map['username'];
     usernameIV = map['username_iv'];
-    usernameHash = map['username_hash'];
     password = map['password'];
     passwordIV = map['password_iv'];
     passwordHash = map['password_hash'];
@@ -120,10 +110,8 @@ class DeletedAlpha extends Alpha {
     pinStatus = map['pin_status'];
     ip = map['ip'];
     ipIV = map['ip_iv'];
-    ipHash = map['ip_hash'];
     longText = map['long_text'];
     longTextIV = map['long_text_iv'];
-    longTextHash = map['long_text_hash'];
     tags = map['tags'];
     deletedDate = map['date_deleted'];
     itemId = map['item_id'];
@@ -134,7 +122,6 @@ class DeletedAlpha extends Alpha {
       'title': title,
       'username': username,
       'username_iv': usernameIV,
-      'username_hash': usernameHash,
       'password': password,
       'password_iv': passwordIV,
       'password_hash': passwordHash,
@@ -150,10 +137,8 @@ class DeletedAlpha extends Alpha {
       'pin_status': pinStatus,
       'ip': ip,
       'ip_iv': ipIV,
-      'ip_hash': ipHash,
       'long_text': longText,
       'long_text_iv': longTextIV,
-      'long_text_hash': longTextHash,
       'date': date,
       'date_short': shortDate,
       'color': color,
