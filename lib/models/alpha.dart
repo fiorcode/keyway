@@ -8,14 +8,14 @@ class Alpha extends Item {
   String passwordIV;
   String passwordHash;
   String passwordDate;
-  String passwordLapse;
+  int passwordLapse;
   String passwordStatus;
   String passwordLevel;
   String pin;
   String pinIV;
   String pinHash;
   String pinDate;
-  String pinLapse;
+  int pinLapse;
   String pinStatus;
   String ip;
   String ipIV;
@@ -31,14 +31,14 @@ class Alpha extends Item {
     this.passwordIV = '',
     this.passwordHash = '',
     this.passwordDate = '',
-    this.passwordLapse = '',
+    this.passwordLapse = 384,
     this.passwordStatus = '',
     this.passwordLevel = '',
     this.pin = '',
     this.pinIV = '',
     this.pinHash = '',
     this.pinDate = '',
-    this.pinLapse = '',
+    this.pinLapse = 384,
     this.pinStatus = '',
     this.ip = '',
     this.ipIV = '',
