@@ -1,9 +1,9 @@
-import 'dart:math';
+// import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:encrypt/encrypt.dart' as e;
+// import 'package:intl/intl.dart';
+// import 'package:encrypt/encrypt.dart' as e;
 
-import '../providers/cripto_provider.dart';
+// import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
 
 import '../models/alpha.dart';
@@ -113,13 +113,12 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> deleteAlpha(Alpha a) async {
-    DeletedAlpha _deleted = DeletedAlpha.fromAlpha(a);
-    await DBHelper.insert(DBHelper.deletedAlphaTable, _deleted.toMap()).then(
+    await DBHelper.insert(
+      DBHelper.deletedAlphaTable,
+      DeletedAlpha.fromAlpha(a).toMap(),
+    ).then(
       (_) async => await DBHelper.delete(DBHelper.alphaTable, a.id).then(
-        (_) {
-          _items.removeWhere((e) => e.id == a.id);
-          notifyListeners();
-        },
+        (_) => _items.removeWhere((e) => e.id == a.id),
       ),
     );
   }
@@ -201,124 +200,124 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  Future<void> mockData(CriptoProvider _cripto) async {
-    List<String> _titles = [
-      'Facebook',
-      'Instagram',
-      'Spotify',
-      'Github',
-      'Discord',
-      'Google',
-      'Steam',
-      'Hotmail',
-      'Siglo21',
-      'BNA Pin',
-      'BBVA Pin',
-      'SantaCruz Pin',
-      'Windows Pin',
-    ];
-    List<String> _users = [
-      'FacebookUser',
-      'InstagramUser',
-      'SpotifyUser',
-      'GithubUser',
-      'DiscordUser',
-      'GoogleUser',
-      'SteamUser',
-      'HotmailUser',
-      'Siglo21User',
-      'BNA User HB',
-      'BBVA User HB',
-      'SantaCruz User HB',
-      '',
-    ];
-    List<String> _passes = [
-      'FacebookPass',
-      'InstagramPass',
-      'SpotifyPass',
-      'GithubPass',
-      'DiscordPass',
-      'GooglePass',
-      'SteamPass',
-      'HotmailPass',
-      'Siglo21Pass',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-    ];
-    List<String> _pins = [
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '',
-      '2518',
-      '4592',
-      '6275',
-      '3358',
-      '9967',
-      '1558',
-    ];
-    List<Tag> _tags = [
-      Tag('personal'),
-      Tag('shared'),
-      Tag('work'),
-      Tag('family'),
-      Tag('social'),
-      Tag('gaming'),
-    ];
-    _tags.forEach(
-        (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
-    Random _ran = Random(59986674);
-    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    await _cripto.unlock('Qwe123!');
-    for (int i = 0; i < _titles.length; i++) {
-      String _tagsList = '';
-      _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
-      String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
-      if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
-      DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
-      String _ivUser = e.IV.fromSecureRandom(16).base16;
-      String _ivPass = e.IV.fromSecureRandom(16).base16;
-      String _ivPin = e.IV.fromSecureRandom(16).base16;
-      insertAlpha(
-        Alpha(
-          title: _titles[i],
-          username: _cripto.doCrypt(_users[i], _ivUser),
-          usernameIV: _users[i].isEmpty ? '' : _ivUser,
-          password: _cripto.doCrypt(_passes[i], _ivPass),
-          passwordIV: _passes[i].isEmpty ? '' : _ivPass,
-          passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
-          passwordStatus: _passes[i].isEmpty ? '' : '',
-          passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
-          passwordLapse: _passes[i].isEmpty ? '' : '',
-          passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
-          pin: _cripto.doCrypt(_pins[i], _ivPin),
-          pinIV: _pins[i].isEmpty ? '' : _ivPin,
-          pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
-          pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
-          pinLapse: _pins[i].isEmpty ? '' : '',
-          pinStatus: _pins[i].isEmpty ? '' : '',
-          ip: '',
-          ipIV: '',
-          longText: '',
-          longTextIV: '',
-          date: _d.toIso8601String(),
-          shortDate: dateFormat.format(_d),
-          color: _ran.nextInt(4294967290),
-          colorLetter: _ran.nextInt(4294967290),
-          tags: _tagsList,
-        ),
-      );
-    }
-  }
+  // Future<void> mockData(CriptoProvider _cripto) async {
+  //   List<String> _titles = [
+  //     'Facebook',
+  //     'Instagram',
+  //     'Spotify',
+  //     'Github',
+  //     'Discord',
+  //     'Google',
+  //     'Steam',
+  //     'Hotmail',
+  //     'Siglo21',
+  //     'BNA Pin',
+  //     'BBVA Pin',
+  //     'SantaCruz Pin',
+  //     'Windows Pin',
+  //   ];
+  //   List<String> _users = [
+  //     'FacebookUser',
+  //     'InstagramUser',
+  //     'SpotifyUser',
+  //     'GithubUser',
+  //     'DiscordUser',
+  //     'GoogleUser',
+  //     'SteamUser',
+  //     'HotmailUser',
+  //     'Siglo21User',
+  //     'BNA User HB',
+  //     'BBVA User HB',
+  //     'SantaCruz User HB',
+  //     '',
+  //   ];
+  //   List<String> _passes = [
+  //     'FacebookPass',
+  //     'InstagramPass',
+  //     'SpotifyPass',
+  //     'GithubPass',
+  //     'DiscordPass',
+  //     'GooglePass',
+  //     'SteamPass',
+  //     'HotmailPass',
+  //     'Siglo21Pass',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //   ];
+  //   List<String> _pins = [
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '',
+  //     '2518',
+  //     '4592',
+  //     '6275',
+  //     '3358',
+  //     '9967',
+  //     '1558',
+  //   ];
+  //   List<Tag> _tags = [
+  //     Tag('personal'),
+  //     Tag('shared'),
+  //     Tag('work'),
+  //     Tag('family'),
+  //     Tag('social'),
+  //     Tag('gaming'),
+  //   ];
+  //   _tags.forEach(
+  //       (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
+  //   Random _ran = Random(59986674);
+  //   DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+  //   await _cripto.unlock('Qwe123!');
+  //   for (int i = 0; i < _titles.length; i++) {
+  //     String _tagsList = '';
+  //     _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
+  //     String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
+  //     if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
+  //     DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
+  //     String _ivUser = e.IV.fromSecureRandom(16).base16;
+  //     String _ivPass = e.IV.fromSecureRandom(16).base16;
+  //     String _ivPin = e.IV.fromSecureRandom(16).base16;
+  //     insertAlpha(
+  //       Alpha(
+  //         title: _titles[i],
+  //         username: _cripto.doCrypt(_users[i], _ivUser),
+  //         usernameIV: _users[i].isEmpty ? '' : _ivUser,
+  //         password: _cripto.doCrypt(_passes[i], _ivPass),
+  //         passwordIV: _passes[i].isEmpty ? '' : _ivPass,
+  //         passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
+  //         passwordStatus: _passes[i].isEmpty ? '' : '',
+  //         passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
+  //         passwordLapse: _passes[i].isEmpty ? '' : '',
+  //         passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
+  //         pin: _cripto.doCrypt(_pins[i], _ivPin),
+  //         pinIV: _pins[i].isEmpty ? '' : _ivPin,
+  //         pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
+  //         pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
+  //         pinLapse: _pins[i].isEmpty ? '' : '',
+  //         pinStatus: _pins[i].isEmpty ? '' : '',
+  //         ip: '',
+  //         ipIV: '',
+  //         longText: '',
+  //         longTextIV: '',
+  //         date: _d.toIso8601String(),
+  //         shortDate: dateFormat.format(_d),
+  //         color: _ran.nextInt(4294967290),
+  //         colorLetter: _ran.nextInt(4294967290),
+  //         tags: _tagsList,
+  //       ),
+  //     );
+  //   }
+  // }
 
   void dispose() {
     super.dispose();
