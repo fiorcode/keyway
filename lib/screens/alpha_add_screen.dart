@@ -43,7 +43,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
-  bool _passFNSwitch = false;
 
   bool _username = false;
   bool _password = false;
@@ -86,6 +85,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
       _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
       _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
       _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
+      _alpha.passwordLapse = _passLapse.round();
 
       _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
       _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
@@ -175,15 +175,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
-    _passFocusNode.addListener(() {
-      if (_passFocusNode.hasFocus)
-        setState(() => _passFNSwitch = true);
-      else
-        setState(() => _passFNSwitch = false);
-    });
     _username = true;
     _password = true;
-    _alpha = Alpha(colorLetter: Colors.white.value);
+    _alpha = Alpha(color: Colors.grey.value, colorLetter: Colors.white.value);
     super.initState();
   }
 
@@ -250,13 +244,13 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
-                      vertical: 12,
+                      vertical: 32,
                     ),
                     child: TitleTextField(_titleCtrler, _ctrlersChanged),
                   ),
                   if (_username)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
                         children: [
                           Expanded(
@@ -275,7 +269,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     ),
                   if (_password)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: PasswordTextField(
                         _passCtrler,
                         _ctrlersChanged,
@@ -283,20 +277,14 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       ),
                     ),
                   if (_passCtrler.text.isNotEmpty &&
-                      !PasswordHelper.isStrong(_passCtrler.text) &&
-                      _passFNSwitch)
+                      !PasswordHelper.isStrong(_passCtrler.text))
                     CheckBoard(password: _passCtrler.text),
-                  Row(
-                    children: [
-                      Column(
-                        children: [
-                          Text('Alert'),
-                          Text('change'),
-                          Text('in'),
-                        ],
-                      ),
-                      Expanded(
-                        child: SliderTheme(
+                  if (_passCtrler.text.isNotEmpty)
+                    Column(
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Password useful life (days)'),
+                        SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             valueIndicatorTextStyle: TextStyle(
                               color: Colors.white,
@@ -308,18 +296,11 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             divisions: 10,
                             label: '${_passLapse.round()} days',
                             value: _passLapse,
-                            onChanged: (value) {
-                              setState(() => _passLapse = value);
-                            },
+                            onChanged: (v) => setState(() => _passLapse = v),
                           ),
                         ),
-                      ),
-                      // Container(
-                      //   width: 64,
-                      //   child: Text('${_passLapse.round().toInt()} days'),
-                      // ),
-                    ],
-                  ),
+                      ],
+                    ),
                   if (_pin)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
