@@ -29,7 +29,8 @@ class CriptoProvider with ChangeNotifier {
   Future<bool> isMasterKey() async =>
       (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
-  String doHash(String s) => sha256.convert(utf8.encode(s)).toString();
+  String doHash(String s) =>
+      s.isNotEmpty ? sha256.convert(utf8.encode(s)).toString() : '';
 
   Future<void> unlock(String key) async {
     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(doHash(key).substring(0, 32))));
