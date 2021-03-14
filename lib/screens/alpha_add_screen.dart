@@ -68,32 +68,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _userListSwitch();
   }
 
-  void _set() {
-    _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
-    _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
-
-    _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
-    _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
-    _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-
-    _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
-    _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
-    _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-
-    _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
-    _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
-
-    _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
-    _alpha.longText = _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
-  }
-
-  void _setDate() {
-    _alpha.dateTime = DateTime.now().toUtc();
-    _alpha.date = _alpha.dateTime.toIso8601String();
-    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
-  }
-
   bool _notEmptyFields() {
     return _userCtrler.text.isNotEmpty ||
         _passCtrler.text.isNotEmpty ||
@@ -104,10 +78,30 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   void _save() async {
     try {
-      _set();
+      _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
+      _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
+
+      _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
+      _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
+      _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
+
+      _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
+      _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
+      _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
+
+      _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
+      _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
+
+      _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
+      _alpha.longText =
+          _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
+
+      _alpha.dateTime = DateTime.now().toUtc();
+      _alpha.date = _alpha.dateTime.toIso8601String();
+      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+      _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
       if (await _checkPassStatus()) return;
       if (await _checkPinStatus()) return;
-      _setDate();
       await _items.insertAlpha(_alpha);
       Navigator.of(context).pop();
     } catch (error) {
@@ -116,7 +110,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    if (await _items.isPasswordRepeated(_cripto.doHash(_passCtrler.text))) {
+    if (await _items.isPasswordRepeated(_alpha.passwordHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning)
@@ -128,7 +122,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   }
 
   Future<bool> _checkPinStatus() async {
-    if (await _items.isPinRepeated(_cripto.doHash(_pinCtrler.text))) {
+    if (await _items.isPinRepeated(_alpha.pinHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning)
@@ -188,7 +182,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     });
     _username = true;
     _password = true;
-    _alpha = Alpha();
+    _alpha = Alpha(colorLetter: Colors.white.value);
     super.initState();
   }
 
