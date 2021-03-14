@@ -46,8 +46,8 @@ class Alpha extends Item {
     this.longTextIV = '',
     String date,
     String shortDate,
-    int color = -1,
-    int colorLetter = -1,
+    int color,
+    int colorLetter,
     String tags = '',
   }) : super(
           id: id,
