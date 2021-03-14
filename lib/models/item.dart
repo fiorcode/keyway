@@ -1,11 +1,13 @@
+import 'package:flutter/material.dart';
+
 abstract class Item {
   int id;
   String title;
   DateTime dateTime; // ???
   String date;
   String shortDate; //REMOVE
-  int color;
-  int colorLetter;
+  int color = Colors.grey.value;
+  int colorLetter = Colors.white.value;
   String tags;
 
   Item({
