@@ -54,6 +54,8 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
+  double _passLapse = 320;
+
   void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
@@ -102,8 +104,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
       _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
       if (await _checkPassStatus()) return;
       if (await _checkPinStatus()) return;
-      await _items.insertAlpha(_alpha);
-      Navigator.of(context).pop();
+      await _items.insertAlpha(_alpha).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -285,6 +286,40 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       !PasswordHelper.isStrong(_passCtrler.text) &&
                       _passFNSwitch)
                     CheckBoard(password: _passCtrler.text),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          Text('Alert'),
+                          Text('change'),
+                          Text('in'),
+                        ],
+                      ),
+                      Expanded(
+                        child: SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Slider(
+                            min: 0,
+                            max: 320,
+                            divisions: 10,
+                            label: '${_passLapse.round()} days',
+                            value: _passLapse,
+                            onChanged: (value) {
+                              setState(() => _passLapse = value);
+                            },
+                          ),
+                        ),
+                      ),
+                      // Container(
+                      //   width: 64,
+                      //   child: Text('${_passLapse.round().toInt()} days'),
+                      // ),
+                    ],
+                  ),
                   if (_pin)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -303,7 +338,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
-                  // TagsListView(tagTap: _tagTap, tags: ''),
                   TagsListView(item: _alpha),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
