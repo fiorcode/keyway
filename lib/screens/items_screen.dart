@@ -22,10 +22,10 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
-  bool _unlocking = false;
   Future getItems;
   TextEditingController _searchCtrler;
   FocusNode _searchFocusNode;
+  bool _unlocking = false;
   bool _searching = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
@@ -88,8 +88,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   Icons.lock_outline,
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                // onPressed: cripto.locked ? _lockSwitch : null,
-                onPressed: () => _cripto.unlock('Qwe123!'),
+                onPressed: _lockSwitch,
+                // onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : FutureBuilder(
                 future: getItems,
