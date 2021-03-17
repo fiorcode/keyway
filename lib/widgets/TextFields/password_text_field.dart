@@ -15,13 +15,18 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   bool _empty = true;
   bool _obscure = true;
 
-  void _onChange() {
+  void _onChanged() {
     setState(() => _empty = widget.ctrler.text.isEmpty);
     widget.function();
   }
 
   void _obscureSwitch() {
     setState(() => _obscure = !_obscure);
+  }
+
+  void _clear() {
+    widget.ctrler.clear();
+    widget.function();
   }
 
   @override
@@ -59,12 +64,12 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             ? null
             : InkWell(
                 child: Icon(Icons.clear),
-                onTap: () => widget.ctrler.clear(),
+                onTap: _clear,
               ),
       ),
       maxLength: 128,
       obscureText: _obscure,
-      onChanged: (_) => _onChange(),
+      onChanged: (_) => _onChanged(),
     );
   }
 }
