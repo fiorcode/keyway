@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField(this.ctrler, this.function, this.focus);
+  PasswordTextField(this.ctrler, this.refreshScreen, this.focus);
 
   final TextEditingController ctrler;
-  final Function function;
+  final Function refreshScreen;
   final FocusNode focus;
 
   @override
@@ -17,7 +17,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   void _onChanged() {
     setState(() => _empty = widget.ctrler.text.isEmpty);
-    widget.function();
+    widget.refreshScreen();
   }
 
   void _obscureSwitch() {
@@ -26,7 +26,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   void _clear() {
     widget.ctrler.clear();
-    widget.function();
+    widget.refreshScreen();
   }
 
   @override
