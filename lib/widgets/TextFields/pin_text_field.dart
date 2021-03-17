@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class PinTextField extends StatefulWidget {
   PinTextField(this.ctrler);
@@ -13,11 +14,11 @@ class _PinTextFieldState extends State<PinTextField> {
   bool _empty = true;
   bool _obscure = true;
 
-  void _isEmpty() {
-    setState(() => _empty = widget.ctrler.text.isEmpty);
-  }
+  void _isEmpty() => setState(() => _empty = widget.ctrler.text.isEmpty);
 
   void _obscureSwitch() => setState(() => _obscure = !_obscure);
+
+  void _clear() => setState(() => widget.ctrler.clear());
 
   @override
   void initState() {
@@ -52,11 +53,12 @@ class _PinTextFieldState extends State<PinTextField> {
             ? null
             : InkWell(
                 child: Icon(Icons.clear),
-                onTap: () => widget.ctrler.clear(),
+                onTap: _clear,
               ),
       ),
       obscureText: _obscure,
       onChanged: (_) => _isEmpty(),
+      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       textAlign: TextAlign.center,
     );
   }
