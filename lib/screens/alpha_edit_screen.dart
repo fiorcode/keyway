@@ -1,9 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
-import 'package:crypto/crypto.dart';
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
@@ -49,7 +45,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
-  bool _passFNSwitch = false;
 
   bool _username = false;
   bool _password = false;
@@ -60,7 +55,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
+  void _titleChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -69,45 +64,42 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  void _selectUsername(String u) {
-    _userCtrler.text = u;
+  void _selectUsername(String username) {
+    _userCtrler.text = username;
     _userListSwitch();
   }
 
-  void _setDate() {
-    _alpha.dateTime = DateTime.now().toUtc();
-    _alpha.date = _alpha.dateTime.toIso8601String();
-    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-    _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
-  }
-
   void _load() {
-    setState(() {
-      _titleCtrler.text = _alpha.title;
-      if (_alpha.username.isNotEmpty) {
-        _userCtrler.text =
-            _cripto.doDecrypt(_alpha.username, _alpha.usernameIV);
-        _username = true;
-      }
-      if (_alpha.password.isNotEmpty) {
-        _passCtrler.text =
-            _cripto.doDecrypt(_alpha.password, _alpha.passwordIV);
-        _password = true;
-      }
-      if (_alpha.pin.isNotEmpty) {
-        _pinCtrler.text = _cripto.doDecrypt(_alpha.pin, _alpha.pinIV);
-        _pin = true;
-      }
-      if (_alpha.ip.isNotEmpty) {
-        _ipCtrler.text = _cripto.doDecrypt(_alpha.ip, _alpha.ipIV);
-        _ip = true;
-      }
-      if (_alpha.longText.isNotEmpty) {
-        _longTextCtrler.text =
-            _cripto.doDecrypt(_alpha.longText, _alpha.longTextIV);
-        _longText = true;
-      }
-    });
+    try {
+      setState(() {
+        _titleCtrler.text = _alpha.title;
+        if (_alpha.username.isNotEmpty) {
+          _userCtrler.text =
+              _cripto.doDecrypt(_alpha.username, _alpha.usernameIV);
+          _username = true;
+        }
+        if (_alpha.password.isNotEmpty) {
+          _passCtrler.text =
+              _cripto.doDecrypt(_alpha.password, _alpha.passwordIV);
+          _password = true;
+        }
+        if (_alpha.pin.isNotEmpty) {
+          _pinCtrler.text = _cripto.doDecrypt(_alpha.pin, _alpha.pinIV);
+          _pin = true;
+        }
+        if (_alpha.ip.isNotEmpty) {
+          _ipCtrler.text = _cripto.doDecrypt(_alpha.ip, _alpha.ipIV);
+          _ip = true;
+        }
+        if (_alpha.longText.isNotEmpty) {
+          _longTextCtrler.text =
+              _cripto.doDecrypt(_alpha.longText, _alpha.longTextIV);
+          _longText = true;
+        }
+      });
+    } catch (error) {
+      ErrorHelper.errorDialog(context, error);
+    }
   }
 
   bool _notEmptyFields() {
@@ -129,69 +121,55 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     return false;
   }
 
-  bool _avatarChanged() {
-    if (_alpha.color != widget.alpha.color) return true;
-    if (_alpha.colorLetter != widget.alpha.colorLetter) return true;
-    return false;
-  }
-
-  String _doHash(String s) =>
-      s.isEmpty ? '' : sha256.convert(utf8.encode(s)).toString();
-
   void _save() async {
     try {
       _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
-      _alpha.passwordHash = _doHash(_passCtrler.text);
-      _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-      _alpha.pinHash = _doHash(_pinCtrler.text);
-      _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
+
+      _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
+      if (_alpha.passwordHash != widget.alpha.passwordHash) {
+        _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
+        _alpha.passwordDate = DateTime.now().toUtc().toIso8601String();
+        if (await _checkPassStatus()) return;
+      }
+
+      _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
+      if (_alpha.pinHash != widget.alpha.pinHash) {
+        _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
+        _alpha.pinDate = DateTime.now().toUtc().toIso8601String();
+        if (await _checkPinStatus()) return;
+      }
+
       _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
       _alpha.longText =
           _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
-      if (await _passwordRepeated()) return;
-      if (await _pinRepeated()) return;
-      if (_wasChanged()) _setDate();
-      if (_wasChanged() || _avatarChanged()) await _items.updateAlpha(_alpha);
-      Navigator.of(context).pop();
+
+      if (_wasChanged())
+        _items.updateAlpha(_alpha).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
 
-  Future<bool> _passwordRepeated() async {
-    if (widget.alpha.password == _alpha.password) return false;
-    _alpha.passwordStatus = '';
-    if (await _items.isPasswordRepeated(_doHash(_passCtrler.text))) {
+  Future<bool> _checkPassStatus() async {
+    if (await _items.isPasswordRepeated(_alpha.passwordHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
-      if (_warning) {
+      if (_warning)
         _alpha.passwordStatus = 'REPEATED';
-        // THIS SHOULD BE AFTER THE INSERT/UPDATE
-        // _items.setAlphaPassRepeted(_alpha.passwordHash);
-        // _items.setOldAlphaPassRepeted(_alpha.passwordHash);
-        // _items.setDeletedAlphaPassRepeted(_alpha.passwordHash);
-      } else {
+      else
         return true;
-      }
     }
     return false;
   }
 
-  Future<bool> _pinRepeated() async {
-    if (widget.alpha.pin == _alpha.pin) return false;
-    _alpha.pinStatus = '';
-    if (await _items.isPinRepeated(_doHash(_pinCtrler.text))) {
+  Future<bool> _checkPinStatus() async {
+    if (await _items.isPinRepeated(_alpha.pinHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
-      if (_warning) {
+      if (_warning)
         _alpha.pinStatus = 'REPEATED';
-        //THIS SHOULD BE AFTER THE INSERT/UPDATE
-        // _items.setAlphaPinRepeted(_alpha.pin);
-        // _items.setOldAlphaPinRepeted(_alpha.pin);
-        // _items.setDeletedAlphaPinRepeted(_alpha.pin);
-      } else {
+      else
         return true;
-      }
     }
     return false;
   }
@@ -244,12 +222,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
-    _passFocusNode.addListener(() {
-      if (_passFocusNode.hasFocus)
-        setState(() => _passFNSwitch = true);
-      else
-        setState(() => _passFNSwitch = false);
-    });
     _alpha = widget.alpha.clone();
     _load();
     super.initState();
@@ -320,7 +292,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                       horizontal: 64,
                       vertical: 12,
                     ),
-                    child: TitleTextField(_titleCtrler, _ctrlersChanged),
+                    child: TitleTextField(_titleCtrler, _titleChanged),
                   ),
                   if (_username)
                     Padding(
@@ -330,7 +302,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                           Expanded(
                             child: UsernameTextField(
                               _userCtrler,
-                              _ctrlersChanged,
+                              _titleChanged,
                               _userFocusNode,
                             ),
                           ),
@@ -346,13 +318,12 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PasswordTextField(
                         _passCtrler,
-                        _ctrlersChanged,
+                        _titleChanged,
                         _passFocusNode,
                       ),
                     ),
                   if (_passCtrler.text.isNotEmpty &&
-                      !PasswordHelper.isStrong(_passCtrler.text) &&
-                      _passFNSwitch)
+                      !PasswordHelper.isStrong(_passCtrler.text))
                     CheckBoard(password: _passCtrler.text),
                   if (_pin)
                     Padding(
