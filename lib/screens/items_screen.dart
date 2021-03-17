@@ -81,7 +81,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         centerTitle: true,
         leading: _cripto.locked
             ? null
-            : IconButton(icon: Icon(Icons.widgets), onPressed: _goToDashboard),
+            : IconButton(icon: Icon(Icons.menu), onPressed: _goToDashboard),
         title: _cripto.locked
             ? IconButton(
                 icon: Icon(
