@@ -53,9 +53,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  double _passLapse = 320;
-
-  void _ctrlersChanged() => setState(() => _alpha.title = _titleCtrler.text);
+  void _titleChanged() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -79,32 +77,44 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   void _save() async {
     try {
-      _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
-      _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
-
-      _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
-      _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
-      _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-      _alpha.passwordLapse = _passLapse.round();
-
-      _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
-      _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
-      _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-
-      _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
-      _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
-
-      _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
-      _alpha.longText =
-          _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
-
+      DateFormat _df = DateFormat('dd/MM/yyyy H:mm');
       _alpha.dateTime = DateTime.now().toUtc();
       _alpha.date = _alpha.dateTime.toIso8601String();
-      DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-      _alpha.shortDate = dateFormat.format(_alpha.dateTime.toLocal());
-      if (await _checkPassStatus()) return;
-      if (await _checkPinStatus()) return;
-      await _items.insertAlpha(_alpha).then((_) => Navigator.of(context).pop());
+      _alpha.shortDate = _df.format(_alpha.dateTime.toLocal());
+
+      if (_username && _userCtrler.text.isNotEmpty) {
+        _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
+        _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
+      }
+
+      if (_password && _passCtrler.text.isNotEmpty) {
+        _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
+        _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
+        _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
+        _alpha.passwordDate = _alpha.date;
+        if (await _checkPassStatus()) return;
+      }
+
+      if (_pin && _pinCtrler.text.isNotEmpty) {
+        _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
+        _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
+        _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
+        _alpha.pinDate = _alpha.date;
+        if (await _checkPinStatus()) return;
+      }
+
+      if (_ip && _ipCtrler.text.isNotEmpty) {
+        _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
+        _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
+      }
+
+      if (_longText && _longTextCtrler.text.isNotEmpty) {
+        _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
+        _alpha.longText =
+            _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
+      }
+
+      _items.insertAlpha(_alpha).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -246,7 +256,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       horizontal: 64,
                       vertical: 32,
                     ),
-                    child: TitleTextField(_titleCtrler, _ctrlersChanged),
+                    child: TitleTextField(_titleCtrler, _titleChanged),
                   ),
                   if (_username)
                     Padding(
@@ -256,7 +266,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                           Expanded(
                             child: UsernameTextField(
                               _userCtrler,
-                              _ctrlersChanged,
+                              _titleChanged,
                               _userFocusNode,
                             ),
                           ),
@@ -272,7 +282,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: PasswordTextField(
                         _passCtrler,
-                        _ctrlersChanged,
+                        () => setState(() {}),
                         _passFocusNode,
                       ),
                     ),
@@ -294,9 +304,10 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             min: 0,
                             max: 320,
                             divisions: 10,
-                            label: '${_passLapse.round()} days',
-                            value: _passLapse,
-                            onChanged: (v) => setState(() => _passLapse = v),
+                            label: '${_alpha.passwordLapse.round()} days',
+                            value: _alpha.passwordLapse.toDouble(),
+                            onChanged: (v) => setState(
+                                () => _alpha.passwordLapse = v.round()),
                           ),
                         ),
                       ],
@@ -305,6 +316,29 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PinTextField(_pinCtrler),
+                    ),
+                  if (_pin)
+                    Column(
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Pin useful life (days)'),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Slider(
+                            min: 0,
+                            max: 320,
+                            divisions: 10,
+                            label: '${_alpha.pinLapse.round()} days',
+                            value: _alpha.pinLapse.toDouble(),
+                            onChanged: (v) =>
+                                setState(() => _alpha.pinLapse = v.round()),
+                          ),
+                        ),
+                      ],
                     ),
                   if (_ip)
                     Padding(
