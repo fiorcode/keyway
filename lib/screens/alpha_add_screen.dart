@@ -53,7 +53,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _titleChanged() => setState(() => _alpha.title = _titleCtrler.text);
+  void _refreshScreen() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -256,7 +256,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       horizontal: 64,
                       vertical: 32,
                     ),
-                    child: TitleTextField(_titleCtrler, _titleChanged),
+                    child: TitleTextField(_titleCtrler, _refreshScreen),
                   ),
                   if (_username)
                     Padding(
@@ -266,7 +266,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                           Expanded(
                             child: UsernameTextField(
                               _userCtrler,
-                              _titleChanged,
+                              _refreshScreen,
                               _userFocusNode,
                             ),
                           ),
@@ -282,7 +282,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: PasswordTextField(
                         _passCtrler,
-                        () => setState(() {}),
+                        _refreshScreen,
                         _passFocusNode,
                       ),
                     ),
