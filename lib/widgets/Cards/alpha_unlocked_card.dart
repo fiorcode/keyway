@@ -61,6 +61,23 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
+  bool _expired() {
+    DateTime _nowUTC = DateTime.now().toUtc();
+    bool _passExp = false;
+    bool _pinExp = false;
+    if (widget.alpha.passwordDate.isNotEmpty) {
+      DateTime _passDate = DateTime.parse(widget.alpha.passwordDate);
+      int _daysOfPass = _nowUTC.difference(_passDate).inDays;
+      _passExp = widget.alpha.passwordLapse <= _daysOfPass;
+    }
+    if (widget.alpha.pinDate.isNotEmpty) {
+      DateTime _pinDate = DateTime.parse(widget.alpha.pinDate);
+      int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
+      _pinExp = widget.alpha.pinLapse <= _daysOfPin;
+    }
+    return _passExp || _pinExp;
+  }
+
   String _title() {
     CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
     switch (_showValue) {
@@ -185,6 +202,16 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
+              if (_expired())
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: Icon(
+                    Icons.timer,
+                    color: Colors.red,
+                    size: 24,
+                  ),
+                ),
               if (_showValue != 0)
                 SizedBox(
                   height: 48,
