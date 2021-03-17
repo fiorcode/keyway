@@ -88,8 +88,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   Icons.lock_outline,
                   color: _unlocking ? Colors.orange : Colors.red,
                 ),
-                onPressed: _lockSwitch,
-                // onPressed: () => _cripto.unlock('Qwe123!'),
+                // onPressed: _lockSwitch,
+                onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : FutureBuilder(
                 future: getItems,
