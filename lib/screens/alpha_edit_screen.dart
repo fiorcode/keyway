@@ -55,7 +55,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _titleChanged() => setState(() => _alpha.title = _titleCtrler.text);
+  void _refreshScreen() => setState(() => _alpha.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -114,10 +114,13 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     if (_alpha.title != widget.alpha.title) return true;
     if (_alpha.username != widget.alpha.username) return true;
     if (_alpha.password != widget.alpha.password) return true;
+    if (_alpha.passwordLapse != widget.alpha.passwordLapse) return true;
     if (_alpha.pin != widget.alpha.pin) return true;
+    if (_alpha.pinLapse != widget.alpha.pinLapse) return true;
     if (_alpha.ip != widget.alpha.ip) return true;
     if (_alpha.longText != widget.alpha.longText) return true;
-    if (_alpha.tags != widget.alpha.tags) return true;
+    if (_alpha.color != widget.alpha.color) return true;
+    if (_alpha.colorLetter != widget.alpha.colorLetter) return true;
     return false;
   }
 
@@ -290,19 +293,19 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
-                      vertical: 12,
+                      vertical: 32,
                     ),
-                    child: TitleTextField(_titleCtrler, _titleChanged),
+                    child: TitleTextField(_titleCtrler, _refreshScreen),
                   ),
                   if (_username)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
                         children: [
                           Expanded(
                             child: UsernameTextField(
                               _userCtrler,
-                              _titleChanged,
+                              _refreshScreen,
                               _userFocusNode,
                             ),
                           ),
@@ -315,20 +318,66 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     ),
                   if (_password)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 8),
                       child: PasswordTextField(
                         _passCtrler,
-                        _titleChanged,
+                        _refreshScreen,
                         _passFocusNode,
                       ),
                     ),
                   if (_passCtrler.text.isNotEmpty &&
                       !PasswordHelper.isStrong(_passCtrler.text))
                     CheckBoard(password: _passCtrler.text),
+                  if (_passCtrler.text.isNotEmpty)
+                    Column(
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Password useful life (days)'),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Slider(
+                            min: 0,
+                            max: 320,
+                            divisions: 10,
+                            label: '${_alpha.passwordLapse.round()} days',
+                            value: _alpha.passwordLapse.toDouble(),
+                            onChanged: (v) => setState(
+                                () => _alpha.passwordLapse = v.round()),
+                          ),
+                        ),
+                      ],
+                    ),
                   if (_pin)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PinTextField(_pinCtrler),
+                    ),
+                  if (_pin)
+                    Column(
+                      children: [
+                        SizedBox(height: 8),
+                        Text('Pin useful life (days)'),
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.white,
+                            ),
+                          ),
+                          child: Slider(
+                            min: 0,
+                            max: 320,
+                            divisions: 10,
+                            label: '${_alpha.pinLapse.round()} days',
+                            value: _alpha.pinLapse.toDouble(),
+                            onChanged: (v) =>
+                                setState(() => _alpha.pinLapse = v.round()),
+                          ),
+                        ),
+                      ],
                     ),
                   if (_ip)
                     Padding(
@@ -343,7 +392,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                         child: LongTextTextField(_longTextCtrler),
                       ),
                     ),
-                  // TagsListView(tagTap: _tagTap, tags: widget.alpha.tags),
                   TagsListView(item: _alpha),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
