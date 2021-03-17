@@ -1,11 +1,6 @@
-// import 'dart:math';
 import 'package:flutter/material.dart';
-// import 'package:intl/intl.dart';
-// import 'package:encrypt/encrypt.dart' as e;
 
-// import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
-
 import '../models/alpha.dart';
 import '../models/deleted_alpha.dart';
 import '../models/old_alpha.dart';
@@ -34,7 +29,6 @@ class ItemProvider with ChangeNotifier {
           .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
     }
     _items.addAll(_iter.toList());
-    // await _checkExpirations();
     _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
@@ -160,21 +154,6 @@ class ItemProvider with ChangeNotifier {
     _itemOlds.clear();
     _deletedItems.clear();
   }
-
-  // Future<void> _checkExpirations() async {
-  //   _items.cast<Alpha>().forEach((i) async {
-  //     i.dateTime = DateTime.parse(i.date);
-  //     int _diff = i.dateTime.difference(DateTime.now()).inDays.abs();
-  //     if (_diff > 180 && i.expired != 'YES') {
-  //       i.expired = 'YES';
-  //       await DBHelper.update(DBHelper.alphaTable, i.toMap());
-  //     }
-  //     if (_diff <= 180 && i.expired == 'YES') {
-  //       i.expired = '';
-  //       await DBHelper.update(DBHelper.alphaTable, i.toMap());
-  //     }
-  //   });
-  // }
 
   Future<List<Username>> getUsers() async {
     Iterable<Username> _iter;
