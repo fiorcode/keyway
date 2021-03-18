@@ -117,12 +117,13 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
-  Future<void> deleteOldAlpha(OldAlpha old) async =>
-      await DBHelper.delete(DBHelper.oldAlphaTable, old.id).then(
-        (_) => _itemOlds.removeWhere((e) => e.id == old.id),
-      );
+  Future<void> deleteOldAlpha(OldAlpha old) async {
+    await DBHelper.delete(DBHelper.oldAlphaTable, old.id).then(
+      (_) => _itemOlds.removeWhere((e) => e.id == old.id),
+    );
+  }
 
-  Future<bool> isPasswordRepeated(String hash) async {
+  Future<bool> isPasswordInDB(String hash) async {
     if (hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash))
         .isNotEmpty) return true;
@@ -135,7 +136,7 @@ class ItemProvider with ChangeNotifier {
     return false;
   }
 
-  Future<bool> isPinRepeated(String hash) async {
+  Future<bool> isPinInDB(String hash) async {
     if (hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash))
         .isNotEmpty) return true;
@@ -145,6 +146,38 @@ class ItemProvider with ChangeNotifier {
             DBHelper.deletedAlphaTable, 'pin_hash', hash))
         .isNotEmpty) return true;
     return false;
+  }
+
+  Future<bool> isPasswordRepeated(String hash) async {
+    if (hash.isEmpty) return false;
+    List<Map<String, dynamic>> _listAllTables = <Map<String, dynamic>>[];
+    await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash)
+        .then((_list) {
+      _listAllTables.addAll(_list);
+      DBHelper.getByValue(DBHelper.oldAlphaTable, 'password_hash', hash)
+          .then((_list) {
+        _listAllTables.addAll(_list);
+        DBHelper.getByValue(DBHelper.deletedAlphaTable, 'password_hash', hash)
+            .then((_list) => _listAllTables.addAll(_list));
+      });
+    });
+    return _listAllTables.length >= 2;
+  }
+
+  Future<bool> isPinRepeated(String hash) async {
+    if (hash.isEmpty) return false;
+    List<Map<String, dynamic>> _listAllTables = <Map<String, dynamic>>[];
+    await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash)
+        .then((_list) {
+      _listAllTables.addAll(_list);
+      DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin_hash', hash)
+          .then((_list) {
+        _listAllTables.addAll(_list);
+        DBHelper.getByValue(DBHelper.deletedAlphaTable, 'pin_hash', hash)
+            .then((_list) => _listAllTables.addAll(_list));
+      });
+    });
+    return _listAllTables.length >= 2;
   }
 
   Future<int> setPassStatus(String table, String pass, String status) async =>
