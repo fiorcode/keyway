@@ -8,6 +8,8 @@ class DBHelper {
   static const String userDataTable = "user_data";
   static const String alphaTable = "alpha";
   static const String oldAlphaTable = "old_alpha";
+  static const String oldPasswordTable = "old_password";
+  static const String oldPinTable = "old_pin";
   static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
 
@@ -240,6 +242,29 @@ class DBHelper {
     color INTEGER,
     color_letter INTEGER,
     tags TEXT)''';
+
+  static const createOldPasswordTable = '''CREATE TABLE $oldPasswordTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    password TEXT,
+    password_iv TEXT,
+    password_hash TEXT,
+    password_date TEXT,
+    password_lapse INTEGER,
+    password_status TEXT,
+    password_level TEXT,
+    password_change TEXT,
+    item_id INTEGER)''';
+
+  static const createOldPinTable = '''CREATE TABLE $oldPinTable(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pin TEXT,
+    pin_iv TEXT,
+    pin_hash TEXT,
+    pin_date TEXT,
+    pin_lapse INTEGER,
+    pin_status TEXT,
+    pin_change TEXT,
+    item_id INTEGER)''';
 
   static const createOldAlphaTable = '''CREATE TABLE $oldAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
