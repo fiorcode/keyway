@@ -75,6 +75,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
       int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
       _pinExp = widget.alpha.pinLapse <= _daysOfPin;
     }
+    if (widget.alpha.passwordLapse <= 0) _passExp = false;
+    if (widget.alpha.pinLapse <= 0) _pinExp = false;
     return _passExp || _pinExp;
   }
 
