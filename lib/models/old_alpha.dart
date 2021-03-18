@@ -7,36 +7,36 @@ class OldAlpha extends Alpha {
 
   OldAlpha({
     int id,
-    String title,
-    String username,
-    String usernameIV,
-    String usernameHash,
-    String password,
-    String passwordIV,
-    String passwordHash,
-    String passwordDate,
-    int passwordLapse,
-    String passwordStatus,
-    String passwordLevel,
-    this.passwordChange,
-    String pin,
-    String pinIV,
-    String pinHash,
-    String pinDate,
-    int pinLapse,
-    String pinStatus,
-    this.pinChange,
-    String ip,
-    String ipIV,
-    String ipHash,
-    String longTextIV,
-    String longText,
-    String longTextHash,
-    String date,
-    String shortDate,
-    int color = 0,
-    int colorLetter = 0,
-    String tags,
+    String title = '',
+    String username = '',
+    String usernameIV = '',
+    String usernameHash = '',
+    String password = '',
+    String passwordIV = '',
+    String passwordHash = '',
+    String passwordDate = '',
+    int passwordLapse = 320,
+    String passwordStatus = '',
+    String passwordLevel = '',
+    this.passwordChange = '',
+    String pin = '',
+    String pinIV = '',
+    String pinHash = '',
+    String pinDate = '',
+    int pinLapse = 320,
+    String pinStatus = '',
+    this.pinChange = '',
+    String ip = '',
+    String ipIV = '',
+    String ipHash = '',
+    String longTextIV = '',
+    String longText = '',
+    String longTextHash = '',
+    String date = '',
+    String shortDate = '',
+    int color,
+    int colorLetter,
+    String tags = '',
     this.itemId,
   }) : super(
           id: id,
@@ -78,12 +78,14 @@ class OldAlpha extends Alpha {
     this.passwordLapse = a.passwordLapse;
     this.passwordStatus = a.passwordStatus;
     this.passwordLevel = a.passwordLevel;
+    this.passwordChange = '';
     this.pin = a.pin;
     this.pinIV = a.pinIV;
     this.pinHash = a.pinHash;
     this.pinDate = a.pinDate;
     this.pinLapse = a.pinLapse;
     this.pinStatus = a.pinStatus;
+    this.pinChange = '';
     this.ip = a.ip;
     this.ipIV = a.ipIV;
     this.longText = a.longText;
