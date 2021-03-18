@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/widgets/Cards/alpha_old_card.dart';
+import 'package:keyway/widgets/old_alpha_list_tile.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 
@@ -35,14 +35,9 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   }
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
-    _items = Provider.of<ItemProvider>(context);
+    _items = Provider.of<ItemProvider>(context, listen: false);
     getItemOlds = _getItemHistory();
     super.didChangeDependencies();
   }
@@ -90,14 +85,17 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                   children: [
                     _items.itemOlds.length <= 0
                         ? EmptyItems()
-                        : ListView.builder(
+                        : ListView.separated(
                             padding: EdgeInsets.all(12.0),
                             itemCount: _items.itemOlds.length,
                             itemBuilder: (ctx, i) {
-                              return AlphaOldCard(
+                              return OldAlphaListTile(
                                 oldAlpha: _items.itemOlds[i],
                                 onReturn: onReturn,
                               );
+                            },
+                            separatorBuilder: (context, index) {
+                              return Divider();
                             },
                           ),
                     if (_unlocking && _cripto.locked)
