@@ -171,94 +171,102 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 32),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  primary: Colors.white,
-                  shape: StadiumBorder(),
-                ),
-                onPressed: () =>
-                    Navigator.of(context).pushNamed(TagsScreen.routeName),
-                icon: Icon(
-                  Icons.tag,
-                  color: Theme.of(context).primaryColor,
-                  size: 32,
-                ),
-                label: Text(
-                  'Tags',
-                  style: TextStyle(
+              SizedBox(height: 16),
+              Container(
+                width: 256,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    primary: Colors.white,
+                  ),
+                  onPressed: () =>
+                      Navigator.of(context).pushNamed(TagsScreen.routeName),
+                  icon: Icon(
+                    Icons.tag,
                     color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                    size: 32,
+                  ),
+                  label: Text(
+                    'Tags',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  primary: Colors.white,
-                  shape: StadiumBorder(),
-                ),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(ItemsHistoryScreen.routeName),
-                icon: Icon(
-                  Icons.history,
-                  color: Theme.of(context).primaryColor,
-                  size: 32,
-                ),
-                label: Text(
-                  'Items History',
-                  style: TextStyle(
+              Container(
+                width: 256,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    primary: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(ItemsHistoryScreen.routeName),
+                  icon: Icon(
+                    Icons.history,
                     color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                    size: 32,
+                  ),
+                  label: Text(
+                    'Items History',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
               SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  primary: Colors.white,
-                  shape: StadiumBorder(),
-                ),
-                onPressed: () => Navigator.of(context)
-                    .pushNamed(DeletedItemsScreen.routeName),
-                icon: Icon(
-                  Icons.delete,
-                  color: Theme.of(context).primaryColor,
-                  size: 32,
-                ),
-                label: Text(
-                  'Deleted Items',
-                  style: TextStyle(
+              Container(
+                width: 256,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    primary: Colors.white,
+                  ),
+                  onPressed: () => Navigator.of(context)
+                      .pushNamed(DeletedItemsScreen.routeName),
+                  icon: Icon(
+                    Icons.delete,
                     color: Theme.of(context).primaryColor,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                    size: 32,
+                  ),
+                  label: Text(
+                    'Deleted Items',
+                    style: TextStyle(
+                      color: Theme.of(context).primaryColor,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  primary: Colors.red,
-                  shape: StadiumBorder(),
-                ),
-                onPressed: () => _deleteDB(context),
-                icon: Icon(
-                  Icons.delete_forever,
-                  color: Colors.white,
-                  size: 32,
-                ),
-                label: Text(
-                  'Delete Database',
-                  style: TextStyle(
+              SizedBox(height: 48),
+              Container(
+                width: 256,
+                child: ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    primary: Colors.red,
+                  ),
+                  onPressed: () => _deleteDB(context),
+                  icon: Icon(
+                    Icons.delete_forever,
                     color: Colors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16,
+                    size: 32,
+                  ),
+                  label: Text(
+                    'Delete Database',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16,
+                    ),
                   ),
                 ),
               ),
