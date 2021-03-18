@@ -117,6 +117,11 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
+  Future<void> deleteOldAlpha(OldAlpha old) async =>
+      await DBHelper.delete(DBHelper.oldAlphaTable, old.id).then(
+        (_) => _itemOlds.removeWhere((e) => e.id == old.id),
+      );
+
   Future<bool> isPasswordRepeated(String hash) async {
     if (hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash))
