@@ -21,10 +21,11 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
   bool _showPass = false;
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(widget.oldAlpha.color);
-    double bgDelta =
-        _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
-    return (255 - bgDelta > 105) ? Colors.white : Colors.black;
+    if (widget.oldAlpha.colorLetter >= 0)
+      return Color(widget.oldAlpha.colorLetter);
+    Color _c = Color(widget.oldAlpha.color);
+    double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
+    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
   void _passToClipBoard() {
@@ -71,8 +72,6 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
         : Colors.grey;
   }
 
-  // void _switchShowPass() => setState(() => _showPass = !_showPass);
-
   void _switchShowPass() => Navigator.push(
         context,
         MaterialPageRoute(
@@ -81,73 +80,65 @@ class _AlphaOldCardState extends State<AlphaOldCard> {
       ).then((_) => widget.onReturn());
 
   @override
-  void didChangeDependencies() {
-    _cripto = Provider.of<CriptoProvider>(context);
-    super.didChangeDependencies();
+  void initState() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      clipBehavior: Clip.antiAlias,
-      shadowColor: _setWarningColor(),
-      elevation: 8,
-      shape: StadiumBorder(
-        side: BorderSide(width: 2, color: Colors.grey),
-      ),
-      child: ListTile(
-        dense: true,
-        contentPadding: EdgeInsets.all(4),
-        leading: CircleAvatar(
-          radius: 24,
-          backgroundColor: widget.oldAlpha.color != null
-              ? Color(widget.oldAlpha.color).withOpacity(0.33)
-              : Colors.grey,
-          child: Text(
-            widget.oldAlpha.title != null ?? widget.oldAlpha.title.isNotEmpty
-                ? widget.oldAlpha.title.substring(0, 1).toUpperCase()
-                : '',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: _setAvatarLetterColor(),
-            ),
+    return ListTile(
+      // dense: true,
+      contentPadding: EdgeInsets.all(4),
+      leading: CircleAvatar(
+        radius: 24,
+        backgroundColor: widget.oldAlpha.color != null
+            ? Color(widget.oldAlpha.color).withOpacity(0.33)
+            : Colors.grey,
+        child: Text(
+          widget.oldAlpha.title != null ?? widget.oldAlpha.title.isNotEmpty
+              ? widget.oldAlpha.title.substring(0, 1).toUpperCase()
+              : '',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: _setAvatarLetterColor(),
           ),
         ),
-        title: _setTitle(),
-        onTap: null,
-        trailing: Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(Icons.copy, color: _setIconColor(), size: 24),
-                  heroTag: null,
-                  onPressed: _passToClipBoard,
-                ),
+      ),
+      title: _setTitle(),
+      onTap: null,
+      trailing: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 48,
+              width: 48,
+              child: FloatingActionButton(
+                backgroundColor: _setWarningColor(),
+                child: Icon(Icons.copy, color: _setIconColor(), size: 24),
+                heroTag: null,
+                onPressed: _passToClipBoard,
               ),
-              SizedBox(width: 4),
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: FloatingActionButton(
-                  backgroundColor: _setWarningColor(),
-                  child: Icon(
-                    Icons.remove_red_eye_outlined,
-                    color: _setIconColor(),
-                    size: 24,
-                  ),
-                  heroTag: null,
-                  onPressed: _switchShowPass,
+            ),
+            SizedBox(width: 4),
+            SizedBox(
+              height: 48,
+              width: 48,
+              child: FloatingActionButton(
+                backgroundColor: _setWarningColor(),
+                child: Icon(
+                  Icons.remove_red_eye_outlined,
+                  color: _setIconColor(),
+                  size: 24,
                 ),
+                heroTag: null,
+                onPressed: _switchShowPass,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
