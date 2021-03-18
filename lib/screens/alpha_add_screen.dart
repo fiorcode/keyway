@@ -49,7 +49,10 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _pin = false;
   bool _ip = false;
   bool _longText = false;
-
+  bool _repeatedPasswordWarning = true;
+  bool _usfulLifePassword = true;
+  bool _repeatedPinWarning = true;
+  bool _usfulLifePin = true;
   bool _viewUsersList = false;
   bool _unlocking = false;
 
@@ -92,7 +95,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
         _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
         _alpha.passwordDate = _alpha.date;
-        if (await _checkPassStatus()) return;
+        if (_repeatedPasswordWarning) if (await _checkPassStatus()) return;
       }
 
       if (_pin && _pinCtrler.text.isNotEmpty) {
@@ -100,7 +103,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
         _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
         _alpha.pinDate = _alpha.date;
-        if (await _checkPinStatus()) return;
+        if (_repeatedPinWarning) if (await _checkPinStatus()) return;
       }
 
       if (_ip && _ipCtrler.text.isNotEmpty) {
@@ -121,7 +124,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    if (await _items.isPasswordRepeated(_alpha.passwordHash)) {
+    if (await _items.isPasswordInDB(_alpha.passwordHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning)
@@ -133,7 +136,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   }
 
   Future<bool> _checkPinStatus() async {
-    if (await _items.isPinRepeated(_alpha.pinHash)) {
+    if (await _items.isPinInDB(_alpha.pinHash)) {
       bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning)
@@ -292,24 +295,59 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   if (_passCtrler.text.isNotEmpty)
                     Column(
                       children: [
-                        SizedBox(height: 8),
-                        Text('Password useful life (days)'),
-                        SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            valueIndicatorTextStyle: TextStyle(
-                              color: Colors.white,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Warning if it is repeated'),
+                            Switch(
+                              activeColor: Colors.green,
+                              value: _repeatedPasswordWarning,
+                              onChanged: (value) => setState(() {
+                                _repeatedPasswordWarning = value;
+                                if (value)
+                                  _alpha.passwordStatus = '';
+                                else
+                                  _alpha.passwordStatus = 'NO-WARNING';
+                              }),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Password useful life (days)'),
+                            Switch(
+                              activeColor: Colors.green,
+                              value: _usfulLifePassword,
+                              onChanged: (value) => setState(() {
+                                _usfulLifePassword = value;
+                                if (value)
+                                  _alpha.passwordLapse = 320;
+                                else
+                                  _alpha.passwordLapse = -1;
+                              }),
+                            ),
+                          ],
+                        ),
+                        if (_usfulLifePassword)
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              valueIndicatorTextStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            child: Slider(
+                              min: 0,
+                              max: 320,
+                              divisions: 10,
+                              label: '${_alpha.passwordLapse.round()} days',
+                              value: _alpha.passwordLapse.toDouble(),
+                              onChanged: (v) => setState(
+                                  () => _alpha.passwordLapse = v.round()),
                             ),
                           ),
-                          child: Slider(
-                            min: 0,
-                            max: 320,
-                            divisions: 10,
-                            label: '${_alpha.passwordLapse.round()} days',
-                            value: _alpha.passwordLapse.toDouble(),
-                            onChanged: (v) => setState(
-                                () => _alpha.passwordLapse = v.round()),
-                          ),
-                        ),
                       ],
                     ),
                   if (_pin)
@@ -320,24 +358,59 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   if (_pin)
                     Column(
                       children: [
-                        SizedBox(height: 8),
-                        Text('Pin useful life (days)'),
-                        SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            valueIndicatorTextStyle: TextStyle(
-                              color: Colors.white,
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Warning if it is repeated'),
+                            Switch(
+                              activeColor: Colors.green,
+                              value: _repeatedPinWarning,
+                              onChanged: (value) => setState(() {
+                                _repeatedPinWarning = value;
+                                if (value)
+                                  _alpha.pinStatus = '';
+                                else
+                                  _alpha.pinStatus = 'NO-WARNING';
+                              }),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('Pin useful life (days)'),
+                            Switch(
+                              activeColor: Colors.green,
+                              value: _usfulLifePin,
+                              onChanged: (value) => setState(() {
+                                _usfulLifePin = value;
+                                if (value)
+                                  _alpha.pinLapse = 320;
+                                else
+                                  _alpha.pinLapse = -1;
+                              }),
+                            ),
+                          ],
+                        ),
+                        if (_usfulLifePin)
+                          SliderTheme(
+                            data: SliderTheme.of(context).copyWith(
+                              valueIndicatorTextStyle: TextStyle(
+                                color: Colors.white,
+                              ),
+                            ),
+                            child: Slider(
+                              min: 0,
+                              max: 320,
+                              divisions: 10,
+                              label: '${_alpha.pinLapse.round()} days',
+                              value: _alpha.pinLapse.toDouble(),
+                              onChanged: (v) =>
+                                  setState(() => _alpha.pinLapse = v.round()),
                             ),
                           ),
-                          child: Slider(
-                            min: 0,
-                            max: 320,
-                            divisions: 10,
-                            label: '${_alpha.pinLapse.round()} days',
-                            value: _alpha.pinLapse.toDouble(),
-                            onChanged: (v) =>
-                                setState(() => _alpha.pinLapse = v.round()),
-                          ),
-                        ),
                       ],
                     ),
                   if (_ip)
