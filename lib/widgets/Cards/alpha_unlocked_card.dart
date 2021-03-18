@@ -19,12 +19,12 @@ class AlphaUnlockedCard extends StatefulWidget {
 }
 
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
+  CriptoProvider _cripto;
   int _showValue = 0;
   String _subtitle = '';
 
   void _onTap() {
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
-    if (cripto.locked) {
+    if (_cripto.locked) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.red,
@@ -50,7 +50,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   void _passToClipBoard() {
-    Clipboard.setData(ClipboardData(text: _title())).then(
+    Clipboard.setData(ClipboardData(text: _setTitleSubtitle())).then(
       (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -78,35 +78,36 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     return _passExp || _pinExp;
   }
 
-  String _title() {
-    CriptoProvider cripto = Provider.of<CriptoProvider>(context, listen: false);
+  String _setTitleSubtitle() {
     switch (_showValue) {
       case 1:
         if (widget.alpha.password.isEmpty) continue two;
         _showValue = 1;
         _subtitle = 'Password';
-        return cripto.doDecrypt(widget.alpha.password, widget.alpha.passwordIV);
+        return _cripto.doDecrypt(
+            widget.alpha.password, widget.alpha.passwordIV);
         break;
       two:
       case 2:
         if (widget.alpha.pin.isEmpty) continue three;
         _showValue = 2;
         _subtitle = 'PIN';
-        return cripto.doDecrypt(widget.alpha.pin, widget.alpha.pinIV);
+        return _cripto.doDecrypt(widget.alpha.pin, widget.alpha.pinIV);
         break;
       three:
       case 3:
         if (widget.alpha.username.isEmpty) continue four;
         _showValue = 3;
         _subtitle = 'Username';
-        return cripto.doDecrypt(widget.alpha.username, widget.alpha.usernameIV);
+        return _cripto.doDecrypt(
+            widget.alpha.username, widget.alpha.usernameIV);
         break;
       four:
       case 4:
         if (widget.alpha.ip.isEmpty) continue cero;
         _showValue = 4;
         _subtitle = 'IP';
-        return cripto.doDecrypt(widget.alpha.ip, widget.alpha.ipIV);
+        return _cripto.doDecrypt(widget.alpha.ip, widget.alpha.ipIV);
         break;
       cero:
       default:
@@ -114,30 +115,6 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         _subtitle = '';
         return widget.alpha.title;
     }
-  }
-
-  Column _setTitle() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          _title(),
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w300,
-            color: Colors.black,
-          ),
-        ),
-        if (_showValue != 0)
-          Text(
-            _subtitle,
-            style: TextStyle(color: Colors.grey),
-          ),
-      ],
-    );
   }
 
   Color _setWarningColor() {
@@ -154,13 +131,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         : Colors.grey;
   }
 
-  void _switchShowValue() {
-    if (_showValue > 4)
-      _showValue = 0;
-    else
-      _showValue++;
-    setState(() {});
-  }
+  void _switchShowValue() => setState(() {
+        if (_showValue > 4)
+          _showValue = 0;
+        else
+          _showValue++;
+      });
 
   void _showPassLongPressed() => Navigator.push(
         context,
@@ -168,6 +144,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           builder: (context) => AlphaViewScreen(alpha: widget.alpha),
         ),
       ).then((_) => widget.onReturn());
+
+  @override
+  void initState() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +177,27 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
             ),
           ),
         ),
-        title: _setTitle(),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _setTitleSubtitle(),
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
+              ),
+            ),
+            if (_showValue != 0)
+              Text(
+                _subtitle,
+                style: TextStyle(color: Colors.grey),
+              ),
+          ],
+        ),
         onTap: _onTap,
         trailing: Padding(
           padding: const EdgeInsets.all(4.0),
