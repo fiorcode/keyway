@@ -25,6 +25,14 @@ class DashboardScreen extends StatelessWidget {
           padding: EdgeInsets.all(16.0),
           children: [
             DashboardCard(
+              icon: Icon(Icons.storage, color: _primary, size: 64),
+              title: Text(
+                'Data',
+                style: TextStyle(color: _primary, fontSize: 20),
+              ),
+              goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
+            ),
+            DashboardCard(
               icon: Icon(Icons.cloud_upload, color: _primary, size: 64),
               title: Text(
                 'Backup',
@@ -32,14 +40,6 @@ class DashboardScreen extends StatelessWidget {
               ),
               goTo: () =>
                   Navigator.of(context).pushNamed(BackupScreen.routeName),
-            ),
-            DashboardCard(
-              icon: Icon(Icons.storage, color: _primary, size: 64),
-              title: Text(
-                'Data',
-                style: TextStyle(color: _primary, fontSize: 20),
-              ),
-              goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
             ),
             DashboardCard(
               icon:
