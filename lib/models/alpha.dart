@@ -1,3 +1,5 @@
+import 'package:keyway/models/old_password_pin.dart';
+
 import 'item.dart';
 import 'old_alpha.dart';
 
@@ -82,7 +84,7 @@ class Alpha extends Item {
   }
 
   Map<String, dynamic> toMap() {
-    var map = <String, dynamic>{
+    Map<String, dynamic> map = <String, dynamic>{
       'title': title,
       'username': username,
       'username_iv': usernameIV,
@@ -167,5 +169,29 @@ class Alpha extends Item {
     } else
       _old.pin = '';
     return _old;
+  }
+
+  copyPasswordValues(OldPasswrodPin opp) {
+    opp.passwordPin = this.password;
+    opp.passwordPinIv = this.passwordIV;
+    opp.passwordPinHash = this.passwordHash;
+    opp.passwordPinDate = this.passwordDate;
+    opp.passwordPinLapse = this.passwordLapse;
+    opp.passwordPinStatus = this.passwordStatus;
+    opp.passwordPinLevel = this.passwordLevel;
+    opp.type = 'password';
+    opp.itemId = this.id;
+  }
+
+  copyPinValues(OldPasswrodPin opp) {
+    opp.passwordPin = this.pin;
+    opp.passwordPinIv = this.pinIV;
+    opp.passwordPinHash = this.pinHash;
+    opp.passwordPinDate = this.pinDate;
+    opp.passwordPinLapse = this.pinLapse;
+    opp.passwordPinStatus = this.pinStatus;
+    opp.passwordPinLevel = '';
+    opp.type = 'PIN';
+    opp.itemId = this.id;
   }
 }
