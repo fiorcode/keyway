@@ -82,6 +82,9 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getById(DBHelper.alphaTable, a.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
+        if (_prev.passwordHash != a.passwordHash) {
+          // HERE
+        }
         OldAlpha _oldAlpha = _prev.saveOld(a);
         if (_oldAlpha != null) {
           await DBHelper.insert(DBHelper.oldAlphaTable, _oldAlpha.toMap());
