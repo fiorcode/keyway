@@ -5,18 +5,18 @@ import 'package:keyway/models/deleted_alpha.dart';
 import 'package:keyway/screens/item_history_screen.dart';
 
 class AlphaHistoryListCard extends StatelessWidget {
-  const AlphaHistoryListCard({Key key, this.item, this.onReturn})
+  const AlphaHistoryListCard({Key key, this.alpha, this.onReturn})
       : super(key: key);
 
-  final Item item;
+  final Item alpha;
   final Function onReturn;
 
   _onTap(BuildContext context) {
     int _id;
-    if (item is DeletedAlpha)
-      _id = (item as DeletedAlpha).itemId;
+    if (alpha is DeletedAlpha)
+      _id = (alpha as DeletedAlpha).itemId;
     else
-      _id = item.id;
+      _id = alpha.id;
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -26,7 +26,8 @@ class AlphaHistoryListCard extends StatelessWidget {
   }
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(item.color);
+    if (alpha.colorLetter >= 0) return Color(alpha.colorLetter);
+    Color _color = Color(alpha.color);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105) ? Colors.white : Colors.black;
@@ -34,7 +35,7 @@ class AlphaHistoryListCard extends StatelessWidget {
 
   Text _setTitle() {
     return Text(
-      item.title,
+      alpha.title,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       style: TextStyle(
@@ -56,10 +57,11 @@ class AlphaHistoryListCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: item.color != null ? Color(item.color) : Colors.grey,
+          backgroundColor:
+              alpha.color != null ? Color(alpha.color) : Colors.grey,
           child: Text(
-            item.title != null ?? item.title.isNotEmpty
-                ? item.title.substring(0, 1).toUpperCase()
+            alpha.title != null ?? alpha.title.isNotEmpty
+                ? alpha.title.substring(0, 1).toUpperCase()
                 : '',
             style: TextStyle(
               fontSize: 24,
