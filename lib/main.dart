@@ -7,7 +7,7 @@ import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'screens/alpha_edit_screen.dart';
 import 'screens/alpha_view_screen.dart';
-import 'screens/items_history_screen.dart';
+import 'screens/old_passwords_pins_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
@@ -55,7 +55,7 @@ class MyApp extends StatelessWidget {
           AlphaViewScreen.routeName: (ctx) => AlphaViewScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
-          ItemsHistoryScreen.routeName: (ctx) => ItemsHistoryScreen(),
+          OldPasswordsPinsScreen.routeName: (ctx) => OldPasswordsPinsScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           DeletedItemsScreen.routeName: (ctx) => DeletedItemsScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
