@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/helpers/warning_helper.dart';
 import 'package:keyway/screens/deleted_items_screen.dart';
-import 'package:keyway/screens/items_history_screen.dart';
+import 'package:keyway/screens/old_passwords_pins_screen.dart';
 import 'package:keyway/screens/splash_screen.dart';
 import 'package:keyway/screens/tags_screen.dart';
 
@@ -205,14 +205,14 @@ class _DataScreenState extends State<DataScreen> {
                     primary: Colors.white,
                   ),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(ItemsHistoryScreen.routeName),
+                      .pushNamed(OldPasswordsPinsScreen.routeName),
                   icon: Icon(
                     Icons.history,
                     color: Theme.of(context).primaryColor,
                     size: 32,
                   ),
                   label: Text(
-                    'Items History',
+                    'Old Passwords/Pins',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.w800,
