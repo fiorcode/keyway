@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:keyway/models/old_alpha.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-// import 'package:keyway/screens/old_alpha_view_screen.dart';
 
 class OldAlphaListTile extends StatefulWidget {
   const OldAlphaListTile({Key key, this.oldAlpha, this.onReturn})
@@ -97,13 +96,6 @@ class _OldAlphaListTileState extends State<OldAlphaListTile> {
         : Colors.grey;
   }
 
-  void _switchShowValue() => setState(() {
-        if (_showValue > 4)
-          _showValue = 0;
-        else
-          _showValue++;
-      });
-
   void _delete() async {
     await _items.deleteOldAlpha(widget.oldAlpha);
     widget.onReturn();
@@ -190,21 +182,6 @@ class _OldAlphaListTileState extends State<OldAlphaListTile> {
                   onPressed: _delete,
                 ),
               ),
-            if (_showValue == 0) SizedBox(width: 4),
-            SizedBox(
-              height: 48,
-              width: 48,
-              child: FloatingActionButton(
-                backgroundColor: _setWarningColor(),
-                child: Icon(
-                  Icons.remove_red_eye_outlined,
-                  color: _setIconColor(),
-                  size: 24,
-                ),
-                heroTag: null,
-                onPressed: _switchShowValue,
-              ),
-            ),
           ],
         ),
       ),
