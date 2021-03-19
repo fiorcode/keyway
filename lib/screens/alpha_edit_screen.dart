@@ -41,7 +41,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _ipCtrler = TextEditingController();
-  final _longTextCtrler = TextEditingController();
+  final _longCtrler = TextEditingController();
 
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
@@ -95,7 +95,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
           _ip = true;
         }
         if (_alpha.longText.isNotEmpty) {
-          _longTextCtrler.text =
+          _longCtrler.text =
               _cripto.doDecrypt(_alpha.longText, _alpha.longTextIV);
           _longText = true;
         }
@@ -110,7 +110,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
         _ipCtrler.text.isNotEmpty ||
-        _longTextCtrler.text.isNotEmpty;
+        _longCtrler.text.isNotEmpty;
   }
 
   bool _wasChanged() {
@@ -132,29 +132,24 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   void _save() async {
     try {
       _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
-
       _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
       if (_alpha.passwordHash != widget.alpha.passwordHash) {
         _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-        _alpha.passwordDate = DateTime.now().toUtc().toIso8601String();
         if (_repeatedPasswordWarning) if (await _checkPassStatus()) return;
+        _alpha.passwordDate = DateTime.now().toUtc().toIso8601String();
       } else {
         if (_repeatedPasswordWarning) if (await _checkPassRepeated()) return;
       }
-
       _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
       if (_alpha.pinHash != widget.alpha.pinHash) {
         _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-        _alpha.pinDate = DateTime.now().toUtc().toIso8601String();
         if (_repeatedPinWarning) if (await _checkPinStatus()) return;
+        _alpha.pinDate = DateTime.now().toUtc().toIso8601String();
       } else {
         if (_repeatedPinWarning) if (await _checkPinRepeated()) return;
       }
-
       _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
-      _alpha.longText =
-          _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
-
+      _alpha.longText = _cripto.doCrypt(_longCtrler.text, _alpha.longTextIV);
       if (_wasChanged())
         _items.updateAlpha(_alpha).then((_) => Navigator.of(context).pop());
       else
@@ -242,7 +237,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   void _longTextSwitch() {
     setState(() {
-      _longTextCtrler.clear();
+      _longCtrler.clear();
       _longText = !_longText;
     });
   }
@@ -274,7 +269,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     _passCtrler.dispose();
     _pinCtrler.dispose();
     _ipCtrler.dispose();
-    _longTextCtrler.dispose();
+    _longCtrler.dispose();
     _passFocusNode.dispose();
     super.dispose();
   }
@@ -496,7 +491,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Container(
                         height: 192.0,
-                        child: LongTextTextField(_longTextCtrler),
+                        child: LongTextTextField(_longCtrler),
                       ),
                     ),
                   TagsListView(item: _alpha),
