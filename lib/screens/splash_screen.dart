@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
-// import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/screens/items_screen.dart';
 import 'package:keyway/screens/set_password_screen.dart';
 
@@ -14,19 +14,19 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   CriptoProvider _cripto;
-  // ItemProvider _item;
+  ItemProvider _item;
   Future<void> _firstRun;
 
   Future<void> _checkFirstRun() async {
     if (await _cripto.isMasterKey()) {
-      // _item.fetchItems('').then((value) {
-      //   if (_item.items.length <= 0) {
-      //     _item.mockData(_cripto).then((value) => Navigator.of(context)
-      //         .pushReplacementNamed(ItemsListScreen.routeName));
-      //   } else {
-      //     Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
-      //   }
-      // });
+      _item.fetchItems('').then((value) {
+        if (_item.items.length <= 0) {
+          _item.mockData(_cripto).then((value) => Navigator.of(context)
+              .pushReplacementNamed(ItemsListScreen.routeName));
+        } else {
+          Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+        }
+      });
       Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } else {
       Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
@@ -41,7 +41,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    // _item = Provider.of<ItemProvider>(context, listen: false);
+    _item = Provider.of<ItemProvider>(context, listen: false);
     _firstRun = _checkFirstRun();
     super.didChangeDependencies();
   }
