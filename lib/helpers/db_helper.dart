@@ -7,7 +7,6 @@ import 'package:sqflite/sqlite_api.dart';
 class DBHelper {
   static const String userDataTable = "user_data";
   static const String alphaTable = "alpha";
-  static const String oldAlphaTable = "old_alpha";
   static const String oldPasswordPinTable = "old_password_pin";
   static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
@@ -19,7 +18,7 @@ class DBHelper {
       onCreate: (db, version) async {
         await db.execute(createAlphaTable);
         await db.execute(createUserDataTable);
-        await db.execute(createOldAlphaTable);
+        await db.execute(createOldPasswordPinTable);
         await db.execute(createDeletedAlphaTable);
         await db.execute(createTagTable);
       },
@@ -131,9 +130,16 @@ class DBHelper {
         SET password_status = ? 
         WHERE password_hash = ? AND password_status = ? 
         AND 1 = (SELECT COUNT(*) FROM $alphaTable WHERE password_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $oldAlphaTable WHERE password_hash = ?) 
+        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE password_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE password_hash = ?)''',
-        ['', '$passwordHash', 'REPEATED', '$passwordHash'],
+        [
+          '',
+          '$passwordHash',
+          'REPEATED',
+          '$passwordHash',
+          '$passwordHash',
+          '$passwordHash'
+        ],
       );
 
   static Future<int> setPinRepeted(String table, String pinHash) async =>
@@ -152,9 +158,9 @@ class DBHelper {
         SET pin_status = ? 
         WHERE pin_hash = ? AND pin_status = ? 
         AND 1 = (SELECT COUNT(*) FROM $alphaTable WHERE pin_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $oldAlphaTable WHERE pin_hash = ?) 
+        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE pin_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE pin_hash = ?)''',
-        ['', '$pinHash', 'REPEATED', '$pinHash'],
+        ['', '$pinHash', 'REPEATED', '$pinHash', '$pinHash', '$pinHash'],
       );
 
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
@@ -169,7 +175,7 @@ class DBHelper {
       $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.long_text, $alphaTable.long_text_iv,
       $alphaTable.date, $alphaTable.date_short, $alphaTable.color, $alphaTable.color_letter
       FROM $alphaTable
-      JOIN $oldAlphaTable ON $alphaTable.id = $oldAlphaTable.item_id
+      JOIN $oldPasswordPinTable ON $alphaTable.id = $oldPasswordPinTable.item_id
       GROUP BY $alphaTable.id''');
 
 //LEFT JOIN??
@@ -186,7 +192,7 @@ class DBHelper {
         $deletedAlphaTable.date, $deletedAlphaTable.date_short, $deletedAlphaTable.date_deleted, 
         $deletedAlphaTable.color, $deletedAlphaTable.color_letter, $deletedAlphaTable.item_id         
         FROM $deletedAlphaTable 
-        JOIN $oldAlphaTable ON $deletedAlphaTable.item_id = $oldAlphaTable.item_id 
+        JOIN $oldPasswordPinTable ON $deletedAlphaTable.item_id = $oldPasswordPinTable.item_id 
         GROUP BY $deletedAlphaTable.id''');
 
   static Future<void> removeTag(String tag) async =>
@@ -254,37 +260,6 @@ class DBHelper {
     password_pin_change TEXT,
     type TEXT,
     item_id INTEGER)''';
-
-  static const createOldAlphaTable = '''CREATE TABLE $oldAlphaTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,
-    username TEXT,
-    username_iv TEXT,
-    password TEXT,
-    password_iv TEXT,
-    password_hash TEXT,
-    password_date TEXT,
-    password_lapse INTEGER,
-    password_status TEXT,
-    password_level TEXT,
-    password_change TEXT,
-    pin TEXT,
-    pin_iv TEXT,
-    pin_hash TEXT,
-    pin_date TEXT,
-    pin_lapse INTEGER,
-    pin_status TEXT,
-    pin_change TEXT,
-    ip TEXT,
-    ip_iv TEXT,
-    long_text TEXT,
-    long_text_iv TEXT,
-    date TEXT,
-    date_short TEXT,
-    color INTEGER,
-    color_letter INTEGER,
-    item_id INTEGER,
-    tags TEXT)''';
 
   static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
