@@ -1,7 +1,5 @@
-import 'package:keyway/models/old_password_pin.dart';
-
 import 'item.dart';
-import 'old_alpha.dart';
+import 'old_password_pin.dart';
 
 class Alpha extends Item {
   String username;
@@ -144,31 +142,6 @@ class Alpha extends Item {
       colorLetter: this.colorLetter,
       tags: this.tags,
     );
-  }
-
-  OldAlpha saveOld(Alpha a) {
-    if (this.passwordHash == a.passwordHash && this.pinHash == a.pinHash)
-      return null;
-    OldAlpha _old = OldAlpha.fromAlpha(this);
-    if (this.passwordHash != a.passwordHash) {
-      if (a.password == '')
-        _old.passwordChange = 'deleted';
-      else if (this.password == '')
-        _old.passwordChange = 'added';
-      else
-        _old.passwordChange = 'updated';
-    } else
-      _old.password = '';
-    if (this.pinHash != a.pinHash) {
-      if (a.pin == '')
-        _old.pinChange = 'deleted';
-      else if (this.pin == '')
-        _old.pinChange = 'added';
-      else
-        _old.pinChange = 'updated';
-    } else
-      _old.pin = '';
-    return _old;
   }
 
   copyPasswordValues(OldPasswrodPin opp) {
