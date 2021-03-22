@@ -1,21 +1,26 @@
 import 'package:flutter/material.dart';
 
+import 'dart:math';
+import 'package:intl/intl.dart';
+import 'package:encrypt/encrypt.dart' as e;
+import 'package:keyway/providers/cripto_provider.dart';
+
 import '../helpers/db_helper.dart';
 import '../models/alpha.dart';
 import '../models/deleted_alpha.dart';
-import '../models/old_alpha.dart';
+import '../models/old_password_pin.dart';
 import '../models/username.dart';
 import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
   List<dynamic> _items = [];
   List<dynamic> _itemsWithOlds = [];
-  List<OldAlpha> _itemOlds = [];
+  List<OldPasswrodPin> _itemOlds = [];
   List<DeletedAlpha> _deletedItems = [];
 
   List<dynamic> get items => [..._items];
   List<dynamic> get itemsWithOlds => [..._itemsWithOlds];
-  List<OldAlpha> get itemOlds => [..._itemOlds];
+  List<OldPasswrodPin> get itemOlds => [..._itemOlds];
   List<DeletedAlpha> get deletedItems => [..._deletedItems];
 
   Future<void> fetchItems(String title) async {
@@ -33,11 +38,11 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> fetchItemsWithOlds() async {
-    Iterable<OldAlpha> _iterIWH;
+    Iterable<Alpha> _iterIWH;
     Iterable<DeletedAlpha> _iterDIWH;
     _itemsWithOlds.clear();
     await DBHelper.getAlphaWithOlds().then((data) {
-      _iterIWH = data.map((e) => OldAlpha.fromMap(e));
+      _iterIWH = data.map((e) => Alpha.fromMap(e));
     });
     _itemsWithOlds.addAll(_iterIWH.toList());
     await DBHelper.getDeletedAlphaWithOlds().then((data) {
@@ -48,13 +53,13 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> fetchItemOlds(int itemId) async {
-    Iterable<OldAlpha> _iterIH;
-    await DBHelper.getByValue(DBHelper.oldAlphaTable, 'item_id', itemId)
+    Iterable<OldPasswrodPin> _iterIH;
+    await DBHelper.getByValue(DBHelper.oldPasswordPinTable, 'item_id', itemId)
         .then((data) {
       _itemOlds.clear();
-      _iterIH = data.map((e) => OldAlpha.fromMap(e));
+      _iterIH = data.map((e) => OldPasswrodPin.fromMap(e));
       _itemOlds.addAll(_iterIH.toList());
-      _itemOlds.sort((a, b) => b.date.compareTo(a.date));
+      _itemOlds.sort((a, b) => b.passwordPinDate.compareTo(a.passwordPinDate));
     });
   }
 
@@ -82,21 +87,28 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getById(DBHelper.alphaTable, a.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
-        if (_prev.passwordHash != a.passwordHash) {
-          // HERE
+        if (_prev.passwordHash != a.passwordHash && _prev.password != '') {
+          OldPasswrodPin _oldPass = OldPasswrodPin();
+          _prev.copyPasswordValues(_oldPass);
+          await DBHelper.insert(DBHelper.oldPasswordPinTable, _oldPass.toMap());
         }
-        OldAlpha _oldAlpha = _prev.saveOld(a);
-        if (_oldAlpha != null) {
-          await DBHelper.insert(DBHelper.oldAlphaTable, _oldAlpha.toMap());
+        if (_prev.pinHash != a.pinHash && _prev.pin != '') {
+          OldPasswrodPin _oldPin = OldPasswrodPin();
+          _prev.copyPinValues(_oldPin);
+          await DBHelper.insert(DBHelper.oldPasswordPinTable, _oldPin.toMap());
         }
       },
     ).then((_) async {
       await DBHelper.update(DBHelper.alphaTable, a.toMap()).then((_) async {
         if (a.passwordStatus == 'REPEATED') {
           await DBHelper.setPassRepeted(DBHelper.alphaTable, a.passwordHash);
+          await DBHelper.setPassRepeted(
+              DBHelper.oldPasswordPinTable, a.passwordHash);
         }
         if (a.pinStatus == 'REPEATED') {
           await DBHelper.setPinRepeted(DBHelper.alphaTable, a.pinHash);
+          await DBHelper.setPassRepeted(
+              DBHelper.oldPasswordPinTable, a.pinHash);
         }
         if (_prev.passwordHash != a.passwordHash) {
           await DBHelper.unsetPassRepeted(
@@ -120,8 +132,8 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
-  Future<void> deleteOldAlpha(OldAlpha old) async {
-    await DBHelper.delete(DBHelper.oldAlphaTable, old.id).then(
+  Future<void> deleteOldPassPin(OldPasswrodPin old) async {
+    await DBHelper.delete(DBHelper.oldPasswordPinTable, old.id).then(
       (_) => _itemOlds.removeWhere((e) => e.id == old.id),
     );
   }
@@ -131,7 +143,7 @@ class ItemProvider with ChangeNotifier {
     if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
-            DBHelper.oldAlphaTable, 'password_hash', hash))
+            DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
             DBHelper.deletedAlphaTable, 'password_hash', hash))
@@ -143,7 +155,8 @@ class ItemProvider with ChangeNotifier {
     if (hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash))
         .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin_hash', hash))
+    if ((await DBHelper.getByValue(
+            DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
             DBHelper.deletedAlphaTable, 'pin_hash', hash))
@@ -157,7 +170,8 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash)
         .then((_list) {
       _listAllTables.addAll(_list);
-      DBHelper.getByValue(DBHelper.oldAlphaTable, 'password_hash', hash)
+      DBHelper.getByValue(
+              DBHelper.oldPasswordPinTable, 'password_pin_hash', hash)
           .then((_list) {
         _listAllTables.addAll(_list);
         DBHelper.getByValue(DBHelper.deletedAlphaTable, 'password_hash', hash)
@@ -173,7 +187,8 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash)
         .then((_list) {
       _listAllTables.addAll(_list);
-      DBHelper.getByValue(DBHelper.oldAlphaTable, 'pin_hash', hash)
+      DBHelper.getByValue(
+              DBHelper.oldPasswordPinTable, 'password_pin_hash', hash)
           .then((_list) {
         _listAllTables.addAll(_list);
         DBHelper.getByValue(DBHelper.deletedAlphaTable, 'pin_hash', hash)
@@ -220,124 +235,113 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  // Future<void> mockData(CriptoProvider _cripto) async {
-  //   List<String> _titles = [
-  //     'Facebook',
-  //     'Instagram',
-  //     'Spotify',
-  //     'Github',
-  //     'Discord',
-  //     'Google',
-  //     'Steam',
-  //     'Hotmail',
-  //     'Siglo21',
-  //     'BNA Pin',
-  //     'BBVA Pin',
-  //     'SantaCruz Pin',
-  //     'Windows Pin',
-  //   ];
-  //   List<String> _users = [
-  //     'FacebookUser',
-  //     'InstagramUser',
-  //     'SpotifyUser',
-  //     'GithubUser',
-  //     'DiscordUser',
-  //     'GoogleUser',
-  //     'SteamUser',
-  //     'HotmailUser',
-  //     'Siglo21User',
-  //     'BNA User HB',
-  //     'BBVA User HB',
-  //     'SantaCruz User HB',
-  //     '',
-  //   ];
-  //   List<String> _passes = [
-  //     'FacebookPass',
-  //     'InstagramPass',
-  //     'SpotifyPass',
-  //     'GithubPass',
-  //     'DiscordPass',
-  //     'GooglePass',
-  //     'SteamPass',
-  //     'HotmailPass',
-  //     'Siglo21Pass',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //   ];
-  //   List<String> _pins = [
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '',
-  //     '2518',
-  //     '4592',
-  //     '6275',
-  //     '3358',
-  //     '9967',
-  //     '1558',
-  //   ];
-  //   List<Tag> _tags = [
-  //     Tag('personal'),
-  //     Tag('shared'),
-  //     Tag('work'),
-  //     Tag('family'),
-  //     Tag('social'),
-  //     Tag('gaming'),
-  //   ];
-  //   _tags.forEach(
-  //       (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
-  //   Random _ran = Random(59986674);
-  //   DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
-  //   await _cripto.unlock('Qwe123!');
-  //   for (int i = 0; i < _titles.length; i++) {
-  //     String _tagsList = '';
-  //     _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
-  //     String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
-  //     if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
-  //     DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
-  //     String _ivUser = e.IV.fromSecureRandom(16).base16;
-  //     String _ivPass = e.IV.fromSecureRandom(16).base16;
-  //     String _ivPin = e.IV.fromSecureRandom(16).base16;
-  //     insertAlpha(
-  //       Alpha(
-  //         title: _titles[i],
-  //         username: _cripto.doCrypt(_users[i], _ivUser),
-  //         usernameIV: _users[i].isEmpty ? '' : _ivUser,
-  //         password: _cripto.doCrypt(_passes[i], _ivPass),
-  //         passwordIV: _passes[i].isEmpty ? '' : _ivPass,
-  //         passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
-  //         passwordStatus: _passes[i].isEmpty ? '' : '',
-  //         passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
-  //         passwordLapse: _passes[i].isEmpty ? '' : '',
-  //         passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
-  //         pin: _cripto.doCrypt(_pins[i], _ivPin),
-  //         pinIV: _pins[i].isEmpty ? '' : _ivPin,
-  //         pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
-  //         pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
-  //         pinLapse: _pins[i].isEmpty ? '' : '',
-  //         pinStatus: _pins[i].isEmpty ? '' : '',
-  //         ip: '',
-  //         ipIV: '',
-  //         longText: '',
-  //         longTextIV: '',
-  //         date: _d.toIso8601String(),
-  //         shortDate: dateFormat.format(_d),
-  //         color: _ran.nextInt(4294967290),
-  //         colorLetter: _ran.nextInt(4294967290),
-  //         tags: _tagsList,
-  //       ),
-  //     );
-  //   }
-  // }
+  Future<void> mockData(CriptoProvider _cripto) async {
+    List<String> _titles = [
+      'Facebook',
+      'Instagram',
+      'Spotify',
+      'Github',
+      'Discord',
+      'Google',
+      'Steam',
+      'Hotmail',
+      'Siglo21',
+    ];
+    List<String> _users = [
+      'FacebookUser',
+      'InstagramUser',
+      'SpotifyUser',
+      'GithubUser',
+      'DiscordUser',
+      'GoogleUser',
+      'SteamUser',
+      'HotmailUser',
+      'Siglo21User',
+    ];
+    List<String> _passes = [
+      'FacebookPass',
+      'InstagramPass',
+      'SpotifyPass',
+      'GithubPass',
+      'DiscordPass',
+      'GooglePass',
+      'SteamPass',
+      'HotmailPass',
+      'Siglo21Pass',
+    ];
+    List<int> _colors = [
+      Colors.lightBlue.value,
+      Colors.pink.value,
+      Colors.green.value,
+      Colors.deepPurple.value,
+      Colors.purple.value,
+      Colors.deepOrange.value,
+      Colors.blue.value,
+      Colors.teal.value,
+      Colors.lightGreen.value,
+    ];
+    List<String> _pins = [
+      '',
+      '',
+      '3358',
+      '',
+      '9967',
+      '2518',
+      '',
+      '',
+      '',
+    ];
+    List<Tag> _tags = [
+      Tag('personal'),
+      Tag('shared'),
+      Tag('work'),
+      Tag('family'),
+      Tag('social'),
+      Tag('gaming'),
+    ];
+    _tags.forEach(
+        (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
+    Random _ran = Random(59986674);
+    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
+    await _cripto.unlock('Qwe123!');
+    for (int i = 0; i < _titles.length; i++) {
+      String _tagsList = '';
+      _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
+      String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
+      if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
+      DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
+      String _ivUser = e.IV.fromSecureRandom(16).base16;
+      String _ivPass = e.IV.fromSecureRandom(16).base16;
+      String _ivPin = e.IV.fromSecureRandom(16).base16;
+      insertAlpha(
+        Alpha(
+          title: _titles[i],
+          username: _cripto.doCrypt(_users[i], _ivUser),
+          usernameIV: _users[i].isEmpty ? '' : _ivUser,
+          password: _cripto.doCrypt(_passes[i], _ivPass),
+          passwordIV: _passes[i].isEmpty ? '' : _ivPass,
+          passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
+          passwordStatus: _passes[i].isEmpty ? '' : '',
+          passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
+          passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
+          pin: _cripto.doCrypt(_pins[i], _ivPin),
+          pinIV: _pins[i].isEmpty ? '' : _ivPin,
+          pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
+          pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
+          pinStatus: _pins[i].isEmpty ? '' : '',
+          ip: '',
+          ipIV: '',
+          longText: '',
+          longTextIV: '',
+          date: _d.toIso8601String(),
+          shortDate: dateFormat.format(_d),
+          color: _colors[i],
+          colorLetter: -1,
+          tags: _tagsList,
+        ),
+      );
+    }
+  }
 
   void dispose() {
     super.dispose();
