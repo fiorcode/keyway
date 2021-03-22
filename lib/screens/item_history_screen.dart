@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/widgets/old_alpha_list_tile.dart';
+import 'package:keyway/models/old_password_pin.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 
@@ -22,23 +23,21 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   ItemProvider _items;
   CriptoProvider _cripto;
   bool _unlocking = false;
-  Future getItemOlds;
+  Future _getItemOlds;
+  DateFormat _df = DateFormat('dd/MM/yyyy');
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<void> _getItemHistory() async =>
       await _items.fetchItemOlds(widget.itemId);
 
-  onReturn() {
-    getItemOlds = _getItemHistory();
-    setState(() {});
-  }
+  void _delete(OldPasswrodPin old) async => await _items.deleteOldPassPin(old);
 
   @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context, listen: false);
-    getItemOlds = _getItemHistory();
+    _getItemOlds = _getItemHistory();
     super.didChangeDependencies();
   }
 
@@ -70,7 +69,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                   ),
       ),
       body: FutureBuilder(
-        future: getItemOlds,
+        future: _getItemOlds,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -89,9 +88,37 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                             padding: EdgeInsets.all(12.0),
                             itemCount: _items.itemOlds.length,
                             itemBuilder: (ctx, i) {
-                              return OldAlphaListTile(
-                                oldAlpha: _items.itemOlds[i],
-                                onReturn: onReturn,
+                              return ListTile(
+                                leading: Chip(
+                                  label: Text(
+                                    _df.format(
+                                      DateTime.parse(
+                                        _items.itemOlds[i].passwordPinDate,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  _cripto.doDecrypt(
+                                    _items.itemOlds[i].passwordPin,
+                                    _items.itemOlds[i].passwordPinIv,
+                                  ),
+                                ),
+                                trailing: SizedBox(
+                                  height: 48,
+                                  width: 48,
+                                  child: FloatingActionButton(
+                                    backgroundColor: Colors.red[300],
+                                    child: Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.white,
+                                      size: 24,
+                                    ),
+                                    heroTag: null,
+                                    onPressed: () =>
+                                        _delete(_items.itemOlds[i]),
+                                  ),
+                                ),
                               );
                             },
                             separatorBuilder: (context, index) {
