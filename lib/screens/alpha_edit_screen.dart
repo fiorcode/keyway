@@ -131,25 +131,52 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
   void _save() async {
     try {
+      DateTime _savingDate = DateTime.now().toUtc();
       _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
+
       _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
+
       if (_alpha.passwordHash != widget.alpha.passwordHash) {
+        if (_repeatedPasswordWarning) {
+          if (await _items.passUsed(_alpha.passwordHash)) {
+            bool _warning = false;
+            _warning = await WarningHelper.repeatedWarning(context, 'Password');
+            if (_warning) {
+              _alpha.passwordStatus = 'REPEATED';
+            } else {
+              return;
+            }
+          } else {
+            _alpha.passwordStatus = '';
+          }
+        }
         _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-        if (_repeatedPasswordWarning) if (await _checkPassStatus()) return;
-        _alpha.passwordDate = DateTime.now().toUtc().toIso8601String();
-      } else {
-        if (_repeatedPasswordWarning) if (await _checkPassRepeated()) return;
+        _alpha.passwordDate = _savingDate.toIso8601String();
       }
+
       _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
+
       if (_alpha.pinHash != widget.alpha.pinHash) {
+        if (_repeatedPinWarning) {
+          if (await _items.pinUsed(_alpha.pinHash)) {
+            bool _warning = false;
+            _warning = await WarningHelper.repeatedWarning(context, 'PIN');
+            if (_warning) {
+              _alpha.pinStatus = 'REPEATED';
+            } else {
+              return;
+            }
+          } else {
+            _alpha.pinStatus = '';
+          }
+        }
         _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-        if (_repeatedPinWarning) if (await _checkPinStatus()) return;
-        _alpha.pinDate = DateTime.now().toUtc().toIso8601String();
-      } else {
-        if (_repeatedPinWarning) if (await _checkPinRepeated()) return;
+        _alpha.pinDate = _savingDate.toIso8601String();
       }
+
       _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
       _alpha.longText = _cripto.doCrypt(_longCtrler.text, _alpha.longTextIV);
+
       if (_wasChanged())
         _items.updateAlpha(_alpha).then((_) => Navigator.of(context).pop());
       else
@@ -157,54 +184,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
-  }
-
-  Future<bool> _checkPassStatus() async {
-    if (await _items.isPasswordInDB(_alpha.passwordHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
-      _warning = _warning == null ? false : _warning;
-      if (_warning)
-        _alpha.passwordStatus = 'REPEATED';
-      else
-        return true;
-    }
-    return false;
-  }
-
-  Future<bool> _checkPassRepeated() async {
-    if (await _items.isPasswordRepeated(_alpha.passwordHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
-      _warning = _warning == null ? false : _warning;
-      if (_warning)
-        _alpha.passwordStatus = 'REPEATED';
-      else
-        return true;
-    }
-    return false;
-  }
-
-  Future<bool> _checkPinStatus() async {
-    if (await _items.isPinInDB(_alpha.pinHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
-      _warning = _warning == null ? false : _warning;
-      if (_warning)
-        _alpha.pinStatus = 'REPEATED';
-      else
-        return true;
-    }
-    return false;
-  }
-
-  Future<bool> _checkPinRepeated() async {
-    if (await _items.isPinRepeated(_alpha.pinHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
-      _warning = _warning == null ? false : _warning;
-      if (_warning)
-        _alpha.pinStatus = 'REPEATED';
-      else
-        return true;
-    }
-    return false;
   }
 
   void _usernameSwitch() {
