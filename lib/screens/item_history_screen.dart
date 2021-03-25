@@ -31,7 +31,11 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   Future<void> _getItemHistory() async =>
       await _items.fetchItemOlds(widget.itemId);
 
-  void _delete(OldPasswrodPin old) async => await _items.deleteOldPassPin(old);
+  void _delete(OldPasswrodPin old) async {
+    await _items.deleteOldPassPin(old);
+    _getItemOlds = _getItemHistory();
+    setState(() {});
+  }
 
   @override
   void didChangeDependencies() {
