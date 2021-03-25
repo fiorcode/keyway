@@ -4,25 +4,19 @@ class OldPasswrodPin {
   String passwordPinIv;
   String passwordPinHash;
   String passwordPinDate;
-  int passwordPinLapse;
-  String passwordPinStatus;
   String passwordPinLevel;
-  String passwordPinChange;
   String type;
   int itemId;
 
   OldPasswrodPin({
     this.id,
-    this.itemId,
     this.passwordPin,
-    this.passwordPinChange,
-    this.passwordPinDate,
-    this.passwordPinHash,
-    this.passwordPinLapse,
-    this.passwordPinLevel,
-    this.passwordPinStatus,
     this.passwordPinIv,
+    this.passwordPinHash,
+    this.passwordPinDate,
+    this.passwordPinLevel,
     this.type,
+    this.itemId,
   });
 
   OldPasswrodPin.fromMap(Map<String, dynamic> map) {
@@ -31,10 +25,7 @@ class OldPasswrodPin {
     this.passwordPinIv = map['password_pin_iv'];
     this.passwordPinHash = map['password_pin_hash'];
     this.passwordPinDate = map['password_pin_date'];
-    this.passwordPinLapse = map['password_pin_lapse'];
-    this.passwordPinStatus = map['password_pin_status'];
     this.passwordPinLevel = map['password_pin_level'];
-    this.passwordPinChange = map['password_pin_change'];
     this.type = map['type'];
     this.itemId = map['item_id'];
   }
@@ -45,10 +36,7 @@ class OldPasswrodPin {
       'password_pin_iv': this.passwordPinIv,
       'password_pin_hash': this.passwordPinHash,
       'password_pin_date': this.passwordPinDate,
-      'password_pin_lapse': this.passwordPinLapse,
-      'password_pin_status': this.passwordPinStatus,
       'password_pin_level': this.passwordPinLevel,
-      'password_pin_change': this.passwordPinChange,
       'type': this.type,
       'item_id': this.itemId,
     };
