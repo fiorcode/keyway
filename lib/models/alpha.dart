@@ -149,8 +149,6 @@ class Alpha extends Item {
     opp.passwordPinIv = this.passwordIV;
     opp.passwordPinHash = this.passwordHash;
     opp.passwordPinDate = this.passwordDate;
-    opp.passwordPinLapse = this.passwordLapse;
-    opp.passwordPinStatus = this.passwordStatus;
     opp.passwordPinLevel = this.passwordLevel;
     opp.type = 'password';
     opp.itemId = this.id;
@@ -161,10 +159,8 @@ class Alpha extends Item {
     opp.passwordPinIv = this.pinIV;
     opp.passwordPinHash = this.pinHash;
     opp.passwordPinDate = this.pinDate;
-    opp.passwordPinLapse = this.pinLapse;
-    opp.passwordPinStatus = this.pinStatus;
     opp.passwordPinLevel = '';
-    opp.type = 'PIN';
+    opp.type = 'pin';
     opp.itemId = this.id;
   }
 }
