@@ -113,24 +113,23 @@ class DBHelper {
         whereArgs: [pin],
       );
 
-  static Future<int> setPassRepeted(String table, String passwordHash) async =>
+  static Future<int> setPassRepeted(String passwordHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
-        $table
+        $alphaTable
         SET password_status = ?
         WHERE password_hash = ? 
         AND password_status = ?''',
         ['REPEATED', '$passwordHash', ''],
       );
 
-  static Future<int> unsetPassRepeted(
-          String table, String passwordHash) async =>
+  static Future<int> unsetPassRepeted(String passwordHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE $alphaTable 
         SET password_status = ? 
         WHERE password_hash = ? AND password_status = ? 
         AND 1 = (SELECT COUNT(*) FROM $alphaTable WHERE password_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE password_hash = ?) 
+        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE password_pin_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE password_hash = ?)''',
         [
           '',
@@ -142,17 +141,17 @@ class DBHelper {
         ],
       );
 
-  static Future<int> setPinRepeted(String table, String pinHash) async =>
+  static Future<int> setPinRepeted(String pinHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
-        $table
+        $alphaTable
         SET pin_status = ?
         WHERE pin_hash = ? 
         AND pin_status = ?''',
         ['REPEATED', '$pinHash', ''],
       );
 
-  static Future<int> unsetPinRepeted(String table, String pinHash) async =>
+  static Future<int> unsetPinRepeted(String pinHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE $alphaTable 
         SET pin_status = ? 
@@ -178,7 +177,7 @@ class DBHelper {
       JOIN $oldPasswordPinTable ON $alphaTable.id = $oldPasswordPinTable.item_id
       GROUP BY $alphaTable.id''');
 
-//LEFT JOIN??
+  //LEFT JOIN??
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $deletedAlphaTable.id, $deletedAlphaTable.title,
@@ -254,10 +253,7 @@ class DBHelper {
     password_pin_iv TEXT,
     password_pin_hash TEXT,
     password_pin_date TEXT,
-    password_pin_lapse INTEGER,
-    password_pin_status TEXT,
     password_pin_level TEXT,
-    password_pin_change TEXT,
     type TEXT,
     item_id INTEGER)''';
 
