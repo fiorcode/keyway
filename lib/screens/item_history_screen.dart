@@ -108,6 +108,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                     _items.itemOlds[i].passwordPinIv,
                                   ),
                                 ),
+                                subtitle: Text(_items.itemOlds[i].type),
                                 trailing: SizedBox(
                                   height: 48,
                                   width: 48,
