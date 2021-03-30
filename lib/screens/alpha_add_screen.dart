@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/Cards/change_remainder_selection_card.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as e;
@@ -50,9 +51,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _ip = false;
   bool _longText = false;
   bool _repeatedPasswordWarning = true;
-  bool _usfulLifePassword = true;
+  bool _changeReminderPassword = true;
   bool _repeatedPinWarning = true;
-  bool _usfulLifePin = true;
+  bool _changeReminderPin = true;
   bool _viewUsersList = false;
   bool _unlocking = false;
 
@@ -313,41 +314,8 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             ),
                           ],
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Password useful life (days)'),
-                            Switch(
-                              activeColor: Colors.green,
-                              value: _usfulLifePassword,
-                              onChanged: (value) => setState(() {
-                                _usfulLifePassword = value;
-                                if (value)
-                                  _alpha.passwordLapse = 320;
-                                else
-                                  _alpha.passwordLapse = -1;
-                              }),
-                            ),
-                          ],
-                        ),
-                        if (_usfulLifePassword)
-                          SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              valueIndicatorTextStyle: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            child: Slider(
-                              min: 0,
-                              max: 320,
-                              divisions: 10,
-                              label: '${_alpha.passwordLapse.round()} days',
-                              value: _alpha.passwordLapse.toDouble(),
-                              onChanged: (v) => setState(
-                                  () => _alpha.passwordLapse = v.round()),
-                            ),
-                          ),
+                        if (_changeReminderPassword)
+                          ChangeReminderSelectionCard(alpha: _alpha),
                       ],
                     ),
                   if (_pin)
@@ -383,9 +351,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             Text('Pin useful life (days)'),
                             Switch(
                               activeColor: Colors.green,
-                              value: _usfulLifePin,
+                              value: _changeReminderPin,
                               onChanged: (value) => setState(() {
-                                _usfulLifePin = value;
+                                _changeReminderPin = value;
                                 if (value)
                                   _alpha.pinLapse = 320;
                                 else
@@ -394,7 +362,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             ),
                           ],
                         ),
-                        if (_usfulLifePin)
+                        if (_changeReminderPin)
                           SliderTheme(
                             data: SliderTheme.of(context).copyWith(
                               valueIndicatorTextStyle: TextStyle(
