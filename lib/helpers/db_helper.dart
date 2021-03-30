@@ -177,7 +177,6 @@ class DBHelper {
       JOIN $oldPasswordPinTable ON $alphaTable.id = $oldPasswordPinTable.item_id
       GROUP BY $alphaTable.id''');
 
-  //LEFT JOIN??
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
         $deletedAlphaTable.id, $deletedAlphaTable.title,
