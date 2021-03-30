@@ -119,6 +119,16 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
+  Future<void> deleteDeletedAlpha(DeletedAlpha a) async =>
+      await DBHelper.delete(DBHelper.deletedAlphaTable, a.id).then(
+        (_) async {
+          if (a.password.isNotEmpty)
+            await DBHelper.unsetPassRepeted(a.passwordHash);
+          if (a.pin.isNotEmpty) await DBHelper.unsetPinRepeted(a.pinHash);
+          _deletedItems.removeWhere((e) => e.id == a.id);
+        },
+      );
+
   Future<void> deleteOldPassPin(OldPasswrodPin old) async {
     await DBHelper.delete(DBHelper.oldPasswordPinTable, old.id).then(
       (_) async {
