@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
 import '../models/alpha.dart';
-import '../widgets/presets_wrap.dart';
 import '../widgets/unlock_container.dart';
 
 class AlphaViewScreen extends StatefulWidget {
@@ -30,6 +29,14 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
   bool _unlocking = false;
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
+
+  Color _setAvatarLetterColor() {
+    if (widget.alpha.colorLetter >= 0) return Color(widget.alpha.colorLetter);
+    Color _color = Color(widget.alpha.color);
+    double bgDelta =
+        _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
+    return (255 - bgDelta > 105) ? Colors.white : Colors.black;
+  }
 
   void _load() {
     setState(() {
@@ -59,7 +66,6 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
 
   @override
   void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _alpha = widget.alpha.clone();
     _load();
     super.initState();
@@ -69,11 +75,6 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   @override
@@ -105,30 +106,39 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    PresetsWrap(
-                      username: _username,
-                      password: _password,
-                      pin: _pin,
-                      ip: _ip,
-                      longText: _longText,
-                      usernameSwitch: null,
-                      passwordSwitch: null,
-                      pinSwitch: null,
-                      ipSwitch: null,
-                      longTextSwitch: null,
-                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 64,
                         vertical: 12,
                       ),
-                      child: FittedBox(
-                        fit: BoxFit.fitWidth,
-                        child: Text(
-                          widget.alpha.title,
-                          style: TextStyle(
-                            fontSize: 48,
-                            fontWeight: FontWeight.bold,
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: widget.alpha.color != null
+                              ? Color(widget.alpha.color)
+                              : Colors.grey,
+                          child: Text(
+                            widget.alpha.title != null ??
+                                    widget.alpha.title.isNotEmpty
+                                ? widget.alpha.title
+                                    .substring(0, 1)
+                                    .toUpperCase()
+                                : '',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              color: _setAvatarLetterColor(),
+                            ),
+                          ),
+                        ),
+                        title: FittedBox(
+                          fit: BoxFit.fitWidth,
+                          child: Text(
+                            widget.alpha.title,
+                            style: TextStyle(
+                              fontSize: 48,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -139,22 +149,12 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white38,
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                _alpha.username,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          child: Text(
+                            _alpha.username,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
@@ -165,22 +165,12 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         child: FittedBox(
                           fit: BoxFit.fitWidth,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.white38,
-                              border: Border.all(),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                _alpha.password,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                          child: Text(
+                            _alpha.password,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 36,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
