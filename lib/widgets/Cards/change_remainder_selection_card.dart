@@ -50,90 +50,113 @@ class _ChangeReminderSelectionCardState
                 spacing: 12.0,
                 children: [
                   if (!_custom)
-                    OutlinedButton(
-                      onPressed: () => setState(() {
-                        widget.alpha.passwordLapse = 32;
-                        _custom = false;
-                      }),
-                      child: Text(
+                    ChoiceChip(
+                      backgroundColor: Colors.grey,
+                      selected: widget.alpha.passwordLapse == 32,
+                      selectedColor: Colors.white,
+                      onSelected: (selected) => selected
+                          ? setState(() {
+                              widget.alpha.passwordLapse = 32;
+                              _custom = false;
+                            })
+                          : null,
+                      label: Text(
                         '32 Days',
                         style: TextStyle(
                           color: widget.alpha.passwordLapse == 32
                               ? Colors.grey
                               : Colors.white,
+                          fontWeight: widget.alpha.passwordLapse == 32
+                              ? FontWeight.bold
+                              : null,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: widget.alpha.passwordLapse == 32
-                            ? Colors.white
-                            : Colors.grey,
-                      ),
+                      elevation: widget.alpha.passwordLapse == 32 ? 8.0 : 0.0,
                     ),
                   if (!_custom)
-                    OutlinedButton(
-                      onPressed: () => setState(() {
-                        widget.alpha.passwordLapse = 96;
-                        _custom = false;
-                      }),
-                      child: Text(
+                    ChoiceChip(
+                      backgroundColor: Colors.grey,
+                      selected: widget.alpha.passwordLapse == 96,
+                      selectedColor: Colors.white,
+                      onSelected: (selected) => selected
+                          ? setState(() {
+                              widget.alpha.passwordLapse = 96;
+                              _custom = false;
+                            })
+                          : null,
+                      label: Text(
                         '96 Days',
                         style: TextStyle(
                           color: widget.alpha.passwordLapse == 96
                               ? Colors.grey
                               : Colors.white,
+                          fontWeight: widget.alpha.passwordLapse == 96
+                              ? FontWeight.bold
+                              : null,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: widget.alpha.passwordLapse == 96
-                            ? Colors.white
-                            : Colors.grey,
-                      ),
+                      elevation: widget.alpha.passwordLapse == 96 ? 8.0 : 0.0,
                     ),
                   if (!_custom)
-                    OutlinedButton(
-                      onPressed: () => setState(() {
-                        widget.alpha.passwordLapse = 192;
-                        _custom = false;
-                      }),
-                      child: Text(
+                    ChoiceChip(
+                      backgroundColor: Colors.grey,
+                      selected: widget.alpha.passwordLapse == 192,
+                      selectedColor: Colors.white,
+                      onSelected: (selected) => selected
+                          ? setState(() {
+                              widget.alpha.passwordLapse = 192;
+                              _custom = false;
+                            })
+                          : null,
+                      label: Text(
                         '192 Days',
                         style: TextStyle(
                           color: widget.alpha.passwordLapse == 192
                               ? Colors.grey
                               : Colors.white,
+                          fontWeight: widget.alpha.passwordLapse == 192
+                              ? FontWeight.bold
+                              : null,
                         ),
                       ),
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: widget.alpha.passwordLapse == 192
-                            ? Colors.white
-                            : Colors.grey,
+                      elevation: widget.alpha.passwordLapse == 192 ? 8.0 : 0.0,
+                    ),
+                  ChoiceChip(
+                    backgroundColor: Colors.grey,
+                    selected: _custom,
+                    selectedColor: Colors.white,
+                    onSelected: (selected) =>
+                        setState(() => _custom = selected),
+                    label: Text(
+                      'Custom',
+                      style: TextStyle(
+                        color: _custom ? Colors.grey : Colors.white,
+                        fontWeight: _custom ? FontWeight.bold : null,
                       ),
                     ),
-                  OutlinedButton(
-                    onPressed: () => setState(() => _custom = !_custom),
-                    child: Text('Custom'),
+                    elevation: _custom ? 8.0 : 0.0,
                   ),
                   if (_custom)
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
+                    Column(
                       children: [
+                        SizedBox(height: 8),
                         Text(
-                          '${widget.alpha.passwordLapse} Days',
-                          style: TextStyle(fontSize: 20),
+                          widget.alpha.passwordLapse.toString() + ' Days',
+                          style: TextStyle(fontSize: 32),
                         ),
-                        InkWell(
-                          child: Icon(Icons.plus_one),
-                          onTap: () => setState(
-                            () {
-                              widget.alpha.passwordLapse =
-                                  widget.alpha.passwordLapse + 1;
-                            },
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            valueIndicatorTextStyle: TextStyle(
+                              color: Colors.white,
+                            ),
                           ),
-                          onLongPress: () => setState(
-                            () {
-                              widget.alpha.passwordLapse =
-                                  widget.alpha.passwordLapse + 10;
-                            },
+                          child: Slider(
+                            min: 0,
+                            max: 364,
+                            value: widget.alpha.passwordLapse.toDouble(),
+                            onChanged: (value) => setState(
+                              () => widget.alpha.passwordLapse = value.round(),
+                            ),
                           ),
                         ),
                       ],
