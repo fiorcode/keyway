@@ -61,6 +61,14 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
+            Text(
+              'Preview',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
             Row(
               children: [
                 Expanded(
@@ -164,19 +172,15 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                 ),
               ),
             ),
-            SizedBox(height: 12),
             _editingBackground
                 ? RedColorPicker(_fillColor, _setFillColor)
                 : LetterRedColorPicker(_fontColor, _setFontColor),
-            SizedBox(height: 12),
             _editingBackground
                 ? GreenColorPicker(_fillColor, _setFillColor)
                 : LetterGreenColorPicker(_fontColor, _setFontColor),
-            SizedBox(height: 12),
             _editingBackground
                 ? BlueColorPicker(_fillColor, _setFillColor)
                 : LetterBlueColorPicker(_fontColor, _setFontColor),
-            SizedBox(height: 12),
             _editingBackground
                 ? ColorAlphaPicker(_fillColor, _setFillColor)
                 : LetterColorAlphaPicker(_fontColor, _setFontColor),
