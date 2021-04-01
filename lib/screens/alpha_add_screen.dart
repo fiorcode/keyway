@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/change_remainder_selection_card.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as e;
@@ -11,17 +10,19 @@ import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
+import '../widgets/check_board.dart';
+import '../widgets/unlock_container.dart';
+import '../widgets/tags_listview.dart';
 import '../widgets/TextFields/ip_text_field.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
 import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/TextFields/long_text_text_field.dart';
-import '../widgets/check_board.dart';
-import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
-import '../widgets/tags_listview.dart';
+import '../widgets/Cards/password_change_reminder_card.dart';
+import '../widgets/Cards/pin_change_reminder_card.dart';
 
 class AlphaAddScreen extends StatefulWidget {
   static const routeName = '/add-alpha';
@@ -40,7 +41,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _ipCtrler = TextEditingController();
-  final _longTextCtrler = TextEditingController();
+  final _longCtrler = TextEditingController();
 
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
@@ -50,10 +51,10 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _pin = false;
   bool _ip = false;
   bool _longText = false;
-  bool _repeatedPasswordWarning = true;
-  bool _changeReminderPassword = true;
-  bool _repeatedPinWarning = true;
-  bool _changeReminderPin = true;
+  bool _passwordRepeatedWarning = true;
+  bool _passwordChangeReminder = true;
+  bool _pinRepeatedWarning = true;
+  bool _pinChangeReminder = true;
   bool _viewUsersList = false;
   bool _unlocking = false;
 
@@ -76,7 +77,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
         _ipCtrler.text.isNotEmpty ||
-        _longTextCtrler.text.isNotEmpty;
+        _longCtrler.text.isNotEmpty;
   }
 
   void _save() async {
@@ -96,7 +97,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
         _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
         _alpha.passwordDate = _alpha.date;
-        if (_repeatedPasswordWarning) if (await _checkPassStatus()) return;
+        if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
       }
 
       if (_pin && _pinCtrler.text.isNotEmpty) {
@@ -104,7 +105,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
         _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
         _alpha.pinDate = _alpha.date;
-        if (_repeatedPinWarning) if (await _checkPinStatus()) return;
+        if (_pinRepeatedWarning) if (await _checkPinStatus()) return;
       }
 
       if (_ip && _ipCtrler.text.isNotEmpty) {
@@ -112,10 +113,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
       }
 
-      if (_longText && _longTextCtrler.text.isNotEmpty) {
+      if (_longText && _longCtrler.text.isNotEmpty) {
         _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.longText =
-            _cripto.doCrypt(_longTextCtrler.text, _alpha.longTextIV);
+        _alpha.longText = _cripto.doCrypt(_longCtrler.text, _alpha.longTextIV);
       }
 
       _items.insertAlpha(_alpha).then((_) => Navigator.of(context).pop());
@@ -178,7 +178,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   void _longTextSwitch() {
     setState(() {
-      _longTextCtrler.clear();
+      _longCtrler.clear();
       _longText = !_longText;
     });
   }
@@ -202,7 +202,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _passCtrler.dispose();
     _pinCtrler.dispose();
     _ipCtrler.dispose();
-    _longTextCtrler.dispose();
+    _longCtrler.dispose();
     _passFocusNode.dispose();
     super.dispose();
   }
@@ -258,7 +258,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 64,
-                      vertical: 32,
+                      vertical: 16,
                     ),
                     child: TitleTextField(_titleCtrler, _refreshScreen),
                   ),
@@ -296,16 +296,25 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   if (_passCtrler.text.isNotEmpty)
                     Column(
                       children: [
+                        if (_passwordChangeReminder)
+                          PasswordChangeReminderCard(alpha: _alpha),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Warning if it is repeated'),
+                            Text(
+                              'Password repeated warning',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                             Switch(
                               activeColor: Colors.green,
-                              value: _repeatedPasswordWarning,
+                              value: _passwordRepeatedWarning,
                               onChanged: (value) => setState(() {
-                                _repeatedPasswordWarning = value;
+                                _passwordRepeatedWarning = value;
                                 if (value)
                                   _alpha.passwordStatus = '';
                                 else
@@ -314,8 +323,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             ),
                           ],
                         ),
-                        if (_changeReminderPassword)
-                          ChangeReminderSelectionCard(alpha: _alpha),
                       ],
                     ),
                   if (_pin)
@@ -323,19 +330,28 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PinTextField(_pinCtrler),
                     ),
-                  if (_pin)
+                  if (_pin && _pinCtrler.text.isNotEmpty)
                     Column(
                       children: [
+                        if (_pinChangeReminder)
+                          PinChangeReminderCard(alpha: _alpha),
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('Warning if it is repeated'),
+                            Text(
+                              'PIN repeated warning',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
                             Switch(
                               activeColor: Colors.green,
-                              value: _repeatedPinWarning,
+                              value: _pinRepeatedWarning,
                               onChanged: (value) => setState(() {
-                                _repeatedPinWarning = value;
+                                _pinRepeatedWarning = value;
                                 if (value)
                                   _alpha.pinStatus = '';
                                 else
@@ -344,41 +360,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                             ),
                           ],
                         ),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('Pin useful life (days)'),
-                            Switch(
-                              activeColor: Colors.green,
-                              value: _changeReminderPin,
-                              onChanged: (value) => setState(() {
-                                _changeReminderPin = value;
-                                if (value)
-                                  _alpha.pinLapse = 320;
-                                else
-                                  _alpha.pinLapse = -1;
-                              }),
-                            ),
-                          ],
-                        ),
-                        if (_changeReminderPin)
-                          SliderTheme(
-                            data: SliderTheme.of(context).copyWith(
-                              valueIndicatorTextStyle: TextStyle(
-                                color: Colors.white,
-                              ),
-                            ),
-                            child: Slider(
-                              min: 0,
-                              max: 320,
-                              divisions: 10,
-                              label: '${_alpha.pinLapse.round()} days',
-                              value: _alpha.pinLapse.toDouble(),
-                              onChanged: (v) =>
-                                  setState(() => _alpha.pinLapse = v.round()),
-                            ),
-                          ),
                       ],
                     ),
                   if (_ip)
@@ -391,7 +372,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Container(
                         height: 192.0,
-                        child: LongTextTextField(_longTextCtrler),
+                        child: LongTextTextField(_longCtrler),
                       ),
                     ),
                   TagsListView(item: _alpha),
