@@ -29,6 +29,7 @@ class PresetsWrap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
+      alignment: WrapAlignment.spaceAround,
       spacing: 8,
       children: <Widget>[
         FloatingActionButton(
