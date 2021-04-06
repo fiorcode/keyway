@@ -346,30 +346,46 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                       children: [
                         if (_passwordChangeReminder)
                           PasswordChangeReminderCard(alpha: _alpha),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Password repeated warning',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[600],
-                              ),
+                        Card(
+                          color: Colors.white54,
+                          elevation: 8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                              width: 3,
                             ),
-                            Switch(
-                              activeColor: Colors.green,
-                              value: _passwordRepeatedWarning,
-                              onChanged: (value) => setState(() {
-                                _passwordRepeatedWarning = value;
-                                if (value)
-                                  _alpha.passwordStatus = '';
-                                else
-                                  _alpha.passwordStatus = 'NO-WARNING';
-                              }),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.all(12.0),
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Switch(
+                                  activeColor: Colors.green,
+                                  value: _passwordRepeatedWarning,
+                                  onChanged: (value) => setState(() {
+                                    _passwordRepeatedWarning = value;
+                                    if (value)
+                                      _alpha.passwordStatus = '';
+                                    else
+                                      _alpha.passwordStatus = 'NO-WARNING';
+                                  }),
+                                ),
+                                Text(
+                                  'Password repeated warning',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
