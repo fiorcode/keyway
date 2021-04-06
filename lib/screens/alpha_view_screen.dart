@@ -30,7 +30,6 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
   final _ipCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
 
-  bool _obscure = false;
   bool _username = false;
   bool _password = false;
   bool _pin = false;
@@ -39,8 +38,6 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
   bool _unlocking = false;
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
-
-  void _obscureSwitch() => setState(() => _obscure = !_obscure);
 
   void _load() {
     try {
@@ -134,7 +131,7 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 64,
+                      horizontal: 32,
                       vertical: 32,
                     ),
                     child: TextField(
@@ -162,6 +159,7 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         readOnly: true,
                         controller: _userCtrler,
                         autocorrect: false,
+                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           counterText: '',
                           border: OutlineInputBorder(),
@@ -182,6 +180,7 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         readOnly: true,
                         controller: _passCtrler,
                         autocorrect: false,
+                        textAlign: TextAlign.center,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           enabledBorder: OutlineInputBorder(
@@ -190,15 +189,7 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                           filled: true,
                           fillColor: Theme.of(context).backgroundColor,
                           labelText: 'Password',
-                          prefixIcon: InkWell(
-                            child: Icon(
-                              Icons.visibility,
-                            ),
-                            onTap: _obscureSwitch,
-                          ),
                         ),
-                        maxLength: 128,
-                        obscureText: _obscure,
                       ),
                     ),
                   if (_pin)
@@ -265,12 +256,15 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         ),
                       ),
                     ),
-                  FloatingActionButton(
-                    backgroundColor: Colors.red,
-                    onPressed: () => _delete(context),
-                    child: Icon(
-                      Icons.delete_forever_rounded,
-                      color: Colors.white,
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.red,
+                      onPressed: () => _delete(context),
+                      child: Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
