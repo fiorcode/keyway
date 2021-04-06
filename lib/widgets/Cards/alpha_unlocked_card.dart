@@ -183,14 +183,18 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              _setTitleSubtitle(),
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w300,
-                color: Colors.black,
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                _setTitleSubtitle(),
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black,
+                ),
               ),
             ),
             if (_showValue != 0)
