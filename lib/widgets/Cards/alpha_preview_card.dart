@@ -57,8 +57,9 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
           width: 3,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
+      child: Container(
+        padding: EdgeInsets.all(12),
+        width: double.infinity,
         child: Column(
           children: [
             Text(
@@ -109,7 +110,7 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
                             !_editingBackground ? Colors.white : Colors.grey,
                       ),
                       label: Text(
-                        'Font Color',
+                        'Font',
                         style: TextStyle(
                           color:
                               !_editingBackground ? Colors.grey : Colors.white,
