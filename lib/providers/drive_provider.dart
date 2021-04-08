@@ -67,7 +67,7 @@ class DriveProvider with ChangeNotifier {
 
   trySignInSilently() async {
     if (await checkInternet()) {
-      _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.DriveAppdataScope]);
+      _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.driveAppdataScope]);
       _googleSignIn.onCurrentUserChanged.listen(
         (GoogleSignInAccount account) {
           _currentUser = account;
@@ -124,7 +124,7 @@ class DriveProvider with ChangeNotifier {
         api.DriveApi drive = await _getApi();
         api.Media _file = await drive.files.get(
           _db.id,
-          downloadOptions: api.DownloadOptions.FullMedia,
+          downloadOptions: api.DownloadOptions.fullMedia,
         );
         final dbPath = await sql.getDatabasesPath();
         final localFile = File('$dbPath/kw.db');
