@@ -68,11 +68,8 @@ class DriveProvider with ChangeNotifier {
   trySignInSilently() async {
     if (await checkInternet()) {
       _googleSignIn = GoogleSignIn(scopes: [api.DriveApi.driveAppdataScope]);
-      _googleSignIn.onCurrentUserChanged.listen(
-        (GoogleSignInAccount account) {
-          _currentUser = account;
-        },
-      );
+      _googleSignIn.onCurrentUserChanged
+          .listen((GoogleSignInAccount account) => _currentUser = account);
       await _googleSignIn.signInSilently();
       _currentUser = _googleSignIn.currentUser;
     } else
