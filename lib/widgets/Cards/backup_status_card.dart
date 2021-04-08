@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
@@ -13,6 +14,7 @@ class BackupStatusCard extends StatefulWidget {
 
 class _BackupStatusCardState extends State<BackupStatusCard> {
   Future _status;
+  DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
 
   _checkStatus() async =>
       await Provider.of<DriveProvider>(context, listen: false).checkStatus();
@@ -33,75 +35,59 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
             return Center(child: Text('none'));
           case (ConnectionState.waiting):
             return Card(
-              clipBehavior: Clip.antiAlias,
+              color: Colors.white,
               elevation: 8,
-              shadowColor: Colors.orange,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-                side: const BorderSide(
-                  width: 3,
-                  color: Colors.orange,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: CircularProgressIndicator(
-                            backgroundColor: Colors.orange,
-                          ),
-                        ),
-                        Text('Working...',
-                            style: TextStyle(color: Colors.orange)),
-                        SizedBox(height: 8),
-                        Text(
-                          'Last time uploaded: -',
-                          style: TextStyle(color: Colors.black54),
-                        )
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            );
-          case (ConnectionState.done):
-            return Card(
-              clipBehavior: Clip.antiAlias,
-              elevation: 8,
-              shadowColor: widget.drive.fileFound ? Colors.green : Colors.red,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(8.0),
                 side: BorderSide(
+                  color: Theme.of(context).primaryColor,
                   width: 3,
-                  color: widget.drive.fileFound ? Colors.green : Colors.red,
                 ),
               ),
+              clipBehavior: Clip.antiAlias,
+              shadowColor: Colors.orange,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.white,
-                      widget.drive.fileFound
-                          ? Colors.green[100]
-                          : Colors.red[100],
-                      widget.drive.fileFound
-                          ? Colors.green[200]
-                          : Colors.red[200],
-                    ],
-                  ),
-                ),
+                width: double.infinity,
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        backgroundColor: Colors.orange,
+                      ),
+                      Text('Working...',
+                          style: TextStyle(color: Colors.orange)),
+                      SizedBox(height: 8),
+                      Text(
+                        'Last time uploaded: -',
+                        style: TextStyle(color: Colors.black54),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+            );
+          case (ConnectionState.done):
+            return Card(
+              color: Colors.white,
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8.0),
+                side: BorderSide(
+                  color: Theme.of(context).primaryColor,
+                  width: 3,
+                ),
+              ),
+              clipBehavior: Clip.antiAlias,
+              shadowColor: widget.drive.fileFound ? Colors.green : Colors.red,
+              child: Container(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
@@ -133,6 +119,14 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                           fontWeight: FontWeight.w600,
                         ),
                       ),
+                      if (widget.drive.fileFound)
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            'Date: ${dateFormat.format(widget.drive.modifiedDate)}',
+                            style: TextStyle(color: Colors.black54),
+                          ),
+                        ),
                     ],
                   ),
                 ),
