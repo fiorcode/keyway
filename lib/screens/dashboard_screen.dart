@@ -51,6 +51,14 @@ class DashboardScreen extends StatelessWidget {
               goTo: () {},
             ),
             DashboardCard(
+              icon: Icon(Icons.privacy_tip, size: 64),
+              title: Text(
+                'Info',
+                style: TextStyle(color: _primary, fontSize: 20),
+              ),
+              goTo: () {},
+            ),
+            DashboardCard(
               icon: Icon(Icons.monetization_on, color: _primary, size: 64),
               title: Text(
                 'Donate',
