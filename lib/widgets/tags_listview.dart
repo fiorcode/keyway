@@ -83,7 +83,7 @@ class _TagsListViewState extends State<TagsListView> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white54,
+      color: Theme.of(context).backgroundColor,
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
