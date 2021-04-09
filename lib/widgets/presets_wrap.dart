@@ -28,70 +28,87 @@ class PresetsWrap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      alignment: WrapAlignment.spaceAround,
-      spacing: 8,
-      children: <Widget>[
-        FloatingActionButton(
-          backgroundColor: username ? Colors.white : Colors.grey,
-          child: Icon(
-            Icons.account_circle,
-            size: username ? 32 : 24,
-            color: username ? Colors.grey : Colors.white,
-          ),
-          elevation: username ? 8 : 0,
-          heroTag: null,
-          onPressed: usernameSwitch,
-        ),
-        FloatingActionButton(
-          backgroundColor: password ? Colors.white : Colors.grey,
-          child: Text(
-            '*',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: password ? 32 : 24,
-              fontWeight: FontWeight.bold,
-              color: password ? Colors.grey : Colors.white,
+    return Container(
+      height: 92,
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: username ? Colors.white : Colors.grey,
+              child: Icon(
+                Icons.account_circle,
+                size: username ? 32 : 24,
+                color: username ? Colors.grey : Colors.white,
+              ),
+              elevation: username ? 8 : 0,
+              heroTag: null,
+              onPressed: usernameSwitch,
             ),
           ),
-          elevation: password ? 8 : 0,
-          heroTag: null,
-          onPressed: passwordSwitch,
-        ),
-        FloatingActionButton(
-          backgroundColor: pin ? Colors.white : Colors.grey,
-          child: Icon(
-            Icons.dialpad,
-            size: pin ? 32 : 24,
-            color: pin ? Colors.grey : Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: password ? Colors.white : Colors.grey,
+              child: Text(
+                '*',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: password ? 32 : 24,
+                  fontWeight: FontWeight.bold,
+                  color: password ? Colors.grey : Colors.white,
+                ),
+              ),
+              elevation: password ? 8 : 0,
+              heroTag: null,
+              onPressed: passwordSwitch,
+            ),
           ),
-          elevation: pin ? 8 : 0,
-          heroTag: null,
-          onPressed: pinSwitch,
-        ),
-        FloatingActionButton(
-          backgroundColor: ip ? Colors.white : Colors.grey,
-          child: Icon(
-            Icons.router,
-            size: ip ? 32 : 24,
-            color: ip ? Colors.grey : Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: pin ? Colors.white : Colors.grey,
+              child: Icon(
+                Icons.dialpad,
+                size: pin ? 32 : 24,
+                color: pin ? Colors.grey : Colors.white,
+              ),
+              elevation: pin ? 8 : 0,
+              heroTag: null,
+              onPressed: pinSwitch,
+            ),
           ),
-          elevation: ip ? 8 : 0,
-          heroTag: null,
-          onPressed: ipSwitch,
-        ),
-        FloatingActionButton(
-          backgroundColor: longText ? Colors.white : Colors.grey,
-          child: Icon(
-            Icons.notes_rounded,
-            size: longText ? 32 : 24,
-            color: longText ? Colors.grey : Colors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: ip ? Colors.white : Colors.grey,
+              child: Icon(
+                Icons.router,
+                size: ip ? 32 : 24,
+                color: ip ? Colors.grey : Colors.white,
+              ),
+              elevation: ip ? 8 : 0,
+              heroTag: null,
+              onPressed: ipSwitch,
+            ),
           ),
-          elevation: longText ? 8 : 0,
-          heroTag: null,
-          onPressed: longTextSwitch,
-        ),
-      ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: longText ? Colors.white : Colors.grey,
+              child: Icon(
+                Icons.notes_rounded,
+                size: longText ? 32 : 24,
+                color: longText ? Colors.grey : Colors.white,
+              ),
+              elevation: longText ? 8 : 0,
+              heroTag: null,
+              onPressed: longTextSwitch,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
