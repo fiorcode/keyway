@@ -239,10 +239,11 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.all(32.0),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  TitleTextField(_titleCtrler, _refreshScreen),
                   PresetsWrap(
                     username: _username,
                     password: _password,
@@ -254,13 +255,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     pinSwitch: _pinSwitch,
                     ipSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    child: TitleTextField(_titleCtrler, _refreshScreen),
                   ),
                   if (_username)
                     Padding(
@@ -299,7 +293,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                         if (_passwordChangeReminder)
                           PasswordChangeReminderCard(alpha: _alpha),
                         Card(
-                          color: Colors.white54,
+                          color: Theme.of(context).backgroundColor,
                           elevation: 8,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
@@ -344,37 +338,53 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                   if (_pin)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: PinTextField(_pinCtrler),
+                      child: PinTextField(_pinCtrler, _refreshScreen),
                     ),
                   if (_pin && _pinCtrler.text.isNotEmpty)
                     Column(
                       children: [
                         if (_pinChangeReminder)
                           PinChangeReminderCard(alpha: _alpha),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'PIN repeated warning',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey[600],
-                              ),
+                        Card(
+                          color: Theme.of(context).backgroundColor,
+                          elevation: 8,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            side: BorderSide(
+                              color: Theme.of(context).primaryColor,
+                              width: 3,
                             ),
-                            Switch(
-                              activeColor: Colors.green,
-                              value: _pinRepeatedWarning,
-                              onChanged: (value) => setState(() {
-                                _pinRepeatedWarning = value;
-                                if (value)
-                                  _alpha.pinStatus = '';
-                                else
-                                  _alpha.pinStatus = 'NO-WARNING';
-                              }),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(12),
+                            width: double.infinity,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Switch(
+                                  activeColor: Colors.green,
+                                  value: _pinRepeatedWarning,
+                                  onChanged: (value) => setState(() {
+                                    _pinRepeatedWarning = value;
+                                    if (value)
+                                      _alpha.pinStatus = '';
+                                    else
+                                      _alpha.pinStatus = 'NO-WARNING';
+                                  }),
+                                ),
+                                Text(
+                                  'PIN repeated warning',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
+                          ),
                         ),
                       ],
                     ),
