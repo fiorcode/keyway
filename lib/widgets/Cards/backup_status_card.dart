@@ -95,9 +95,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
-                          color: widget.drive.fileFound
-                              ? Colors.green
-                              : Colors.red,
+                          color: Theme.of(context).primaryColor,
                         ),
                       ),
                       Icon(
@@ -110,8 +108,8 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                       ),
                       Text(
                         widget.drive.fileFound
-                            ? 'File Found'
-                            : 'File Not Found',
+                            ? 'File Found!'
+                            : 'File Not Found!',
                         style: TextStyle(
                           color: widget.drive.fileFound
                               ? Colors.green
