@@ -154,8 +154,8 @@ class _BackupScreenState extends State<BackupScreen> {
                                   Padding(
                                     padding: const EdgeInsets.only(top: 16),
                                     child: Container(
-                                      width: 128,
-                                      height: 128,
+                                      width: 92,
+                                      height: 92,
                                       decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         image: DecorationImage(
@@ -207,89 +207,82 @@ class _BackupScreenState extends State<BackupScreen> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(height: 8),
-                                  if (!_working)
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: ButtonTheme(
-                                            height: 48,
-                                            child: ElevatedButton.icon(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary: Colors.white,
-                                                  shape: StadiumBorder()),
-                                              onPressed: _uploadDB,
-                                              icon: Icon(
-                                                Icons.upload_rounded,
-                                                size: 32,
-                                              ),
-                                              label: Text(
-                                                'Upload',
-                                                style: TextStyle(
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 16,
-                                                ),
-                                              ),
-                                            ),
+                                  Container(
+                                    padding: EdgeInsets.all(8),
+                                    width: 256,
+                                    child: ElevatedButton.icon(
+                                      style: ElevatedButton.styleFrom(
+                                        padding: EdgeInsets.symmetric(
+                                          vertical: 8,
+                                          horizontal: 16,
+                                        ),
+                                        primary: Colors.white,
+                                      ),
+                                      onPressed: _uploadDB,
+                                      icon: Icon(
+                                        Icons.cloud_upload,
+                                        color: Theme.of(context).primaryColor,
+                                        size: 32,
+                                      ),
+                                      label: Text(
+                                        'Upload database',
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (_drive.fileFound)
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      width: 256,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 16),
+                                          primary: Colors.white,
+                                        ),
+                                        onPressed: () => _downloadDB(context),
+                                        icon: Icon(
+                                          Icons.cloud_download,
+                                          color: Theme.of(context).primaryColor,
+                                          size: 32,
+                                        ),
+                                        label: Text(
+                                          'Download database',
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 16,
                                           ),
                                         ),
-                                        if (_drive.fileFound)
-                                          Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ButtonTheme(
-                                              height: 48,
-                                              child: ElevatedButton.icon(
-                                                style: ElevatedButton.styleFrom(
-                                                  primary: Colors.white,
-                                                  shape: StadiumBorder(),
-                                                ),
-                                                onPressed: () =>
-                                                    _downloadDB(context),
-                                                icon: Icon(
-                                                  Icons.download_rounded,
-                                                  size: 32,
-                                                ),
-                                                label: Text(
-                                                  'Download',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                      ],
+                                      ),
                                     ),
                                   if (_drive.fileFound && !_working)
-                                    Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: ButtonTheme(
-                                        height: 48,
-                                        child: ElevatedButton.icon(
-                                          style: ElevatedButton.styleFrom(
-                                            primary: Colors.red,
-                                            shape: StadiumBorder(),
-                                          ),
-                                          onPressed: () =>
-                                              _deleteBackup(context),
-                                          icon: Icon(
-                                            Icons.delete_forever_rounded,
+                                    Container(
+                                      padding: EdgeInsets.all(8),
+                                      width: 256,
+                                      child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8, horizontal: 16),
+                                          primary: Colors.red,
+                                        ),
+                                        onPressed: () => _deleteBackup(context),
+                                        icon: Icon(
+                                          Icons.delete_forever,
+                                          color: Colors.white,
+                                          size: 32,
+                                        ),
+                                        label: Text(
+                                          'Delete database',
+                                          style: TextStyle(
                                             color: Colors.white,
-                                            size: 32,
-                                          ),
-                                          label: Text(
-                                            'Delete',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16,
-                                            ),
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 16,
                                           ),
                                         ),
                                       ),
