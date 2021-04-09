@@ -12,6 +12,7 @@ class TitleTextField extends StatelessWidget {
       autocorrect: true,
       controller: ctrler,
       decoration: InputDecoration(
+        border: InputBorder.none,
         counterText: '',
         hintText: 'Title',
         hintStyle: TextStyle(
