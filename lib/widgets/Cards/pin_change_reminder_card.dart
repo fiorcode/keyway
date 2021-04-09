@@ -28,7 +28,7 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.white54,
+      color: Theme.of(context).backgroundColor,
       elevation: 8,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(8.0),
@@ -37,36 +37,37 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
           width: 3,
         ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        width: double.infinity,
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'PIN change reminder',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
-                  ),
+            Switch(
+              activeColor: Colors.green,
+              value: _changeReminder,
+              onChanged: (value) => setState(() {
+                _changeReminder = value;
+                if (value) {
+                  _custom = false;
+                  widget.alpha.pinLapse = 192;
+                } else {
+                  widget.alpha.pinLapse = -1;
+                }
+              }),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'PIN change reminder',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[600],
                 ),
-                Switch(
-                  activeColor: Colors.green,
-                  value: _changeReminder,
-                  onChanged: (value) => setState(() {
-                    _changeReminder = value;
-                    if (value) {
-                      _custom = false;
-                      widget.alpha.pinLapse = 192;
-                    } else {
-                      widget.alpha.pinLapse = -1;
-                    }
-                  }),
-                ),
-              ],
+              ),
             ),
             if (_changeReminder)
               Wrap(
