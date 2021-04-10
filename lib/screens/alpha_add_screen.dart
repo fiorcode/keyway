@@ -126,7 +126,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   Future<bool> _checkPassStatus() async {
     if (await _items.passUsed(_alpha.passwordHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'Password');
+      bool _warning = await WarningHelper.repeat(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning)
         _alpha.passwordStatus = 'REPEATED';
@@ -138,7 +138,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   Future<bool> _checkPinStatus() async {
     if (await _items.pinUsed(_alpha.pinHash)) {
-      bool _warning = await WarningHelper.repeatedWarning(context, 'PIN');
+      bool _warning = await WarningHelper.repeat(context, 'PIN');
       _warning = _warning == null ? false : _warning;
       if (_warning)
         _alpha.pinStatus = 'REPEATED';
