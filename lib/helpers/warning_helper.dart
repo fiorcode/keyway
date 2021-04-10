@@ -2,8 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WarningHelper {
-  static Future<bool> repeatedWarning(
-      BuildContext context, String field) async {
+  static Future<bool> repeat(BuildContext context, String field) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -32,55 +31,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> deleteDBWarning(BuildContext context) async {
-    return showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.red[400],
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(Icons.warning_amber_outlined, color: Colors.white, size: 92),
-              SizedBox(height: 8),
-              Text(
-                ' Delete Database',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
-          ),
-          content: Text(
-            'You\'re about to delete ALL your data. \n\nThis action is PERMANENTLY. \n\nDo you want to proceed?',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            TextButton(
-              style: TextButton.styleFrom(backgroundColor: Colors.white),
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text('CANCEL'),
-            ),
-            SizedBox(width: 24),
-            TextButton(
-              style:
-                  TextButton.styleFrom(backgroundColor: Colors.redAccent[100]),
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text(
-                'DELETE DATABASE',
-                style: TextStyle(color: Colors.red[900]),
-              ),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  static Future<bool> deleteItemWarning(BuildContext context) async {
+  static Future<bool> deleteDB(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -91,20 +42,25 @@ class WarningHelper {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Icon(Icons.warning, color: Colors.white, size: 92),
-                SizedBox(height: 8),
-                Text(
-                  ' Delete item',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                Icon(Icons.warning_amber_outlined,
+                    color: Colors.white, size: 92),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Delete database',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
             ),
             content: Text(
-              'You\'re about to delete this item. \n\nDo you want to proceed?',
+              '''You\'re about to delete ALL your data.
+              \nThis action is PERMANENTLY.
+              \nDo you want to proceed?''',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white),
             ),
@@ -117,7 +73,7 @@ class WarningHelper {
                   ),
                 ),
                 onPressed: () => Navigator.of(context).pop(false),
-                child: Text('CANCEL', style: TextStyle(color: Colors.white)),
+                child: Text('cancel', style: TextStyle(color: Colors.white)),
               ),
               TextButton(
                 style: TextButton.styleFrom(
@@ -128,7 +84,7 @@ class WarningHelper {
                 ),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
-                  'DELETE ITEM',
+                  'delete database',
                   style: TextStyle(color: Colors.red),
                 ),
               ),
@@ -142,7 +98,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> deleteBackupWarning(BuildContext context) async {
+  static Future<bool> deleteItem(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -154,25 +110,35 @@ class WarningHelper {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Icon(Icons.warning, color: Colors.white, size: 92),
-                SizedBox(height: 8),
-                Text(
-                  ' Delete Database Backup',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Delete item',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
             ),
             content: Text(
-              '''You\'re about to delete your backup from Google Drive.
-              \n\nThis action is PERMANENTLY.
-              \n\nDo you want to proceed?''',
+              'You\'re about to delete this item.\nDo you want to proceed?',
               textAlign: TextAlign.center,
               style: TextStyle(color: Colors.white),
             ),
+            actionsPadding: EdgeInsets.symmetric(horizontal: 8.0),
             actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('cancel', style: TextStyle(color: Colors.white)),
+              ),
               TextButton(
                 style: TextButton.styleFrom(
                   backgroundColor: Colors.white,
@@ -180,83 +146,149 @@ class WarningHelper {
                     borderRadius: BorderRadius.all(Radius.circular(4.0)),
                   ),
                 ),
-                onPressed: () => Navigator.of(context).pop(false),
-                child: Text('CANCEL', style: TextStyle(color: Colors.red)),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
-                  ),
-                ),
                 onPressed: () => Navigator.of(context).pop(true),
                 child: Text(
-                  'DELETE BACKUP',
-                  style: TextStyle(color: Colors.white),
+                  'delete item',
+                  style: TextStyle(color: Colors.red),
                 ),
               ),
             ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
           ),
         );
       },
     );
   }
 
-  static Future<bool> downloadWarning(BuildContext context) async {
+  static Future<bool> deleteBackup(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.blue[400],
-          title: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Icon(Icons.warning_amber_outlined,
-                    color: Colors.white, size: 32),
-              ),
-              Text(
-                'Download \nDatabase Backup',
-                textAlign: TextAlign.center,
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.w800),
-              ),
-            ],
-          ),
-          content: Text(
-            'You\'re about to download your backup from Google Drive. \n\nThis action will replace your actual database and is PERMANENTLY. \n\nDo you want to proceed?',
-            textAlign: TextAlign.center,
-            style: TextStyle(color: Colors.white),
-          ),
-          actions: [
-            Row(
+        return ButtonBarTheme(
+          data: ButtonBarThemeData(alignment: MainAxisAlignment.spaceBetween),
+          child: AlertDialog(
+            backgroundColor: Colors.red[400],
+            title: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                TextButton(
-                  style: TextButton.styleFrom(backgroundColor: Colors.white),
-                  onPressed: () {
-                    Navigator.of(context).pop(false);
-                  },
-                  child: Text('CANCEL'),
-                ),
-                SizedBox(width: 48),
-                TextButton(
-                  style: TextButton.styleFrom(
-                      backgroundColor: Colors.blueAccent[100]),
-                  onPressed: () {
-                    Navigator.of(context).pop(true);
-                  },
+                Icon(Icons.warning, color: Colors.white, size: 92),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'DOWNLOAD',
-                    style: TextStyle(color: Colors.blue[900]),
+                    'Delete database backup',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
               ],
-            )
-          ],
+            ),
+            content: Text(
+              '''You\'re about to delete your backup from Google Drive.
+              \nThis action is PERMANENTLY.
+              \nDo you want to proceed?''',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+            actionsPadding: EdgeInsets.symmetric(horizontal: 8.0),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('cancel', style: TextStyle(color: Colors.white)),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  'delete backup',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<bool> download(BuildContext context) async {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) {
+        return ButtonBarTheme(
+          data: ButtonBarThemeData(alignment: MainAxisAlignment.spaceBetween),
+          child: AlertDialog(
+            backgroundColor: Colors.red[400],
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.warning, color: Colors.white, size: 64),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Download database backup',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            content: Text(
+              '''You\'re about to download your backup from Google Drive.
+              \nThis action will replace your actual database and is PERMANENTLY.
+              \nDo you want to proceed?''',
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.white),
+            ),
+            actionsPadding: EdgeInsets.symmetric(horizontal: 8.0),
+            actions: [
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(false),
+                child: Text('cancel', style: TextStyle(color: Colors.white)),
+              ),
+              TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(4.0)),
+                  ),
+                ),
+                onPressed: () => Navigator.of(context).pop(true),
+                child: Text(
+                  'download',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+            ],
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16.0)),
+            ),
+          ),
         );
       },
     );
