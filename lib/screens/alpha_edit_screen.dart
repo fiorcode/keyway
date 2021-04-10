@@ -142,7 +142,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
         if (_passwordRepeatedWarning) {
           if (await _items.passUsed(_alpha.passwordHash)) {
             bool _warning = false;
-            _warning = await WarningHelper.repeatedWarning(context, 'Password');
+            _warning = await WarningHelper.repeat(context, 'Password');
             if (_warning) {
               _alpha.passwordStatus = 'REPEATED';
             } else {
@@ -162,7 +162,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
         if (_pinRepeatedWarning) {
           if (await _items.pinUsed(_alpha.pinHash)) {
             bool _warning = false;
-            _warning = await WarningHelper.repeatedWarning(context, 'PIN');
+            _warning = await WarningHelper.repeat(context, 'PIN');
             if (_warning) {
               _alpha.pinStatus = 'REPEATED';
             } else {
@@ -224,7 +224,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
   }
 
   void _delete(BuildContext context) async {
-    bool _warning = await WarningHelper.deleteItemWarning(context);
+    bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
     if (_warning)
       _items.deleteAlpha(_alpha).then((_) => Navigator.of(context).pop());
