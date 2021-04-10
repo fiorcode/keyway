@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
@@ -24,7 +24,6 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   CriptoProvider _cripto;
   bool _unlocking = false;
   Future _getItemOlds;
-  DateFormat _df = DateFormat('dd/MM/yyyy');
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -93,22 +92,42 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                             itemCount: _items.itemOlds.length,
                             itemBuilder: (ctx, i) {
                               return ListTile(
-                                leading: Chip(
-                                  label: Text(
-                                    _df.format(
-                                      DateTime.parse(
-                                        _items.itemOlds[i].passwordPinDate,
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                                // leading: Chip(
+                                //   label: Text(
+                                //     _df.format(
+                                //       DateTime.parse(
+                                //         _items.itemOlds[i].passwordPinDate,
+                                //       ),
+                                //     ),
+                                //   ),
+                                // ),
                                 title: Text(
                                   _cripto.doDecrypt(
                                     _items.itemOlds[i].passwordPin,
                                     _items.itemOlds[i].passwordPinIv,
                                   ),
                                 ),
-                                subtitle: Text(_items.itemOlds[i].type),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(_items.itemOlds[i].type),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.calendar_today, size: 16),
+                                        Padding(
+                                          padding: const EdgeInsets.all(8.0),
+                                          child: Text(
+                                            DateHelper.shortDate(
+                                              _items
+                                                  .itemOlds[i].passwordPinDate,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                                 trailing: SizedBox(
                                   height: 48,
                                   width: 48,
