@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
 
 import 'package:keyway/models/alpha.dart';
 
@@ -195,6 +196,19 @@ class _PasswordChangeReminderCardState
                     ),
                 ],
               ),
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.calendar_today),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    'Created: ' +
+                        DateHelper.shortDate(widget.alpha.passwordDate),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
