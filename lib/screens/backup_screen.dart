@@ -26,7 +26,7 @@ class _BackupScreenState extends State<BackupScreen> {
   }
 
   Future<void> _downloadDB(BuildContext context) async {
-    if (await WarningHelper.downloadWarning(context)) {
+    if (await WarningHelper.download(context)) {
       setState(() => _working = true);
       await _drive.downloadDB();
       setState(() => _working = false);
@@ -34,7 +34,7 @@ class _BackupScreenState extends State<BackupScreen> {
   }
 
   Future<void> _deleteBackup(BuildContext context) async {
-    if (await WarningHelper.deleteBackupWarning(context)) {
+    if (await WarningHelper.deleteBackup(context)) {
       setState(() => _working = true);
       _drive.deleteDriveDB().then((_) => setState(() => _working = false));
     }
