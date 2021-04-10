@@ -92,7 +92,7 @@ class _DataScreenState extends State<DataScreen> {
   }
 
   Future<void> _deleteDB(BuildContext context) async {
-    if (await WarningHelper.deleteDBWarning(context)) {
+    if (await WarningHelper.deleteDB(context)) {
       if (await DBHelper.removeDB()) {
         Navigator.of(context)
             .pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
@@ -155,7 +155,7 @@ class _DataScreenState extends State<DataScreen> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
-                            Icons.donut_small,
+                            Icons.data_usage,
                             size: 92,
                             color: Theme.of(context).primaryColor,
                           ),
