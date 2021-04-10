@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
-import '../providers/item_provider.dart';
 import '../models/alpha.dart';
 import '../helpers/error_helper.dart';
-import '../helpers/warning_helper.dart';
 import '../widgets/unlock_container.dart';
 
 class AlphaViewScreen extends StatefulWidget {
@@ -21,7 +19,6 @@ class AlphaViewScreen extends StatefulWidget {
 
 class _AlphaViewScreenState extends State<AlphaViewScreen> {
   CriptoProvider _cripto;
-  ItemProvider _items;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -74,19 +71,9 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
     }
   }
 
-  void _delete(BuildContext context) async {
-    bool _warning = await WarningHelper.deleteItemWarning(context);
-    _warning = _warning == null ? false : _warning;
-    if (_warning)
-      _items
-          .deleteDeletedAlpha(widget.alpha)
-          .then((_) => Navigator.of(context).pop());
-  }
-
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _items = Provider.of<ItemProvider>(context, listen: false);
     _load();
     super.initState();
   }
@@ -131,13 +118,14 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
+                      horizontal: 16,
                       vertical: 32,
                     ),
                     child: TextField(
                       readOnly: true,
                       controller: _titleCtrler,
                       decoration: InputDecoration(
+                        border: InputBorder.none,
                         counterText: '',
                         hintText: 'Title',
                         hintStyle: TextStyle(
@@ -256,17 +244,6 @@ class _AlphaViewScreenState extends State<AlphaViewScreen> {
                         ),
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: FloatingActionButton(
-                      backgroundColor: Colors.red,
-                      onPressed: () => _delete(context),
-                      child: Icon(
-                        Icons.delete_forever_rounded,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),
