@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
 
 import 'package:keyway/models/alpha.dart';
 
@@ -69,10 +70,16 @@ class AlphaLockedCard extends StatelessWidget {
         ),
         onTap: () => _onTap(context),
         trailing: Chip(
-          backgroundColor: Colors.grey,
+          backgroundColor: Theme.of(context).primaryColor,
+          elevation: 4,
+          visualDensity: VisualDensity.compact,
           label: Text(
-            alpha.shortDate != null ? alpha.shortDate : '',
-            style: TextStyle(fontSize: 12, color: Colors.white),
+            alpha.shortDate != null ? DateHelper.shortDate(alpha.date) : '',
+            style: TextStyle(
+              fontSize: 10,
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+            ),
           ),
         ),
       ),
