@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:keyway/helpers/date_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/drive_provider.dart';
@@ -14,7 +14,6 @@ class BackupStatusCard extends StatefulWidget {
 
 class _BackupStatusCardState extends State<BackupStatusCard> {
   Future _status;
-  DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
 
   _checkStatus() async =>
       await Provider.of<DriveProvider>(context, listen: false).checkStatus();
@@ -121,7 +120,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Text(
-                            'Date: ${dateFormat.format(widget.drive.modifiedDate)}',
+                            'Date: ${DateHelper.shortDate(widget.drive.modifiedDate)}',
                             style: TextStyle(color: Colors.black54),
                           ),
                         ),
