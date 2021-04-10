@@ -198,9 +198,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
               ),
             ),
             if (_showValue != 0)
-              Text(
-                _subtitle,
-                style: TextStyle(color: Colors.grey),
+              FittedBox(
+                fit: BoxFit.fitWidth,
+                child: Text(
+                  _subtitle,
+                  style: TextStyle(color: Colors.grey),
+                ),
               ),
           ],
         ),
@@ -210,12 +213,12 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_expired())
+              if (_expired() && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
                   child: Icon(
-                    Icons.timer,
+                    Icons.calendar_today,
                     color: Colors.red,
                     size: 24,
                   ),
