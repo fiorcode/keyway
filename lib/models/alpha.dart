@@ -47,6 +47,7 @@ class Alpha extends Item {
     String date,
     int color,
     int colorLetter,
+    String font,
     String tags = '',
   }) : super(
           id: id,
@@ -54,6 +55,7 @@ class Alpha extends Item {
           date: date,
           color: color,
           colorLetter: colorLetter,
+          font: font,
           tags: tags,
         );
 
@@ -104,6 +106,7 @@ class Alpha extends Item {
       'date': date,
       'color': color,
       'color_letter': colorLetter,
+      'font': tags,
       'tags': tags,
     };
     if (id != null) map['id'] = id;
@@ -136,6 +139,7 @@ class Alpha extends Item {
       date: this.date,
       color: this.color,
       colorLetter: this.colorLetter,
+      font: this.font,
       tags: this.tags,
     );
   }
