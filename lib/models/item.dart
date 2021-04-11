@@ -6,6 +6,7 @@ abstract class Item {
   String date;
   int color = Colors.grey.value;
   int colorLetter = Colors.white.value;
+  String font;
   String tags;
 
   Item({
@@ -14,6 +15,7 @@ abstract class Item {
     this.date = '',
     this.color,
     this.colorLetter,
+    this.font = '',
     this.tags = '',
   });
 
@@ -23,6 +25,7 @@ abstract class Item {
     date = map['date'];
     color = map['color'];
     colorLetter = map['color_letter'];
+    font = map['font'];
     tags = map['tags'];
   }
 
