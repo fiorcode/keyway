@@ -66,16 +66,13 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: SingleChildScrollView(
-        child: Container(
-          height: MediaQuery.of(context).size.height,
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.all(32),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
+      body: Container(
+        margin: EdgeInsets.all(32),
+        child: ListView(
+          children: [
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
                 'NOW \nCREATE ONE \nTO \nPROTECT YOUR DATA',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -84,96 +81,88 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   color: Theme.of(context).primaryColor,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: TextField(
-                  autocorrect: false,
-                  controller: _passCtrler,
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    filled: true,
-                    labelText: 'Password',
-                    prefixIcon: _passCtrler.text.isNotEmpty
-                        ? InkWell(
-                            child: Icon(
-                              Icons.visibility,
-                            ),
-                            onTap: _obscurePassSwitch,
-                          )
-                        : null,
-                    suffixIcon: _passCtrler.text.isNotEmpty
-                        ? InkWell(
-                            child: Icon(Icons.clear),
-                            onTap: _clear,
-                          )
-                        : null,
-                  ),
-                  obscureText: _obscurePass,
-                  onChanged: (_) => _checkPassword(),
-                ),
+            ),
+            SizedBox(height: 48),
+            TextField(
+              autocorrect: false,
+              controller: _passCtrler,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                filled: true,
+                labelText: 'Password',
+                prefixIcon: _passCtrler.text.isNotEmpty
+                    ? InkWell(
+                        child: Icon(Icons.visibility),
+                        onTap: _obscurePassSwitch,
+                      )
+                    : null,
+                suffixIcon: _passCtrler.text.isNotEmpty
+                    ? InkWell(
+                        child: Icon(Icons.clear),
+                        onTap: _clear,
+                      )
+                    : null,
               ),
-              if (!_strong && _passCtrler.text.isNotEmpty)
-                CheckBoard(password: _passCtrler.text),
-              if (_strong)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32),
-                  child: TextField(
-                    autocorrect: false,
-                    controller: _confirmCtrler,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(),
-                      filled: true,
-                      labelText: 'Confirm Password',
-                      prefixIcon: _confirmCtrler.text.isNotEmpty
+              obscureText: _obscurePass,
+              onChanged: (_) => _checkPassword(),
+            ),
+            SizedBox(height: 16),
+            if (!_strong && _passCtrler.text.isNotEmpty)
+              CheckBoard(password: _passCtrler.text),
+            if (_strong) SizedBox(height: 32),
+            if (_strong)
+              TextField(
+                autocorrect: false,
+                controller: _confirmCtrler,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  filled: true,
+                  labelText: 'Confirm Password',
+                  prefixIcon: _confirmCtrler.text.isNotEmpty
+                      ? InkWell(
+                          child: Icon(Icons.visibility),
+                          onTap: _obscureConfirmSwitch,
+                        )
+                      : null,
+                  suffixIcon: _confirmCtrler.text.isNotEmpty
+                      ? _equals
                           ? InkWell(
-                              child: Icon(Icons.visibility),
-                              onTap: _obscureConfirmSwitch,
+                              child: Icon(Icons.done),
+                              onTap: _setPassword,
                             )
-                          : null,
-                      suffixIcon: _confirmCtrler.text.isNotEmpty
-                          ? InkWell(
+                          : InkWell(
                               child: Icon(Icons.clear),
                               onTap: _clearConfirm,
                             )
-                          : null,
-                    ),
-                    obscureText: _obscureConfirm,
-                    onChanged: (_) => _checkConfirmPassword(),
-                    textInputAction: TextInputAction.next,
-                    onSubmitted: (_) => _setPassword(),
-                  ),
+                      : null,
                 ),
-              if (_strong && _equals)
-                ElevatedButton(
-                    onPressed: _setPassword, child: Text('CONTINUE')),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Text(
-                    'NOT YOUR FIRST TIME?',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        primary: Theme.of(context).primaryColor),
-                    onPressed: () => Navigator.of(context)
-                        .pushNamed(RestoreScreen.routeName),
-                    child: Text(
-                      'RESTORE MY DATA',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ],
+                obscureText: _obscureConfirm,
+                onChanged: (_) => _checkConfirmPassword(),
+                textInputAction: TextInputAction.next,
+                onSubmitted: (_) => _setPassword(),
               ),
-            ],
-          ),
+            SizedBox(height: 64),
+            Text(
+              'NOT YOUR FIRST TIME?',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                  primary: Theme.of(context).primaryColor),
+              onPressed: () =>
+                  Navigator.of(context).pushNamed(RestoreScreen.routeName),
+              child: Text(
+                'RESTORE MY DATA',
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ],
         ),
       ),
     );
