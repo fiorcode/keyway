@@ -172,7 +172,7 @@ class DBHelper {
       $alphaTable.pin, $alphaTable.pin_iv, $alphaTable.pin_hash, 
       $alphaTable.pin_date, $alphaTable.pin_lapse, $alphaTable.pin_status,
       $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.long_text, $alphaTable.long_text_iv,
-      $alphaTable.date, $alphaTable.color, $alphaTable.color_letter
+      $alphaTable.date, $alphaTable.color, $alphaTable.color_letter, $alphaTable.font
       FROM $alphaTable
       JOIN $oldPasswordPinTable ON $alphaTable.id = $oldPasswordPinTable.item_id
       GROUP BY $alphaTable.id''');
@@ -187,7 +187,7 @@ class DBHelper {
         $deletedAlphaTable.pin, $deletedAlphaTable.pin_iv, $deletedAlphaTable.pin_hash, 
         $deletedAlphaTable.pin_date, $deletedAlphaTable.pin_lapse, $deletedAlphaTable.pin_status,
         $deletedAlphaTable.ip, $deletedAlphaTable.ip_iv, $deletedAlphaTable.long_text, $deletedAlphaTable.long_text_iv,
-        $deletedAlphaTable.date, $deletedAlphaTable.date_deleted, 
+        $deletedAlphaTable.date, $deletedAlphaTable.date_deleted, $deletedAlphaTable.font,
         $deletedAlphaTable.color, $deletedAlphaTable.color_letter, $deletedAlphaTable.item_id         
         FROM $deletedAlphaTable 
         JOIN $oldPasswordPinTable ON $deletedAlphaTable.item_id = $oldPasswordPinTable.item_id 
@@ -243,6 +243,7 @@ class DBHelper {
     date TEXT,
     color INTEGER,
     color_letter INTEGER,
+    font TEXT,
     tags TEXT)''';
 
   static const createOldPasswordPinTable = '''CREATE TABLE $oldPasswordPinTable(
@@ -281,6 +282,7 @@ class DBHelper {
     date_deleted TEXT,
     color INTEGER,
     color_letter INTEGER,
+    font TEXT,
     item_id INTEGER,
     tags TEXT)''';
 
