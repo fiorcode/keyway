@@ -25,6 +25,7 @@ dependencies:
     sdk: flutter
   connectivity: ^3.0.3
   encrypt: ^5.0.0
+  google_fonts: ^2.0.0
   google_sign_in: ^5.0.1
   googleapis: ^2.0.0
   intl: ^0.17.0
