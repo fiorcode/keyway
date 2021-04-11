@@ -72,13 +72,6 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
             return Card(
               color: Colors.white,
               elevation: 8,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-                side: BorderSide(
-                  color: Theme.of(context).primaryColor,
-                  width: 3,
-                ),
-              ),
               clipBehavior: Clip.antiAlias,
               shadowColor: widget.drive.fileFound ? Colors.green : Colors.red,
               child: Container(
@@ -94,7 +87,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 18,
-                          color: Theme.of(context).primaryColor,
+                          color: Colors.grey,
                         ),
                       ),
                       Icon(
@@ -118,7 +111,7 @@ class _BackupStatusCardState extends State<BackupStatusCard> {
                       ),
                       if (widget.drive.fileFound)
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(top: 16.0),
                           child: Text(
                             'Date: ${DateHelper.shortDate(widget.drive.modifiedDate)}',
                             style: TextStyle(color: Colors.black54),
