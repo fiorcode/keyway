@@ -29,6 +29,7 @@ class DeletedAlpha extends Alpha {
     String date,
     int color = 0,
     int colorLetter = 0,
+    String font,
     String tags,
     this.deletedDate,
     this.itemId,
@@ -57,6 +58,7 @@ class DeletedAlpha extends Alpha {
           date: date,
           color: color,
           colorLetter: colorLetter,
+          font: font,
           tags: tags,
         );
 
@@ -85,6 +87,7 @@ class DeletedAlpha extends Alpha {
     this.deletedDate = DateTime.now().toUtc().toIso8601String();
     this.color = a.color;
     this.colorLetter = a.colorLetter;
+    this.font = a.font;
     this.tags = a.tags;
     this.itemId = a.id;
   }
@@ -109,6 +112,7 @@ class DeletedAlpha extends Alpha {
     ipIV = map['ip_iv'];
     longText = map['long_text'];
     longTextIV = map['long_text_iv'];
+    font = map['font'];
     tags = map['tags'];
     deletedDate = map['date_deleted'];
     itemId = map['item_id'];
@@ -139,6 +143,7 @@ class DeletedAlpha extends Alpha {
       'date': date,
       'color': color,
       'color_letter': colorLetter,
+      'font': font,
       'tags': tags,
       'date_deleted': deletedDate,
       'item_id': itemId,
