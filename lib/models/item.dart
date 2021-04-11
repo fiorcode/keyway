@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 abstract class Item {
   int id;
   String title;
-  DateTime dateTime; // ???
   String date;
-  String shortDate; //REMOVE
   int color = Colors.grey.value;
   int colorLetter = Colors.white.value;
   String tags;
@@ -14,7 +12,6 @@ abstract class Item {
     this.id,
     this.title = '',
     this.date = '',
-    this.shortDate = '',
     this.color,
     this.colorLetter,
     this.tags = '',
@@ -24,7 +21,6 @@ abstract class Item {
     id = map['id'];
     title = map['title'];
     date = map['date'];
-    shortDate = map['date_short'];
     color = map['color'];
     colorLetter = map['color_letter'];
     tags = map['tags'];

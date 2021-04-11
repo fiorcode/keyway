@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
@@ -82,10 +81,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
 
   void _save() async {
     try {
-      DateFormat _df = DateFormat('dd/MM/yyyy H:mm');
-      _alpha.dateTime = DateTime.now().toUtc();
-      _alpha.date = _alpha.dateTime.toIso8601String();
-      _alpha.shortDate = _df.format(_alpha.dateTime.toLocal());
+      _alpha.date = DateTime.now().toIso8601String();
 
       if (_username && _userCtrler.text.isNotEmpty) {
         _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;

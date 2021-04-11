@@ -27,7 +27,6 @@ class DeletedAlpha extends Alpha {
     String longText,
     String longTextIV,
     String date,
-    String shortDate,
     int color = 0,
     int colorLetter = 0,
     String tags,
@@ -56,7 +55,6 @@ class DeletedAlpha extends Alpha {
           longText: longText,
           longTextIV: longTextIV,
           date: date,
-          shortDate: shortDate,
           color: color,
           colorLetter: colorLetter,
           tags: tags,
@@ -84,7 +82,6 @@ class DeletedAlpha extends Alpha {
     this.longText = a.longText;
     this.longTextIV = a.longTextIV;
     this.date = a.date;
-    this.shortDate = a.shortDate;
     this.deletedDate = DateTime.now().toUtc().toIso8601String();
     this.color = a.color;
     this.colorLetter = a.colorLetter;
@@ -140,7 +137,6 @@ class DeletedAlpha extends Alpha {
       'long_text': longText,
       'long_text_iv': longTextIV,
       'date': date,
-      'date_short': shortDate,
       'color': color,
       'color_letter': colorLetter,
       'tags': tags,

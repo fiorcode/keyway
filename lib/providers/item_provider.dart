@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'dart:math';
-import 'package:intl/intl.dart';
 import 'package:encrypt/encrypt.dart' as e;
 import 'package:keyway/providers/cripto_provider.dart';
 
@@ -305,7 +304,6 @@ class ItemProvider with ChangeNotifier {
     _tags.forEach(
         (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
     Random _ran = Random(59986674);
-    DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
     await _cripto.unlock('Qwe123!');
     for (int i = 0; i < _titles.length; i++) {
       String _tagsList = '';
@@ -337,7 +335,6 @@ class ItemProvider with ChangeNotifier {
           longText: '',
           longTextIV: '',
           date: _d.toIso8601String(),
-          shortDate: dateFormat.format(_d),
           color: _colors[i],
           colorLetter: -1,
           tags: _tagsList,

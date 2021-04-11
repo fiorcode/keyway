@@ -74,7 +74,7 @@ class AlphaLockedCard extends StatelessWidget {
           elevation: 4,
           visualDensity: VisualDensity.compact,
           label: Text(
-            alpha.shortDate != null ? DateHelper.shortDate(alpha.date) : '',
+            alpha.date != null ? DateHelper.shortDate(alpha.date) : '',
             style: TextStyle(
               fontSize: 10,
               color: Colors.white,
