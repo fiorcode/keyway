@@ -20,19 +20,24 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
 
+  String _level = '';
+
   bool _obscurePass = true;
   bool _obscureConfirm = true;
 
   bool _strong = false;
   bool _equals = false;
 
-  void _checkPassword() =>
-      setState(() => _strong = PasswordHelper.isStrong(_passCtrler.text));
+  void _checkPassword() => setState(() {
+        _level = PasswordHelper.level(_passCtrler.text);
+        _strong = PasswordHelper.isStrong(_passCtrler.text);
+      });
 
   _checkConfirmPassword() =>
       setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
 
   _clear() => setState(() {
+        _level = '';
         _confirmCtrler.clear();
         _passCtrler.clear();
         _strong = false;
@@ -106,6 +111,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               obscureText: _obscurePass,
               onChanged: (_) => _checkPassword(),
             ),
+            if (_level != null) Text(_level),
             SizedBox(height: 16),
             if (!_strong && _passCtrler.text.isNotEmpty)
               CheckBoard(password: _passCtrler.text),
