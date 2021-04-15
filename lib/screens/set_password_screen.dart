@@ -20,7 +20,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
 
-  String _level = '';
+  int _level = -1;
 
   bool _obscurePass = true;
   bool _obscureConfirm = true;
@@ -37,7 +37,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
 
   _clear() => setState(() {
-        _level = '';
+        _level = -1;
         _confirmCtrler.clear();
         _passCtrler.clear();
         _strong = false;
@@ -48,6 +48,28 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   _obscurePassSwitch() => setState(() => _obscurePass = !_obscurePass);
 
   _obscureConfirmSwitch() => setState(() => _obscureConfirm = !_obscureConfirm);
+
+  Color _shadowColor() {
+    switch (_level) {
+      case 0:
+        return Colors.red;
+        break;
+      case 1:
+        return Colors.orange;
+        break;
+      case 2:
+        return Colors.yellow;
+        break;
+      case 3:
+        return Colors.lightGreen;
+        break;
+      case 4:
+        return Colors.green;
+        break;
+      default:
+        return Colors.grey;
+    }
+  }
 
   _setPassword() async {
     try {
@@ -111,7 +133,162 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               obscureText: _obscurePass,
               onChanged: (_) => _checkPassword(),
             ),
-            if (_level != null) Text(_level),
+            if (_level != null) SizedBox(height: 16),
+            if (_level != null)
+              Card(
+                elevation: _level < 0 ? 0 : 8,
+                shadowColor: _shadowColor(),
+                margin: EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _level == 0 ? Colors.red : Colors.red[200],
+                          border: _level == 0
+                              ? Border.all(
+                                  width: 2,
+                                  color: Colors.red[600],
+                                )
+                              : null,
+                        ),
+                        height: 32,
+                        padding: EdgeInsets.all(2),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'VERY\nWEAK',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color:
+                                    _level == 0 ? Colors.white : Colors.white38,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color:
+                              _level == 1 ? Colors.orange : Colors.orange[200],
+                          border: _level == 1
+                              ? Border.all(
+                                  width: 2,
+                                  color: Colors.orange[600],
+                                )
+                              : null,
+                        ),
+                        height: 32,
+                        padding: EdgeInsets.all(2),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'WEAK',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color:
+                                    _level == 1 ? Colors.white : Colors.white38,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color:
+                              _level == 2 ? Colors.yellow : Colors.yellow[200],
+                          border: _level == 2
+                              ? Border.all(
+                                  width: 2,
+                                  color: Colors.yellow[600],
+                                )
+                              : null,
+                        ),
+                        height: 32,
+                        padding: EdgeInsets.all(2),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'REGULAR',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: _level == 2
+                                    ? Colors.grey
+                                    : Colors.grey[300],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _level == 3
+                              ? Colors.lightGreen
+                              : Colors.lightGreen[200],
+                          border: _level == 3
+                              ? Border.all(
+                                  width: 2,
+                                  color: Colors.lightGreen[600],
+                                )
+                              : null,
+                        ),
+                        height: 32,
+                        padding: EdgeInsets.all(2),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'STRONG',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color:
+                                    _level == 3 ? Colors.white : Colors.white38,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: _level == 4 ? Colors.green : Colors.green[200],
+                          border: _level == 4
+                              ? Border.all(
+                                  width: 2,
+                                  color: Colors.green[600],
+                                )
+                              : null,
+                        ),
+                        height: 32,
+                        padding: EdgeInsets.all(2),
+                        child: Center(
+                          child: FittedBox(
+                            fit: BoxFit.fitWidth,
+                            child: Text(
+                              'VERY\nSTRONG',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color:
+                                    _level == 4 ? Colors.white : Colors.white38,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             SizedBox(height: 16),
             if (!_strong && _passCtrler.text.isNotEmpty)
               CheckBoard(password: _passCtrler.text),
@@ -147,7 +324,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                 textInputAction: TextInputAction.next,
                 onSubmitted: (_) => _setPassword(),
               ),
-            SizedBox(height: 64),
+            SizedBox(height: 48),
             Text(
               'NOT YOUR FIRST TIME?',
               textAlign: TextAlign.center,
