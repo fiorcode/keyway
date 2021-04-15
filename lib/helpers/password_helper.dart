@@ -38,24 +38,8 @@ class PasswordHelper {
   //   }
   // }
 
-  static String level(String s) {
-    if (s.isEmpty) return '';
-    final result = Zxcvbn().evaluate(s);
-    switch (result.score.toInt()) {
-      case 1:
-        return 'weak';
-        break;
-      case 2:
-        return 'regular';
-        break;
-      case 3:
-        return 'strong';
-        break;
-      case 4:
-        return 'very strong';
-        break;
-      default:
-        return 'very weak';
-    }
+  static int level(String s) {
+    if (s.isEmpty) return -1;
+    return Zxcvbn().evaluate(s).score.toInt();
   }
 }
