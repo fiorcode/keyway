@@ -16,30 +16,15 @@ class PasswordHelper {
       hasNum(s) &&
       hasSpec(s);
 
-  // static String level(String s) {
-  //   if (s.length < 11) return 'very weak';
-  //   int _value = 50;
-  //   if (hasLow(s)) _value = _value + 10;
-  //   if (hasUpp(s)) _value = _value + 10;
-  //   if (hasNum(s)) _value = _value + 10;
-  //   if (hasSpec(s)) _value = _value + 10;
-  //   if (s.length > 19) _value = _value + 10;
-  //   switch (_value) {
-  //     case 55:
-  //       return 'weak';
-  //       break;
-  //     case 85:
-  //       return 'strong';
-  //       break;
-  //     case 100:
-  //       return 'very strong';
-  //       break;
-  //     default:
-  //   }
-  // }
-
   static int level(String s) {
     if (s.isEmpty) return -1;
     return Zxcvbn().evaluate(s).score.toInt();
+  }
+
+  static List<String> suggestions(String s) {
+    var _sugs = [];
+    if (s.isEmpty) return <String>[];
+    _sugs = Zxcvbn().evaluate(s).feedback.suggestions;
+    return _sugs;
   }
 }
