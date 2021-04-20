@@ -6,7 +6,6 @@ import 'items_screen.dart';
 import '../helpers/password_helper.dart';
 import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
-import '../widgets/check_board.dart';
 
 class SetPasswordScreen extends StatefulWidget {
   static const routeName = '/set-password';
@@ -21,6 +20,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final _confirmCtrler = TextEditingController();
 
   int _level = -1;
+  List<String> _suggestions = <String>[];
 
   bool _obscurePass = true;
   bool _obscureConfirm = true;
@@ -30,6 +30,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   void _checkPassword() => setState(() {
         _level = PasswordHelper.level(_passCtrler.text);
+        _suggestions = PasswordHelper.suggestions(_passCtrler.text);
         _strong = PasswordHelper.isStrong(_passCtrler.text);
       });
 
@@ -38,6 +39,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   _clear() => setState(() {
         _level = -1;
+        _suggestions.clear();
         _confirmCtrler.clear();
         _passCtrler.clear();
         _strong = false;
@@ -69,6 +71,14 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       default:
         return Colors.grey;
     }
+  }
+
+  List<Text> _suggestionList() {
+    List<Text> _list = [];
+    _suggestions.forEach((sugg) {
+      _list.add(Text(sugg));
+    });
+    return _list;
   }
 
   _setPassword() async {
@@ -289,9 +299,10 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                   ],
                 ),
               ),
-            SizedBox(height: 16),
-            if (!_strong && _passCtrler.text.isNotEmpty)
-              CheckBoard(password: _passCtrler.text),
+            // SizedBox(height: 16),
+            // if (!_strong && _passCtrler.text.isNotEmpty)
+            //   CheckBoard(password: _passCtrler.text),
+            if (_suggestions.length > 0) ..._suggestionList(),
             if (_strong) SizedBox(height: 32),
             if (_strong)
               TextField(
