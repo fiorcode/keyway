@@ -26,7 +26,7 @@ class ItemProvider with ChangeNotifier {
     Iterable<Alpha> _iter;
     _items.clear();
     if (title.isEmpty) {
-      await DBHelper.getData(DBHelper.alphaTable)
+      await DBHelper.getData(DBHelper.itemTable)
           .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
     } else {
       await DBHelper.getItemsByTitle(title)
@@ -73,7 +73,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> insertAlpha(Alpha a) async {
-    await DBHelper.insert(DBHelper.alphaTable, a.toMap());
+    await DBHelper.insert(DBHelper.itemTable, a.toMap());
     if (a.passwordStatus == 'REPEATED')
       await DBHelper.setPassRepeted(a.passwordHash);
 
@@ -82,7 +82,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> updateAlpha(Alpha a) async {
     Alpha _prev;
-    await DBHelper.getById(DBHelper.alphaTable, a.id).then(
+    await DBHelper.getById(DBHelper.itemTable, a.id).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
         if (_prev.passwordHash != a.passwordHash && _prev.password != '') {
@@ -97,7 +97,7 @@ class ItemProvider with ChangeNotifier {
         }
       },
     ).then((_) async {
-      await DBHelper.update(DBHelper.alphaTable, a.toMap()).then((_) async {
+      await DBHelper.update(DBHelper.itemTable, a.toMap()).then((_) async {
         if (a.passwordStatus == 'REPEATED')
           await DBHelper.setPassRepeted(a.passwordHash);
         if (a.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(a.pinHash);
@@ -112,7 +112,7 @@ class ItemProvider with ChangeNotifier {
       DBHelper.deletedAlphaTable,
       DeletedAlpha.fromAlpha(a).toMap(),
     ).then(
-      (_) async => await DBHelper.delete(DBHelper.alphaTable, a.id).then(
+      (_) async => await DBHelper.delete(DBHelper.itemTable, a.id).then(
         (_) => _items.removeWhere((e) => e.id == a.id),
       ),
     );
@@ -142,7 +142,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<bool> passUsed(String hash) async {
     if (hash.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash))
+    if ((await DBHelper.getByValue(DBHelper.itemTable, 'password_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
             DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
@@ -155,7 +155,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<bool> pinUsed(String hash) async {
     if (hash.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash))
+    if ((await DBHelper.getByValue(DBHelper.itemTable, 'pin_hash', hash))
         .isNotEmpty) return true;
     if ((await DBHelper.getByValue(
             DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
@@ -169,7 +169,7 @@ class ItemProvider with ChangeNotifier {
   Future<bool> passRepeated(String hash) async {
     if (hash.isEmpty) return false;
     List<Map<String, dynamic>> _listAllTables = <Map<String, dynamic>>[];
-    await DBHelper.getByValue(DBHelper.alphaTable, 'password_hash', hash)
+    await DBHelper.getByValue(DBHelper.itemTable, 'password_hash', hash)
         .then((_list) {
       _listAllTables.addAll(_list);
       DBHelper.getByValue(
@@ -186,7 +186,7 @@ class ItemProvider with ChangeNotifier {
   Future<bool> pinRepeated(String hash) async {
     if (hash.isEmpty) return false;
     List<Map<String, dynamic>> _listAllTables = <Map<String, dynamic>>[];
-    await DBHelper.getByValue(DBHelper.alphaTable, 'pin_hash', hash)
+    await DBHelper.getByValue(DBHelper.itemTable, 'pin_hash', hash)
         .then((_list) {
       _listAllTables.addAll(_list);
       DBHelper.getByValue(
