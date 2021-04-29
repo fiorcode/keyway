@@ -5,8 +5,12 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
-  static const String userDataTable = "user_data";
-  static const String alphaTable = "alpha";
+  static const String userDataTable = "user";
+  static const String itemTable = "item";
+  static const String usernameTable = "username";
+  static const String passwordTable = "password";
+  static const String pinTable = "pin";
+  static const String longTextTable = "long_text";
   static const String oldPasswordPinTable = "old_password_pin";
   static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
@@ -16,10 +20,9 @@ class DBHelper {
     return sql.openDatabase(
       path.join(dbPath, 'kw.db'),
       onCreate: (db, version) async {
-        await db.execute(createAlphaTable);
-        await db.execute(createUserDataTable);
-        await db.execute(createOldPasswordPinTable);
-        await db.execute(createDeletedAlphaTable);
+        await db.execute('PRAGMA foreign_keys = ON');
+        await db.execute(createItemTable);
+        await db.execute(createUserTable);
         await db.execute(createTagTable);
       },
       version: 1,
@@ -82,15 +85,15 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getItemsByTitle(
           String title) async =>
       (await DBHelper.database()).rawQuery('''SELECT *
-        FROM $alphaTable
+        FROM $itemTable
         WHERE title LIKE \'%$title%\'''');
 
   static Future<List<Map<String, dynamic>>> getUsernames() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
-        $alphaTable.username, $alphaTable.username_iv
-        FROM $alphaTable 
-        WHERE $alphaTable.username <> ''
-        GROUP BY $alphaTable.username''');
+        $itemTable.username, $itemTable.username_iv
+        FROM $itemTable 
+        WHERE $itemTable.username <> ''
+        GROUP BY $itemTable.username''');
 
   static Future<List<Map<String, dynamic>>> getTags() async =>
       (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
@@ -116,7 +119,7 @@ class DBHelper {
   static Future<int> setPassRepeted(String passwordHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
-        $alphaTable
+        $itemTable
         SET password_status = ?
         WHERE password_hash = ? 
         AND password_status = ?''',
@@ -125,10 +128,10 @@ class DBHelper {
 
   static Future<int> unsetPassRepeted(String passwordHash) async =>
       await (await DBHelper.database()).rawUpdate(
-        '''UPDATE $alphaTable 
+        '''UPDATE $itemTable 
         SET password_status = ? 
         WHERE password_hash = ? AND password_status = ? 
-        AND 1 = (SELECT COUNT(*) FROM $alphaTable WHERE password_hash = ?) 
+        AND 1 = (SELECT COUNT(*) FROM $itemTable WHERE password_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE password_pin_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE password_hash = ?)''',
         [
@@ -144,7 +147,7 @@ class DBHelper {
   static Future<int> setPinRepeted(String pinHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
-        $alphaTable
+        $itemTable
         SET pin_status = ?
         WHERE pin_hash = ? 
         AND pin_status = ?''',
@@ -153,10 +156,10 @@ class DBHelper {
 
   static Future<int> unsetPinRepeted(String pinHash) async =>
       await (await DBHelper.database()).rawUpdate(
-        '''UPDATE $alphaTable 
+        '''UPDATE $itemTable 
         SET pin_status = ? 
         WHERE pin_hash = ? AND pin_status = ? 
-        AND 1 = (SELECT COUNT(*) FROM $alphaTable WHERE pin_hash = ?) 
+        AND 1 = (SELECT COUNT(*) FROM $itemTable WHERE pin_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE pin_hash = ?) 
         AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE pin_hash = ?)''',
         ['', '$pinHash', 'REPEATED', '$pinHash', '$pinHash', '$pinHash'],
@@ -164,18 +167,18 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
-      $alphaTable.id, $alphaTable.title,
-      $alphaTable.username, $alphaTable.username_iv,
-      $alphaTable.password, $alphaTable.password_iv, $alphaTable.password_hash,
-      $alphaTable.password_date, $alphaTable.password_lapse,
-      $alphaTable.password_status, $alphaTable.password_level,
-      $alphaTable.pin, $alphaTable.pin_iv, $alphaTable.pin_hash, 
-      $alphaTable.pin_date, $alphaTable.pin_lapse, $alphaTable.pin_status,
-      $alphaTable.ip, $alphaTable.ip_iv, $alphaTable.long_text, $alphaTable.long_text_iv,
-      $alphaTable.date, $alphaTable.color, $alphaTable.color_letter, $alphaTable.font
-      FROM $alphaTable
-      JOIN $oldPasswordPinTable ON $alphaTable.id = $oldPasswordPinTable.item_id
-      GROUP BY $alphaTable.id''');
+      $itemTable.id, $itemTable.title,
+      $itemTable.username, $itemTable.username_iv,
+      $itemTable.password, $itemTable.password_iv, $itemTable.password_hash,
+      $itemTable.password_date, $itemTable.password_lapse,
+      $itemTable.password_status, $itemTable.password_level,
+      $itemTable.pin, $itemTable.pin_iv, $itemTable.pin_hash, 
+      $itemTable.pin_date, $itemTable.pin_lapse, $itemTable.pin_status,
+      $itemTable.ip, $itemTable.ip_iv, $itemTable.long_text, $itemTable.long_text_iv,
+      $itemTable.date, $itemTable.color, $itemTable.color_letter, $itemTable.font
+      FROM $itemTable
+      JOIN $oldPasswordPinTable ON $itemTable.id = $oldPasswordPinTable.item_id
+      GROUP BY $itemTable.id''');
 
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
@@ -195,7 +198,7 @@ class DBHelper {
 
   static Future<void> removeTag(String tag) async =>
       (await DBHelper.database()).rawQuery('''
-          UPDATE $alphaTable 
+          UPDATE $itemTable 
           SET tags = REPLACE(tags, '<$tag>', '') 
           WHERE tags LIKE '%<$tag>%'
           ''');
@@ -211,82 +214,57 @@ class DBHelper {
     }
   }
 
-  static const createUserDataTable = '''CREATE TABLE $userDataTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    surname TEXT,
-    encrypted_mk TEXT,
-    mk_iv)''';
+  static const createUserTable = '''CREATE TABLE $userDataTable(
+    mk_enc TEXT,
+    mk_iv TEXT)''';
 
-  static const createAlphaTable = '''CREATE TABLE $alphaTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+  static const createItemTable = '''CREATE TABLE $itemTable(
+    item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
-    username TEXT,
-    username_iv TEXT,
-    password TEXT,
+    date TEXT,
+    avatar_color INTEGER,
+    avatar_letter_color INTEGER,
+    font TEXT,
+    status TEXT,
+    tags TEXT,
+    username_id INTEGER,
+    password_id INTEGER,
+    pin_id INTEGER,
+    long_text_id INTEGER,
+    FOREIGN KEY (username_id) REFERENCES $usernameTable (username_id),
+    FOREIGN KEY (password_id) REFERENCES $passwordTable (password_id),
+    FOREIGN KEY (pin_id) REFERENCES $pinTable (pin_id),
+    FOREIGN KEY (long_text_id) REFERENCES $longTextTable (long_text_id))''';
+
+  static const createUsernameTable = '''CREATE TABLE $usernameTable(
+    username_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username_enc TEXT,
+    username_iv TEXT)''';
+
+  static const createPasswordTable = '''CREATE TABLE $passwordTable(
+    password_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    password_enc TEXT,
     password_iv TEXT,
-    password_hash TEXT,
     password_date TEXT,
     password_lapse INTEGER,
     password_status TEXT,
-    password_level TEXT,
-    pin TEXT,
+    strength TEXT,
+    hash TEXT)''';
+
+  static const createPinTable = '''CREATE TABLE $pinTable(
+    pin_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pin_enc TEXT,
     pin_iv TEXT,
-    pin_hash TEXT,
     pin_date TEXT,
     pin_lapse INTEGER,
-    pin_status TEXT,
-    ip TEXT,
-    ip_iv TEXT,
-    long_text TEXT,
-    long_text_iv TEXT,
-    date TEXT,
-    color INTEGER,
-    color_letter INTEGER,
-    font TEXT,
-    tags TEXT)''';
+    pin_status TEXT)''';
 
-  static const createOldPasswordPinTable = '''CREATE TABLE $oldPasswordPinTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    password_pin TEXT,
-    password_pin_iv TEXT,
-    password_pin_hash TEXT,
-    password_pin_date TEXT,
-    password_pin_level TEXT,
-    type TEXT,
-    item_id INTEGER)''';
-
-  static const createDeletedAlphaTable = '''CREATE TABLE $deletedAlphaTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT,    
-    username TEXT,
-    username_iv TEXT,
-    password TEXT,
-    password_iv TEXT,
-    password_hash TEXT,
-    password_date TEXT,
-    password_lapse INTEGER,
-    password_status TEXT,
-    password_level TEXT,
-    pin TEXT,
-    pin_iv TEXT,
-    pin_hash TEXT,
-    pin_date TEXT,
-    pin_lapse INTEGER,
-    pin_status TEXT,
-    ip TEXT,
-    ip_iv TEXT,
-    long_text TEXT,
-    long_text_iv TEXT,
-    date TEXT,
-    date_deleted TEXT,
-    color INTEGER,
-    color_letter INTEGER,
-    font TEXT,
-    item_id INTEGER,
-    tags TEXT)''';
+  static const createLongTextTable = '''CREATE TABLE $longTextTable(
+    long_text_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    long_text_enc TEXT,
+    long_text_iv TEXT)''';
 
   static const createTagTable = '''CREATE TABLE $tagTable(
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tag_name TEXT)''';
+    tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value TEXT)''';
 }
