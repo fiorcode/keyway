@@ -25,12 +25,12 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
   bool _editingBackground = true;
 
   _setFillColor(int color) {
-    widget.alpha.color = color;
+    widget.alpha.avatarColor = color;
     setState(() => _fillColor = Color(color));
   }
 
   _setFontColor(int color) {
-    widget.alpha.colorLetter = color;
+    widget.alpha.avatarLetterColor = color;
     setState(() => _fontColor = Color(color));
   }
 
@@ -39,9 +39,10 @@ class _AlphaPreviewCardState extends State<AlphaPreviewCard> {
 
   @override
   void initState() {
-    if (widget.alpha.color >= 0) _fillColor = Color(widget.alpha.color);
-    if (widget.alpha.colorLetter >= 0)
-      _fontColor = Color(widget.alpha.colorLetter);
+    if (widget.alpha.avatarColor >= 0)
+      _fillColor = Color(widget.alpha.avatarColor);
+    if (widget.alpha.avatarLetterColor >= 0)
+      _fontColor = Color(widget.alpha.avatarLetterColor);
     super.initState();
   }
 

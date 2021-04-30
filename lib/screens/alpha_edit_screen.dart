@@ -126,8 +126,8 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     if (_alpha.pinStatus != widget.alpha.pinStatus) return true;
     if (_alpha.ip != widget.alpha.ip) return true;
     if (_alpha.longText != widget.alpha.longText) return true;
-    if (_alpha.color != widget.alpha.color) return true;
-    if (_alpha.colorLetter != widget.alpha.colorLetter) return true;
+    if (_alpha.avatarColor != widget.alpha.avatarColor) return true;
+    if (_alpha.avatarLetterColor != widget.alpha.avatarLetterColor) return true;
     return false;
   }
 

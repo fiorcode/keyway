@@ -9,7 +9,7 @@ class AlphaLockedCard extends StatelessWidget {
   final Alpha alpha;
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(alpha.color);
+    Color _color = Color(alpha.avatarColor);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105)
@@ -43,8 +43,8 @@ class AlphaLockedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: alpha.color != null
-              ? Color(alpha.color).withAlpha(96)
+          backgroundColor: alpha.avatarColor != null
+              ? Color(alpha.avatarColor).withAlpha(96)
               : Colors.grey,
           child: Text(
             alpha.title != null ?? alpha.title.isNotEmpty

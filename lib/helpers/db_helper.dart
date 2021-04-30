@@ -11,6 +11,7 @@ class DBHelper {
   static const String passwordTable = "password";
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
+  static const String deviceTable = "device";
   static const String oldPasswordPinTable = "old_password_pin";
   static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
@@ -21,8 +22,13 @@ class DBHelper {
       path.join(dbPath, 'kw.db'),
       onCreate: (db, version) async {
         await db.execute('PRAGMA foreign_keys = ON');
-        await db.execute(createItemTable);
         await db.execute(createUserTable);
+        await db.execute(createItemTable);
+        await db.execute(createUsernameTable);
+        await db.execute(createPasswordTable);
+        await db.execute(createPinTable);
+        await db.execute(createLongTextTable);
+        await db.execute(createDeviceTable);
         await db.execute(createTagTable);
       },
       version: 1,
@@ -231,10 +237,12 @@ class DBHelper {
     password_id INTEGER,
     pin_id INTEGER,
     long_text_id INTEGER,
+    device_id INTEGER,
     FOREIGN KEY (username_id) REFERENCES $usernameTable (username_id),
     FOREIGN KEY (password_id) REFERENCES $passwordTable (password_id),
     FOREIGN KEY (pin_id) REFERENCES $pinTable (pin_id),
-    FOREIGN KEY (long_text_id) REFERENCES $longTextTable (long_text_id))''';
+    FOREIGN KEY (long_text_id) REFERENCES $longTextTable (long_text_id),
+    FOREIGN KEY (device_id) REFERENCES $deviceTable (device_id))''';
 
   static const createUsernameTable = '''CREATE TABLE $usernameTable(
     username_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -264,7 +272,15 @@ class DBHelper {
     long_text_enc TEXT,
     long_text_iv TEXT)''';
 
+  static const createDeviceTable = '''CREATE TABLE $deviceTable(
+    device_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    type TEXT,
+    vendor TEXT,
+    product TEXT,
+    version TEXT,
+    update TEXT)''';
+
   static const createTagTable = '''CREATE TABLE $tagTable(
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    value TEXT)''';
+    tag_name TEXT)''';
 }

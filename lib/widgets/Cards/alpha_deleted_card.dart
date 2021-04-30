@@ -18,8 +18,8 @@ class AlphaDeletedCard extends StatelessWidget {
       ).then((_) => onReturn());
 
   Color _setAvatarLetterColor() {
-    if (alpha.colorLetter >= 0) return Color(alpha.colorLetter);
-    Color _c = Color(alpha.color);
+    if (alpha.avatarLetterColor >= 0) return Color(alpha.avatarLetterColor);
+    Color _c = Color(alpha.avatarColor);
     double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
@@ -46,8 +46,9 @@ class AlphaDeletedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor:
-              alpha.color != null ? Color(alpha.color) : Colors.grey,
+          backgroundColor: alpha.avatarColor != null
+              ? Color(alpha.avatarColor)
+              : Colors.grey,
           child: Text(
             alpha.title != null ?? alpha.title.isNotEmpty
                 ? alpha.title.substring(0, 1).toUpperCase()

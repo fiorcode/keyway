@@ -187,7 +187,8 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _passFocusNode = FocusNode();
     _username = true;
     _password = true;
-    _alpha = Alpha(color: Colors.grey.value, colorLetter: Colors.white.value);
+    _alpha = Alpha(
+        avatarColor: Colors.grey.value, avatarColorLetter: Colors.white.value);
     super.initState();
   }
 

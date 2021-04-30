@@ -43,8 +43,9 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setAvatarLetterColor() {
-    if (widget.alpha.colorLetter >= 0) return Color(widget.alpha.colorLetter);
-    Color _c = Color(widget.alpha.color);
+    if (widget.alpha.avatarLetterColor >= 0)
+      return Color(widget.alpha.avatarLetterColor);
+    Color _c = Color(widget.alpha.avatarColor);
     double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
@@ -165,8 +166,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: widget.alpha.color != null
-              ? Color(widget.alpha.color)
+          backgroundColor: widget.alpha.avatarColor != null
+              ? Color(widget.alpha.avatarColor)
               : Colors.grey,
           child: Text(
             widget.alpha.title != null ?? widget.alpha.title.isNotEmpty
