@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/longText.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/pin.dart';
+import 'package:keyway/models/username.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
+import '../models/item.dart';
 import '../models/alpha.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
@@ -12,7 +17,6 @@ import '../widgets/presets_wrap.dart';
 import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/tags_listview.dart';
-import '../widgets/TextFields/ip_text_field.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
@@ -33,13 +37,15 @@ class AlphaAddScreen extends StatefulWidget {
 class _AlphaAddScreenState extends State<AlphaAddScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
+  Item _item;
+  Password _pass;
+  Pin _pinn;
   Alpha _alpha;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
-  final _ipCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
 
   FocusNode _userFocusNode;
@@ -48,7 +54,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _username = false;
   bool _password = false;
   bool _pin = false;
-  bool _ip = false;
+  bool _device = false;
   bool _longText = false;
   bool _passwordRepeatedWarning = true;
   bool _passwordChangeReminder = true;
@@ -57,7 +63,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _refreshScreen() => setState(() => _alpha.title = _titleCtrler.text);
+  void _refreshScreen() => setState(() => _item.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -75,46 +81,50 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     return _userCtrler.text.isNotEmpty ||
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
-        _ipCtrler.text.isNotEmpty ||
         _longCtrler.text.isNotEmpty;
   }
 
   void _save() async {
     try {
-      _alpha.date = DateTime.now().toIso8601String();
+      _item.date = DateTime.now().toIso8601String();
 
       if (_username && _userCtrler.text.isNotEmpty) {
-        _alpha.usernameIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.username = _cripto.doCrypt(_userCtrler.text, _alpha.usernameIV);
+        Username _u = Username();
+        _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+        _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
+        _item.fkUsernameId = await _items.insertUsername(_u);
       }
 
       if (_password && _passCtrler.text.isNotEmpty) {
-        _alpha.passwordHash = _cripto.doHash(_passCtrler.text);
-        _alpha.passwordIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.password = _cripto.doCrypt(_passCtrler.text, _alpha.passwordIV);
-        _alpha.passwordDate = _alpha.date;
+        _pass.hash = _cripto.doHash(_passCtrler.text);
         if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
+        _pass.passwordIv = e.IV.fromSecureRandom(16).base16;
+        _pass.passwordEnc = _cripto.doCrypt(_passCtrler.text, _pass.passwordIv);
+        _pass.passwordDate = _item.date;
+        _pass.passwordStatus = '';
+        _pass.strength = '';
+        _item.fkPasswordId = await _items.insertPassword(_pass);
       }
 
       if (_pin && _pinCtrler.text.isNotEmpty) {
-        _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
-        _alpha.pinIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
-        _alpha.pinDate = _alpha.date;
         if (_pinRepeatedWarning) if (await _checkPinStatus()) return;
-      }
-
-      if (_ip && _ipCtrler.text.isNotEmpty) {
-        _alpha.ipIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.ip = _cripto.doCrypt(_ipCtrler.text, _alpha.ipIV);
+        _pinn.pinIv = e.IV.fromSecureRandom(16).base16;
+        _pinn.pinEnc = _cripto.doCrypt(_pinCtrler.text, _pinn.pinIv);
+        _pinn.pinDate = _item.date;
+        _pinn.pinStatus = '';
+        _item.fkPinId = await _items.insertPin(_pinn);
       }
 
       if (_longText && _longCtrler.text.isNotEmpty) {
-        _alpha.longTextIV = e.IV.fromSecureRandom(16).base16;
-        _alpha.longText = _cripto.doCrypt(_longCtrler.text, _alpha.longTextIV);
+        LongText _long = LongText();
+        _long.longTextIv = e.IV.fromSecureRandom(16).base16;
+        _long.longTextEnc = _cripto.doCrypt(_longCtrler.text, _long.longTextIv);
+        _item.fkLongTextId = await _items.insertLongText(_long);
       }
 
-      _items.insertAlpha(_alpha).then((_) => Navigator.of(context).pop());
+      if (_device) {}
+
+      _items.insertItem(_item).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -165,17 +175,16 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     });
   }
 
-  void _ipSwitch() {
-    setState(() {
-      _ipCtrler.clear();
-      _ip = !_ip;
-    });
-  }
-
   void _longTextSwitch() {
     setState(() {
       _longCtrler.clear();
       _longText = !_longText;
+    });
+  }
+
+  void _deviceSwitch() {
+    setState(() {
+      _device = !_device;
     });
   }
 
@@ -187,6 +196,9 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _passFocusNode = FocusNode();
     _username = true;
     _password = true;
+    _item = Item();
+    _pass = Password();
+    _pinn = Pin();
     _alpha = Alpha(
         avatarColor: Colors.grey.value, avatarColorLetter: Colors.white.value);
     super.initState();
@@ -198,7 +210,6 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
     _userCtrler.dispose();
     _passCtrler.dispose();
     _pinCtrler.dispose();
-    _ipCtrler.dispose();
     _longCtrler.dispose();
     _passFocusNode.dispose();
     super.dispose();
@@ -245,12 +256,12 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     username: _username,
                     password: _password,
                     pin: _pin,
-                    ip: _ip,
+                    device: _device,
                     longText: _longText,
                     usernameSwitch: _usernameSwitch,
                     passwordSwitch: _passwordSwitch,
                     pinSwitch: _pinSwitch,
-                    ipSwitch: _ipSwitch,
+                    deviceSwitch: _deviceSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
                   if (_username)
@@ -288,7 +299,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     Column(
                       children: [
                         if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(alpha: _alpha),
+                          PasswordChangeReminderCard(pass: _pass),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -341,7 +352,7 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                     Column(
                       children: [
                         if (_pinChangeReminder)
-                          PinChangeReminderCard(alpha: _alpha),
+                          PinChangeReminderCard(pin: _pinn),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -385,11 +396,11 @@ class _AlphaAddScreenState extends State<AlphaAddScreen> {
                         ),
                       ],
                     ),
-                  if (_ip)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: IpTextField(_ipCtrler),
-                    ),
+                  // if (_device)
+                  //   Padding(
+                  //     padding: const EdgeInsets.symmetric(vertical: 12),
+                  //     child: IpTextField(_ipCtrler),
+                  //   ),
                   if (_longText)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
