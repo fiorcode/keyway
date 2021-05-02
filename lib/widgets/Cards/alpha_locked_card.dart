@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/helpers/date_helper.dart';
 
-import 'package:keyway/models/alpha.dart';
+import 'package:keyway/models/item.dart';
 
 class AlphaLockedCard extends StatelessWidget {
-  const AlphaLockedCard({Key key, this.alpha}) : super(key: key);
+  const AlphaLockedCard({Key key, this.item}) : super(key: key);
 
-  final Alpha alpha;
+  final Item item;
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(alpha.avatarColor);
+    Color _color = Color(item.avatarColor);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105)
@@ -43,12 +43,12 @@ class AlphaLockedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: alpha.avatarColor != null
-              ? Color(alpha.avatarColor).withAlpha(96)
+          backgroundColor: item.avatarColor != null
+              ? Color(item.avatarColor).withAlpha(96)
               : Colors.grey,
           child: Text(
-            alpha.title != null ?? alpha.title.isNotEmpty
-                ? alpha.title.substring(0, 1).toUpperCase()
+            item.title != null ?? item.title.isNotEmpty
+                ? item.title.substring(0, 1).toUpperCase()
                 : '',
             style: TextStyle(
               fontSize: 24,
@@ -58,7 +58,7 @@ class AlphaLockedCard extends StatelessWidget {
           ),
         ),
         title: Text(
-          alpha.title != null ? alpha.title : '',
+          item.title != null ? item.title : '',
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           textAlign: TextAlign.start,
@@ -74,7 +74,7 @@ class AlphaLockedCard extends StatelessWidget {
           elevation: 4,
           visualDensity: VisualDensity.compact,
           label: Text(
-            alpha.date != null ? DateHelper.shortDate(alpha.date) : '',
+            item.date != null ? DateHelper.shortDate(item.date) : '',
             style: TextStyle(
               fontSize: 10,
               color: Colors.white,
