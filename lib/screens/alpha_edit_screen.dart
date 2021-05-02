@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/item.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/pin.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
@@ -36,6 +39,9 @@ class AlphaEditScreen extends StatefulWidget {
 class _AlphaEditScreenState extends State<AlphaEditScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
+  Item _item;
+  Password _pass;
+  Pin _pinn;
   Alpha _alpha;
 
   final _titleCtrler = TextEditingController();
@@ -227,7 +233,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
     if (_warning)
-      _items.deleteAlpha(_alpha).then((_) => Navigator.of(context).pop());
+      _items.deleteItem(_item).then((_) => Navigator.of(context).pop());
   }
 
   @override
@@ -236,6 +242,9 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
+    _pass = Password();
+    _pinn = Pin();
+    _item = Item();
     _alpha = widget.alpha.clone();
     _passwordRepeatedWarning = _alpha.passwordStatus != 'NO-WARNING';
     _passwordChangeReminder = _alpha.passwordLapse >= 0;
@@ -296,12 +305,12 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     username: _username,
                     password: _password,
                     pin: _pin,
-                    ip: _ip,
+                    device: _ip,
                     longText: _longText,
                     usernameSwitch: _usernameSwitch,
                     passwordSwitch: _passwordSwitch,
                     pinSwitch: _pinSwitch,
-                    ipSwitch: _ipSwitch,
+                    deviceSwitch: _ipSwitch,
                     longTextSwitch: _longTextSwitch,
                   ),
                   if (_username)
@@ -339,7 +348,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     Column(
                       children: [
                         if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(alpha: _alpha),
+                          PasswordChangeReminderCard(pass: _pass),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -392,7 +401,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     Column(
                       children: [
                         if (_pinChangeReminder)
-                          PinChangeReminderCard(alpha: _alpha),
+                          PinChangeReminderCard(pin: _pinn),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
