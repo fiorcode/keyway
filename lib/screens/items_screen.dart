@@ -20,9 +20,9 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  ItemProvider _items;
+  ItemProvider _item;
   CriptoProvider _cripto;
-  Future getItems;
+  Future _getItemsAsync;
   TextEditingController _searchCtrler;
   FocusNode _searchFocusNode;
   bool _unlocking = false;
@@ -30,12 +30,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItems() async => await _items.fetchItems(
+  Future<void> _getItems() async => await _item.fetchItems(
         _searchCtrler.text == null ? '' : _searchCtrler.text,
       );
 
   _onReturn() {
-    getItems = _getItems();
+    _getItemsAsync = _getItems();
     setState(() {});
   }
 
@@ -49,7 +49,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   void _clearSearch() {
     _searchCtrler.clear();
-    getItems = _getItems();
+    _getItemsAsync = _getItems();
     setState(() {});
   }
 
@@ -64,10 +64,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
-    _items = Provider.of<ItemProvider>(context);
+    _item = Provider.of<ItemProvider>(context);
     _searchCtrler = TextEditingController();
     _searchFocusNode = FocusNode();
-    getItems = _getItems();
+    _getItemsAsync = _getItems();
     super.didChangeDependencies();
   }
 
@@ -92,11 +92,11 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : FutureBuilder(
-                future: getItems,
+                future: _getItemsAsync,
                 builder: (ctx, snap) {
                   switch (snap.connectionState) {
                     case ConnectionState.done:
-                      if (_items.items.length > 10 || _searching) {
+                      if (_item.items.length > 10 || _searching) {
                         if (_searching) {
                           _searchFocusNode.requestFocus();
                           return SearchBarTextField(
@@ -133,7 +133,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
             : [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
       ),
       body: FutureBuilder(
-        future: getItems,
+        future: _getItemsAsync,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
@@ -146,16 +146,16 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               else
                 return Stack(
                   children: [
-                    _items.items.length <= 0
+                    _item.items.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(12.0),
-                            itemCount: _items.items.length,
+                            itemCount: _item.items.length,
                             itemBuilder: (ctx, i) {
                               return _cripto.locked
-                                  ? AlphaLockedCard(alpha: _items.items[i])
+                                  ? AlphaLockedCard(item: _item.items[i])
                                   : AlphaUnlockedCard(
-                                      alpha: _items.items[i],
+                                      item: _item.items[i],
                                       onReturn: _onReturn,
                                     );
                             },
