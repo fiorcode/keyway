@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart' as sql;
 import 'package:sqflite/sqlite_api.dart';
 
 class DBHelper {
-  static const String userDataTable = "user";
+  static const String userTable = "user";
   static const String itemTable = "item";
   static const String usernameTable = "username";
   static const String passwordTable = "password";
@@ -77,6 +77,41 @@ class DBHelper {
       (await DBHelper.database()).query(
         table,
         where: 'id = ?',
+        whereArgs: [id],
+      );
+
+  static Future<List<Map<String, dynamic>>> getUsernameById(int id) async =>
+      (await DBHelper.database()).query(
+        DBHelper.usernameTable,
+        where: 'username_id = ?',
+        whereArgs: [id],
+      );
+
+  static Future<List<Map<String, dynamic>>> getPasswordById(int id) async =>
+      (await DBHelper.database()).query(
+        DBHelper.passwordTable,
+        where: 'password_id = ?',
+        whereArgs: [id],
+      );
+
+  static Future<List<Map<String, dynamic>>> getPinById(int id) async =>
+      (await DBHelper.database()).query(
+        DBHelper.pinTable,
+        where: 'pin_id = ?',
+        whereArgs: [id],
+      );
+
+  static Future<List<Map<String, dynamic>>> getLongTextById(int id) async =>
+      (await DBHelper.database()).query(
+        DBHelper.longTextTable,
+        where: 'long_text_id = ?',
+        whereArgs: [id],
+      );
+
+  static Future<List<Map<String, dynamic>>> getDeviceById(int id) async =>
+      (await DBHelper.database()).query(
+        DBHelper.deviceTable,
+        where: 'device_id = ?',
         whereArgs: [id],
       );
 
@@ -220,7 +255,7 @@ class DBHelper {
     }
   }
 
-  static const createUserTable = '''CREATE TABLE $userDataTable(
+  static const createUserTable = '''CREATE TABLE $userTable(
     mk_enc TEXT,
     mk_iv TEXT)''';
 
@@ -233,16 +268,16 @@ class DBHelper {
     font TEXT,
     status TEXT,
     tags TEXT,
-    username_id INTEGER,
-    password_id INTEGER,
-    pin_id INTEGER,
-    long_text_id INTEGER,
-    device_id INTEGER,
-    FOREIGN KEY (username_id) REFERENCES $usernameTable (username_id),
-    FOREIGN KEY (password_id) REFERENCES $passwordTable (password_id),
-    FOREIGN KEY (pin_id) REFERENCES $pinTable (pin_id),
-    FOREIGN KEY (long_text_id) REFERENCES $longTextTable (long_text_id),
-    FOREIGN KEY (device_id) REFERENCES $deviceTable (device_id))''';
+    fk_username_id INTEGER,
+    fk_password_id INTEGER,
+    fk_pin_id INTEGER,
+    fk_long_text_id INTEGER,
+    fk_device_id INTEGER,
+    FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
+    FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id),
+    FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
+    FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
+    FOREIGN KEY (fk_device_id) REFERENCES $deviceTable (device_id))''';
 
   static const createUsernameTable = '''CREATE TABLE $usernameTable(
     username_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -278,7 +313,7 @@ class DBHelper {
     vendor TEXT,
     product TEXT,
     version TEXT,
-    update TEXT)''';
+    update_code TEXT)''';
 
   static const createTagTable = '''CREATE TABLE $tagTable(
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
