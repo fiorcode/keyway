@@ -31,22 +31,18 @@ class ErrorBody extends StatelessWidget {
   final dynamic error;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      padding: const EdgeInsets.all(32),
       children: [
         Center(
-          child: Padding(
-            padding: const EdgeInsets.all(64.0),
-            child: Image.asset("assets/error.png"),
-          ),
+          child: Image.asset("assets/error.png", height: 128),
         ),
         Center(
-          child: Padding(
-            padding: const EdgeInsets.all(32.0),
-            child: Text(
-              error.toString(),
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red),
-            ),
+          child: Text(
+            error.toString(),
+            textAlign: TextAlign.center,
+            style: TextStyle(color: Colors.red),
+            overflow: TextOverflow.fade,
           ),
         ),
       ],
