@@ -14,9 +14,9 @@ class AlphaHistoryListCard extends StatelessWidget {
   _onTap(BuildContext context) {
     int _id;
     if (alpha is DeletedAlpha)
-      _id = (alpha as DeletedAlpha).itemId;
+      _id = (alpha as DeletedAlpha).itemIdFK;
     else
-      _id = alpha.id;
+      _id = alpha.itemId;
     Navigator.push(
       context,
       MaterialPageRoute(
