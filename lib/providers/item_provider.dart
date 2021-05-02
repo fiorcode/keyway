@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/device.dart';
+import 'package:keyway/models/item.dart';
+import 'package:keyway/models/longText.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/pin.dart';
 
 // import 'dart:math';
 // import 'package:encrypt/encrypt.dart' as e;
@@ -12,7 +17,7 @@ import '../models/username.dart';
 import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
-  List<dynamic> _items = [];
+  List<Item> _items = [];
   List<dynamic> _itemsWithOlds = [];
   List<OldPasswrodPin> _itemOlds = [];
   List<DeletedAlpha> _deletedItems = [];
@@ -23,17 +28,16 @@ class ItemProvider with ChangeNotifier {
   List<DeletedAlpha> get deletedItems => [..._deletedItems];
 
   Future<void> fetchItems(String title) async {
-    Iterable<Alpha> _iter;
+    Iterable<Item> _iter;
     _items.clear();
     if (title.isEmpty) {
       await DBHelper.getData(DBHelper.itemTable)
-          .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
+          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     } else {
       await DBHelper.getItemsByTitle(title)
-          .then((data) => _iter = data.map((e) => Alpha.fromMap(e)));
+          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     }
     _items.addAll(_iter.toList());
-    _items.sort((a, b) => b.date.compareTo(a.date));
   }
 
   Future<void> fetchItemsWithOlds() async {
@@ -48,7 +52,7 @@ class ItemProvider with ChangeNotifier {
       _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
     });
     _itemsWithOlds.addAll(_iterDIWH.toList());
-    _itemsWithOlds.sort((a, b) => b.date.compareTo(a.date));
+    _itemsWithOlds.sort((a, b) => b.usernameIv.compareTo(a.usernameIv));
   }
 
   Future<void> fetchItemOlds(int itemId) async {
@@ -72,6 +76,28 @@ class ItemProvider with ChangeNotifier {
     _deletedItems.sort((a, b) => b.date.compareTo(a.date));
   }
 
+  Future<int> insertUsername(Username u) async =>
+      await DBHelper.insert(DBHelper.usernameTable, u.toMap());
+
+  Future<int> insertPassword(Password p) async {
+    p.passwordId = await DBHelper.insert(DBHelper.passwordTable, p.toMap());
+    if (p.passwordStatus == 'REPEATED') await DBHelper.setPassRepeted(p.hash);
+    return p.passwordId;
+  }
+
+  // WRONG
+  Future<int> insertPin(Pin p) async {
+    p.pinId = await DBHelper.insert(DBHelper.pinTable, p.toMap());
+    // if (p.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(p.pinEnc);
+    return p.pinId;
+  }
+
+  Future<int> insertLongText(LongText l) async =>
+      await DBHelper.insert(DBHelper.longTextTable, l.toMap());
+
+  Future<int> insertItem(Item i) async =>
+      await DBHelper.insert(DBHelper.itemTable, i.toMap());
+
   Future<void> insertAlpha(Alpha a) async {
     await DBHelper.insert(DBHelper.itemTable, a.toMap());
     if (a.passwordStatus == 'REPEATED')
@@ -82,7 +108,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> updateAlpha(Alpha a) async {
     Alpha _prev;
-    await DBHelper.getById(DBHelper.itemTable, a.id).then(
+    await DBHelper.getById(DBHelper.itemTable, a.itemId).then(
       (_list) async {
         _prev = Alpha.fromMap(_list.first);
         if (_prev.passwordHash != a.passwordHash && _prev.password != '') {
@@ -107,24 +133,19 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<void> deleteAlpha(Alpha a) async {
-    await DBHelper.insert(
-      DBHelper.deletedAlphaTable,
-      DeletedAlpha.fromAlpha(a).toMap(),
-    ).then(
-      (_) async => await DBHelper.delete(DBHelper.itemTable, a.id).then(
-        (_) => _items.removeWhere((e) => e.id == a.id),
-      ),
+  Future<void> deleteItem(Item i) async {
+    await DBHelper.delete(DBHelper.itemTable, i.itemId).then(
+      (_) => _items.removeWhere((item) => item.itemId == i.itemId),
     );
   }
 
   Future<void> deleteDeletedAlpha(DeletedAlpha a) async =>
-      await DBHelper.delete(DBHelper.deletedAlphaTable, a.id).then(
+      await DBHelper.delete(DBHelper.deletedAlphaTable, a.itemId).then(
         (_) async {
           if (a.password.isNotEmpty)
             await DBHelper.unsetPassRepeted(a.passwordHash);
           if (a.pin.isNotEmpty) await DBHelper.unsetPinRepeted(a.pinHash);
-          _deletedItems.removeWhere((e) => e.id == a.id);
+          _deletedItems.removeWhere((e) => e.itemId == a.itemId);
         },
       );
 
@@ -211,6 +232,31 @@ class ItemProvider with ChangeNotifier {
     _itemsWithOlds.clear();
     _itemOlds.clear();
     _deletedItems.clear();
+  }
+
+  Future<Username> getUsername(int id) async {
+    List<Map<String, dynamic>> _u = await DBHelper.getUsernameById(id);
+    return Username.fromMap(_u.first);
+  }
+
+  Future<Password> getPassword(int id) async {
+    List<Map<String, dynamic>> _p = await DBHelper.getPasswordById(id);
+    return Password.fromMap(_p.first);
+  }
+
+  Future<Pin> getPin(int id) async {
+    List<Map<String, dynamic>> _p = await DBHelper.getPinById(id);
+    return Pin.fromMap(_p.first);
+  }
+
+  Future<LongText> getLongText(int id) async {
+    List<Map<String, dynamic>> _lt = await DBHelper.getLongTextById(id);
+    return LongText.fromMap(_lt.first);
+  }
+
+  Future<Device> getDevice(int id) async {
+    List<Map<String, dynamic>> _d = await DBHelper.getDeviceById(id);
+    return Device.fromMap(_d.first);
   }
 
   Future<List<Username>> getUsers() async {
