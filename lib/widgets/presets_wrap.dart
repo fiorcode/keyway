@@ -6,25 +6,25 @@ class PresetsWrap extends StatelessWidget {
     @required this.username,
     @required this.password,
     @required this.pin,
-    @required this.ip,
+    @required this.device,
     @required this.longText,
     @required this.usernameSwitch,
     @required this.passwordSwitch,
     @required this.pinSwitch,
-    @required this.ipSwitch,
     @required this.longTextSwitch,
+    @required this.deviceSwitch,
   }) : super(key: key);
 
   final bool username;
   final bool password;
   final bool pin;
-  final bool ip;
+  final bool device;
   final bool longText;
   final Function usernameSwitch;
   final Function passwordSwitch;
   final Function pinSwitch;
-  final Function ipSwitch;
   final Function longTextSwitch;
+  final Function deviceSwitch;
 
   @override
   Widget build(BuildContext context) {
@@ -82,20 +82,6 @@ class PresetsWrap extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: FloatingActionButton(
-              backgroundColor: ip ? Colors.white : Colors.grey,
-              child: Icon(
-                Icons.router,
-                size: ip ? 32 : 24,
-                color: ip ? Colors.grey : Colors.white,
-              ),
-              elevation: ip ? 8 : 0,
-              heroTag: null,
-              onPressed: ipSwitch,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: FloatingActionButton(
               backgroundColor: longText ? Colors.white : Colors.grey,
               child: Icon(
                 Icons.notes_rounded,
@@ -105,6 +91,20 @@ class PresetsWrap extends StatelessWidget {
               elevation: longText ? 8 : 0,
               heroTag: null,
               onPressed: longTextSwitch,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FloatingActionButton(
+              backgroundColor: device ? Colors.white : Colors.grey,
+              child: Icon(
+                Icons.router,
+                size: device ? 32 : 24,
+                color: device ? Colors.grey : Colors.white,
+              ),
+              elevation: device ? 8 : 0,
+              heroTag: null,
+              onPressed: deviceSwitch,
             ),
           ),
         ],
