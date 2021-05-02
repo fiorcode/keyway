@@ -1,7 +1,7 @@
 import 'alpha.dart';
 
 class DeletedAlpha extends Alpha {
-  int itemId;
+  int itemIdFK;
   String deletedDate;
 
   DeletedAlpha({
@@ -32,7 +32,7 @@ class DeletedAlpha extends Alpha {
     String font,
     String tags,
     this.deletedDate,
-    this.itemId,
+    this.itemIdFK,
   }) : super(
           id: id,
           title: title,
@@ -89,7 +89,7 @@ class DeletedAlpha extends Alpha {
     this.avatarLetterColor = a.avatarLetterColor;
     this.font = a.font;
     this.tags = a.tags;
-    this.itemId = a.id;
+    this.itemIdFK = a.itemId;
   }
 
   DeletedAlpha.fromMap(Map<String, dynamic> map) : super.fromMap(map) {
@@ -115,7 +115,7 @@ class DeletedAlpha extends Alpha {
     font = map['font'];
     tags = map['tags'];
     deletedDate = map['date_deleted'];
-    itemId = map['item_id'];
+    itemIdFK = map['item_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -146,9 +146,9 @@ class DeletedAlpha extends Alpha {
       'font': font,
       'tags': tags,
       'date_deleted': deletedDate,
-      'item_id': itemId,
+      'item_id': itemIdFK,
     };
-    if (id != null) map['id'] = id;
+    if (itemId != null) map['id'] = itemId;
     return map;
   }
 }
