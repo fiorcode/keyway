@@ -1,5 +1,5 @@
 class Item {
-  int id;
+  int itemId;
   String title;
   String date;
   int avatarColor;
@@ -7,14 +7,14 @@ class Item {
   String font;
   String status;
   String tags;
-  int usernameId;
-  int passwordId;
-  int pinId;
-  int longTextId;
-  int deviceId;
+  int fkUsernameId;
+  int fkPasswordId;
+  int fkPinId;
+  int fkLongTextId;
+  int fkDeviceId;
 
   Item({
-    this.id,
+    this.itemId,
     this.title = '',
     this.date = '',
     this.avatarColor = 4290624957,
@@ -25,7 +25,7 @@ class Item {
   });
 
   Item.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
+    itemId = map['id'];
     title = map['title'];
     date = map['date'];
     avatarColor = map['avatar_color'];
@@ -33,11 +33,11 @@ class Item {
     font = map['font'];
     status = map['status'];
     tags = map['tags'];
-    usernameId = map['username_id'];
-    passwordId = map['password_id'];
-    pinId = map['pin_id'];
-    longTextId = map['long_text_id'];
-    deviceId = map['device_id'];
+    fkUsernameId = map['fk_username_id'];
+    fkPasswordId = map['fk_password_id'];
+    fkPinId = map['fk_pin_id'];
+    fkLongTextId = map['fk_long_text_id'];
+    fkDeviceId = map['fk_device_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -49,13 +49,13 @@ class Item {
       'font': font,
       'status': status,
       'tags': tags,
-      'username_id': usernameId,
-      'password_id': passwordId,
-      'pin_id': pinId,
-      'long_text_id': longTextId,
-      'device_id': deviceId,
+      'fk_username_id': fkUsernameId,
+      'fk_password_id': fkPasswordId,
+      'fk_pin_id': fkPinId,
+      'fk_long_text_id': fkLongTextId,
+      'fk_device_id': fkDeviceId,
     };
-    if (id != null) map['id'] = id;
+    if (itemId != null) map['item_id'] = itemId;
     return map;
   }
 
