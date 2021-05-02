@@ -50,7 +50,7 @@ class Alpha extends Item {
     String font,
     String tags = '',
   }) : super(
-          id: id,
+          itemId: id,
           title: title,
           date: date,
           avatarColor: avatarColor,
@@ -109,13 +109,13 @@ class Alpha extends Item {
       'font': tags,
       'tags': tags,
     };
-    if (id != null) map['id'] = id;
+    if (itemId != null) map['id'] = itemId;
     return map;
   }
 
   Alpha clone() {
     return Alpha(
-      id: this.id,
+      id: this.itemId,
       title: this.title,
       username: this.username,
       usernameIV: this.usernameIV,
@@ -151,7 +151,7 @@ class Alpha extends Item {
     opp.passwordPinDate = this.passwordDate;
     opp.passwordPinLevel = this.passwordLevel;
     opp.type = 'password';
-    opp.itemId = this.id;
+    opp.itemId = this.itemId;
   }
 
   copyPinValues(OldPasswrodPin opp) {
@@ -161,6 +161,6 @@ class Alpha extends Item {
     opp.passwordPinDate = this.pinDate;
     opp.passwordPinLevel = '';
     opp.type = 'pin';
-    opp.itemId = this.id;
+    opp.itemId = this.itemId;
   }
 }
