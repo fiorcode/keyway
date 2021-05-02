@@ -69,8 +69,8 @@ class CriptoProvider with ChangeNotifier {
 
     //SAVE MASTER KEY IN DATABASE
     DBHelper.insert(
-      'user_data',
-      {'encrypted_mk': _mkCrypted.base16, 'mk_iv': _iv.base16},
+      DBHelper.userTable,
+      {'mk_enc': _mkCrypted.base16, 'mk_iv': _iv.base16},
     );
 
     _v.clear();
@@ -84,7 +84,7 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> setMasterKey() async {
     return SharedPreferences.getInstance().then((pref) {
-      DBHelper.getData('user_data').then((data) {
+      DBHelper.getData(DBHelper.userTable).then((data) {
         User _user = User.fromMap(data.first);
         pref.setString('masterKey', _user.encMK);
         pref.setString('masterKeyIV', _user.mkIV);
