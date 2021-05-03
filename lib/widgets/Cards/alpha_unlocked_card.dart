@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:keyway/models/password.dart';
-import 'package:keyway/models/pin.dart';
-import 'package:keyway/models/username.dart';
-import 'package:keyway/providers/item_provider.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/models/item.dart';
+import 'package:keyway/models/username.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/item_password.dart';
+import 'package:keyway/models/pin.dart';
 import 'package:keyway/screens/alpha_edit_screen.dart';
 import 'package:keyway/screens/alpha_view_screen.dart';
 
@@ -26,12 +26,16 @@ class AlphaUnlockedCard extends StatefulWidget {
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   ItemProvider _item;
   CriptoProvider _cripto;
+
   Future _getUsernameAsync;
   Future _getPasswordAsync;
   Future _getPinAsync;
+
   Username _username;
   Password _password;
+  ItemPassword _itemPass;
   Pin _pin;
+
   int _showValue = 0;
   String _subtitle = '';
 
@@ -41,8 +45,11 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Future<void> _getPassword() async {
-    if (widget.item.fkPasswordId == null) return;
-    _password = await _item.getPassword(widget.item.fkPasswordId);
+    await _item.getLastItemPassword(widget.item.itemId).then((ip) async {
+      if (ip == null) return;
+      _itemPass = ip;
+      _password = await _item.getPassword(ip.fkPasswordId);
+    });
   }
 
   Future<void> _getPin() async {
@@ -89,29 +96,29 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
-  bool _expired() {
-    DateTime _nowUTC = DateTime.now().toUtc();
-    bool _passExp = false;
-    bool _pinExp = false;
-    if (_password != null) {
-      DateTime _passDate = DateTime.parse(_password.passwordDate);
-      int _daysOfPass = _nowUTC.difference(_passDate).inDays;
-      _passExp = _password.passwordLapse <= _daysOfPass;
-    }
-    if (_pin != null) {
-      DateTime _pinDate = DateTime.parse(_pin.pinDate);
-      int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
-      _pinExp = _pin.pinLapse <= _daysOfPin;
-    }
-    if (_password.passwordLapse <= 0) _passExp = false;
-    if (_pin.pinLapse <= 0) _pinExp = false;
-    return _passExp || _pinExp;
-  }
+  // bool _expired() {
+  //   DateTime _nowUTC = DateTime.now().toUtc();
+  //   bool _passExp = false;
+  //   bool _pinExp = false;
+  //   if (_password != null) {
+  //     DateTime _passDate = DateTime.parse(_password.passwordDate);
+  //     int _daysOfPass = _nowUTC.difference(_passDate).inDays;
+  //     _passExp = _password.passwordLapse <= _daysOfPass;
+  //   }
+  //   if (_pin != null) {
+  //     DateTime _pinDate = DateTime.parse(_pin.pinDate);
+  //     int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
+  //     _pinExp = _pin.pinLapse <= _daysOfPin;
+  //   }
+  //   if (_password.passwordLapse <= 0) _passExp = false;
+  //   if (_pin.pinLapse <= 0) _pinExp = false;
+  //   return _passExp || _pinExp;
+  // }
 
   String _setTitleSubtitle() {
     switch (_showValue) {
       case 1:
-        if (widget.item.fkPasswordId == null) continue two;
+        if (_itemPass == null) continue two;
         _showValue = 1;
         _subtitle = 'Password';
         return _cripto.doDecrypt(_password.passwordEnc, _password.passwordIv);
@@ -139,8 +146,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setWarningColor() {
-    if (_password != null) {
-      if (_password.passwordStatus == 'REPEATED') return Colors.red[300];
+    if (_itemPass != null) {
+      if (_itemPass.status == 'REPEATED') return Colors.red[300];
     }
     if (_pin != null) {
       if (_pin.pinStatus == 'REPEATED') return Colors.red[300];
@@ -149,8 +156,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setIconColor() {
-    if (_password != null) {
-      if (_password.passwordStatus == 'REPEATED') return Colors.grey[200];
+    if (_itemPass != null) {
+      if (_itemPass.status == 'REPEATED') return Colors.grey[200];
     }
     if (_pin != null) {
       if (_pin.pinStatus == 'REPEATED') return Colors.grey[200];
