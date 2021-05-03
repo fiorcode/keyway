@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
-import '../screens/alpha_add_screen.dart';
+import '../screens/item_add_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/Cards/alpha_locked_card.dart';
@@ -58,7 +58,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       .then((_) => _onReturn());
 
   void _goToAlpha() => Navigator.of(context)
-      .pushNamed(AlphaAddScreen.routeName)
+      .pushNamed(ItemAddScreen.routeName)
       .then((_) => _onReturn());
 
   @override
