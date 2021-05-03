@@ -2,9 +2,6 @@ class Password {
   int passwordId;
   String passwordEnc;
   String passwordIv;
-  String passwordDate;
-  int passwordLapse;
-  String passwordStatus;
   String strength;
   String hash;
 
@@ -12,8 +9,6 @@ class Password {
     this.passwordId,
     this.passwordEnc = '',
     this.passwordIv = '',
-    this.passwordLapse = 320,
-    this.passwordStatus = '',
     this.strength = '',
     this.hash = '',
   });
@@ -22,9 +17,6 @@ class Password {
     passwordId = map['password_id'];
     passwordEnc = map['password_enc'];
     passwordIv = map['password_iv'];
-    passwordDate = map['password_date'];
-    passwordLapse = map['password_lapse'];
-    passwordStatus = map['password_status'];
     strength = map['strength'];
     hash = map['hash'];
   }
@@ -33,9 +25,6 @@ class Password {
     Map<String, dynamic> map = <String, dynamic>{
       'password_enc': passwordEnc,
       'password_iv': passwordIv,
-      'password_date': passwordDate,
-      'password_lapse': passwordLapse,
-      'password_status': passwordStatus,
       'strength': strength,
       'hash': hash,
     };
