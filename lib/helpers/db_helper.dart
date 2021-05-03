@@ -12,6 +12,7 @@ class DBHelper {
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
   static const String deviceTable = "device";
+  static const String itemPasswordTable = "item_password";
   static const String oldPasswordPinTable = "old_password_pin";
   static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
@@ -26,6 +27,7 @@ class DBHelper {
         await db.execute(createItemTable);
         await db.execute(createUsernameTable);
         await db.execute(createPasswordTable);
+        await db.execute(createItemPasswordTable);
         await db.execute(createPinTable);
         await db.execute(createLongTextTable);
         await db.execute(createDeviceTable);
@@ -128,6 +130,12 @@ class DBHelper {
       (await DBHelper.database()).rawQuery('''SELECT *
         FROM $itemTable
         WHERE title LIKE \'%$title%\'''');
+
+  static Future<List<Map<String, dynamic>>> getItemPass(int itemId) async {
+    return (await DBHelper.database()).rawQuery('''SELECT * 
+        FROM $itemPasswordTable 
+        WHERE fk_item_id = $itemId''');
+  }
 
   static Future<List<Map<String, dynamic>>> getUsernames() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
@@ -269,12 +277,10 @@ class DBHelper {
     status TEXT,
     tags TEXT,
     fk_username_id INTEGER,
-    fk_password_id INTEGER,
     fk_pin_id INTEGER,
     fk_long_text_id INTEGER,
     fk_device_id INTEGER,
     FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
-    FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id),
     FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
     FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
     FOREIGN KEY (fk_device_id) REFERENCES $deviceTable (device_id))''';
@@ -288,11 +294,18 @@ class DBHelper {
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
     password_enc TEXT,
     password_iv TEXT,
-    password_date TEXT,
-    password_lapse INTEGER,
-    password_status TEXT,
     strength TEXT,
     hash TEXT)''';
+
+  static const createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
+    fk_item_id,
+    fk_password_id,
+    date TEXT,
+    lapse INTEGER,
+    status TEXT,
+    PRIMARY KEY (fk_item_id, fk_password_id)
+    FOREIGN KEY (fk_item_id) REFERENCES $itemTable (item_id),
+    FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id))''';
 
   static const createPinTable = '''CREATE TABLE $pinTable(
     pin_id INTEGER PRIMARY KEY AUTOINCREMENT,
