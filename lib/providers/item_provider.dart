@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/device.dart';
-import 'package:keyway/models/item.dart';
-import 'package:keyway/models/longText.dart';
-import 'package:keyway/models/password.dart';
-import 'package:keyway/models/pin.dart';
+import 'package:keyway/models/item_password.dart';
 
 // import 'dart:math';
 // import 'package:encrypt/encrypt.dart' as e;
 // import 'package:keyway/providers/cripto_provider.dart';
 
 import '../helpers/db_helper.dart';
+
+import 'package:keyway/models/device.dart';
+import 'package:keyway/models/item.dart';
+import 'package:keyway/models/longText.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/pin.dart';
 import '../models/alpha.dart';
 import '../models/deleted_alpha.dart';
 import '../models/old_password_pin.dart';
@@ -22,7 +24,7 @@ class ItemProvider with ChangeNotifier {
   List<OldPasswrodPin> _itemOlds = [];
   List<DeletedAlpha> _deletedItems = [];
 
-  List<dynamic> get items => [..._items];
+  List<Item> get items => [..._items];
   List<dynamic> get itemsWithOlds => [..._itemsWithOlds];
   List<OldPasswrodPin> get itemOlds => [..._itemOlds];
   List<DeletedAlpha> get deletedItems => [..._deletedItems];
@@ -79,18 +81,14 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
 
-  Future<int> insertPassword(Password p) async {
-    p.passwordId = await DBHelper.insert(DBHelper.passwordTable, p.toMap());
-    if (p.passwordStatus == 'REPEATED') await DBHelper.setPassRepeted(p.hash);
-    return p.passwordId;
-  }
+  Future<int> insertPassword(Password p) async =>
+      await DBHelper.insert(DBHelper.passwordTable, p.toMap());
 
-  // WRONG
-  Future<int> insertPin(Pin p) async {
-    p.pinId = await DBHelper.insert(DBHelper.pinTable, p.toMap());
-    // if (p.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(p.pinEnc);
-    return p.pinId;
-  }
+  Future<void> insertItemPassword(ItemPassword ip) async =>
+      await DBHelper.insert(DBHelper.itemPasswordTable, ip.toMap());
+
+  Future<int> insertPin(Pin p) async =>
+      await DBHelper.insert(DBHelper.pinTable, p.toMap());
 
   Future<int> insertLongText(LongText l) async =>
       await DBHelper.insert(DBHelper.longTextTable, l.toMap());
@@ -161,28 +159,9 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
-  Future<bool> passUsed(String hash) async {
-    if (hash.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.itemTable, 'password_hash', hash))
-        .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(
-            DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
-        .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(
-            DBHelper.deletedAlphaTable, 'password_hash', hash))
-        .isNotEmpty) return true;
-    return false;
-  }
-
-  Future<bool> pinUsed(String hash) async {
-    if (hash.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.itemTable, 'pin_hash', hash))
-        .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(
-            DBHelper.oldPasswordPinTable, 'password_pin_hash', hash))
-        .isNotEmpty) return true;
-    if ((await DBHelper.getByValue(
-            DBHelper.deletedAlphaTable, 'pin_hash', hash))
+  Future<bool> passUsed(Password p) async {
+    if (p.hash.isEmpty) return false;
+    if ((await DBHelper.getByValue(DBHelper.passwordTable, 'hash', p.hash))
         .isNotEmpty) return true;
     return false;
   }
@@ -242,6 +221,16 @@ class ItemProvider with ChangeNotifier {
   Future<Password> getPassword(int id) async {
     List<Map<String, dynamic>> _p = await DBHelper.getPasswordById(id);
     return Password.fromMap(_p.first);
+  }
+
+  Future<ItemPassword> getLastItemPassword(int itemId) async {
+    Iterable<ItemPassword> _iter;
+    await DBHelper.getItemPass(itemId).then((data) {
+      _iter = data.map((e) => ItemPassword.fromMap(e));
+    });
+    List<ItemPassword> _ip = _iter.toList();
+    _ip.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    return _ip.first;
   }
 
   Future<Pin> getPin(int id) async {
