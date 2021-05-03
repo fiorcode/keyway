@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/models/item.dart';
+import 'package:keyway/models/item_password.dart';
 import 'package:keyway/models/password.dart';
 import 'package:keyway/models/pin.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +21,7 @@ import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
 import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/TextFields/long_text_text_field.dart';
-import '../widgets/Cards/alpha_preview_card.dart';
+import '../widgets/Cards/item_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
@@ -39,8 +40,10 @@ class AlphaEditScreen extends StatefulWidget {
 class _AlphaEditScreenState extends State<AlphaEditScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
+
   Item _item;
   Password _pass;
+  ItemPassword _itemPass;
   Pin _pinn;
   Alpha _alpha;
 
@@ -146,7 +149,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
 
       if (_alpha.passwordHash != widget.alpha.passwordHash) {
         if (_passwordRepeatedWarning) {
-          if (await _items.passUsed(_alpha.passwordHash)) {
+          if (await _items.passUsed(_pass)) {
             bool _warning = false;
             _warning = await WarningHelper.repeat(context, 'Password');
             if (_warning) {
@@ -165,19 +168,6 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
       _alpha.pinHash = _cripto.doHash(_pinCtrler.text);
 
       if (_alpha.pinHash != widget.alpha.pinHash) {
-        if (_pinRepeatedWarning) {
-          if (await _items.pinUsed(_alpha.pinHash)) {
-            bool _warning = false;
-            _warning = await WarningHelper.repeat(context, 'PIN');
-            if (_warning) {
-              _alpha.pinStatus = 'REPEATED';
-            } else {
-              return;
-            }
-          } else {
-            _alpha.pinStatus = '';
-          }
-        }
         _alpha.pin = _cripto.doCrypt(_pinCtrler.text, _alpha.pinIV);
         _alpha.pinDate = _savingDate.toIso8601String();
       }
@@ -348,7 +338,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                     Column(
                       children: [
                         if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(pass: _pass),
+                          PasswordChangeReminderCard(itemPass: _itemPass),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -461,7 +451,7 @@ class _AlphaEditScreenState extends State<AlphaEditScreen> {
                   TagsListView(item: _alpha),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: AlphaPreviewCard(_alpha),
+                    child: ItemPreviewCard(_item),
                   ),
                   FloatingActionButton(
                     backgroundColor: Colors.red,
