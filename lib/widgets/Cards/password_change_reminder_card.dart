@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/date_helper.dart';
 
-import 'package:keyway/models/password.dart';
+import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/models/item_password.dart';
 
 class PasswordChangeReminderCard extends StatefulWidget {
-  const PasswordChangeReminderCard({Key key, this.pass}) : super(key: key);
+  const PasswordChangeReminderCard({Key key, this.itemPass}) : super(key: key);
 
-  final Password pass;
+  final ItemPassword itemPass;
 
   @override
   _PasswordChangeReminderCardState createState() =>
@@ -20,9 +20,9 @@ class _PasswordChangeReminderCardState
 
   @override
   void initState() {
-    if (widget.pass.passwordLapse != 32 &&
-        widget.pass.passwordLapse != 96 &&
-        widget.pass.passwordLapse != 192) {
+    if (widget.itemPass.lapse != 32 &&
+        widget.itemPass.lapse != 96 &&
+        widget.itemPass.lapse != 192) {
       _custom = true;
     }
     super.initState();
@@ -55,9 +55,9 @@ class _PasswordChangeReminderCardState
                 _changeReminder = value;
                 if (value) {
                   _custom = false;
-                  widget.pass.passwordLapse = 192;
+                  widget.itemPass.lapse = 192;
                 } else {
-                  widget.pass.passwordLapse = -1;
+                  widget.itemPass.lapse = -1;
                 }
               }),
             ),
@@ -81,74 +81,74 @@ class _PasswordChangeReminderCardState
                   if (!_custom)
                     ChoiceChip(
                       backgroundColor: Colors.grey,
-                      selected: widget.pass.passwordLapse == 32,
+                      selected: widget.itemPass.lapse == 32,
                       selectedColor: Colors.white,
                       onSelected: (selected) => selected
                           ? setState(() {
-                              widget.pass.passwordLapse = 32;
+                              widget.itemPass.lapse = 32;
                               _custom = false;
                             })
                           : null,
                       label: Text(
                         '32 Days',
                         style: TextStyle(
-                          color: widget.pass.passwordLapse == 32
+                          color: widget.itemPass.lapse == 32
                               ? Colors.grey
                               : Colors.white,
-                          fontWeight: widget.pass.passwordLapse == 32
+                          fontWeight: widget.itemPass.lapse == 32
                               ? FontWeight.bold
                               : null,
                         ),
                       ),
-                      elevation: widget.pass.passwordLapse == 32 ? 8.0 : 0.0,
+                      elevation: widget.itemPass.lapse == 32 ? 8.0 : 0.0,
                     ),
                   if (!_custom)
                     ChoiceChip(
                       backgroundColor: Colors.grey,
-                      selected: widget.pass.passwordLapse == 96,
+                      selected: widget.itemPass.lapse == 96,
                       selectedColor: Colors.white,
                       onSelected: (selected) => selected
                           ? setState(() {
-                              widget.pass.passwordLapse = 96;
+                              widget.itemPass.lapse = 96;
                               _custom = false;
                             })
                           : null,
                       label: Text(
                         '96 Days',
                         style: TextStyle(
-                          color: widget.pass.passwordLapse == 96
+                          color: widget.itemPass.lapse == 96
                               ? Colors.grey
                               : Colors.white,
-                          fontWeight: widget.pass.passwordLapse == 96
+                          fontWeight: widget.itemPass.lapse == 96
                               ? FontWeight.bold
                               : null,
                         ),
                       ),
-                      elevation: widget.pass.passwordLapse == 96 ? 8.0 : 0.0,
+                      elevation: widget.itemPass.lapse == 96 ? 8.0 : 0.0,
                     ),
                   if (!_custom)
                     ChoiceChip(
                       backgroundColor: Colors.grey,
-                      selected: widget.pass.passwordLapse == 192,
+                      selected: widget.itemPass.lapse == 192,
                       selectedColor: Colors.white,
                       onSelected: (selected) => selected
                           ? setState(() {
-                              widget.pass.passwordLapse = 192;
+                              widget.itemPass.lapse = 192;
                               _custom = false;
                             })
                           : null,
                       label: Text(
                         '192 Days',
                         style: TextStyle(
-                          color: widget.pass.passwordLapse == 192
+                          color: widget.itemPass.lapse == 192
                               ? Colors.grey
                               : Colors.white,
-                          fontWeight: widget.pass.passwordLapse == 192
+                          fontWeight: widget.itemPass.lapse == 192
                               ? FontWeight.bold
                               : null,
                         ),
                       ),
-                      elevation: widget.pass.passwordLapse == 192 ? 8.0 : 0.0,
+                      elevation: widget.itemPass.lapse == 192 ? 8.0 : 0.0,
                     ),
                   ChoiceChip(
                     backgroundColor: Colors.grey,
@@ -170,7 +170,7 @@ class _PasswordChangeReminderCardState
                       children: [
                         SizedBox(height: 8),
                         Text(
-                          widget.pass.passwordLapse.toString() + ' Days',
+                          widget.itemPass.lapse.toString() + ' Days',
                           style: TextStyle(
                             fontSize: 32,
                             fontWeight: FontWeight.bold,
@@ -186,9 +186,9 @@ class _PasswordChangeReminderCardState
                           child: Slider(
                             min: 0,
                             max: 364,
-                            value: widget.pass.passwordLapse.toDouble(),
+                            value: widget.itemPass.lapse.toDouble(),
                             onChanged: (value) => setState(
-                              () => widget.pass.passwordLapse = value.round(),
+                              () => widget.itemPass.lapse = value.round(),
                             ),
                           ),
                         ),
@@ -203,8 +203,7 @@ class _PasswordChangeReminderCardState
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Created: ' +
-                        DateHelper.shortDate(widget.pass.passwordDate),
+                    'Created: ' + DateHelper.shortDate(widget.itemPass.date),
                   ),
                 ),
               ],
