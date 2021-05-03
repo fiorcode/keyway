@@ -8,7 +8,7 @@ class Item {
   String status;
   String tags;
   int fkUsernameId;
-  int fkPasswordId;
+  // int fkPasswordId;
   int fkPinId;
   int fkLongTextId;
   int fkDeviceId;
@@ -25,7 +25,7 @@ class Item {
   });
 
   Item.fromMap(Map<String, dynamic> map) {
-    itemId = map['id'];
+    itemId = map['item_id'];
     title = map['title'];
     date = map['date'];
     avatarColor = map['avatar_color'];
@@ -34,7 +34,7 @@ class Item {
     status = map['status'];
     tags = map['tags'];
     fkUsernameId = map['fk_username_id'];
-    fkPasswordId = map['fk_password_id'];
+    // fkPasswordId = map['fk_password_id'];
     fkPinId = map['fk_pin_id'];
     fkLongTextId = map['fk_long_text_id'];
     fkDeviceId = map['fk_device_id'];
@@ -50,7 +50,7 @@ class Item {
       'status': status,
       'tags': tags,
       'fk_username_id': fkUsernameId,
-      'fk_password_id': fkPasswordId,
+      // 'fk_password_id': fkPasswordId,
       'fk_pin_id': fkPinId,
       'fk_long_text_id': fkLongTextId,
       'fk_device_id': fkDeviceId,
