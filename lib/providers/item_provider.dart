@@ -33,13 +33,38 @@ class ItemProvider with ChangeNotifier {
     Iterable<Item> _iter;
     _items.clear();
     if (title.isEmpty) {
-      await DBHelper.getData(DBHelper.itemTable)
-          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
+      await DBHelper.getData(DBHelper.itemTable).then((data) {
+        _iter = data.map((i) => Item.fromMap(i));
+      });
     } else {
       await DBHelper.getItemsByTitle(title)
           .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     }
     _items.addAll(_iter.toList());
+    await _buildItems();
+  }
+
+  Future<void> _buildItems() async {
+    _items.forEach((i) async {
+      if (i.fkUsernameId != null) {
+        i.usernameObj = await getUsername(i.fkUsernameId);
+      }
+      await getLastItemPassword(i.itemId).then((_ips) async {
+        if (_ips.isNotEmpty) {
+          i.itemPasswordObj = _ips.first;
+          i.passwordObj = await getPassword(_ips.first.fkPasswordId);
+        }
+      });
+      if (i.fkPinId != null) {
+        i.pinObj = await getPin(i.fkPinId);
+      }
+      if (i.fkLongTextId != null) {
+        i.longTextObj = await getLongText(i.fkLongTextId);
+      }
+      if (i.fkDeviceId != null) {
+        i.deviceObj = await getDevice(i.fkDeviceId);
+      }
+    });
   }
 
   Future<void> fetchItemsWithOlds() async {
@@ -78,23 +103,41 @@ class ItemProvider with ChangeNotifier {
     _deletedItems.sort((a, b) => b.date.compareTo(a.date));
   }
 
+  Future<int> insertItem(Item i) async =>
+      await DBHelper.insert(DBHelper.itemTable, i.toMap());
+
+  Future<int> updateItem(Item i) async =>
+      await DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id');
+
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
+
+  Future<int> updateUsername(Username u) async =>
+      await DBHelper.update(DBHelper.usernameTable, u.toMap(), 'username_id');
 
   Future<int> insertPassword(Password p) async =>
       await DBHelper.insert(DBHelper.passwordTable, p.toMap());
 
+  Future<int> updatePassword(Password p) async =>
+      await DBHelper.update(DBHelper.passwordTable, p.toMap(), 'password_id');
+
   Future<void> insertItemPassword(ItemPassword ip) async =>
       await DBHelper.insert(DBHelper.itemPasswordTable, ip.toMap());
+
+  Future<void> updateItemPassword(ItemPassword ip) async =>
+      await DBHelper.updateItemPassword(ip.toMap());
 
   Future<int> insertPin(Pin p) async =>
       await DBHelper.insert(DBHelper.pinTable, p.toMap());
 
+  Future<int> updatePin(Pin p) async =>
+      await DBHelper.update(DBHelper.pinTable, p.toMap(), 'pin_id');
+
   Future<int> insertLongText(LongText l) async =>
       await DBHelper.insert(DBHelper.longTextTable, l.toMap());
 
-  Future<int> insertItem(Item i) async =>
-      await DBHelper.insert(DBHelper.itemTable, i.toMap());
+  Future<int> updateLongText(LongText l) async =>
+      await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
 
   Future<void> insertAlpha(Alpha a) async {
     await DBHelper.insert(DBHelper.itemTable, a.toMap());
@@ -121,7 +164,8 @@ class ItemProvider with ChangeNotifier {
         }
       },
     ).then((_) async {
-      await DBHelper.update(DBHelper.itemTable, a.toMap()).then((_) async {
+      await DBHelper.update(DBHelper.itemTable, a.toMap(), 'item_id')
+          .then((_) async {
         if (a.passwordStatus == 'REPEATED')
           await DBHelper.setPassRepeted(a.passwordHash);
         if (a.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(a.pinHash);
@@ -223,14 +267,14 @@ class ItemProvider with ChangeNotifier {
     return Password.fromMap(_p.first);
   }
 
-  Future<ItemPassword> getLastItemPassword(int itemId) async {
+  Future<List<ItemPassword>> getLastItemPassword(int itemId) async {
     Iterable<ItemPassword> _iter;
     await DBHelper.getItemPass(itemId).then((data) {
       _iter = data.map((e) => ItemPassword.fromMap(e));
     });
-    List<ItemPassword> _ip = _iter.toList();
-    _ip.sort((a, b) => a.dateTime.compareTo(b.dateTime));
-    return _ip.first;
+    List<ItemPassword> _ips = _iter.toList();
+    _ips.sort((a, b) => a.dateTime.compareTo(b.dateTime));
+    return _ips;
   }
 
   Future<Pin> getPin(int id) async {
