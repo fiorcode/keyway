@@ -57,10 +57,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   bool _pin = false;
   bool _device = false;
   bool _longText = false;
+
   bool _passwordRepeatedWarning = true;
   bool _passwordChangeReminder = true;
   bool _pinRepeatedWarning = true;
   bool _pinChangeReminder = true;
+
   bool _viewUsersList = false;
   bool _unlocking = false;
 
@@ -89,14 +91,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     try {
       _item.date = DateTime.now().toIso8601String();
 
-      if (_username && _userCtrler.text.isNotEmpty) {
+      if (_userCtrler.text.isNotEmpty) {
         Username _u = Username();
         _u.usernameIv = e.IV.fromSecureRandom(16).base16;
         _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
         _item.fkUsernameId = await _items.insertUsername(_u);
       }
 
-      if (_password && _passCtrler.text.isNotEmpty) {
+      if (_passCtrler.text.isNotEmpty) {
         _pass.hash = _cripto.doHash(_passCtrler.text);
         if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
         _pass.passwordIv = e.IV.fromSecureRandom(16).base16;
@@ -107,7 +109,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _itemPass.fkPasswordId = await _items.insertPassword(_pass);
       }
 
-      if (_pin && _pinCtrler.text.isNotEmpty) {
+      if (_pinCtrler.text.isNotEmpty) {
         _pinn.pinIv = e.IV.fromSecureRandom(16).base16;
         _pinn.pinEnc = _cripto.doCrypt(_pinCtrler.text, _pinn.pinIv);
         _pinn.pinDate = _item.date;
@@ -115,7 +117,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.fkPinId = await _items.insertPin(_pinn);
       }
 
-      if (_longText && _longCtrler.text.isNotEmpty) {
+      if (_longCtrler.text.isNotEmpty) {
         LongText _long = LongText();
         _long.longTextIv = e.IV.fromSecureRandom(16).base16;
         _long.longTextEnc = _cripto.doCrypt(_longCtrler.text, _long.longTextIv);
