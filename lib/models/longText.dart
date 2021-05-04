@@ -23,4 +23,10 @@ class LongText {
     if (longTextId != null) map['long_text_id'] = longTextId;
     return map;
   }
+
+  LongText clone() => LongText(
+        longTextId: this.longTextId,
+        longTextEnc: this.longTextEnc,
+        longTextIv: this.longTextIv,
+      );
 }
