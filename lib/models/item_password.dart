@@ -9,8 +9,10 @@ class ItemPassword {
   ItemPassword({
     this.fkItemId,
     this.fkPasswordId,
+    this.date,
     this.lapse = 320,
     this.status = '',
+    this.dateTime,
   });
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
@@ -29,4 +31,13 @@ class ItemPassword {
         'lapse': lapse,
         'status': status,
       };
+
+  ItemPassword clone() => ItemPassword(
+        fkItemId: this.fkItemId,
+        fkPasswordId: this.fkPasswordId,
+        date: this.date,
+        lapse: this.lapse,
+        status: this.status,
+        dateTime: this.dateTime,
+      );
 }
