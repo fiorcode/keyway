@@ -23,4 +23,10 @@ class Username {
     if (usernameId != null) map['username_id'] = usernameId;
     return map;
   }
+
+  Username clone() => Username(
+        usernameId: this.usernameId,
+        usernameEnc: this.usernameEnc,
+        usernameIv: this.usernameIv,
+      );
 }
