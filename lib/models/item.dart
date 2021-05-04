@@ -1,3 +1,10 @@
+import 'package:keyway/models/device.dart';
+import 'package:keyway/models/item_password.dart';
+import 'package:keyway/models/longText.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/pin.dart';
+import 'package:keyway/models/username.dart';
+
 class Item {
   int itemId;
   String title;
@@ -8,10 +15,16 @@ class Item {
   String status;
   String tags;
   int fkUsernameId;
-  // int fkPasswordId;
   int fkPinId;
   int fkLongTextId;
   int fkDeviceId;
+
+  Username usernameObj;
+  Password passwordObj;
+  ItemPassword itemPasswordObj;
+  Pin pinObj;
+  LongText longTextObj;
+  Device deviceObj;
 
   Item({
     this.itemId,
@@ -22,6 +35,16 @@ class Item {
     this.font = '',
     this.status = '',
     this.tags = '',
+    this.fkUsernameId,
+    this.fkPinId,
+    this.fkLongTextId,
+    this.fkDeviceId,
+    this.usernameObj,
+    this.passwordObj,
+    this.itemPasswordObj,
+    this.pinObj,
+    this.longTextObj,
+    this.deviceObj,
   });
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -34,7 +57,6 @@ class Item {
     status = map['status'];
     tags = map['tags'];
     fkUsernameId = map['fk_username_id'];
-    // fkPasswordId = map['fk_password_id'];
     fkPinId = map['fk_pin_id'];
     fkLongTextId = map['fk_long_text_id'];
     fkDeviceId = map['fk_device_id'];
@@ -50,7 +72,6 @@ class Item {
       'status': status,
       'tags': tags,
       'fk_username_id': fkUsernameId,
-      // 'fk_password_id': fkPasswordId,
       'fk_pin_id': fkPinId,
       'fk_long_text_id': fkLongTextId,
       'fk_device_id': fkDeviceId,
@@ -58,6 +79,28 @@ class Item {
     if (itemId != null) map['item_id'] = itemId;
     return map;
   }
+
+  Item clone() => Item(
+        itemId: this.itemId,
+        title: this.title,
+        date: this.date,
+        avatarColor: this.avatarColor,
+        avatarLetterColor: this.avatarLetterColor,
+        font: this.font,
+        status: this.status,
+        tags: this.tags,
+        fkUsernameId: this.fkUsernameId,
+        fkPinId: this.fkPinId,
+        fkLongTextId: this.fkLongTextId,
+        fkDeviceId: this.fkDeviceId,
+        usernameObj: this.usernameObj != null ? this.usernameObj.clone() : null,
+        passwordObj: this.passwordObj != null ? this.passwordObj.clone() : null,
+        itemPasswordObj:
+            this.itemPasswordObj != null ? this.itemPasswordObj.clone() : null,
+        pinObj: this.pinObj != null ? this.pinObj.clone() : null,
+        longTextObj: this.longTextObj != null ? this.longTextObj.clone() : null,
+        deviceObj: this.deviceObj != null ? this.deviceObj.clone() : null,
+      );
 
   void addRemoveTag(String tag) {
     if (this.tags.contains('<$tag>')) {
