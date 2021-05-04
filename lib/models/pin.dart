@@ -10,6 +10,7 @@ class Pin {
     this.pinId,
     this.pinEnc = '',
     this.pinIv = '',
+    this.pinDate,
     this.pinLapse = 320,
     this.pinStatus = '',
   });
@@ -34,4 +35,13 @@ class Pin {
     if (pinId != null) map['pin_id'] = pinId;
     return map;
   }
+
+  Pin clone() => Pin(
+        pinId: this.pinId,
+        pinEnc: this.pinEnc,
+        pinIv: this.pinIv,
+        pinDate: this.pinDate,
+        pinLapse: this.pinLapse,
+        pinStatus: this.pinStatus,
+      );
 }
