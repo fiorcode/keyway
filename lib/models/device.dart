@@ -9,6 +9,7 @@ class Device {
   Device({
     this.deviceId,
     this.type = '',
+    this.vendor = '',
     this.product = '',
     this.version = '',
     this.updateCode = '',
@@ -34,4 +35,13 @@ class Device {
     if (deviceId != null) map['device_id'] = deviceId;
     return map;
   }
+
+  Device clone() => Device(
+        deviceId: this.deviceId,
+        type: this.type,
+        vendor: this.vendor,
+        product: this.product,
+        version: this.version,
+        updateCode: this.updateCode,
+      );
 }
