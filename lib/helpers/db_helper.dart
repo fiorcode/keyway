@@ -59,12 +59,21 @@ class DBHelper {
         conflictAlgorithm: sql.ConflictAlgorithm.replace,
       );
 
-  static Future<int> update(String table, Map<String, Object> data) async =>
+  static Future<int> update(
+          String table, Map<String, Object> data, String idName) async =>
       (await DBHelper.database()).update(
         table,
         data,
-        where: 'id = ?',
-        whereArgs: [data['id']],
+        where: '$idName = ?',
+        whereArgs: [data[idName]],
+      );
+
+  static Future<int> updateItemPassword(Map<String, Object> data) async =>
+      (await DBHelper.database()).update(
+        itemPasswordTable,
+        data,
+        where: 'fk_item_id = ?, fk_password_id = ?',
+        whereArgs: [data['fk_item_id'], data['fk_password_id']],
       );
 
   static Future<void> delete(String table, int id) async =>
