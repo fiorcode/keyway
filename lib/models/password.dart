@@ -31,4 +31,12 @@ class Password {
     if (passwordId != null) map['password_id'] = passwordId;
     return map;
   }
+
+  Password clone() => Password(
+        passwordId: this.passwordId,
+        passwordEnc: this.passwordEnc,
+        passwordIv: this.passwordIv,
+        strength: this.strength,
+        hash: this.hash,
+      );
 }
