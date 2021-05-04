@@ -3,13 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/models/item.dart';
-import 'package:keyway/models/username.dart';
-import 'package:keyway/models/password.dart';
-import 'package:keyway/models/item_password.dart';
-import 'package:keyway/models/pin.dart';
-import 'package:keyway/screens/alpha_edit_screen.dart';
+import 'package:keyway/screens/item_edit_screen.dart';
 import 'package:keyway/screens/alpha_view_screen.dart';
 
 class AlphaUnlockedCard extends StatefulWidget {
@@ -24,38 +19,10 @@ class AlphaUnlockedCard extends StatefulWidget {
 }
 
 class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
-  ItemProvider _item;
   CriptoProvider _cripto;
-
-  Future _getUsernameAsync;
-  Future _getPasswordAsync;
-  Future _getPinAsync;
-
-  Username _username;
-  Password _password;
-  ItemPassword _itemPass;
-  Pin _pin;
 
   int _showValue = 0;
   String _subtitle = '';
-
-  Future<void> _getUsername() async {
-    if (widget.item.fkUsernameId == null) return;
-    _username = await _item.getUsername(widget.item.fkUsernameId);
-  }
-
-  Future<void> _getPassword() async {
-    await _item.getLastItemPassword(widget.item.itemId).then((ip) async {
-      if (ip == null) return;
-      _itemPass = ip;
-      _password = await _item.getPassword(ip.fkPasswordId);
-    });
-  }
-
-  Future<void> _getPin() async {
-    if (widget.item.fkPinId == null) return;
-    _pin = await _item.getPin(widget.item.fkPinId);
-  }
 
   void _onTap() {
     if (_cripto.locked) {
@@ -71,7 +38,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => AlphaEditScreen(alpha: widget.item),
+        builder: (context) => ItemEditScreen(item: widget.item),
       ),
     ).then((_) => widget.onReturn());
   }
@@ -96,46 +63,49 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     );
   }
 
-  // bool _expired() {
-  //   DateTime _nowUTC = DateTime.now().toUtc();
-  //   bool _passExp = false;
-  //   bool _pinExp = false;
-  //   if (_password != null) {
-  //     DateTime _passDate = DateTime.parse(_password.passwordDate);
-  //     int _daysOfPass = _nowUTC.difference(_passDate).inDays;
-  //     _passExp = _password.passwordLapse <= _daysOfPass;
-  //   }
-  //   if (_pin != null) {
-  //     DateTime _pinDate = DateTime.parse(_pin.pinDate);
-  //     int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
-  //     _pinExp = _pin.pinLapse <= _daysOfPin;
-  //   }
-  //   if (_password.passwordLapse <= 0) _passExp = false;
-  //   if (_pin.pinLapse <= 0) _pinExp = false;
-  //   return _passExp || _pinExp;
-  // }
+  bool _expired() {
+    DateTime _nowUTC = DateTime.now().toUtc();
+    bool _passExp = false;
+    bool _pinExp = false;
+    if (widget.item.itemPasswordObj != null) {
+      DateTime _passDate = DateTime.parse(widget.item.itemPasswordObj.date);
+      int _daysOfPass = _nowUTC.difference(_passDate).inDays;
+      _passExp = widget.item.itemPasswordObj.lapse <= _daysOfPass;
+      if (widget.item.itemPasswordObj.lapse <= 0) _passExp = false;
+    }
+    if (widget.item.pinObj != null) {
+      DateTime _pinDate = DateTime.parse(widget.item.pinObj.pinDate);
+      int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
+      _pinExp = widget.item.pinObj.pinLapse <= _daysOfPin;
+      if (widget.item.pinObj.pinLapse <= 0) _pinExp = false;
+    }
+    return _passExp || _pinExp;
+  }
 
   String _setTitleSubtitle() {
     switch (_showValue) {
       case 1:
-        if (_itemPass == null) continue two;
+        if (widget.item.passwordObj == null) continue two;
         _showValue = 1;
         _subtitle = 'Password';
-        return _cripto.doDecrypt(_password.passwordEnc, _password.passwordIv);
+        return _cripto.doDecrypt(widget.item.passwordObj.passwordEnc,
+            widget.item.passwordObj.passwordIv);
         break;
       two:
       case 2:
-        if (widget.item.fkPinId == null) continue three;
+        if (widget.item.pinObj == null) continue three;
         _showValue = 2;
         _subtitle = 'PIN';
-        return _cripto.doDecrypt(_pin.pinEnc, _pin.pinIv);
+        return _cripto.doDecrypt(
+            widget.item.pinObj.pinEnc, widget.item.pinObj.pinIv);
         break;
       three:
       case 3:
-        if (widget.item.fkUsernameId == null) continue cero;
+        if (widget.item.usernameObj == null) continue cero;
         _showValue = 3;
         _subtitle = 'Username';
-        return _cripto.doDecrypt(_username.usernameEnc, _username.usernameIv);
+        return _cripto.doDecrypt(widget.item.usernameObj.usernameEnc,
+            widget.item.usernameObj.usernameIv);
         break;
       cero:
       default:
@@ -146,21 +116,23 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setWarningColor() {
-    if (_itemPass != null) {
-      if (_itemPass.status == 'REPEATED') return Colors.red[300];
+    if (widget.item.itemPasswordObj != null) {
+      if (widget.item.itemPasswordObj.status == 'REPEATED')
+        return Colors.red[300];
     }
-    if (_pin != null) {
-      if (_pin.pinStatus == 'REPEATED') return Colors.red[300];
+    if (widget.item.pinObj != null) {
+      if (widget.item.pinObj.pinStatus == 'REPEATED') return Colors.red[300];
     }
     return Colors.grey[100];
   }
 
   Color _setIconColor() {
-    if (_itemPass != null) {
-      if (_itemPass.status == 'REPEATED') return Colors.grey[200];
+    if (widget.item.itemPasswordObj != null) {
+      if (widget.item.itemPasswordObj.status == 'REPEATED')
+        return Colors.grey[200];
     }
-    if (_pin != null) {
-      if (_pin.pinStatus == 'REPEATED') return Colors.grey[200];
+    if (widget.item.pinObj != null) {
+      if (widget.item.pinObj.pinStatus == 'REPEATED') return Colors.grey[200];
     }
     return Colors.grey;
   }
@@ -182,10 +154,6 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _item = Provider.of<ItemProvider>(context, listen: false);
-    _getUsernameAsync = _getUsername();
-    _getPasswordAsync = _getPassword();
-    _getPinAsync = _getPin();
     super.initState();
   }
 
@@ -193,7 +161,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      // shadowColor: _setWarningColor(),
+      shadowColor: _setWarningColor(),
       elevation: 8,
       shape: StadiumBorder(),
       child: ListTile(
@@ -249,16 +217,16 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // if (_expired() && _showValue == 0)
-              //   SizedBox(
-              //     height: 48,
-              //     width: 48,
-              //     child: Icon(
-              //       Icons.calendar_today,
-              //       color: Colors.red,
-              //       size: 24,
-              //     ),
-              //   ),
+              if (_expired() && _showValue == 0)
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: Icon(
+                    Icons.calendar_today,
+                    color: Colors.red,
+                    size: 24,
+                  ),
+                ),
               if (_showValue != 0)
                 SizedBox(
                   height: 48,
@@ -271,52 +239,22 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
                   ),
                 ),
               SizedBox(width: 4),
-              FutureBuilder(
-                future: Future.wait([
-                  _getUsernameAsync,
-                  _getPasswordAsync,
-                  _getPinAsync,
-                ]),
-                builder: (ctx, snap) {
-                  switch (snap.connectionState) {
-                    case ConnectionState.done:
-                      return SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: InkWell(
-                          onLongPress: _showPassLongPressed,
-                          child: FloatingActionButton(
-                            backgroundColor: _setWarningColor(),
-                            child: Icon(
-                              Icons.remove_red_eye_outlined,
-                              color: _setIconColor(),
-                              size: 24,
-                            ),
-                            heroTag: null,
-                            onPressed: _switchShowValue,
-                          ),
-                        ),
-                      );
-                      break;
-                    default:
-                      return SizedBox(
-                        height: 48,
-                        width: 48,
-                        child: InkWell(
-                          child: FloatingActionButton(
-                            backgroundColor: Colors.grey[100],
-                            child: Icon(
-                              Icons.remove_red_eye_outlined,
-                              color: Colors.grey,
-                              size: 24,
-                            ),
-                            heroTag: null,
-                            onPressed: null,
-                          ),
-                        ),
-                      );
-                  }
-                },
+              SizedBox(
+                height: 48,
+                width: 48,
+                child: InkWell(
+                  onLongPress: _showPassLongPressed,
+                  child: FloatingActionButton(
+                    backgroundColor: _setWarningColor(),
+                    child: Icon(
+                      Icons.remove_red_eye_outlined,
+                      color: _setIconColor(),
+                      size: 24,
+                    ),
+                    heroTag: null,
+                    onPressed: _switchShowValue,
+                  ),
+                ),
               ),
             ],
           ),
