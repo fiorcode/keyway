@@ -22,7 +22,7 @@ class _OldPasswordsPinsScreenState extends State<OldPasswordsPinsScreen> {
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getOld() async => await _items.fetchItemsWithOlds();
+  Future<void> _getOld() async => await _items.fetchItemsWithPasswords();
 
   onReturn() {
     _getOldItems = _getOld();
@@ -93,7 +93,7 @@ class _OldPasswordsPinsScreenState extends State<OldPasswordsPinsScreen> {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 1),
                                 child: AlphaHistoryListCard(
-                                  alpha: _items.itemsWithOlds[i],
+                                  item: _items.itemsWithOlds[i],
                                   onReturn: onReturn,
                                 ),
                               );
