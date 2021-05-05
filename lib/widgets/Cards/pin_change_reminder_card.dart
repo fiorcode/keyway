@@ -201,7 +201,7 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Created: ' + DateHelper.shortDate(widget.pin.pinDate),
+                    'Created: ' + DateHelper.shortDate(widget.pin.dateTime),
                   ),
                 ),
               ],
