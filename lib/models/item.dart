@@ -46,6 +46,14 @@ class Item {
     this.longTextObj,
     this.deviceObj,
   });
+  // {
+  //   this.usernameObj = Username();
+  //   this.passwordObj = Password();
+  //   this.itemPasswordObj = ItemPassword();
+  //   this.pinObj = Pin();
+  //   this.longTextObj = LongText();
+  //   this.deviceObj = Device();
+  // }
 
   Item.fromMap(Map<String, dynamic> map) {
     itemId = map['item_id'];
@@ -80,27 +88,30 @@ class Item {
     return map;
   }
 
-  Item clone() => Item(
-        itemId: this.itemId,
-        title: this.title,
-        date: this.date,
-        avatarColor: this.avatarColor,
-        avatarLetterColor: this.avatarLetterColor,
-        font: this.font,
-        status: this.status,
-        tags: this.tags,
-        fkUsernameId: this.fkUsernameId,
-        fkPinId: this.fkPinId,
-        fkLongTextId: this.fkLongTextId,
-        fkDeviceId: this.fkDeviceId,
-        usernameObj: this.usernameObj != null ? this.usernameObj.clone() : null,
-        passwordObj: this.passwordObj != null ? this.passwordObj.clone() : null,
-        itemPasswordObj:
-            this.itemPasswordObj != null ? this.itemPasswordObj.clone() : null,
-        pinObj: this.pinObj != null ? this.pinObj.clone() : null,
-        longTextObj: this.longTextObj != null ? this.longTextObj.clone() : null,
-        deviceObj: this.deviceObj != null ? this.deviceObj.clone() : null,
-      );
+  Item clone() {
+    Item _i = Item(
+      itemId: this.itemId,
+      title: this.title,
+      date: this.date,
+      avatarColor: this.avatarColor,
+      avatarLetterColor: this.avatarLetterColor,
+      font: this.font,
+      status: this.status,
+      tags: this.tags,
+      fkUsernameId: this.fkUsernameId,
+      fkPinId: this.fkPinId,
+      fkLongTextId: this.fkLongTextId,
+      fkDeviceId: this.fkDeviceId,
+      usernameObj: this.usernameObj != null ? this.usernameObj.clone() : null,
+      passwordObj: this.passwordObj != null ? this.passwordObj.clone() : null,
+      itemPasswordObj:
+          this.itemPasswordObj != null ? this.itemPasswordObj.clone() : null,
+      pinObj: this.pinObj != null ? this.pinObj.clone() : null,
+      longTextObj: this.longTextObj != null ? this.longTextObj.clone() : null,
+      deviceObj: this.deviceObj != null ? this.deviceObj.clone() : null,
+    );
+    return _i;
+  }
 
   void addRemoveTag(String tag) {
     if (this.tags.contains('<$tag>')) {
