@@ -13,7 +13,9 @@ class ItemPassword {
     this.lapse = 320,
     this.status = '',
     this.dateTime,
-  });
+  }) {
+    this.dateTime = DateTime.now(); //FIX THIS
+  }
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
@@ -32,12 +34,15 @@ class ItemPassword {
         'status': status,
       };
 
-  ItemPassword clone() => ItemPassword(
-        fkItemId: this.fkItemId,
-        fkPasswordId: this.fkPasswordId,
-        date: this.date,
-        lapse: this.lapse,
-        status: this.status,
-        dateTime: this.dateTime,
-      );
+  ItemPassword clone() {
+    ItemPassword _ip = ItemPassword(
+      fkItemId: this.fkItemId,
+      fkPasswordId: this.fkPasswordId,
+      date: this.date,
+      lapse: this.lapse,
+      status: this.status,
+      dateTime: this.dateTime,
+    );
+    return _ip;
+  }
 }
