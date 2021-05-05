@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-import 'package:keyway/helpers/db_helper.dart';
-import 'package:keyway/helpers/warning_helper.dart';
-import 'package:keyway/screens/deleted_items_screen.dart';
-import 'package:keyway/screens/old_passwords_pins_screen.dart';
-import 'package:keyway/screens/splash_screen.dart';
-import 'package:keyway/screens/tags_screen.dart';
+import '../helpers/db_helper.dart';
+import '../helpers/warning_helper.dart';
+import '../screens/deleted_items_screen.dart';
+import '../screens/old_passwords_pins_screen.dart';
+import '../screens/splash_screen.dart';
+import '../screens/tags_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -212,7 +212,7 @@ class _DataScreenState extends State<DataScreen> {
                     size: 32,
                   ),
                   label: Text(
-                    'Old Passwords/Pins',
+                    'Old Passwords',
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontWeight: FontWeight.w800,
