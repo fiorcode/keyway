@@ -5,6 +5,7 @@ class Pin {
   String pinDate;
   int pinLapse;
   String pinStatus;
+  DateTime dateTime;
 
   Pin({
     this.pinId,
@@ -13,7 +14,9 @@ class Pin {
     this.pinDate,
     this.pinLapse = 320,
     this.pinStatus = '',
-  });
+  }) {
+    this.dateTime = DateTime.now();
+  }
 
   Pin.fromMap(Map<String, dynamic> map) {
     pinId = map['pin_id'];
