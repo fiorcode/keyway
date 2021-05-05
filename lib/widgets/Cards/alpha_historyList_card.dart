@@ -1,33 +1,27 @@
 import 'package:flutter/material.dart';
 
-import 'package:keyway/models/item.dart';
-import 'package:keyway/models/deleted_alpha.dart';
-import 'package:keyway/screens/item_history_screen.dart';
+import '../../models/item.dart';
+import '../../screens/item_history_screen.dart';
 
 class AlphaHistoryListCard extends StatelessWidget {
-  const AlphaHistoryListCard({Key key, this.alpha, this.onReturn})
+  const AlphaHistoryListCard({Key key, this.item, this.onReturn})
       : super(key: key);
 
-  final Item alpha;
+  final Item item;
   final Function onReturn;
 
   _onTap(BuildContext context) {
-    int _id;
-    if (alpha is DeletedAlpha)
-      _id = (alpha as DeletedAlpha).itemIdFK;
-    else
-      _id = alpha.itemId;
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemHistoryScreen(itemId: _id),
+        builder: (context) => ItemHistoryScreen(itemId: item.itemId),
       ),
     ).then((_) => onReturn());
   }
 
   Color _setAvatarLetterColor() {
-    if (alpha.avatarLetterColor >= 0) return Color(alpha.avatarLetterColor);
-    Color _color = Color(alpha.avatarColor);
+    if (item.avatarLetterColor >= 0) return Color(item.avatarLetterColor);
+    Color _color = Color(item.avatarColor);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105) ? Colors.white : Colors.black;
@@ -35,7 +29,7 @@ class AlphaHistoryListCard extends StatelessWidget {
 
   Text _setTitle() {
     return Text(
-      alpha.title,
+      item.title,
       overflow: TextOverflow.ellipsis,
       maxLines: 1,
       style: TextStyle(
@@ -57,12 +51,11 @@ class AlphaHistoryListCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: alpha.avatarColor != null
-              ? Color(alpha.avatarColor)
-              : Colors.grey,
+          backgroundColor:
+              item.avatarColor != null ? Color(item.avatarColor) : Colors.grey,
           child: Text(
-            alpha.title != null ?? alpha.title.isNotEmpty
-                ? alpha.title.substring(0, 1).toUpperCase()
+            item.title != null ?? item.title.isNotEmpty
+                ? item.title.substring(0, 1).toUpperCase()
                 : '',
             style: TextStyle(
               fontSize: 24,
