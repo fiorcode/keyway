@@ -5,11 +5,8 @@ import 'package:encrypt/encrypt.dart' as e;
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
-import 'package:keyway/models/username.dart';
-import 'package:keyway/models/item_password.dart';
-import 'package:keyway/models/password.dart';
-import 'package:keyway/models/pin.dart';
-import 'package:keyway/models/longText.dart';
+import '../models/username.dart';
+import '../models/longText.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -39,9 +36,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   ItemProvider _items;
 
   Item _item;
-  ItemPassword _itemPass;
-  Password _pass;
-  Pin _pinn;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -99,22 +93,25 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       }
 
       if (_passCtrler.text.isNotEmpty) {
-        _pass.hash = _cripto.doHash(_passCtrler.text);
+        _item.passwordObj.hash = _cripto.doHash(_passCtrler.text);
         if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
-        _pass.passwordIv = e.IV.fromSecureRandom(16).base16;
-        _pass.passwordEnc = _cripto.doCrypt(_passCtrler.text, _pass.passwordIv);
-        _itemPass.date = _item.date;
-        _itemPass.status = '';
-        _pass.strength = '';
-        _itemPass.fkPasswordId = await _items.insertPassword(_pass);
+        _item.passwordObj.passwordIv = e.IV.fromSecureRandom(16).base16;
+        _item.passwordObj.passwordEnc =
+            _cripto.doCrypt(_passCtrler.text, _item.passwordObj.passwordIv);
+        _item.passwordObj.strength = '';
+        _item.itemPasswordObj.date = _item.date;
+        _item.itemPasswordObj.status = '';
+        _item.itemPasswordObj.fkPasswordId =
+            await _items.insertPassword(_item.passwordObj);
       }
 
       if (_pinCtrler.text.isNotEmpty) {
-        _pinn.pinIv = e.IV.fromSecureRandom(16).base16;
-        _pinn.pinEnc = _cripto.doCrypt(_pinCtrler.text, _pinn.pinIv);
-        _pinn.pinDate = _item.date;
-        _pinn.pinStatus = '';
-        _item.fkPinId = await _items.insertPin(_pinn);
+        _item.pinObj.pinIv = e.IV.fromSecureRandom(16).base16;
+        _item.pinObj.pinEnc =
+            _cripto.doCrypt(_pinCtrler.text, _item.pinObj.pinIv);
+        _item.pinObj.pinDate = _item.date;
+        _item.pinObj.pinStatus = '';
+        _item.fkPinId = await _items.insertPin(_item.pinObj);
       }
 
       if (_longCtrler.text.isNotEmpty) {
@@ -128,9 +125,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
       _items.insertItem(_item).then((itemId) {
         if (_password) {
-          _itemPass.fkItemId = itemId;
+          _item.itemPasswordObj.fkItemId = itemId;
           _items
-              .insertItemPassword(_itemPass)
+              .insertItemPassword(_item.itemPasswordObj)
               .then((_) => Navigator.of(context).pop());
         } else {
           Navigator.of(context).pop();
@@ -142,11 +139,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    if (await _items.passUsed(_pass)) {
+    if (await _items.passUsed(_item.passwordObj)) {
       bool _warning = await WarningHelper.repeat(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning)
-        _itemPass.status = 'REPEATED';
+        _item.itemPasswordObj.status = 'REPEATED';
       else
         return true;
     }
@@ -196,9 +193,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _username = true;
     _password = true;
     _item = Item();
-    _pass = Password();
-    _itemPass = ItemPassword();
-    _pinn = Pin();
     super.initState();
   }
 
@@ -209,6 +203,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _passCtrler.dispose();
     _pinCtrler.dispose();
     _longCtrler.dispose();
+    _userFocusNode.dispose();
     _passFocusNode.dispose();
     super.dispose();
   }
@@ -297,7 +292,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     Column(
                       children: [
                         if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(itemPass: _itemPass),
+                          PasswordChangeReminderCard(
+                              itemPass: _item.itemPasswordObj),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -322,9 +318,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   onChanged: (value) => setState(() {
                                     _passwordRepeatedWarning = value;
                                     if (value)
-                                      _itemPass.status = '';
+                                      _item.itemPasswordObj.status = '';
                                     else
-                                      _itemPass.status = 'NO-WARNING';
+                                      _item.itemPasswordObj.status =
+                                          'NO-WARNING';
                                   }),
                                 ),
                                 Text(
@@ -350,7 +347,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     Column(
                       children: [
                         if (_pinChangeReminder)
-                          PinChangeReminderCard(pin: _pinn),
+                          PinChangeReminderCard(pin: _item.pinObj),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -375,9 +372,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   onChanged: (value) => setState(() {
                                     _pinRepeatedWarning = value;
                                     if (value)
-                                      _pinn.pinStatus = '';
+                                      _item.pinObj.pinStatus = '';
                                     else
-                                      _pinn.pinStatus = 'NO-WARNING';
+                                      _item.pinObj.pinStatus = 'NO-WARNING';
                                   }),
                                 ),
                                 Text(
