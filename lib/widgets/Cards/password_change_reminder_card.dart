@@ -203,7 +203,8 @@ class _PasswordChangeReminderCardState
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Text(
-                    'Created: ' + DateHelper.shortDate(widget.itemPass.date),
+                    'Created: ' +
+                        DateHelper.shortDate(widget.itemPass.dateTime),
                   ),
                 ),
               ],
