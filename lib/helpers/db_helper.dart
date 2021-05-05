@@ -68,12 +68,33 @@ class DBHelper {
         whereArgs: [data[idName]],
       );
 
+  static Future<int> updateItem(Map<String, Object> data) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        data,
+        where: 'item_id = ?',
+        whereArgs: [data['item_id']],
+      );
+
   static Future<int> updateItemPassword(Map<String, Object> data) async =>
       (await DBHelper.database()).update(
         itemPasswordTable,
         data,
-        where: 'fk_item_id = ?, fk_password_id = ?',
+        where: 'fk_item_id = ? AND fk_password_id = ?',
         whereArgs: [data['fk_item_id'], data['fk_password_id']],
+      );
+
+  static Future<void> refreshItemPasswordStatus(int passwordId) async =>
+      (await DBHelper.database()).rawQuery(
+        '''UPDATE $itemPasswordTable 
+        SET status = ? 
+        WHERE status = ? 
+        AND fk_password_id = ?''',
+        [
+          'REPEATED',
+          '',
+          '$passwordId',
+        ],
       );
 
   static Future<void> delete(String table, int id) async =>
@@ -223,20 +244,22 @@ class DBHelper {
         ['', '$pinHash', 'REPEATED', '$pinHash', '$pinHash', '$pinHash'],
       );
 
-  static Future<List<Map<String, dynamic>>> getAlphaWithOlds() async =>
-      (await DBHelper.database()).rawQuery('''SELECT 
-      $itemTable.id, $itemTable.title,
-      $itemTable.username, $itemTable.username_iv,
-      $itemTable.password, $itemTable.password_iv, $itemTable.password_hash,
-      $itemTable.password_date, $itemTable.password_lapse,
-      $itemTable.password_status, $itemTable.password_level,
-      $itemTable.pin, $itemTable.pin_iv, $itemTable.pin_hash, 
-      $itemTable.pin_date, $itemTable.pin_lapse, $itemTable.pin_status,
-      $itemTable.ip, $itemTable.ip_iv, $itemTable.long_text, $itemTable.long_text_iv,
-      $itemTable.date, $itemTable.color, $itemTable.color_letter, $itemTable.font
-      FROM $itemTable
-      JOIN $oldPasswordPinTable ON $itemTable.id = $oldPasswordPinTable.item_id
-      GROUP BY $itemTable.id''');
+  // static Future<List<Map<String, dynamic>>> getItemsWithPasswords() async {
+  //   List<Map<String, dynamic>> _list =
+  //       await (await DBHelper.database()).rawQuery('''SELECT *
+  //     FROM $itemTable
+  //     JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id
+  //     GROUP BY $itemPasswordTable.fk_item_id
+  //     HAVING COUNT(fk_item_id) > 1''');
+  //   return _list;
+  // }
+
+  static Future<List<Map<String, dynamic>>> getItemsWithPasswords() async {
+    List<Map<String, dynamic>> _list =
+        await (await DBHelper.database()).rawQuery('''SELECT * 
+      FROM $passwordTable''');
+    return _list;
+  }
 
   static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
       (await DBHelper.database()).rawQuery('''SELECT 
