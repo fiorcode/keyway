@@ -12,7 +12,6 @@ import 'package:keyway/models/item.dart';
 import 'package:keyway/models/longText.dart';
 import 'package:keyway/models/password.dart';
 import 'package:keyway/models/pin.dart';
-import '../models/alpha.dart';
 import '../models/deleted_alpha.dart';
 import '../models/old_password_pin.dart';
 import '../models/username.dart';
@@ -20,12 +19,12 @@ import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
-  List<dynamic> _itemsWithOlds = [];
+  List<Item> _itemsWithPasswords = [];
   List<OldPasswrodPin> _itemOlds = [];
   List<DeletedAlpha> _deletedItems = [];
 
   List<Item> get items => [..._items];
-  List<dynamic> get itemsWithOlds => [..._itemsWithOlds];
+  List<dynamic> get itemsWithOlds => [..._itemsWithPasswords];
   List<OldPasswrodPin> get itemOlds => [..._itemOlds];
   List<DeletedAlpha> get deletedItems => [..._deletedItems];
 
@@ -67,20 +66,30 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<void> fetchItemsWithOlds() async {
-    Iterable<Alpha> _iterIWH;
-    Iterable<DeletedAlpha> _iterDIWH;
-    _itemsWithOlds.clear();
-    await DBHelper.getAlphaWithOlds().then((data) {
-      _iterIWH = data.map((e) => Alpha.fromMap(e));
+  Future<void> fetchItemsWithPasswords() async {
+    Iterable<Item> _iter;
+    _itemsWithPasswords.clear();
+    await DBHelper.getItemsWithPasswords().then((data) {
+      _iter = data.map((e) => Item.fromMap(e));
     });
-    _itemsWithOlds.addAll(_iterIWH.toList());
-    await DBHelper.getDeletedAlphaWithOlds().then((data) {
-      _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
-    });
-    _itemsWithOlds.addAll(_iterDIWH.toList());
-    _itemsWithOlds.sort((a, b) => b.usernameIv.compareTo(a.usernameIv));
+    _itemsWithPasswords.addAll(_iter.toList());
+    _itemsWithPasswords.sort((a, b) => b.date.compareTo(a.date));
   }
+
+  // Future<void> fetchItemsWithOlds() async {
+  //   Iterable<Alpha> _iterIWH;
+  //   Iterable<DeletedAlpha> _iterDIWH;
+  //   _itemsWithOlds.clear();
+  //   await DBHelper.getAlphaWithOlds().then((data) {
+  //     _iterIWH = data.map((e) => Alpha.fromMap(e));
+  //   });
+  //   _itemsWithOlds.addAll(_iterIWH.toList());
+  //   await DBHelper.getDeletedAlphaWithOlds().then((data) {
+  //     _iterDIWH = data.map((e) => DeletedAlpha.fromMap(e));
+  //   });
+  //   _itemsWithOlds.addAll(_iterDIWH.toList());
+  //   _itemsWithOlds.sort((a, b) => b.usernameIv.compareTo(a.usernameIv));
+  // }
 
   Future<void> fetchItemOlds(int itemId) async {
     Iterable<OldPasswrodPin> _iterIH;
@@ -106,8 +115,7 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertItem(Item i) async =>
       await DBHelper.insert(DBHelper.itemTable, i.toMap());
 
-  Future<int> updateItem(Item i) async =>
-      await DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id');
+  Future<int> updateItem(Item i) async => await DBHelper.updateItem(i.toMap());
 
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
@@ -138,42 +146,6 @@ class ItemProvider with ChangeNotifier {
 
   Future<int> updateLongText(LongText l) async =>
       await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
-
-  Future<void> insertAlpha(Alpha a) async {
-    await DBHelper.insert(DBHelper.itemTable, a.toMap());
-    if (a.passwordStatus == 'REPEATED')
-      await DBHelper.setPassRepeted(a.passwordHash);
-
-    if (a.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(a.pinHash);
-  }
-
-  Future<void> updateAlpha(Alpha a) async {
-    Alpha _prev;
-    await DBHelper.getById(DBHelper.itemTable, a.itemId).then(
-      (_list) async {
-        _prev = Alpha.fromMap(_list.first);
-        if (_prev.passwordHash != a.passwordHash && _prev.password != '') {
-          OldPasswrodPin _oldPass = OldPasswrodPin();
-          _prev.copyPasswordValues(_oldPass);
-          await DBHelper.insert(DBHelper.oldPasswordPinTable, _oldPass.toMap());
-        }
-        if (_prev.pinHash != a.pinHash && _prev.pin != '') {
-          OldPasswrodPin _oldPin = OldPasswrodPin();
-          _prev.copyPinValues(_oldPin);
-          await DBHelper.insert(DBHelper.oldPasswordPinTable, _oldPin.toMap());
-        }
-      },
-    ).then((_) async {
-      await DBHelper.update(DBHelper.itemTable, a.toMap(), 'item_id')
-          .then((_) async {
-        if (a.passwordStatus == 'REPEATED')
-          await DBHelper.setPassRepeted(a.passwordHash);
-        if (a.pinStatus == 'REPEATED') await DBHelper.setPinRepeted(a.pinHash);
-        // await DBHelper.unsetPassRepeted(_prev.passwordHash);
-        // await DBHelper.unsetPinRepeted(_prev.pinHash);
-      });
-    });
-  }
 
   Future<void> deleteItem(Item i) async {
     await DBHelper.delete(DBHelper.itemTable, i.itemId).then(
@@ -250,9 +222,12 @@ class ItemProvider with ChangeNotifier {
   Future<int> setPinStatus(String table, String pin, String status) async =>
       await DBHelper.setPinStatus(table, pin, status);
 
+  Future<void> refreshItemPasswordStatus(int passwordId) async =>
+      await DBHelper.refreshItemPasswordStatus(passwordId);
+
   Future<void> removeItems() async {
     _items.clear();
-    _itemsWithOlds.clear();
+    _itemsWithPasswords.clear();
     _itemOlds.clear();
     _deletedItems.clear();
   }
@@ -266,6 +241,9 @@ class ItemProvider with ChangeNotifier {
     List<Map<String, dynamic>> _p = await DBHelper.getPasswordById(id);
     return Password.fromMap(_p.first);
   }
+
+  Future<Password> getPasswordByHash(String hash) async => Password.fromMap(
+      (await DBHelper.getByValue(DBHelper.passwordTable, 'hash', hash)).first);
 
   Future<List<ItemPassword>> getLastItemPassword(int itemId) async {
     Iterable<ItemPassword> _iter;
