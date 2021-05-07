@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/models/old_password_pin.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/unlock_container.dart';
 
@@ -28,13 +27,13 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   Future<void> _getItemHistory() async =>
-      await _items.fetchItemOlds(widget.itemId);
+      await _items.fetchItemAndOldPasswords(widget.itemId);
 
-  void _delete(OldPasswrodPin old) async {
-    await _items.deleteOldPassPin(old);
-    _getItemOlds = _getItemHistory();
-    setState(() {});
-  }
+  // void _delete(OldPasswrodPin old) async {
+  //   await _items.deleteOldPassPin(old);
+  //   _getItemOlds = _getItemHistory();
+  //   setState(() {});
+  // }
 
   @override
   void didChangeDependencies() {
@@ -85,11 +84,11 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
               else
                 return Stack(
                   children: [
-                    _items.itemOlds.length <= 0
+                    _items.itemAndOldPasswords.length <= 0
                         ? EmptyItems()
                         : ListView.separated(
                             padding: EdgeInsets.all(12.0),
-                            itemCount: _items.itemOlds.length,
+                            itemCount: _items.itemAndOldPasswords.length,
                             itemBuilder: (ctx, i) {
                               return ListTile(
                                 // leading: Chip(
@@ -103,15 +102,16 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                 // ),
                                 title: Text(
                                   _cripto.doDecrypt(
-                                    _items.itemOlds[i].passwordPin,
-                                    _items.itemOlds[i].passwordPinIv,
+                                    _items.itemAndOldPasswords[i].passwordObj
+                                        .passwordEnc,
+                                    _items.itemAndOldPasswords[i].passwordObj
+                                        .passwordIv,
                                   ),
                                 ),
                                 subtitle: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(_items.itemOlds[i].type),
                                     Row(
                                       children: [
                                         Icon(Icons.calendar_today, size: 16),
@@ -119,8 +119,8 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
                                             DateHelper.shortDate(
-                                              _items
-                                                  .itemOlds[i].passwordPinDate,
+                                              _items.itemAndOldPasswords[i]
+                                                  .itemPasswordObj.date,
                                             ),
                                           ),
                                         ),
@@ -139,8 +139,8 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                       size: 24,
                                     ),
                                     heroTag: null,
-                                    onPressed: () =>
-                                        _delete(_items.itemOlds[i]),
+                                    onPressed: () {},
+                                    // _delete(_items.itemHistory[i]),
                                   ),
                                 ),
                               );
