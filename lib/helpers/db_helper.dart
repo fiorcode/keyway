@@ -13,8 +13,6 @@ class DBHelper {
   static const String longTextTable = "long_text";
   static const String deviceTable = "device";
   static const String itemPasswordTable = "item_password";
-  static const String oldPasswordPinTable = "old_password_pin";
-  static const String deletedAlphaTable = "deleted_alpha";
   static const String tagTable = "tag";
 
   static Future<Database> database() async {
@@ -67,6 +65,30 @@ class DBHelper {
         where: '$idName = ?',
         whereArgs: [data[idName]],
       );
+
+  static Future<List<Map<String, dynamic>>> getActiveItems() async =>
+      (await DBHelper.database()).query(
+        itemTable,
+        where: 'status = ?',
+        whereArgs: [''],
+      );
+
+  static Future<List<Map<String, dynamic>>> getActiveItemsByTitle(
+          String title) async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemTable
+        WHERE title LIKE '%$title%' AND status = '' ''');
+
+  static Future<List<Map<String, dynamic>>> getDeletedItems() async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemTable
+        WHERE status LIKE '%<DELETED>%' ''');
+
+  static Future<List<Map<String, dynamic>>> getDeletedItemsByTitle(
+          String title) async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemTable
+        WHERE title LIKE '%$title%' AND status = '' ''');
 
   static Future<int> updateItem(Map<String, Object> data) async =>
       (await DBHelper.database()).update(
@@ -155,12 +177,6 @@ class DBHelper {
         whereArgs: [value],
       );
 
-  static Future<List<Map<String, dynamic>>> getItemsByTitle(
-          String title) async =>
-      (await DBHelper.database()).rawQuery('''SELECT *
-        FROM $itemTable
-        WHERE title LIKE \'%$title%\'''');
-
   static Future<List<Map<String, dynamic>>> getItemPass(int itemId) async {
     return (await DBHelper.database()).rawQuery('''SELECT * 
         FROM $itemPasswordTable 
@@ -205,24 +221,6 @@ class DBHelper {
         ['REPEATED', '$passwordHash', ''],
       );
 
-  static Future<int> unsetPassRepeted(String passwordHash) async =>
-      await (await DBHelper.database()).rawUpdate(
-        '''UPDATE $itemTable 
-        SET password_status = ? 
-        WHERE password_hash = ? AND password_status = ? 
-        AND 1 = (SELECT COUNT(*) FROM $itemTable WHERE password_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE password_pin_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE password_hash = ?)''',
-        [
-          '',
-          '$passwordHash',
-          'REPEATED',
-          '$passwordHash',
-          '$passwordHash',
-          '$passwordHash'
-        ],
-      );
-
   static Future<int> setPinRepeted(String pinHash) async =>
       await (await DBHelper.database()).rawUpdate(
         '''UPDATE 
@@ -233,49 +231,29 @@ class DBHelper {
         ['REPEATED', '$pinHash', ''],
       );
 
-  static Future<int> unsetPinRepeted(String pinHash) async =>
-      await (await DBHelper.database()).rawUpdate(
-        '''UPDATE $itemTable 
-        SET pin_status = ? 
-        WHERE pin_hash = ? AND pin_status = ? 
-        AND 1 = (SELECT COUNT(*) FROM $itemTable WHERE pin_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $oldPasswordPinTable WHERE pin_hash = ?) 
-        AND 0 = (SELECT COUNT(*) FROM $deletedAlphaTable WHERE pin_hash = ?)''',
-        ['', '$pinHash', 'REPEATED', '$pinHash', '$pinHash', '$pinHash'],
-      );
-
-  // static Future<List<Map<String, dynamic>>> getItemsWithPasswords() async {
-  //   List<Map<String, dynamic>> _list =
-  //       await (await DBHelper.database()).rawQuery('''SELECT *
-  //     FROM $itemTable
-  //     JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id
-  //     GROUP BY $itemPasswordTable.fk_item_id
-  //     HAVING COUNT(fk_item_id) > 1''');
-  //   return _list;
-  // }
-
-  static Future<List<Map<String, dynamic>>> getItemsWithPasswords() async {
+  static Future<List<Map<String, dynamic>>> getItemsWithOldPasswords() async {
     List<Map<String, dynamic>> _list =
-        await (await DBHelper.database()).rawQuery('''SELECT * 
-      FROM $passwordTable''');
+        await (await DBHelper.database()).rawQuery('''SELECT *
+      FROM $itemTable
+      JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id
+      GROUP BY $itemPasswordTable.fk_item_id
+      HAVING COUNT(fk_item_id) > 1''');
     return _list;
   }
 
-  static Future<List<Map<String, dynamic>>> getDeletedAlphaWithOlds() async =>
-      (await DBHelper.database()).rawQuery('''SELECT 
-        $deletedAlphaTable.id, $deletedAlphaTable.title,
-        $deletedAlphaTable.username, $deletedAlphaTable.username_iv,
-        $deletedAlphaTable.password, $deletedAlphaTable.password_iv, $deletedAlphaTable.password_hash,
-        $deletedAlphaTable.password_date, $deletedAlphaTable.password_lapse, 
-        $deletedAlphaTable.password_status, $deletedAlphaTable.password_level,
-        $deletedAlphaTable.pin, $deletedAlphaTable.pin_iv, $deletedAlphaTable.pin_hash, 
-        $deletedAlphaTable.pin_date, $deletedAlphaTable.pin_lapse, $deletedAlphaTable.pin_status,
-        $deletedAlphaTable.ip, $deletedAlphaTable.ip_iv, $deletedAlphaTable.long_text, $deletedAlphaTable.long_text_iv,
-        $deletedAlphaTable.date, $deletedAlphaTable.date_deleted, $deletedAlphaTable.font,
-        $deletedAlphaTable.color, $deletedAlphaTable.color_letter, $deletedAlphaTable.item_id         
-        FROM $deletedAlphaTable 
-        JOIN $oldPasswordPinTable ON $deletedAlphaTable.item_id = $oldPasswordPinTable.item_id 
-        GROUP BY $deletedAlphaTable.id''');
+  static Future<List<Map<String, dynamic>>> getItemAndOldPasswords(
+      int itemId) async {
+    List<Map<String, dynamic>> _list =
+        await (await DBHelper.database()).rawQuery(
+      '''SELECT *
+      FROM $itemTable 
+      INNER JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id 
+      INNER JOIN $passwordTable ON $itemPasswordTable.fk_password_id = $passwordTable.password_id 
+      WHERE $itemPasswordTable.fk_item_id = ?''',
+      [itemId],
+    );
+    return _list;
+  }
 
   static Future<void> removeTag(String tag) async =>
       (await DBHelper.database()).rawQuery('''
