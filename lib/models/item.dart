@@ -26,6 +26,22 @@ class Item {
   LongText longTextObj;
   Device deviceObj;
 
+  Item.factory() {
+    this.title = '';
+    this.date = '';
+    this.avatarColor = 4290624957;
+    this.avatarLetterColor = 4294967295;
+    this.font = '';
+    this.status = '';
+    this.tags = '';
+    this.usernameObj = Username();
+    this.passwordObj = Password();
+    this.itemPasswordObj = ItemPassword();
+    this.pinObj = Pin();
+    this.longTextObj = LongText();
+    this.deviceObj = Device();
+  }
+
   Item({
     this.itemId,
     this.title = '',
@@ -46,14 +62,6 @@ class Item {
     this.longTextObj,
     this.deviceObj,
   });
-  // {
-  //   this.usernameObj = Username();
-  //   this.passwordObj = Password();
-  //   this.itemPasswordObj = ItemPassword();
-  //   this.pinObj = Pin();
-  //   this.longTextObj = LongText();
-  //   this.deviceObj = Device();
-  // }
 
   Item.fromMap(Map<String, dynamic> map) {
     itemId = map['item_id'];
