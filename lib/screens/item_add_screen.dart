@@ -192,7 +192,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _passFocusNode = FocusNode();
     _username = true;
     _password = true;
-    _item = Item();
+    _item = Item.factory();
     super.initState();
   }
 
