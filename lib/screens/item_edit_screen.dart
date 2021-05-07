@@ -126,16 +126,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         _longCtrler.text.isNotEmpty;
   }
 
-  // bool _wasChanged() {
-  //   if (_item != widget.item) return true;
-  //   if (_item.usernameObj != widget.item.usernameObj) return true;
-  //   if (_item.passwordObj != widget.item.passwordObj) return true;
-  //   if (_item.itemPasswordObj != widget.item.itemPasswordObj) return true;
-  //   if (_item.pinObj != widget.item.pinObj) return true;
-  //   if (_item.longTextObj != widget.item.longTextObj) return true;
-  //   return false;
-  // }
-
   void _save() async {
     try {
       DateTime _date = DateTime.now().toUtc();
@@ -167,6 +157,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       if (_passCtrler.text.isNotEmpty) {
         _item.passwordObj.hash = _cripto.doHash(_passCtrler.text);
         if (widget.item.passwordObj == null) {
+          _item.passwordObj = Password();
+          _item.itemPasswordObj = ItemPassword();
           if (_passwordRepeatedWarning) {
             if (await _items.passUsed(_item.passwordObj)) {
               bool _warning = false;
@@ -175,9 +167,11 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                 Password _p =
                     await _items.getPasswordByHash(_item.passwordObj.hash);
                 _item.itemPasswordObj.fkPasswordId = _p.passwordId;
+                _item.itemPasswordObj.date = _date.toIso8601String();
                 _item.itemPasswordObj.status = 'REPEATED';
+                _item.itemPasswordObj.fkItemId = _item.itemId;
                 await _items.insertItemPassword(_item.itemPasswordObj);
-                await _items.refreshItemPasswordStatus(_p.passwordId);
+                // await _items.refreshItemPasswordStatus(_p.passwordId);
               } else {
                 return;
               }
@@ -191,6 +185,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   await _items.insertPassword(_item.passwordObj);
               _item.itemPasswordObj.date = _date.toIso8601String();
               _item.itemPasswordObj.status = '';
+              _item.itemPasswordObj.fkItemId = _item.itemId;
               await _items.insertItemPassword(_item.itemPasswordObj);
             }
           }
@@ -211,7 +206,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   return;
                 }
               } else {
-                // _item.passwordObj = Password();
                 _item.passwordObj.passwordIv = e.IV.fromSecureRandom(16).base16;
                 _item.passwordObj.passwordEnc = _cripto.doCrypt(
                   _passCtrler.text,
@@ -224,16 +218,18 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   _item.itemPasswordObj.fkPasswordId = _id;
                   _item.itemPasswordObj.date = _date.toIso8601String();
                   _item.itemPasswordObj.status = '';
+                  _item.itemPasswordObj.fkItemId = _item.itemId;
                   await _items.insertItemPassword(_item.itemPasswordObj);
                 });
               }
             }
-          }
-          if (widget.item.itemPasswordObj.lapse !=
-                  _item.itemPasswordObj.lapse ||
-              widget.item.itemPasswordObj.status !=
-                  _item.itemPasswordObj.status) {
-            _items.updateItemPassword(_item.itemPasswordObj);
+          } else {
+            if (widget.item.itemPasswordObj.lapse !=
+                    _item.itemPasswordObj.lapse ||
+                widget.item.itemPasswordObj.status !=
+                    _item.itemPasswordObj.status) {
+              _items.updateItemPassword(_item.itemPasswordObj);
+            }
           }
         }
       }
@@ -325,11 +321,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     });
   }
 
-  void _delete(BuildContext context) async {
-    bool _warning = await WarningHelper.deleteItem(context);
-    _warning = _warning == null ? false : _warning;
-    if (_warning)
-      _items.deleteItem(_item).then((_) => Navigator.of(context).pop());
+  void _delete() async {
+    _item.status = _item.status + '<DELETED>';
+    _items.updateItem(_item).then((_) => Navigator.of(context).pop());
   }
 
   @override
@@ -339,8 +333,10 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
     _item = widget.item.clone();
-    _passwordRepeatedWarning = _item.itemPasswordObj.status != 'NO-WARNING';
-    _passwordChangeReminder = _item.itemPasswordObj.lapse >= 0;
+    if (_item.passwordObj != null) {
+      _passwordRepeatedWarning = _item.itemPasswordObj.status != 'NO-WARNING';
+      _passwordChangeReminder = _item.itemPasswordObj.lapse >= 0;
+    }
     _load();
     super.initState();
   }
@@ -555,7 +551,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   ),
                   FloatingActionButton(
                     backgroundColor: Colors.red,
-                    onPressed: () => _delete(context),
+                    onPressed: _delete,
                     child: Icon(
                       Icons.delete_forever_rounded,
                       color: Colors.white,
