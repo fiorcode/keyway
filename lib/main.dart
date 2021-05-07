@@ -6,8 +6,8 @@ import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'screens/item_edit_screen.dart';
-import 'screens/alpha_view_screen.dart';
-import 'screens/old_passwords_pins_screen.dart';
+import 'screens/item_view_screen.dart';
+import 'screens/items_with_old_passwords_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
@@ -17,7 +17,7 @@ import 'screens/item_add_screen.dart';
 import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
-import 'screens/deleted_items_screen.dart';
+import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
 
@@ -52,12 +52,13 @@ class MyApp extends StatelessWidget {
           DashboardScreen.routeName: (ctx) => DashboardScreen(),
           ItemAddScreen.routeName: (ctx) => ItemAddScreen(),
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
-          AlphaViewScreen.routeName: (ctx) => AlphaViewScreen(),
+          ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
-          OldPasswordsPinsScreen.routeName: (ctx) => OldPasswordsPinsScreen(),
+          ItemsWithOldPasswordsScreen.routeName: (ctx) =>
+              ItemsWithOldPasswordsScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
-          DeletedItemsScreen.routeName: (ctx) => DeletedItemsScreen(),
+          ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
         },
