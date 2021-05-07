@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/models/item.dart';
-import 'package:keyway/screens/item_edit_screen.dart';
-import 'package:keyway/screens/alpha_view_screen.dart';
+import '../../providers/cripto_provider.dart';
+import '../../models/item.dart';
+import '../../screens/item_edit_screen.dart';
+import '../../screens/item_view_screen.dart';
 
 class AlphaUnlockedCard extends StatefulWidget {
   const AlphaUnlockedCard({Key key, this.item, this.onReturn})
@@ -147,7 +147,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   void _showPassLongPressed() => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AlphaViewScreen(alpha: widget.item),
+          builder: (context) => ItemViewScreen(item: widget.item),
         ),
       ).then((_) => widget.onReturn());
 
