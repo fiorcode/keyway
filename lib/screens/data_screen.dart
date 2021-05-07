@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 
 import '../helpers/db_helper.dart';
 import '../helpers/warning_helper.dart';
-import '../screens/deleted_items_screen.dart';
-import '../screens/old_passwords_pins_screen.dart';
+import '../screens/items_deleted_screen.dart';
+import '../screens/items_with_old_passwords_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/tags_screen.dart';
 
@@ -205,7 +205,7 @@ class _DataScreenState extends State<DataScreen> {
                     primary: Colors.white,
                   ),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(OldPasswordsPinsScreen.routeName),
+                      .pushNamed(ItemsWithOldPasswordsScreen.routeName),
                   icon: Icon(
                     Icons.history,
                     color: Theme.of(context).primaryColor,
@@ -230,7 +230,7 @@ class _DataScreenState extends State<DataScreen> {
                     primary: Colors.white,
                   ),
                   onPressed: () => Navigator.of(context)
-                      .pushNamed(DeletedItemsScreen.routeName),
+                      .pushNamed(ItemsDeletedScreen.routeName),
                   icon: Icon(
                     Icons.delete,
                     color: Theme.of(context).primaryColor,
