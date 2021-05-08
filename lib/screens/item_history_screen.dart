@@ -102,9 +102,9 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                 // ),
                                 title: Text(
                                   _cripto.doDecrypt(
-                                    _items.itemAndOldPasswords[i].passwordObj
+                                    _items.itemAndOldPasswords[i].password
                                         .passwordEnc,
-                                    _items.itemAndOldPasswords[i].passwordObj
+                                    _items.itemAndOldPasswords[i].password
                                         .passwordIv,
                                   ),
                                 ),
@@ -120,7 +120,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                           child: Text(
                                             DateHelper.shortDate(
                                               _items.itemAndOldPasswords[i]
-                                                  .itemPasswordObj.date,
+                                                  .itemPassword.date,
                                             ),
                                           ),
                                         ),
