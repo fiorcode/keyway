@@ -12,19 +12,19 @@ class Item {
   int avatarColor;
   int avatarLetterColor;
   String font;
-  String status;
+  String itemStatus;
   String tags;
   int fkUsernameId;
   int fkPinId;
   int fkLongTextId;
   int fkDeviceId;
 
-  Username usernameObj;
-  Password passwordObj;
-  ItemPassword itemPasswordObj;
-  Pin pinObj;
-  LongText longTextObj;
-  Device deviceObj;
+  Username username;
+  Password password;
+  ItemPassword itemPassword;
+  Pin pin;
+  LongText longText;
+  Device device;
 
   Item.factory() {
     this.title = '';
@@ -32,14 +32,11 @@ class Item {
     this.avatarColor = 4290624957;
     this.avatarLetterColor = 4294967295;
     this.font = '';
-    this.status = '';
+    this.itemStatus = '';
     this.tags = '';
-    this.usernameObj = Username();
-    this.passwordObj = Password();
-    this.itemPasswordObj = ItemPassword();
-    this.pinObj = Pin();
-    this.longTextObj = LongText();
-    this.deviceObj = Device();
+    this.username = Username();
+    this.password = Password();
+    this.itemPassword = ItemPassword();
   }
 
   Item({
@@ -49,18 +46,18 @@ class Item {
     this.avatarColor = 4290624957,
     this.avatarLetterColor = 4294967295,
     this.font = '',
-    this.status = '',
+    this.itemStatus = '',
     this.tags = '',
     this.fkUsernameId,
     this.fkPinId,
     this.fkLongTextId,
     this.fkDeviceId,
-    this.usernameObj,
-    this.passwordObj,
-    this.itemPasswordObj,
-    this.pinObj,
-    this.longTextObj,
-    this.deviceObj,
+    this.username,
+    this.password,
+    this.itemPassword,
+    this.pin,
+    this.longText,
+    this.device,
   });
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -70,7 +67,7 @@ class Item {
     avatarColor = map['avatar_color'];
     avatarLetterColor = map['avatar_letter_color'];
     font = map['font'];
-    status = map['status'];
+    itemStatus = map['item_status'];
     tags = map['tags'];
     fkUsernameId = map['fk_username_id'];
     fkPinId = map['fk_pin_id'];
@@ -85,7 +82,7 @@ class Item {
       'avatar_color': avatarColor,
       'avatar_letter_color': avatarLetterColor,
       'font': font,
-      'status': status,
+      'item_status': itemStatus,
       'tags': tags,
       'fk_username_id': fkUsernameId,
       'fk_pin_id': fkPinId,
@@ -104,19 +101,19 @@ class Item {
       avatarColor: this.avatarColor,
       avatarLetterColor: this.avatarLetterColor,
       font: this.font,
-      status: this.status,
+      itemStatus: this.itemStatus,
       tags: this.tags,
       fkUsernameId: this.fkUsernameId,
       fkPinId: this.fkPinId,
       fkLongTextId: this.fkLongTextId,
       fkDeviceId: this.fkDeviceId,
-      usernameObj: this.usernameObj != null ? this.usernameObj.clone() : null,
-      passwordObj: this.passwordObj != null ? this.passwordObj.clone() : null,
-      itemPasswordObj:
-          this.itemPasswordObj != null ? this.itemPasswordObj.clone() : null,
-      pinObj: this.pinObj != null ? this.pinObj.clone() : null,
-      longTextObj: this.longTextObj != null ? this.longTextObj.clone() : null,
-      deviceObj: this.deviceObj != null ? this.deviceObj.clone() : null,
+      username: this.username != null ? this.username.clone() : null,
+      password: this.password != null ? this.password.clone() : null,
+      itemPassword:
+          this.itemPassword != null ? this.itemPassword.clone() : null,
+      pin: this.pin != null ? this.pin.clone() : null,
+      longText: this.longText != null ? this.longText.clone() : null,
+      device: this.device != null ? this.device.clone() : null,
     );
     return _i;
   }
