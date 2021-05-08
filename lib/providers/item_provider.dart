@@ -44,22 +44,22 @@ class ItemProvider with ChangeNotifier {
   Future<void> _buildItems() async {
     _items.forEach((i) async {
       if (i.fkUsernameId != null) {
-        i.usernameObj = await getUsername(i.fkUsernameId);
+        i.username = await getUsername(i.fkUsernameId);
       }
       await getLastItemPassword(i.itemId).then((_ips) async {
         if (_ips.isNotEmpty) {
-          i.itemPasswordObj = _ips.first;
-          i.passwordObj = await getPassword(_ips.first.fkPasswordId);
+          i.itemPassword = _ips.first;
+          i.password = await getPassword(_ips.first.fkPasswordId);
         }
       });
       if (i.fkPinId != null) {
-        i.pinObj = await getPin(i.fkPinId);
+        i.pin = await getPin(i.fkPinId);
       }
       if (i.fkLongTextId != null) {
-        i.longTextObj = await getLongText(i.fkLongTextId);
+        i.longText = await getLongText(i.fkLongTextId);
       }
       if (i.fkDeviceId != null) {
-        i.deviceObj = await getDevice(i.fkDeviceId);
+        i.device = await getDevice(i.fkDeviceId);
       }
     });
   }
@@ -80,8 +80,8 @@ class ItemProvider with ChangeNotifier {
     await DBHelper.getItemAndOldPasswords(itemId).then((data) {
       _iter = data.map((e) {
         Item _i = Item.fromMap(e);
-        _i.itemPasswordObj = ItemPassword.fromMap(e);
-        _i.passwordObj = Password.fromMap(e);
+        _i.itemPassword = ItemPassword.fromMap(e);
+        _i.password = Password.fromMap(e);
         return _i;
       });
       _itemAndOldPasswords.addAll(_iter.toList());
@@ -102,22 +102,22 @@ class ItemProvider with ChangeNotifier {
   Future<void> _buildItemsDeleted() async {
     _itemsDeleted.forEach((i) async {
       if (i.fkUsernameId != null) {
-        i.usernameObj = await getUsername(i.fkUsernameId);
+        i.username = await getUsername(i.fkUsernameId);
       }
       await getLastItemPassword(i.itemId).then((_ips) async {
         if (_ips.isNotEmpty) {
-          i.itemPasswordObj = _ips.first;
-          i.passwordObj = await getPassword(_ips.first.fkPasswordId);
+          i.itemPassword = _ips.first;
+          i.password = await getPassword(_ips.first.fkPasswordId);
         }
       });
       if (i.fkPinId != null) {
-        i.pinObj = await getPin(i.fkPinId);
+        i.pin = await getPin(i.fkPinId);
       }
       if (i.fkLongTextId != null) {
-        i.longTextObj = await getLongText(i.fkLongTextId);
+        i.longText = await getLongText(i.fkLongTextId);
       }
       if (i.fkDeviceId != null) {
-        i.deviceObj = await getDevice(i.fkDeviceId);
+        i.device = await getDevice(i.fkDeviceId);
       }
     });
   }
@@ -157,22 +157,12 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateLongText(LongText l) async =>
       await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
 
-  Future<void> deleteItem(Item i) async {
-    await DBHelper.delete(DBHelper.itemTable, i.itemId);
-  }
-
   Future<bool> passUsed(Password p) async {
     if (p.hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.passwordTable, 'hash', p.hash))
         .isNotEmpty) return true;
     return false;
   }
-
-  Future<int> setPassStatus(String table, String pass, String status) async =>
-      await DBHelper.setPassStatus(table, pass, status);
-
-  Future<int> setPinStatus(String table, String pin, String status) async =>
-      await DBHelper.setPinStatus(table, pin, status);
 
   Future<void> refreshItemPasswordStatus(int passwordId) async =>
       await DBHelper.refreshItemPasswordStatus(passwordId);
@@ -235,7 +225,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> deleteTag(Tag t) async {
     await DBHelper.removeTag(t.tagName);
-    await DBHelper.delete(DBHelper.tagTable, t.id);
+    await DBHelper.deleteTag(t.toMap());
   }
 
   Future<List<Tag>> getTags() async {
