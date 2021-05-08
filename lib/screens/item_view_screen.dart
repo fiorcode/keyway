@@ -38,31 +38,31 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
     try {
       setState(() {
         _titleCtrler.text = widget.item.title;
-        if (widget.item.usernameObj != null) {
+        if (widget.item.username != null) {
           _userCtrler.text = _cripto.doDecrypt(
-            widget.item.usernameObj.usernameEnc,
-            widget.item.usernameObj.usernameIv,
+            widget.item.username.usernameEnc,
+            widget.item.username.usernameIv,
           );
           _username = true;
         }
-        if (widget.item.passwordObj != null) {
+        if (widget.item.password != null) {
           _passCtrler.text = _cripto.doDecrypt(
-            widget.item.passwordObj.passwordEnc,
-            widget.item.passwordObj.passwordIv,
+            widget.item.password.passwordEnc,
+            widget.item.password.passwordIv,
           );
           _password = true;
         }
-        if (widget.item.pinObj != null) {
+        if (widget.item.pin != null) {
           _pinCtrler.text = _cripto.doDecrypt(
-            widget.item.pinObj.pinEnc,
-            widget.item.pinObj.pinIv,
+            widget.item.pin.pinEnc,
+            widget.item.pin.pinIv,
           );
           _pin = true;
         }
-        if (widget.item.longTextObj != null) {
+        if (widget.item.longText != null) {
           _longCtrler.text = _cripto.doDecrypt(
-            widget.item.longTextObj.longTextEnc,
-            widget.item.longTextObj.longTextIv,
+            widget.item.longText.longTextEnc,
+            widget.item.longText.longTextIv,
           );
           _longText = true;
         }
