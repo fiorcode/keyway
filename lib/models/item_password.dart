@@ -3,7 +3,7 @@ class ItemPassword {
   int fkPasswordId;
   String date;
   int lapse;
-  String status;
+  String passwordStatus;
   DateTime dateTime;
 
   ItemPassword({
@@ -11,7 +11,7 @@ class ItemPassword {
     this.fkPasswordId,
     this.date,
     this.lapse = 320,
-    this.status = '',
+    this.passwordStatus = '',
     this.dateTime,
   }) {
     this.dateTime = DateTime.now(); //FIX THIS
@@ -22,7 +22,7 @@ class ItemPassword {
     fkPasswordId = map['fk_password_id'];
     date = map['date'];
     lapse = map['lapse'];
-    status = map['status'];
+    passwordStatus = map['password_status'];
     dateTime = DateTime.parse(map['date']);
   }
 
@@ -31,7 +31,7 @@ class ItemPassword {
         'fk_password_id': fkPasswordId,
         'date': date,
         'lapse': lapse,
-        'status': status,
+        'password_status': passwordStatus,
       };
 
   ItemPassword clone() {
@@ -40,7 +40,7 @@ class ItemPassword {
       fkPasswordId: this.fkPasswordId,
       date: this.date,
       lapse: this.lapse,
-      status: this.status,
+      passwordStatus: this.passwordStatus,
       dateTime: this.dateTime,
     );
     return _ip;
