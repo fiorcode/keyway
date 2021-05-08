@@ -13,7 +13,6 @@ import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
 import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/tags_listview.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
@@ -23,6 +22,7 @@ import '../widgets/Cards/item_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
+import '../widgets/Cards/tags_card.dart';
 
 class ItemAddScreen extends StatefulWidget {
   static const routeName = '/add-item';
@@ -43,14 +43,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   final _pinCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
 
+  FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
-
-  bool _username = false;
-  bool _password = false;
-  bool _pin = false;
-  bool _device = false;
-  bool _longText = false;
 
   bool _passwordRepeatedWarning = true;
   bool _passwordChangeReminder = true;
@@ -93,25 +88,24 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       }
 
       if (_passCtrler.text.isNotEmpty) {
-        _item.passwordObj.hash = _cripto.doHash(_passCtrler.text);
+        _item.password.hash = _cripto.doHash(_passCtrler.text);
         if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
-        _item.passwordObj.passwordIv = e.IV.fromSecureRandom(16).base16;
-        _item.passwordObj.passwordEnc =
-            _cripto.doCrypt(_passCtrler.text, _item.passwordObj.passwordIv);
-        _item.passwordObj.strength = '';
-        _item.itemPasswordObj.date = _item.date;
-        _item.itemPasswordObj.status = '';
-        _item.itemPasswordObj.fkPasswordId =
-            await _items.insertPassword(_item.passwordObj);
+        _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
+        _item.password.passwordEnc =
+            _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
+        _item.password.strength = '';
+        _item.itemPassword.date = _item.date;
+        _item.itemPassword.passwordStatus = '';
+        _item.itemPassword.fkPasswordId =
+            await _items.insertPassword(_item.password);
       }
 
       if (_pinCtrler.text.isNotEmpty) {
-        _item.pinObj.pinIv = e.IV.fromSecureRandom(16).base16;
-        _item.pinObj.pinEnc =
-            _cripto.doCrypt(_pinCtrler.text, _item.pinObj.pinIv);
-        _item.pinObj.pinDate = _item.date;
-        _item.pinObj.pinStatus = '';
-        _item.fkPinId = await _items.insertPin(_item.pinObj);
+        _item.pin.pinIv = e.IV.fromSecureRandom(16).base16;
+        _item.pin.pinEnc = _cripto.doCrypt(_pinCtrler.text, _item.pin.pinIv);
+        _item.pin.pinDate = _item.date;
+        _item.pin.pinStatus = '';
+        _item.fkPinId = await _items.insertPin(_item.pin);
       }
 
       if (_longCtrler.text.isNotEmpty) {
@@ -121,13 +115,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.fkLongTextId = await _items.insertLongText(_long);
       }
 
-      if (_device) {}
+      if (_item.device != null) {}
 
       _items.insertItem(_item).then((itemId) {
-        if (_password) {
-          _item.itemPasswordObj.fkItemId = itemId;
+        if (_item.password != null) {
+          _item.itemPassword.fkItemId = itemId;
           _items
-              .insertItemPassword(_item.itemPasswordObj)
+              .insertItemPassword(_item.itemPassword)
               .then((_) => Navigator.of(context).pop());
         } else {
           Navigator.of(context).pop();
@@ -139,60 +133,26 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   Future<bool> _checkPassStatus() async {
-    if (await _items.passUsed(_item.passwordObj)) {
+    if (await _items.passUsed(_item.password)) {
       bool _warning = await WarningHelper.repeat(context, 'Password');
       _warning = _warning == null ? false : _warning;
       if (_warning)
-        _item.itemPasswordObj.status = 'REPEATED';
+        _item.itemPassword.passwordStatus = 'REPEATED';
       else
         return true;
     }
     return false;
   }
 
-  void _usernameSwitch() {
-    setState(() {
-      _userCtrler.clear();
-      _username = !_username;
-    });
-  }
-
-  void _passwordSwitch() {
-    setState(() {
-      _passCtrler.clear();
-      _password = !_password;
-    });
-  }
-
-  void _pinSwitch() {
-    setState(() {
-      _pinCtrler.clear();
-      _pin = !_pin;
-    });
-  }
-
-  void _longTextSwitch() {
-    setState(() {
-      _longCtrler.clear();
-      _longText = !_longText;
-    });
-  }
-
-  void _deviceSwitch() {
-    setState(() {
-      _device = !_device;
-    });
-  }
-
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
+    _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
-    _username = true;
-    _password = true;
     _item = Item.factory();
+    _titleFocusNode.requestFocus();
     super.initState();
   }
 
@@ -240,24 +200,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 32),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _refreshScreen),
-                  PresetsWrap(
-                    username: _username,
-                    password: _password,
-                    pin: _pin,
-                    device: _device,
-                    longText: _longText,
-                    usernameSwitch: _usernameSwitch,
-                    passwordSwitch: _passwordSwitch,
-                    pinSwitch: _pinSwitch,
-                    deviceSwitch: _deviceSwitch,
-                    longTextSwitch: _longTextSwitch,
-                  ),
-                  if (_username)
+                  TitleTextField(_titleCtrler, _refreshScreen, _titleFocusNode),
+                  PresetsWrap(item: _item, refreshScreen: _refreshScreen),
+                  if (_item.username != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Row(
@@ -276,7 +225,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ],
                       ),
                     ),
-                  if (_password)
+                  if (_item.password != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: PasswordTextField(
@@ -293,7 +242,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                       children: [
                         if (_passwordChangeReminder)
                           PasswordChangeReminderCard(
-                              itemPass: _item.itemPasswordObj),
+                              itemPass: _item.itemPassword),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -318,9 +267,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   onChanged: (value) => setState(() {
                                     _passwordRepeatedWarning = value;
                                     if (value)
-                                      _item.itemPasswordObj.status = '';
+                                      _item.itemPassword.passwordStatus = '';
                                     else
-                                      _item.itemPasswordObj.status =
+                                      _item.itemPassword.passwordStatus =
                                           'NO-WARNING';
                                   }),
                                 ),
@@ -338,16 +287,16 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ],
                     ),
-                  if (_pin)
+                  if (_item.pin != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: PinTextField(_pinCtrler, _refreshScreen),
                     ),
-                  if (_pin && _pinCtrler.text.isNotEmpty)
+                  if (_item.pin != null && _pinCtrler.text.isNotEmpty)
                     Column(
                       children: [
                         if (_pinChangeReminder)
-                          PinChangeReminderCard(pin: _item.pinObj),
+                          PinChangeReminderCard(pin: _item.pin),
                         Card(
                           color: Theme.of(context).backgroundColor,
                           elevation: 8,
@@ -372,9 +321,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   onChanged: (value) => setState(() {
                                     _pinRepeatedWarning = value;
                                     if (value)
-                                      _item.pinObj.pinStatus = '';
+                                      _item.pin.pinStatus = '';
                                     else
-                                      _item.pinObj.pinStatus = 'NO-WARNING';
+                                      _item.pin.pinStatus = 'NO-WARNING';
                                   }),
                                 ),
                                 Text(
@@ -396,7 +345,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   //     padding: const EdgeInsets.symmetric(vertical: 12),
                   //     child: IpTextField(_ipCtrler),
                   //   ),
-                  if (_longText)
+                  if (_item.longText != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Container(
@@ -404,7 +353,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         child: LongTextTextField(_longCtrler),
                       ),
                     ),
-                  TagsListView(item: _item),
+                  TagsCard(item: _item),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 12),
                     child: ItemPreviewCard(_item),
