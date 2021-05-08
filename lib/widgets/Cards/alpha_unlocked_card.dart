@@ -67,17 +67,17 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     DateTime _nowUTC = DateTime.now().toUtc();
     bool _passExp = false;
     bool _pinExp = false;
-    if (widget.item.itemPasswordObj != null) {
-      DateTime _passDate = DateTime.parse(widget.item.itemPasswordObj.date);
+    if (widget.item.itemPassword != null) {
+      DateTime _passDate = DateTime.parse(widget.item.itemPassword.date);
       int _daysOfPass = _nowUTC.difference(_passDate).inDays;
-      _passExp = widget.item.itemPasswordObj.lapse <= _daysOfPass;
-      if (widget.item.itemPasswordObj.lapse <= 0) _passExp = false;
+      _passExp = widget.item.itemPassword.lapse <= _daysOfPass;
+      if (widget.item.itemPassword.lapse <= 0) _passExp = false;
     }
-    if (widget.item.pinObj != null) {
-      DateTime _pinDate = DateTime.parse(widget.item.pinObj.pinDate);
+    if (widget.item.pin != null) {
+      DateTime _pinDate = DateTime.parse(widget.item.pin.pinDate);
       int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
-      _pinExp = widget.item.pinObj.pinLapse <= _daysOfPin;
-      if (widget.item.pinObj.pinLapse <= 0) _pinExp = false;
+      _pinExp = widget.item.pin.pinLapse <= _daysOfPin;
+      if (widget.item.pin.pinLapse <= 0) _pinExp = false;
     }
     return _passExp || _pinExp;
   }
@@ -85,27 +85,26 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   String _setTitleSubtitle() {
     switch (_showValue) {
       case 1:
-        if (widget.item.passwordObj == null) continue two;
+        if (widget.item.password == null) continue two;
         _showValue = 1;
         _subtitle = 'Password';
-        return _cripto.doDecrypt(widget.item.passwordObj.passwordEnc,
-            widget.item.passwordObj.passwordIv);
+        return _cripto.doDecrypt(
+            widget.item.password.passwordEnc, widget.item.password.passwordIv);
         break;
       two:
       case 2:
-        if (widget.item.pinObj == null) continue three;
+        if (widget.item.pin == null) continue three;
         _showValue = 2;
         _subtitle = 'PIN';
-        return _cripto.doDecrypt(
-            widget.item.pinObj.pinEnc, widget.item.pinObj.pinIv);
+        return _cripto.doDecrypt(widget.item.pin.pinEnc, widget.item.pin.pinIv);
         break;
       three:
       case 3:
-        if (widget.item.usernameObj == null) continue cero;
+        if (widget.item.username == null) continue cero;
         _showValue = 3;
         _subtitle = 'Username';
-        return _cripto.doDecrypt(widget.item.usernameObj.usernameEnc,
-            widget.item.usernameObj.usernameIv);
+        return _cripto.doDecrypt(
+            widget.item.username.usernameEnc, widget.item.username.usernameIv);
         break;
       cero:
       default:
@@ -116,23 +115,23 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   Color _setWarningColor() {
-    if (widget.item.itemPasswordObj != null) {
-      if (widget.item.itemPasswordObj.status == 'REPEATED')
+    if (widget.item.itemPassword != null) {
+      if (widget.item.itemPassword.passwordStatus == 'REPEATED')
         return Colors.red[300];
     }
-    if (widget.item.pinObj != null) {
-      if (widget.item.pinObj.pinStatus == 'REPEATED') return Colors.red[300];
+    if (widget.item.pin != null) {
+      if (widget.item.pin.pinStatus == 'REPEATED') return Colors.red[300];
     }
     return Colors.grey[100];
   }
 
   Color _setIconColor() {
-    if (widget.item.itemPasswordObj != null) {
-      if (widget.item.itemPasswordObj.status == 'REPEATED')
+    if (widget.item.itemPassword != null) {
+      if (widget.item.itemPassword.passwordStatus == 'REPEATED')
         return Colors.grey[200];
     }
-    if (widget.item.pinObj != null) {
-      if (widget.item.pinObj.pinStatus == 'REPEATED') return Colors.grey[200];
+    if (widget.item.pin != null) {
+      if (widget.item.pin.pinStatus == 'REPEATED') return Colors.grey[200];
     }
     return Colors.grey;
   }
