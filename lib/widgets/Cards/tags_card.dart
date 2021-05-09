@@ -61,7 +61,6 @@ class _TagsCardState extends State<TagsCard> {
     } else {
       _widgetTags += '<${tag.tagName}>';
     }
-    // widget.tagTap(tag);
     widget.item.addRemoveTag(tag.tagName);
     setState(() {});
   }
@@ -86,15 +85,12 @@ class _TagsCardState extends State<TagsCard> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(top: 8.0),
-          child: Text(
-            'Tags',
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.grey[600],
-            ),
+        Text(
+          'Tags',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.grey[600],
           ),
         ),
         Container(
