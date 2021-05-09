@@ -52,7 +52,7 @@ class _ItemPreviewCardState extends State<ItemPreviewCard> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.only(bottom: 8),
           child: Text(
             'Preview',
             style: TextStyle(
