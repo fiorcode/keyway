@@ -16,9 +16,14 @@ class PasswordHelper {
       hasNum(s) &&
       hasSpec(s);
 
-  static int level(String s) {
-    if (s.isEmpty) return -1;
-    return Zxcvbn().evaluate(s).score.toInt();
+  static ZxcvbnResult strength(String s) {
+    if (s.isEmpty) return null;
+    var _evaluation = Zxcvbn().evaluate(s);
+    return ZxcvbnResult(
+      score: _evaluation.score.toInt(),
+      suggestions: _evaluation.feedback.suggestions,
+      warning: _evaluation.feedback.warning,
+    );
   }
 
   static List<String> suggestions(String s) {
@@ -27,4 +32,12 @@ class PasswordHelper {
     _sugs = Zxcvbn().evaluate(s).feedback.suggestions;
     return _sugs;
   }
+}
+
+class ZxcvbnResult {
+  int score;
+  List<String> suggestions;
+  String warning;
+
+  ZxcvbnResult({this.score, this.suggestions, this.warning});
 }
