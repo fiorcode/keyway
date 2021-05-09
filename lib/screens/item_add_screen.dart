@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/Cards/strength_level_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -11,7 +12,6 @@ import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
-import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
@@ -234,9 +234,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         _passFocusNode,
                       ),
                     ),
-                  if (_passCtrler.text.isNotEmpty &&
-                      !PasswordHelper.isStrong(_passCtrler.text))
-                    CheckBoard(password: _passCtrler.text),
+                  if (_passCtrler.text.isNotEmpty)
+                    StrengthLevelCard(
+                      PasswordHelper.strength(_passCtrler.text),
+                    ),
                   if (_passCtrler.text.isNotEmpty)
                     Column(
                       children: [
