@@ -26,6 +26,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   void _clear() {
     widget.ctrler.clear();
+    _empty = true;
     widget.refreshScreen();
   }
 
@@ -42,13 +43,13 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       controller: widget.ctrler,
       focusNode: widget.focus,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 3),
-        ),
+        // border: OutlineInputBorder(),
+        // enabledBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 1),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 3),
+        // ),
         filled: true,
         fillColor: Theme.of(context).backgroundColor,
         labelText: 'Password',
