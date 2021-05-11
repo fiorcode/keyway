@@ -14,19 +14,19 @@ class UsernameTextField extends StatelessWidget {
       controller: ctrler,
       focusNode: focus,
       decoration: InputDecoration(
-        counterText: '',
-        border: OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 3),
-        ),
+        // counterText: '',
+        // border: OutlineInputBorder(),
+        // enabledBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 1),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 3),
+        // ),
         filled: true,
         fillColor: Theme.of(context).backgroundColor,
         labelText: 'Username',
       ),
-      maxLength: 64,
+      maxLength: 128,
       onChanged: (_) => function(),
     );
   }
