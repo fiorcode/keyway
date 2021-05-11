@@ -13,7 +13,7 @@ class PinTextField extends StatefulWidget {
 
 class _PinTextFieldState extends State<PinTextField> {
   bool _empty = true;
-  bool _obscure = true;
+  bool _obscure = false;
 
   void _onChanged() {
     setState(() => _empty = widget.ctrler.text.isEmpty);
@@ -22,7 +22,11 @@ class _PinTextFieldState extends State<PinTextField> {
 
   void _obscureSwitch() => setState(() => _obscure = !_obscure);
 
-  void _clear() => setState(() => widget.ctrler.clear());
+  void _clear() => setState(() {
+        widget.ctrler.clear();
+        _empty = true;
+        widget.refreshScreen();
+      });
 
   @override
   void initState() {
@@ -37,15 +41,15 @@ class _PinTextFieldState extends State<PinTextField> {
       controller: widget.ctrler,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 3),
-        ),
-        filled: true,
-        fillColor: Theme.of(context).backgroundColor,
+        border: InputBorder.none,
+        // enabledBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 1),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 3),
+        // ),
+        // filled: true,
+        // fillColor: Theme.of(context).backgroundColor,
         hintText: 'PIN',
         prefixIcon: _empty
             ? null
