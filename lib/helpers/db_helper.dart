@@ -82,7 +82,7 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getDeletedItems() async =>
       (await DBHelper.database()).rawQuery('''SELECT *
         FROM $itemTable
-        WHERE status LIKE '%<DELETED>%' ''');
+        WHERE item_status LIKE '%<DELETED>%' ''');
 
   static Future<List<Map<String, dynamic>>> getDeletedItemsByTitle(
           String title) async =>
