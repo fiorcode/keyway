@@ -33,7 +33,11 @@ class DashboardScreen extends StatelessWidget {
               goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
             ),
             DashboardCard(
-              icon: Icon(Icons.cloud_upload, color: _primary, size: 64),
+              icon: Icon(
+                Icons.settings_backup_restore,
+                color: _primary,
+                size: 64,
+              ),
               title: Text(
                 'Backup',
                 style: TextStyle(color: _primary, fontSize: 20),
