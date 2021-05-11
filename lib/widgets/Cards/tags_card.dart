@@ -34,7 +34,7 @@ class _TagsCardState extends State<TagsCard> {
             child: ChoiceChip(
               backgroundColor: Colors.grey,
               selected: tag.selected,
-              selectedColor: Colors.white,
+              selectedColor: Colors.grey[200],
               onSelected: interact
                   ? (selected) => tagTapped(tag, selected)
                   : (selected) => null,
@@ -81,44 +81,65 @@ class _TagsCardState extends State<TagsCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          'Tags',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.grey[600],
-          ),
-        ),
-        Container(
-          height: 64.0,
-          child: FutureBuilder(
-              future: _getTags,
-              builder: (ctx, snap) {
-                switch (snap.connectionState) {
-                  case ConnectionState.done:
-                    return (snap.data as List<Tag>).length > 0
-                        ? Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Expanded(
-                                child: ListView(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 4.0),
-                                  scrollDirection: Axis.horizontal,
-                                  children: _tags(snap.data, true),
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  Icons.add_circle_outline_rounded,
-                                  size: 32,
-                                  color: Theme.of(context).primaryColor,
+    return Card(
+      color: Colors.white,
+      elevation: 4,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'Tags',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[600],
+              ),
+            ),
+            Container(
+              height: 64.0,
+              width: double.infinity,
+              child: FutureBuilder(
+                  future: _getTags,
+                  builder: (ctx, snap) {
+                    switch (snap.connectionState) {
+                      case ConnectionState.done:
+                        return (snap.data as List<Tag>).length > 0
+                            ? Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                    child: ListView(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 4.0),
+                                      scrollDirection: Axis.horizontal,
+                                      children: _tags(snap.data, true),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                      Icons.add_circle_outline_rounded,
+                                      size: 32,
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    onPressed: () => Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => TagAddScreen(),
+                                      ),
+                                    ).then((tag) => _onReturn(tag)),
+                                  ),
+                                ],
+                              )
+                            : TextButton.icon(
+                                icon: Icon(Icons.add_circle),
+                                label: Text(
+                                  'ADD NEW TAG',
+                                  style: TextStyle(fontSize: 16),
                                 ),
                                 onPressed: () => Navigator.push(
                                   context,
@@ -126,29 +147,16 @@ class _TagsCardState extends State<TagsCard> {
                                     builder: (context) => TagAddScreen(),
                                   ),
                                 ).then((tag) => _onReturn(tag)),
-                              ),
-                            ],
-                          )
-                        : TextButton.icon(
-                            icon: Icon(Icons.add_circle),
-                            label: Text(
-                              'ADD NEW TAG',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                            onPressed: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TagAddScreen(),
-                              ),
-                            ).then((tag) => _onReturn(tag)),
-                          );
-                    break;
-                  default:
-                    return Center(child: CircularProgressIndicator());
-                }
-              }),
+                              );
+                        break;
+                      default:
+                        return Center(child: CircularProgressIndicator());
+                    }
+                  }),
+            ),
+          ],
         ),
-      ],
+      ),
     );
   }
 }
