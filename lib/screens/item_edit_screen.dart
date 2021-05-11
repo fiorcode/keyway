@@ -14,7 +14,6 @@ import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
-import '../widgets/check_board.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/TextFields/password_text_field.dart';
 import '../widgets/TextFields/pin_text_field.dart';
@@ -23,6 +22,7 @@ import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/TextFields/long_text_text_field.dart';
 import '../widgets/Cards/item_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
+import '../widgets/Cards/strength_level_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
 import '../widgets/Cards/tags_card.dart';
@@ -55,9 +55,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   FocusNode _passFocusNode;
 
   bool _passwordRepeatedWarning = true;
-  bool _passwordChangeReminder = true;
   bool _pinRepeatedWarning = true;
-  bool _pinChangeReminder = true;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
@@ -289,7 +287,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     if (_item.password != null) {
       _passwordRepeatedWarning =
           _item.itemPassword.passwordStatus != 'NO-WARNING';
-      _passwordChangeReminder = _item.itemPassword.lapse >= 0;
     }
     _load();
     super.initState();
@@ -347,157 +344,181 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   PresetsWrap(item: _item, refreshScreen: _refreshScreen),
                   if (_item.username != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: UsernameTextField(
-                              _userCtrler,
-                              _refreshScreen,
-                              _userFocusNode,
-                            ),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: UsernameTextField(
+                                  _userCtrler,
+                                  _refreshScreen,
+                                  _userFocusNode,
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.list_rounded),
+                                onPressed: _userListSwitch,
+                              )
+                            ],
                           ),
-                          IconButton(
-                            icon: Icon(Icons.list_rounded),
-                            onPressed: _userListSwitch,
-                          )
-                        ],
+                        ),
                       ),
                     ),
                   if (_item.password != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: PasswordTextField(
-                        _passCtrler,
-                        _refreshScreen,
-                        _passFocusNode,
-                      ),
-                    ),
-                  if (_passCtrler.text.isNotEmpty &&
-                      !PasswordHelper.isStrong(_passCtrler.text))
-                    CheckBoard(password: _passCtrler.text),
-                  if (_passCtrler.text.isNotEmpty)
-                    Column(
-                      children: [
-                        if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(
-                              itemPass: _item.itemPassword),
-                        Card(
-                          color: Theme.of(context).backgroundColor,
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 3,
-                            ),
-                          ),
-                          child: Container(
-                            padding: const EdgeInsets.all(12.0),
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Switch(
-                                  activeColor: Colors.green,
-                                  value: _passwordRepeatedWarning,
-                                  onChanged: (value) => setState(() {
-                                    _passwordRepeatedWarning = value;
-                                    if (value)
-                                      _item.itemPassword.passwordStatus = '';
-                                    else
-                                      _item.itemPassword.passwordStatus =
-                                          'NO-WARNING';
-                                  }),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: PasswordTextField(
+                                      _passCtrler,
+                                      _refreshScreen,
+                                      _passFocusNode,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.bolt),
+                                    onPressed: () {},
+                                  ),
+                                ],
+                              ),
+                              if (_passCtrler.text.isNotEmpty)
+                                StrengthLevelCard(
+                                  PasswordHelper.strength(_passCtrler.text),
                                 ),
-                                Text(
-                                  'Password repeated warning',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[600],
+                              if (_passCtrler.text.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: PasswordChangeReminderCard(
+                                    itemPass: _item.itemPassword,
                                   ),
                                 ),
-                              ],
-                            ),
+                              if (_passCtrler.text.isNotEmpty)
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    FittedBox(
+                                      fit: BoxFit.fitWidth,
+                                      child: Text(
+                                        'Password repeated warning',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    Switch(
+                                      activeColor: Colors.green,
+                                      value: _passwordRepeatedWarning,
+                                      onChanged: (value) => setState(() {
+                                        _passwordRepeatedWarning = value;
+                                        if (value)
+                                          _item.itemPassword.passwordStatus =
+                                              '';
+                                        else
+                                          _item.itemPassword.passwordStatus =
+                                              'NO-WARNING';
+                                      }),
+                                    ),
+                                  ],
+                                ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   if (_item.pin != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: PinTextField(_pinCtrler, _refreshScreen),
-                    ),
-                  if (_item.pin != null && _pinCtrler.text.isNotEmpty)
-                    Column(
-                      children: [
-                        if (_pinChangeReminder)
-                          PinChangeReminderCard(pin: _item.pin),
-                        Card(
-                          color: Theme.of(context).backgroundColor,
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 3,
-                            ),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Switch(
-                                  activeColor: Colors.green,
-                                  value: _pinRepeatedWarning,
-                                  onChanged: (value) => setState(() {
-                                    _pinRepeatedWarning = value;
-                                    if (value)
-                                      _item.pin.pinStatus = '';
-                                    else
-                                      _item.pin.pinStatus = 'NO-WARNING';
-                                  }),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Column(
+                            children: [
+                              PinTextField(_pinCtrler, _refreshScreen),
+                              if (_pinCtrler.text.isNotEmpty)
+                                Padding(
+                                  padding: const EdgeInsets.only(top: 16),
+                                  child: PinChangeReminderCard(pin: _item.pin),
                                 ),
-                                Text(
-                                  'PIN repeated warning',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[600],
-                                  ),
+                              if (_pinCtrler.text.isNotEmpty)
+                                Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    FittedBox(
+                                      fit: BoxFit.fitWidth,
+                                      child: Text(
+                                        'PIN repeated warning',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
+                                    Switch(
+                                      activeColor: Colors.green,
+                                      value: _pinRepeatedWarning,
+                                      onChanged: (value) => setState(() {
+                                        _pinRepeatedWarning = value;
+                                        if (value)
+                                          _item.pin.pinStatus = '';
+                                        else
+                                          _item.pin.pinStatus = 'NO-WARNING';
+                                      }),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
+                            ],
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   if (_item.longText != null)
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Container(
-                        height: 192.0,
-                        child: LongTextTextField(_longCtrler),
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: Card(
+                        color: Colors.white,
+                        elevation: 4,
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Container(
+                            height: 192.0,
+                            child: LongTextTextField(_longCtrler),
+                          ),
+                        ),
                       ),
                     ),
-                  TagsCard(item: _item),
                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    child: ItemPreviewCard(_item),
+                    padding: const EdgeInsets.all(8.0),
+                    child: TagsCard(item: _item),
                   ),
-                  FloatingActionButton(
-                    backgroundColor: Colors.red,
-                    onPressed: _delete,
-                    child: Icon(
-                      Icons.delete_forever_rounded,
-                      color: Colors.white,
+                  ItemPreviewCard(_item),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                      backgroundColor: Colors.red,
+                      onPressed: _delete,
+                      child: Icon(
+                        Icons.delete_forever_rounded,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ],
