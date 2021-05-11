@@ -108,7 +108,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               obscureText: _obscurePass,
               onChanged: (_) => _checkPassword(),
             ),
-            StrengthLevelCard(_zxcvbnResult),
+            if (_zxcvbnResult != null) StrengthLevelCard(_zxcvbnResult),
             SizedBox(height: 32),
             TextField(
               autocorrect: false,
