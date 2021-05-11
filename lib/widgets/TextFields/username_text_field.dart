@@ -10,6 +10,7 @@ class UsernameTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      keyboardType: TextInputType.emailAddress,
       autocorrect: false,
       controller: ctrler,
       focusNode: focus,
@@ -22,12 +23,13 @@ class UsernameTextField extends StatelessWidget {
         // focusedBorder: OutlineInputBorder(
         //   borderSide: BorderSide(width: 3),
         // ),
-        filled: true,
-        fillColor: Theme.of(context).backgroundColor,
-        labelText: 'Username',
+        // filled: true,
+        // fillColor: Theme.of(context).backgroundColor,
+        hintText: 'Username',
       ),
       maxLength: 128,
       onChanged: (_) => function(),
+      textAlign: TextAlign.center,
     );
   }
 }
