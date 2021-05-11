@@ -19,15 +19,15 @@ class _LongTextTextFieldState extends State<LongTextTextField> {
       maxLength: 512,
       maxLines: 32,
       decoration: InputDecoration(
-        border: OutlineInputBorder(),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 1),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(width: 3),
-        ),
-        filled: true,
-        fillColor: Theme.of(context).backgroundColor,
+        border: InputBorder.none,
+        // enabledBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 1),
+        // ),
+        // focusedBorder: OutlineInputBorder(
+        //   borderSide: BorderSide(width: 3),
+        // ),
+        // filled: true,
+        // fillColor: Theme.of(context).backgroundColor,
         hintText: 'Note',
       ),
       onChanged: (_) {},
