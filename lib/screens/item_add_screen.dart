@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/strength_level_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -20,6 +19,7 @@ import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/TextFields/long_text_text_field.dart';
 import '../widgets/Cards/item_preview_card.dart';
 import '../widgets/Cards/user_list_card.dart';
+import '../widgets/Cards/strength_level_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
 import '../widgets/Cards/tags_card.dart';
@@ -48,7 +48,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   FocusNode _passFocusNode;
 
   bool _passwordRepeatedWarning = true;
-  bool _passwordChangeReminder = true;
   bool _pinRepeatedWarning = true;
   bool _pinChangeReminder = true;
 
@@ -207,86 +206,108 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   TitleTextField(_titleCtrler, _refreshScreen, _titleFocusNode),
                   PresetsWrap(item: _item, refreshScreen: _refreshScreen),
                   if (_item.username != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: UsernameTextField(
-                              _userCtrler,
-                              _refreshScreen,
-                              _userFocusNode,
+                    Card(
+                      color: Theme.of(context).backgroundColor,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(
+                          color: Colors.white,
+                          width: 3,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: UsernameTextField(
+                                _userCtrler,
+                                _refreshScreen,
+                                _userFocusNode,
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.list_rounded),
-                            onPressed: _userListSwitch,
-                          )
-                        ],
+                            IconButton(
+                              icon: Icon(Icons.list_rounded),
+                              onPressed: _userListSwitch,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   if (_item.password != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: PasswordTextField(
-                        _passCtrler,
-                        _refreshScreen,
-                        _passFocusNode,
+                    Card(
+                      color: Theme.of(context).backgroundColor,
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8.0),
+                        side: BorderSide(
+                          color: Colors.white,
+                          width: 3,
+                        ),
                       ),
-                    ),
-                  if (_passCtrler.text.isNotEmpty)
-                    StrengthLevelCard(
-                      PasswordHelper.strength(_passCtrler.text),
-                    ),
-                  if (_passCtrler.text.isNotEmpty)
-                    Column(
-                      children: [
-                        if (_passwordChangeReminder)
-                          PasswordChangeReminderCard(
-                              itemPass: _item.itemPassword),
-                        Card(
-                          color: Theme.of(context).backgroundColor,
-                          elevation: 8,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                            side: BorderSide(
-                              color: Theme.of(context).primaryColor,
-                              width: 3,
-                            ),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            width: double.infinity,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            Row(
                               children: [
-                                Switch(
-                                  activeColor: Colors.green,
-                                  value: _passwordRepeatedWarning,
-                                  onChanged: (value) => setState(() {
-                                    _passwordRepeatedWarning = value;
-                                    if (value)
-                                      _item.itemPassword.passwordStatus = '';
-                                    else
-                                      _item.itemPassword.passwordStatus =
-                                          'NO-WARNING';
-                                  }),
-                                ),
-                                Text(
-                                  'Password repeated warning',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[600],
+                                Expanded(
+                                  child: PasswordTextField(
+                                    _passCtrler,
+                                    _refreshScreen,
+                                    _passFocusNode,
                                   ),
+                                ),
+                                IconButton(
+                                  icon: Icon(Icons.bolt),
+                                  onPressed: () {},
                                 ),
                               ],
                             ),
-                          ),
+                            if (_passCtrler.text.isNotEmpty)
+                              StrengthLevelCard(
+                                PasswordHelper.strength(_passCtrler.text),
+                              ),
+                            if (_passCtrler.text.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: PasswordChangeReminderCard(
+                                  itemPass: _item.itemPassword,
+                                ),
+                              ),
+                            if (_passCtrler.text.isNotEmpty)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  FittedBox(
+                                    fit: BoxFit.fitWidth,
+                                    child: Text(
+                                      'Password repeated warning',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.grey[600],
+                                      ),
+                                    ),
+                                  ),
+                                  Switch(
+                                    activeColor: Colors.green,
+                                    value: _passwordRepeatedWarning,
+                                    onChanged: (value) => setState(() {
+                                      _passwordRepeatedWarning = value;
+                                      if (value)
+                                        _item.itemPassword.passwordStatus = '';
+                                      else
+                                        _item.itemPassword.passwordStatus =
+                                            'NO-WARNING';
+                                    }),
+                                  ),
+                                ],
+                              ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   if (_item.pin != null)
                     Padding(
