@@ -45,79 +45,73 @@ class _PasswordChangeReminderCardState
           crossAxisAlignment: WrapCrossAlignment.center,
           spacing: 12.0,
           children: [
-            if (!_custom)
-              ChoiceChip(
-                backgroundColor: Colors.grey,
-                selected: widget.itemPass.lapse == -1,
-                selectedColor: Colors.white,
-                onSelected: (selected) => selected
-                    ? setState(() {
-                        widget.itemPass.lapse = -1;
-                        _custom = false;
-                      })
-                    : null,
-                label: Text(
-                  'Never',
-                  style: TextStyle(
-                    color: widget.itemPass.lapse == -1
-                        ? Colors.grey
-                        : Colors.white,
-                    fontWeight:
-                        widget.itemPass.lapse == -1 ? FontWeight.bold : null,
-                  ),
+            ChoiceChip(
+              backgroundColor: Colors.grey,
+              selected: widget.itemPass.lapse == -1,
+              selectedColor: Colors.grey[200],
+              onSelected: (selected) => selected
+                  ? setState(() {
+                      widget.itemPass.lapse = -1;
+                      _custom = false;
+                    })
+                  : null,
+              label: Text(
+                'Never',
+                style: TextStyle(
+                  color:
+                      widget.itemPass.lapse == -1 ? Colors.grey : Colors.white,
+                  fontWeight:
+                      widget.itemPass.lapse == -1 ? FontWeight.bold : null,
                 ),
-                elevation: widget.itemPass.lapse == -1 ? 8.0 : 0.0,
               ),
-            if (!_custom)
-              ChoiceChip(
-                backgroundColor: Colors.grey,
-                selected: widget.itemPass.lapse == 96,
-                selectedColor: Colors.white,
-                onSelected: (selected) => selected
-                    ? setState(() {
-                        widget.itemPass.lapse = 96;
-                        _custom = false;
-                      })
-                    : null,
-                label: Text(
-                  '96 Days',
-                  style: TextStyle(
-                    color: widget.itemPass.lapse == 96
-                        ? Colors.grey
-                        : Colors.white,
-                    fontWeight:
-                        widget.itemPass.lapse == 96 ? FontWeight.bold : null,
-                  ),
+              elevation: widget.itemPass.lapse == -1 ? 8.0 : 0.0,
+            ),
+            ChoiceChip(
+              backgroundColor: Colors.grey,
+              selected: widget.itemPass.lapse == 96,
+              selectedColor: Colors.grey[200],
+              onSelected: (selected) => selected
+                  ? setState(() {
+                      widget.itemPass.lapse = 96;
+                      _custom = false;
+                    })
+                  : null,
+              label: Text(
+                '96 Days',
+                style: TextStyle(
+                  color:
+                      widget.itemPass.lapse == 96 ? Colors.grey : Colors.white,
+                  fontWeight:
+                      widget.itemPass.lapse == 96 ? FontWeight.bold : null,
                 ),
-                elevation: widget.itemPass.lapse == 96 ? 8.0 : 0.0,
               ),
-            if (!_custom)
-              ChoiceChip(
-                backgroundColor: Colors.grey,
-                selected: widget.itemPass.lapse == 320,
-                selectedColor: Colors.white,
-                onSelected: (selected) => selected
-                    ? setState(() {
-                        widget.itemPass.lapse = 320;
-                        _custom = false;
-                      })
-                    : null,
-                label: Text(
-                  '320 Days',
-                  style: TextStyle(
-                    color: widget.itemPass.lapse == 320
-                        ? Colors.grey
-                        : Colors.white,
-                    fontWeight:
-                        widget.itemPass.lapse == 320 ? FontWeight.bold : null,
-                  ),
+              elevation: widget.itemPass.lapse == 96 ? 8.0 : 0.0,
+            ),
+            ChoiceChip(
+              backgroundColor: Colors.grey,
+              selected: widget.itemPass.lapse == 320,
+              selectedColor: Colors.grey[200],
+              onSelected: (selected) => selected
+                  ? setState(() {
+                      widget.itemPass.lapse = 320;
+                      _custom = false;
+                    })
+                  : null,
+              label: Text(
+                '320 Days',
+                style: TextStyle(
+                  color:
+                      widget.itemPass.lapse == 320 ? Colors.grey : Colors.white,
+                  fontWeight:
+                      widget.itemPass.lapse == 320 ? FontWeight.bold : null,
                 ),
-                elevation: widget.itemPass.lapse == 320 ? 8.0 : 0.0,
               ),
+              elevation: widget.itemPass.lapse == 320 ? 8.0 : 0.0,
+            ),
             ChoiceChip(
               backgroundColor: Colors.grey,
               selected: _custom,
-              selectedColor: Colors.white,
+              selectedColor: Colors.grey[200],
               onSelected: (selected) => setState(() => _custom = selected),
               label: Text(
                 'Custom',
