@@ -25,7 +25,11 @@ class TitleTextField extends StatelessWidget {
       maxLength: 64,
       textAlign: TextAlign.center,
       textCapitalization: TextCapitalization.sentences,
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      style: TextStyle(
+        fontSize: 32,
+        fontWeight: FontWeight.bold,
+        color: Colors.grey[600],
+      ),
       onChanged: (_) => refreshScreen(),
     );
   }
