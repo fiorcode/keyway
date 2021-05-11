@@ -43,6 +43,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       controller: widget.ctrler,
       focusNode: widget.focus,
       decoration: InputDecoration(
+        hintText: 'Password',
         // border: OutlineInputBorder(),
         // enabledBorder: OutlineInputBorder(
         //   borderSide: BorderSide(width: 1),
@@ -50,9 +51,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
         // focusedBorder: OutlineInputBorder(
         //   borderSide: BorderSide(width: 3),
         // ),
-        filled: true,
-        fillColor: Theme.of(context).backgroundColor,
-        labelText: 'Password',
+        // filled: true,
+        // fillColor: Theme.of(context).backgroundColor,
+        // labelText: 'Password',
         prefixIcon: _empty
             ? null
             : InkWell(
@@ -71,6 +72,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       maxLength: 128,
       obscureText: _obscure,
       onChanged: (_) => _onChanged(),
+      textAlign: TextAlign.center,
     );
   }
 }
