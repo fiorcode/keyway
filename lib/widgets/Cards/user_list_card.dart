@@ -90,10 +90,10 @@ class _UserListCardState extends State<UserListCard> {
                                       child: TextButton(
                                         onPressed: () => widget.selectUsername(
                                             _cripto.doDecrypt(
-                                                e.username, e.usernameIV)),
+                                                e.usernameEnc, e.usernameIv)),
                                         child: Text(
                                           _cripto.doDecrypt(
-                                              e.username, e.usernameIV),
+                                              e.usernameEnc, e.usernameIv),
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),
