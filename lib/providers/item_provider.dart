@@ -214,7 +214,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<List<Username>> getUsers() async {
     Iterable<Username> _iter;
-    await DBHelper.getUsernames().then((data) {
+    await DBHelper.getData(DBHelper.usernameTable).then((data) {
       _iter = data.map((e) => Username.fromMap(e));
     });
     return _iter.toList();
