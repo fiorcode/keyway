@@ -194,6 +194,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                   return;
                 }
               } else {
+                _item.password = Password();
                 _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
                 _item.password.passwordEnc = _cripto.doCrypt(
                   _passCtrler.text,
@@ -222,6 +223,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       if (_pinCtrler.text.isNotEmpty) {
         if (widget.item.pin == null) {
           _item.pin = Pin();
+          _item.pin.pinDate = _date.toIso8601String();
           _item.pin.pinIv = e.IV.fromSecureRandom(16).base16;
           _item.pin.pinEnc = _cripto.doCrypt(
             _pinCtrler.text,
