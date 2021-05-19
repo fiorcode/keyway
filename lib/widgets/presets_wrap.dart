@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/item.dart';
 import '../models/username.dart';
 import '../models/password.dart';
+import '../models/item_password.dart';
 import '../models/pin.dart';
 import '../models/longText.dart';
 import '../models/device.dart';
@@ -21,6 +22,7 @@ class PresetsWrap extends StatelessWidget {
 
   void _passwordSwitch() {
     item.password = item.password != null ? null : Password();
+    item.itemPassword = item.itemPassword != null ? null : ItemPassword();
     refreshScreen();
   }
 
