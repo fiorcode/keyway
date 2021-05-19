@@ -183,14 +183,6 @@ class DBHelper {
         WHERE fk_item_id = $itemId''');
   }
 
-  static Future<List<Map<String, dynamic>>> getUsernames() async {
-    return (await DBHelper.database()).rawQuery('''SELECT 
-        $itemTable.username, $itemTable.username_iv
-        FROM $itemTable 
-        WHERE $itemTable.username <> ''
-        GROUP BY $itemTable.username''');
-  }
-
   static Future<List<Map<String, dynamic>>> getTags() async =>
       (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
 
