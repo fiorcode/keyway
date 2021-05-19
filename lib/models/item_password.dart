@@ -13,9 +13,7 @@ class ItemPassword {
     this.lapse = 320,
     this.passwordStatus = '',
     this.dateTime,
-  }) {
-    this.dateTime = DateTime.now(); //FIX THIS
-  }
+  });
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
