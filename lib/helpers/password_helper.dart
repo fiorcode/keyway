@@ -1,4 +1,5 @@
 import 'package:zxcvbn/zxcvbn.dart';
+import '../models/password.dart';
 
 class PasswordHelper {
   static bool minLong(String s) => s.length > 5;
@@ -16,9 +17,10 @@ class PasswordHelper {
       hasNum(s) &&
       hasSpec(s);
 
-  static ZxcvbnResult strength(String s) {
+  static ZxcvbnResult strength(String s, {Password password}) {
     if (s.isEmpty) return null;
     var _evaluation = Zxcvbn().evaluate(s);
+    if (password != null) password.strength = _evaluation.score.toString();
     return ZxcvbnResult(
       score: _evaluation.score.toInt(),
       suggestions: _evaluation.feedback.suggestions,
