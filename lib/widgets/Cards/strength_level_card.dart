@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../helpers/password_helper.dart';
 
 class StrengthLevelCard extends StatelessWidget {
