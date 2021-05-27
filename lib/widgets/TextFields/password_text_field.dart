@@ -13,7 +13,7 @@ class PasswordTextField extends StatefulWidget {
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
   bool _empty = true;
-  bool _obscure = true;
+  bool _obscure = false;
 
   void _onChanged() {
     setState(() => _empty = widget.ctrler.text.isEmpty);
