@@ -204,7 +204,9 @@ class DBHelper {
       FROM $itemTable 
       INNER JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id 
       INNER JOIN $passwordTable ON $itemPasswordTable.fk_password_id = $passwordTable.password_id 
-      WHERE $itemPasswordTable.fk_item_id = ?''',
+      WHERE $itemPasswordTable.fk_item_id = ? 
+      ORDER BY $itemPasswordTable.date DESC 
+      LIMIT -1 OFFSET 1''',
       [itemId],
     );
     return _list;
