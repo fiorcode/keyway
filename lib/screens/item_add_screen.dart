@@ -91,7 +91,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
         _item.password.passwordEnc =
             _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
-        _item.password.strength = '';
         _item.itemPassword.date = _item.date;
         _item.itemPassword.passwordStatus = '';
         _item.itemPassword.fkPasswordId =
@@ -257,7 +256,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               ),
                               if (_passCtrler.text.isNotEmpty)
                                 StrengthLevelCard(
-                                  PasswordHelper.strength(_passCtrler.text),
+                                  PasswordHelper.strength(
+                                    _passCtrler.text,
+                                    password: _item.password,
+                                  ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(
