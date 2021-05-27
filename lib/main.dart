@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'screens/item_deleted_view_screen.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
 import 'screens/items_with_old_passwords_screen.dart';
@@ -53,6 +54,7 @@ class MyApp extends StatelessWidget {
           ItemAddScreen.routeName: (ctx) => ItemAddScreen(),
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
+          ItemDeletedViewScreen.routeName: (ctx) => ItemDeletedViewScreen(),
           BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemsWithOldPasswordsScreen.routeName: (ctx) =>
