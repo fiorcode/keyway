@@ -274,8 +274,12 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   }
 
   void _delete() async {
-    _item.itemStatus = _item.itemStatus + '<DELETED>';
-    _items.updateItem(_item).then((_) => Navigator.of(context).pop());
+    bool _warning = await WarningHelper.deleteItem(context);
+    _warning = _warning == null ? false : _warning;
+    if (_warning) {
+      _item.itemStatus = _item.itemStatus + '<DELETED>';
+      _items.updateItem(_item).then((_) => Navigator.of(context).pop());
+    }
   }
 
   @override
