@@ -60,7 +60,13 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   bool _viewUsersList = false;
   bool _unlocking = false;
 
-  void _refreshScreen() => setState(() => _item.title = _titleCtrler.text);
+  void _refreshScreen() => setState(() {
+        _item.title = _titleCtrler.text;
+        if (_item.username == null) _userCtrler.clear();
+        if (_item.password == null) _passCtrler.clear();
+        if (_item.pin == null) _pinCtrler.clear();
+        if (_item.longText == null) _longCtrler.clear();
+      });
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
