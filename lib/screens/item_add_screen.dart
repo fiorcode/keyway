@@ -52,6 +52,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   bool _viewUsersList = false;
   bool _unlocking = false;
+  bool _loadingRandomPass = false;
 
   void _refreshScreen() => setState(() => _item.title = _titleCtrler.text);
 
@@ -139,6 +140,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         return true;
     }
     return false;
+  }
+
+  Future<void> _loadRandomPassword() async {
+    setState(() => _loadingRandomPass = true);
+    PasswordHelper.dicePassword().then((p) {
+      _passCtrler.text = p;
+      setState(() => _loadingRandomPass = false);
+    });
   }
 
   @override
@@ -248,10 +257,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                       _passFocusNode,
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.bolt),
-                                    onPressed: () {},
-                                  ),
+                                  _loadingRandomPass
+                                      ? CircularProgressIndicator()
+                                      : IconButton(
+                                          icon: Icon(Icons.bolt),
+                                          onPressed: _loadRandomPassword,
+                                        ),
                                 ],
                               ),
                               if (_passCtrler.text.isNotEmpty)
