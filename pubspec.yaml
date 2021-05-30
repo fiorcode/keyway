@@ -55,6 +55,8 @@ flutter:
     - assets/google_logo.png
     - assets/drive_logo.png
     - assets/empty.png
+    - assets/word_list_en.json
+
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
