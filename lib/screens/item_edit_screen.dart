@@ -126,23 +126,34 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       DateTime _date = DateTime.now().toUtc();
 
       if (_userCtrler.text.isNotEmpty) {
-        if (widget.item.username == null) {
-          _item.username = Username();
-          _item.username.usernameIv = e.IV.fromSecureRandom(16).base16;
-          _item.username.usernameEnc = _cripto.doCrypt(
-            _userCtrler.text,
-            _item.username.usernameIv,
-          );
-          _item.fkUsernameId = await _items.insertUsername(_item.username);
+        List<Username> _users = await _items.getUsers();
+        Username _u = _cripto.searchUsername(_users, _userCtrler.text);
+        if (_u != null) {
+          _item.fkUsernameId = _u.usernameId;
         } else {
-          _item.username.usernameEnc = _cripto.doCrypt(
-            _userCtrler.text,
-            _item.username.usernameIv,
-          );
-          if (widget.item.username.usernameEnc != _item.username.usernameEnc) {
-            _items.updateUsername(_item.username);
-          }
+          _u = Username();
+          _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+          _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
+          _item.fkUsernameId = await _items.insertUsername(_u);
         }
+
+        // if (widget.item.username == null) {
+        //   _item.username = Username();
+        //   _item.username.usernameIv = e.IV.fromSecureRandom(16).base16;
+        //   _item.username.usernameEnc = _cripto.doCrypt(
+        //     _userCtrler.text,
+        //     _item.username.usernameIv,
+        //   );
+        //   _item.fkUsernameId = await _items.insertUsername(_item.username);
+        // } else {
+        //   _item.username.usernameEnc = _cripto.doCrypt(
+        //     _userCtrler.text,
+        //     _item.username.usernameIv,
+        //   );
+        //   if (widget.item.username.usernameEnc != _item.username.usernameEnc) {
+        //     _items.updateUsername(_item.username);
+        //   }
+        // }
       } else {
         _item.fkUsernameId = null;
         _item.username = null;
@@ -165,7 +176,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                 _item.itemPassword.passwordStatus = 'REPEATED';
                 _item.itemPassword.fkItemId = _item.itemId;
                 await _items.insertItemPassword(_item.itemPassword);
-                // await _items.refreshItemPasswordStatus(_p.passwordId);
               } else {
                 return;
               }
