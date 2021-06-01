@@ -80,20 +80,32 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       _item.date = DateTime.now().toIso8601String();
 
       if (_userCtrler.text.isNotEmpty) {
-        Username _u = Username();
-        _u.usernameIv = e.IV.fromSecureRandom(16).base16;
-        _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
-        _item.fkUsernameId = await _items.insertUsername(_u);
+        List<Username> _users = await _items.getUsers();
+        Username _u = _cripto.searchUsername(_users, _userCtrler.text);
+        if (_u != null) {
+          _item.fkUsernameId = _u.usernameId;
+        } else {
+          _u = _cripto.createUsername(_userCtrler.text);
+          _item.fkUsernameId = await _items.insertUsername(_u);
+        }
       }
 
       if (_passCtrler.text.isNotEmpty) {
         _item.password.hash = _cripto.doHash(_passCtrler.text);
-        if (_passwordRepeatedWarning) if (await _checkPassStatus()) return;
+        if (_passwordRepeatedWarning) {
+          if (await _items.passUsed(_item.password)) {
+            bool _warning = await WarningHelper.repeat(context, 'Password');
+            _warning = _warning == null ? false : _warning;
+            if (_warning)
+              _item.itemPassword.passwordStatus = 'REPEATED';
+            else
+              return;
+          }
+        }
         _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
         _item.password.passwordEnc =
             _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
         _item.itemPassword.date = _item.date;
-        _item.itemPassword.passwordStatus = '';
         _item.itemPassword.fkPasswordId =
             await _items.insertPassword(_item.password);
       }
@@ -130,34 +142,20 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     }
   }
 
-  Future<bool> _checkPassStatus() async {
-    if (await _items.passUsed(_item.password)) {
-      bool _warning = await WarningHelper.repeat(context, 'Password');
-      _warning = _warning == null ? false : _warning;
-      if (_warning)
-        _item.itemPassword.passwordStatus = 'REPEATED';
-      else
-        return true;
-    }
-    return false;
-  }
-
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
-    PasswordHelper.dicePassword().then((p) {
-      _passCtrler.text = p;
-      setState(() => _loadingRandomPass = false);
-    });
+    PasswordHelper.dicePassword().then((p) => _passCtrler.text = p);
+    setState(() => _loadingRandomPass = false);
   }
 
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
+    _item = Item.factory();
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
     _passFocusNode = FocusNode();
-    _item = Item.factory();
     _titleFocusNode.requestFocus();
     super.initState();
   }
