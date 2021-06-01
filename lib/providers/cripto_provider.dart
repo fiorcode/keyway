@@ -8,6 +8,8 @@ import 'package:encrypt/encrypt.dart' as e;
 
 import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/models/user.dart';
+import 'package:keyway/models/username.dart';
+import 'package:keyway/models/password.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
@@ -101,6 +103,30 @@ class CriptoProvider with ChangeNotifier {
   String doDecrypt(String value, String iv) {
     if (value.isEmpty || value == null) return '';
     return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
+  }
+
+  Username createUsername(String u) {
+    if (u.isEmpty) return null;
+    Username _u = Username();
+    _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+    _u.usernameEnc = doCrypt(u, _u.usernameIv);
+    return _u;
+  }
+
+  Username searchUsername(List<Username> usernames, String username) {
+    if (usernames.isEmpty) return null;
+    usernames.forEach((u) {
+      if (doDecrypt(u.usernameEnc, u.usernameIv) == username) return u;
+    });
+    return null;
+  }
+
+  createPassword(Password password, String p) {
+    if (p.isEmpty) return;
+    if (password == null) password = Password();
+    password.hash = doHash(p);
+    password.passwordIv = e.IV.fromSecureRandom(16).base16;
+    password.passwordEnc = doCrypt(p, password.passwordIv);
   }
 
   void dispose() {
