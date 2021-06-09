@@ -272,8 +272,8 @@ class DBHelper {
     hash TEXT)''';
 
   static const createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
-    fk_item_id,
-    fk_password_id,
+    fk_item_id INTEGER,
+    fk_password_id INTEGER,
     date TEXT,
     lapse INTEGER,
     password_status TEXT,
