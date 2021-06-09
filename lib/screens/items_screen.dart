@@ -79,9 +79,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
-        leading: _cripto.locked
-            ? null
-            : IconButton(icon: Icon(Icons.menu), onPressed: _goToDashboard),
+        leading: IconButton(icon: Icon(Icons.menu), onPressed: _goToDashboard),
         title: _cripto.locked
             ? IconButton(
                 icon: Icon(
@@ -128,9 +126,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                   }
                 },
               ),
-        actions: _cripto.locked
-            ? null
-            : [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
+        actions: [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
       ),
       body: FutureBuilder(
         future: _getItemsAsync,
