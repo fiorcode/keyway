@@ -22,8 +22,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   ZxcvbnResult _zxcvbnResult;
 
-  bool _obscurePass = true;
-  bool _obscureConfirm = true;
+  bool _obscurePass = false;
+  bool _obscureConfirm = false;
+  bool _loadingRandomPass = false;
 
   bool _equals = false;
 
@@ -45,6 +46,15 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   _obscurePassSwitch() => setState(() => _obscurePass = !_obscurePass);
 
   _obscureConfirmSwitch() => setState(() => _obscureConfirm = !_obscureConfirm);
+
+  Future<void> _loadRandomPassword() async {
+    setState(() => _loadingRandomPass = true);
+    PasswordHelper.dicePassword().then((p) {
+      _passCtrler.text = p;
+      _zxcvbnResult = PasswordHelper.strength(_passCtrler.text);
+      setState(() => _loadingRandomPass = false);
+    });
+  }
 
   _setPassword() async {
     try {
@@ -87,11 +97,12 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             SizedBox(height: 48),
             TextField(
               autocorrect: false,
+              enableInteractiveSelection: false,
               controller: _passCtrler,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 filled: true,
-                labelText: 'Password',
+                labelText: 'Master password',
                 prefixIcon: _passCtrler.text.isNotEmpty
                     ? InkWell(
                         child: Icon(Icons.visibility),
@@ -103,12 +114,21 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         child: Icon(Icons.clear),
                         onTap: _clear,
                       )
-                    : null,
+                    : _loadingRandomPass
+                        ? CircularProgressIndicator()
+                        : IconButton(
+                            icon: Icon(Icons.bolt),
+                            onPressed: _loadRandomPassword,
+                          ),
               ),
               obscureText: _obscurePass,
               onChanged: (_) => _checkPassword(),
             ),
-            if (_zxcvbnResult != null) StrengthLevelCard(_zxcvbnResult),
+            if (_zxcvbnResult != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: StrengthLevelCard(_zxcvbnResult),
+              ),
             SizedBox(height: 32),
             TextField(
               autocorrect: false,
@@ -116,7 +136,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 filled: true,
-                labelText: 'Confirm Password',
+                labelText: 'Confirm master password',
                 prefixIcon: _confirmCtrler.text.isNotEmpty
                     ? InkWell(
                         child: Icon(Icons.visibility),
