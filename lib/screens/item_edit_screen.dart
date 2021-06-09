@@ -289,6 +289,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     }
   }
 
+  //TODO: Chequear que se eliminen las notas
   void _delete() async {
     bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
