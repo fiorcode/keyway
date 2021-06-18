@@ -11,6 +11,7 @@ class DBHelper {
   static const String passwordTable = "password";
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
+  static const String adressTable = "adress";
   static const String deviceTable = "device";
   static const String itemPasswordTable = "item_password";
   static const String tagTable = "tag";
@@ -253,16 +254,11 @@ class DBHelper {
     fk_username_id INTEGER,
     fk_pin_id INTEGER,
     fk_long_text_id INTEGER,
-    fk_device_id INTEGER,
+    fk_adress_id INTEGER,
     FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
     FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
     FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
-    FOREIGN KEY (fk_device_id) REFERENCES $deviceTable (device_id))''';
-
-  static const createUsernameTable = '''CREATE TABLE $usernameTable(
-    username_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username_enc TEXT,
-    username_iv TEXT)''';
+    FOREIGN KEY (fk_adress_id) REFERENCES $adressTable (adress_id))''';
 
   static const createPasswordTable = '''CREATE TABLE $passwordTable(
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -274,12 +270,18 @@ class DBHelper {
   static const createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
     fk_item_id INTEGER,
     fk_password_id INTEGER,
-    date TEXT,
     lapse INTEGER,
     password_status TEXT,
-    PRIMARY KEY (fk_item_id, fk_password_id)
+    date TEXT,
+    PRIMARY KEY (fk_item_id, fk_password_id),
     FOREIGN KEY (fk_item_id) REFERENCES $itemTable (item_id),
     FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id))''';
+
+  static const createUsernameTable = '''CREATE TABLE $usernameTable(
+    username_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username_enc TEXT,
+    username_iv TEXT,
+    username_hash TEXT)''';
 
   static const createPinTable = '''CREATE TABLE $pinTable(
     pin_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -293,6 +295,14 @@ class DBHelper {
     long_text_id INTEGER PRIMARY KEY AUTOINCREMENT,
     long_text_enc TEXT,
     long_text_iv TEXT)''';
+
+  static const createAdressTable = '''CREATE TABLE $adressTable(
+    adress_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    protocol TEXT,
+    value TEXT,
+    port INTEGER,
+    fk_device_id INTEGER,
+    FOREIGN KEY (fk_device_id) REFERENCES $deviceTable (device_id))''';
 
   static const createDeviceTable = '''CREATE TABLE $deviceTable(
     device_id INTEGER PRIMARY KEY AUTOINCREMENT,
