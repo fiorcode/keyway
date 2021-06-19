@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/adress.dart';
 
 import '../models/item.dart';
 import '../models/username.dart';
 import '../models/password.dart';
 import '../models/item_password.dart';
 import '../models/pin.dart';
-import '../models/longText.dart';
-import '../models/device.dart';
+import '../models/long_text.dart';
+import '../models/adress.dart';
 
 class PresetsWrap extends StatelessWidget {
   const PresetsWrap({Key key, @required this.item, this.refreshScreen})
@@ -37,7 +38,7 @@ class PresetsWrap extends StatelessWidget {
   }
 
   void _deviceSwitch() {
-    item.device = item.device != null ? null : Device();
+    item.adress = item.adress != null ? null : Adress();
     refreshScreen();
   }
 
@@ -117,13 +118,13 @@ class PresetsWrap extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
                 backgroundColor:
-                    item.device != null ? Colors.white : Colors.grey,
+                    item.adress != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.router,
-                  size: item.device != null ? 32 : 24,
-                  color: item.device != null ? Colors.grey : Colors.white,
+                  size: item.adress != null ? 32 : 24,
+                  color: item.adress != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.device != null ? 8 : 0,
+                elevation: item.adress != null ? 8 : 0,
                 heroTag: null,
                 onPressed: _deviceSwitch,
               ),
