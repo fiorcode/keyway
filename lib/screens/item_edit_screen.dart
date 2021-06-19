@@ -9,7 +9,7 @@ import '../models/username.dart';
 import '../models/password.dart';
 import '../models/item_password.dart';
 import '../models/pin.dart';
-import '../models/longText.dart';
+import '../models/long_text.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
