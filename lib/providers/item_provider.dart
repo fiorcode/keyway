@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/item_password.dart';
 
 // import 'dart:math';
 // import 'package:encrypt/encrypt.dart' as e;
@@ -9,12 +8,13 @@ import '../helpers/db_helper.dart';
 
 import '../models/device.dart';
 import '../models/item.dart';
-import '../models/long_text.dart';
+import '../models/item_password.dart';
 import '../models/password.dart';
-import '../models/pin.dart';
 import '../models/username.dart';
+import '../models/pin.dart';
+import '../models/long_text.dart';
 import '../models/tag.dart';
-import '../models/adress.dart';
+import '../models/address.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
@@ -22,10 +22,18 @@ class ItemProvider with ChangeNotifier {
   List<Item> _itemAndOldPasswords = [];
   List<Item> _itemsDeleted = [];
 
+  List<Item> _allItems = [];
+  List<ItemPassword> _itemsPasswords = [];
+  List<Password> _passwords = [];
+
   List<Item> get items => [..._items];
   List<Item> get itemsWithOldPasswords => [..._itemsWithOldPasswords];
   List<Item> get itemAndOldPasswords => [..._itemAndOldPasswords];
   List<Item> get itemsDeleted => [..._itemsDeleted];
+
+  List<Item> get allItems => [..._allItems];
+  List<ItemPassword> get itemPasswords => [..._itemsPasswords];
+  List<Password> get passwords => [..._passwords];
 
   Future<void> fetchItems(String title) async {
     Iterable<Item> _iter;
@@ -40,6 +48,39 @@ class ItemProvider with ChangeNotifier {
     }
     _items.addAll(_iter.toList());
     await _buildItems();
+  }
+
+  Future<void> fetchAllItems(String title) async {
+    Iterable<Item> _iter;
+    _allItems.clear();
+    if (title.isEmpty) {
+      await DBHelper.getData(DBHelper.itemTable).then((data) {
+        _iter = data.map((i) => Item.fromMap(i));
+      });
+    } else {
+      await DBHelper.getData(DBHelper.itemTable)
+          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
+    }
+    _allItems.addAll(_iter.toList());
+    await _buildAllItems();
+  }
+
+  Future<void> fetchItemPasswords() async {
+    Iterable<ItemPassword> _iter;
+    _itemsPasswords.clear();
+    await DBHelper.getData(DBHelper.itemPasswordTable).then((data) {
+      _iter = data.map((i) => ItemPassword.fromMap(i));
+    });
+    _itemsPasswords.addAll(_iter.toList());
+  }
+
+  Future<void> fetchPasswords() async {
+    Iterable<Password> _iter;
+    _itemsPasswords.clear();
+    await DBHelper.getData(DBHelper.passwordTable).then((data) {
+      _iter = data.map((i) => Password.fromMap(i));
+    });
+    _passwords.addAll(_iter.toList());
   }
 
   Future<void> _buildItems() async {
@@ -59,8 +100,31 @@ class ItemProvider with ChangeNotifier {
       if (i.fkLongTextId != null) {
         i.longText = await getLongText(i.fkLongTextId);
       }
-      if (i.fkAdressId != null) {
-        i.adress = await getAdress(i.fkAdressId);
+      if (i.fkAddressId != null) {
+        i.address = await getAdress(i.fkAddressId);
+      }
+    });
+  }
+
+  Future<void> _buildAllItems() async {
+    _allItems.forEach((i) async {
+      if (i.fkUsernameId != null) {
+        i.username = await getUsername(i.fkUsernameId);
+      }
+      await getLastItemPassword(i.itemId).then((_ips) async {
+        if (_ips.isNotEmpty) {
+          i.itemPassword = _ips.first;
+          i.password = await getPassword(_ips.first.fkPasswordId);
+        }
+      });
+      if (i.fkPinId != null) {
+        i.pin = await getPin(i.fkPinId);
+      }
+      if (i.fkLongTextId != null) {
+        i.longText = await getLongText(i.fkLongTextId);
+      }
+      if (i.fkAddressId != null) {
+        i.address = await getAdress(i.fkAddressId);
       }
     });
   }
@@ -117,8 +181,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkLongTextId != null) {
         i.longText = await getLongText(i.fkLongTextId);
       }
-      if (i.fkAdressId != null) {
-        i.adress = await getAdress(i.fkAdressId);
+      if (i.fkAddressId != null) {
+        i.address = await getAdress(i.fkAddressId);
       }
     });
   }
@@ -208,9 +272,9 @@ class ItemProvider with ChangeNotifier {
     return LongText.fromMap(_lt.first);
   }
 
-  Future<Adress> getAdress(int id) async {
+  Future<Address> getAdress(int id) async {
     List<Map<String, dynamic>> _a = await DBHelper.getAdressById(id);
-    return Adress.fromMap(_a.first);
+    return Address.fromMap(_a.first);
   }
 
   Future<Device> getDevice(int id) async {
