@@ -6,7 +6,7 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
 import '../models/username.dart';
-import '../models/longText.dart';
+import '../models/long_text.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -125,7 +125,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.fkLongTextId = await _items.insertLongText(_long);
       }
 
-      if (_item.device != null) {}
+      if (_item.adress != null) {}
 
       _items.insertItem(_item).then((itemId) {
         if (_item.password != null) {
