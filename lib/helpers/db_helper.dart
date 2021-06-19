@@ -12,7 +12,7 @@ class DBHelper {
   static const String usernameTable = "username";
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
-  static const String adressTable = "adress";
+  static const String addressTable = "address";
   static const String deviceTable = "device";
   static const String cpe23uriTable = "cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
@@ -167,8 +167,8 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getAdressById(int id) async {
     return (await DBHelper.database()).query(
-      DBHelper.adressTable,
-      where: 'adress_id = ?',
+      DBHelper.addressTable,
+      where: 'address_id = ?',
       whereArgs: [id],
     );
   }
@@ -266,11 +266,11 @@ class DBHelper {
     fk_username_id INTEGER,
     fk_pin_id INTEGER,
     fk_long_text_id INTEGER,
-    fk_adress_id INTEGER,
+    fk_address_id INTEGER,
     FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
     FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
     FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
-    FOREIGN KEY (fk_adress_id) REFERENCES $adressTable (adress_id))''';
+    FOREIGN KEY (fk_address_id) REFERENCES $addressTable (address_id))''';
 
   static const createPasswordTable = '''CREATE TABLE $passwordTable(
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -308,8 +308,8 @@ class DBHelper {
     long_text_enc TEXT,
     long_text_iv TEXT)''';
 
-  static const createAdressTable = '''CREATE TABLE $adressTable(
-    adress_id INTEGER PRIMARY KEY AUTOINCREMENT,
+  static const createAddressTable = '''CREATE TABLE $addressTable(
+    address_id INTEGER PRIMARY KEY AUTOINCREMENT,
     protocol TEXT,
     value TEXT,
     port INTEGER,
