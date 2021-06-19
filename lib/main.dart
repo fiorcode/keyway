@@ -21,6 +21,9 @@ import 'screens/data_screen.dart';
 import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
+import 'package:keyway/screens/all_items_screen.dart';
+import 'package:keyway/screens/item_password_screen.dart';
+import 'package:keyway/screens/passwords_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -63,6 +66,9 @@ class MyApp extends StatelessWidget {
           ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
+          AllItemsListScreen.routeName: (ctx) => AllItemsListScreen(),
+          ItemPasswordListScreen.routeName: (ctx) => ItemPasswordListScreen(),
+          PasswordsListScreen.routeName: (ctx) => PasswordsListScreen(),
         },
       ),
     );
