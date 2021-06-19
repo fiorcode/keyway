@@ -1,9 +1,9 @@
-import 'package:keyway/models/device.dart';
+import 'package:keyway/models/username.dart';
 import 'package:keyway/models/item_password.dart';
-import 'package:keyway/models/longText.dart';
 import 'package:keyway/models/password.dart';
 import 'package:keyway/models/pin.dart';
-import 'package:keyway/models/username.dart';
+import 'package:keyway/models/long_text.dart';
+import 'package:keyway/models/adress.dart';
 
 class Item {
   int itemId;
@@ -17,14 +17,14 @@ class Item {
   int fkUsernameId;
   int fkPinId;
   int fkLongTextId;
-  int fkDeviceId;
+  int fkAdressId;
 
   Username username;
   Password password;
   ItemPassword itemPassword;
   Pin pin;
   LongText longText;
-  Device device;
+  Adress adress;
 
   Item.factory() {
     this.title = '';
@@ -51,13 +51,13 @@ class Item {
     this.fkUsernameId,
     this.fkPinId,
     this.fkLongTextId,
-    this.fkDeviceId,
+    this.fkAdressId,
     this.username,
     this.password,
     this.itemPassword,
     this.pin,
     this.longText,
-    this.device,
+    this.adress,
   });
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -72,7 +72,7 @@ class Item {
     fkUsernameId = map['fk_username_id'];
     fkPinId = map['fk_pin_id'];
     fkLongTextId = map['fk_long_text_id'];
-    fkDeviceId = map['fk_device_id'];
+    fkAdressId = map['fk_adress_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -87,7 +87,7 @@ class Item {
       'fk_username_id': fkUsernameId,
       'fk_pin_id': fkPinId,
       'fk_long_text_id': fkLongTextId,
-      'fk_device_id': fkDeviceId,
+      'fk_adress_id': fkAdressId,
     };
     if (itemId != null) map['item_id'] = itemId;
     return map;
@@ -106,14 +106,14 @@ class Item {
       fkUsernameId: this.fkUsernameId,
       fkPinId: this.fkPinId,
       fkLongTextId: this.fkLongTextId,
-      fkDeviceId: this.fkDeviceId,
+      fkAdressId: this.fkAdressId,
       username: this.username != null ? this.username.clone() : null,
       password: this.password != null ? this.password.clone() : null,
       itemPassword:
           this.itemPassword != null ? this.itemPassword.clone() : null,
       pin: this.pin != null ? this.pin.clone() : null,
       longText: this.longText != null ? this.longText.clone() : null,
-      device: this.device != null ? this.device.clone() : null,
+      adress: this.adress != null ? this.adress.clone() : null,
     );
     return _i;
   }
