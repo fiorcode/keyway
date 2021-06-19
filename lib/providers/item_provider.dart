@@ -9,11 +9,12 @@ import '../helpers/db_helper.dart';
 
 import '../models/device.dart';
 import '../models/item.dart';
-import '../models/longText.dart';
+import '../models/long_text.dart';
 import '../models/password.dart';
 import '../models/pin.dart';
 import '../models/username.dart';
 import '../models/tag.dart';
+import '../models/adress.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
@@ -58,8 +59,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkLongTextId != null) {
         i.longText = await getLongText(i.fkLongTextId);
       }
-      if (i.fkDeviceId != null) {
-        i.device = await getDevice(i.fkDeviceId);
+      if (i.fkAdressId != null) {
+        i.adress = await getAdress(i.fkAdressId);
       }
     });
   }
@@ -116,8 +117,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkLongTextId != null) {
         i.longText = await getLongText(i.fkLongTextId);
       }
-      if (i.fkDeviceId != null) {
-        i.device = await getDevice(i.fkDeviceId);
+      if (i.fkAdressId != null) {
+        i.adress = await getAdress(i.fkAdressId);
       }
     });
   }
@@ -205,6 +206,11 @@ class ItemProvider with ChangeNotifier {
   Future<LongText> getLongText(int id) async {
     List<Map<String, dynamic>> _lt = await DBHelper.getLongTextById(id);
     return LongText.fromMap(_lt.first);
+  }
+
+  Future<Adress> getAdress(int id) async {
+    List<Map<String, dynamic>> _a = await DBHelper.getAdressById(id);
+    return Adress.fromMap(_a.first);
   }
 
   Future<Device> getDevice(int id) async {
