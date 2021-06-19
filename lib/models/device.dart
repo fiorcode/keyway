@@ -5,6 +5,7 @@ class Device {
   String product;
   String version;
   String updateCode;
+  int fkCpe23uriId;
 
   Device({
     this.deviceId,
@@ -13,6 +14,7 @@ class Device {
     this.product = '',
     this.version = '',
     this.updateCode = '',
+    this.fkCpe23uriId,
   });
 
   Device.fromMap(Map<String, dynamic> map) {
@@ -22,6 +24,7 @@ class Device {
     product = map['product'];
     version = map['version'];
     updateCode = map['update_code'];
+    fkCpe23uriId = map['fk_cpe23uri_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -31,6 +34,7 @@ class Device {
       'product': product,
       'version': version,
       'update_code': updateCode,
+      'fk_cpe23uri_id': fkCpe23uriId,
     };
     if (deviceId != null) map['device_id'] = deviceId;
     return map;
@@ -43,5 +47,6 @@ class Device {
         product: this.product,
         version: this.version,
         updateCode: this.updateCode,
+        fkCpe23uriId: this.fkCpe23uriId,
       );
 }
