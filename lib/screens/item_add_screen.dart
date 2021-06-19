@@ -125,7 +125,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.fkLongTextId = await _items.insertLongText(_long);
       }
 
-      if (_item.adress != null) {}
+      if (_item.address != null) {}
 
       _items.insertItem(_item).then((itemId) {
         if (_item.password != null) {
