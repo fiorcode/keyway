@@ -7,13 +7,17 @@ import 'package:sqflite/sqlite_api.dart';
 class DBHelper {
   static const String userTable = "user";
   static const String itemTable = "item";
-  static const String usernameTable = "username";
+  static const String itemPasswordTable = "item_password";
   static const String passwordTable = "password";
+  static const String usernameTable = "username";
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
   static const String adressTable = "adress";
   static const String deviceTable = "device";
-  static const String itemPasswordTable = "item_password";
+  static const String cpe23uriTable = "cpe23uri";
+  static const String cpe23uriCveTable = "cpe23uri_cve";
+  static const String cveTable = "cve";
+  static const String cveImpactV3Table = "cve_impact_v3";
   static const String tagTable = "tag";
 
   static Future<Database> database() async {
@@ -157,6 +161,14 @@ class DBHelper {
     return (await DBHelper.database()).query(
       DBHelper.longTextTable,
       where: 'long_text_id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  static Future<List<Map<String, dynamic>>> getAdressById(int id) async {
+    return (await DBHelper.database()).query(
+      DBHelper.adressTable,
+      where: 'adress_id = ?',
       whereArgs: [id],
     );
   }
@@ -310,7 +322,50 @@ class DBHelper {
     vendor TEXT,
     product TEXT,
     version TEXT,
-    update_code TEXT)''';
+    update_code TEXT,
+    fk_cpe23uri_id INTEGER,
+    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
+
+  static const createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
+    cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    value TEXT,
+    deprecated INTEGER,
+    last_modified_date TEXT,
+    title TEXT,
+    ref TEXT,
+    ref_type TEXT)''';
+
+  static const createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
+    fk_cpe23uri_id INTEGER,
+    fk_cve_id INTEGER,
+    PRIMARY KEY (fk_cpe23uri_id, fk_cve_id),
+    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id),
+    FOREIGN KEY (fk_cve_id) REFERENCES $cveTable (cve_id))''';
+
+  static const createCveTable = '''CREATE TABLE $cveTable(
+    cve_id TEXT PRIMARY KEY,
+    assigner TEXT,
+    references_url TEXT,
+    descriptions TEXT,
+    published_date TEXT,
+    last_modified_date TEXT,
+    fk_cve_impact_v3_id INTEGER,
+    FOREIGN KEY (fk_cve_impact_v3_id) REFERENCES $cveImpactV3Table (cve_impact_v3_id))''';
+
+  static const createCveImpactV3Table = '''CREATE TABLE $cveImpactV3Table(
+    cve_impact_v3_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    exploitability_score REAL,
+    impact_score REAL,
+    attack_vector TEXT,
+    attack_complexity TEXT,
+    privileges_required TEXT,
+    user_interaction TEXT,
+    scope TEXT,
+    confidentiality_impact TEXT,
+    integrity_impact TEXT,
+    availability_impact TEXT,
+    base_score REAL,
+    base_severity REAL)''';
 
   static const createTagTable = '''CREATE TABLE $tagTable(
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
