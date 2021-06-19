@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keyway/screens/all_items_screen.dart';
+import 'package:keyway/screens/item_password_screen.dart';
+import 'package:keyway/screens/passwords_screen.dart';
+import 'package:keyway/widgets/Cards/dashboard_card.dart';
 
 import '../helpers/db_helper.dart';
-import '../helpers/warning_helper.dart';
-import '../screens/items_deleted_screen.dart';
-import '../screens/items_with_old_passwords_screen.dart';
-import '../screens/splash_screen.dart';
-import '../screens/tags_screen.dart';
+// import '../helpers/warning_helper.dart';
+// import '../screens/items_deleted_screen.dart';
+// import '../screens/items_with_old_passwords_screen.dart';
+// import '../screens/splash_screen.dart';
+// import '../screens/tags_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -91,14 +95,14 @@ class _DataScreenState extends State<DataScreen> {
     );
   }
 
-  Future<void> _deleteDB(BuildContext context) async {
-    if (await WarningHelper.deleteDB(context)) {
-      if (await DBHelper.removeDB()) {
-        Navigator.of(context)
-            .pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
-      }
-    }
-  }
+  // Future<void> _deleteDB(BuildContext context) async {
+  //   if (await WarningHelper.deleteDB(context)) {
+  //     if (await DBHelper.removeDB()) {
+  //       Navigator.of(context)
+  //           .pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
+  //     }
+  //   }
+  // }
 
   @override
   void initState() {
@@ -109,6 +113,7 @@ class _DataScreenState extends State<DataScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -171,104 +176,116 @@ class _DataScreenState extends State<DataScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
-              Container(
-                width: 256,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    primary: Colors.white,
-                  ),
-                  onPressed: () =>
-                      Navigator.of(context).pushNamed(TagsScreen.routeName),
-                  icon: Icon(
-                    Icons.tag,
-                    color: Theme.of(context).primaryColor,
-                    size: 32,
-                  ),
-                  label: Text(
-                    'Tags',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
+              GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 8,
+                childAspectRatio: 1.1,
+                mainAxisSpacing: 8,
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                padding: EdgeInsets.all(16.0),
+                children: [
+                  DashboardCard(
+                    icon: Icon(Icons.view_list, color: _primary, size: 48),
+                    title: Text(
+                      'All items',
+                      style: TextStyle(color: _primary, fontSize: 16),
                     ),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(AllItemsListScreen.routeName),
                   ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                width: 256,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    primary: Colors.white,
-                  ),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(ItemsWithOldPasswordsScreen.routeName),
-                  icon: Icon(
-                    Icons.history,
-                    color: Theme.of(context).primaryColor,
-                    size: 32,
-                  ),
-                  label: Text(
-                    'Old Passwords',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
+                  DashboardCard(
+                    icon: Icon(Icons.pivot_table_chart,
+                        color: _primary, size: 48),
+                    title: Text(
+                      'ItemPasswords',
+                      style: TextStyle(color: _primary, fontSize: 16),
                     ),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(ItemPasswordListScreen.routeName),
                   ),
-                ),
-              ),
-              SizedBox(height: 16),
-              Container(
-                width: 256,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    primary: Colors.white,
-                  ),
-                  onPressed: () => Navigator.of(context)
-                      .pushNamed(ItemsDeletedScreen.routeName),
-                  icon: Icon(
-                    Icons.delete,
-                    color: Theme.of(context).primaryColor,
-                    size: 32,
-                  ),
-                  label: Text(
-                    'Deleted Items',
-                    style: TextStyle(
-                      color: Theme.of(context).primaryColor,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
+                  DashboardCard(
+                    icon: Icon(Icons.password, color: _primary, size: 48),
+                    title: Text(
+                      'Passwords',
+                      style: TextStyle(color: _primary, fontSize: 16),
                     ),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(PasswordsListScreen.routeName),
                   ),
-                ),
-              ),
-              SizedBox(height: 48),
-              Container(
-                width: 256,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    primary: Colors.red,
-                  ),
-                  onPressed: () => _deleteDB(context),
-                  icon: Icon(
-                    Icons.delete_forever,
-                    color: Colors.white,
-                    size: 32,
-                  ),
-                  label: Text(
-                    'Delete Database',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w800,
-                      fontSize: 16,
+                  DashboardCard(
+                    icon: Icon(Icons.account_box, color: _primary, size: 48),
+                    title: Text(
+                      'Usernames',
+                      style: TextStyle(color: _primary, fontSize: 16),
                     ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
                   ),
-                ),
+                  DashboardCard(
+                    icon: Icon(Icons.pin, color: _primary, size: 48),
+                    title: Text(
+                      'PINs',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.note_alt, color: _primary, size: 48),
+                    title: Text(
+                      'Notes',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.dns, color: _primary, size: 48),
+                    title: Text(
+                      'Addresses',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.router, color: _primary, size: 48),
+                    title: Text(
+                      'Devices',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.receipt, color: _primary, size: 48),
+                    title: Text(
+                      'Devices CPEs',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.coronavirus, color: _primary, size: 48),
+                    title: Text(
+                      'CVEs',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.tag, color: _primary, size: 48),
+                    title: Text(
+                      'Tags',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () =>
+                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                  ),
+                ],
               ),
             ],
           ),
