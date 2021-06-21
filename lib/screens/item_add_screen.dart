@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/Cards/address_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -42,10 +43,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
+  final _addressCtrler = TextEditingController();
+  final _portCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
+  FocusNode _addressFocusNode;
+  FocusNode _portFocusNode;
 
   bool _passwordRepeatedWarning = true;
   bool _pinRepeatedWarning = true;
@@ -72,7 +77,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     return _userCtrler.text.isNotEmpty ||
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
-        _longCtrler.text.isNotEmpty;
+        _longCtrler.text.isNotEmpty ||
+        _addressCtrler.text.isNotEmpty;
   }
 
   void _save() async {
@@ -144,8 +150,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
-    PasswordHelper.dicePassword().then((p) => _passCtrler.text = p);
-    setState(() => _loadingRandomPass = false);
+    PasswordHelper.dicePassword().then((p) {
+      setState(() {
+        _passCtrler.text = p;
+        _loadingRandomPass = false;
+      });
+    });
   }
 
   @override
@@ -377,6 +387,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           ),
                         ),
                       ),
+                    ),
+                  if (_item.address != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: AddressCard(_addressCtrler, _portCtrler,
+                          _refreshScreen, _addressFocusNode, _portFocusNode),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
