@@ -28,12 +28,17 @@ class DBHelper {
         await db.execute('PRAGMA foreign_keys = ON');
         await db.execute(createUserTable);
         await db.execute(createItemTable);
-        await db.execute(createUsernameTable);
-        await db.execute(createPasswordTable);
         await db.execute(createItemPasswordTable);
+        await db.execute(createPasswordTable);
+        await db.execute(createUsernameTable);
         await db.execute(createPinTable);
         await db.execute(createLongTextTable);
+        await db.execute(createAddressTable);
         await db.execute(createDeviceTable);
+        await db.execute(createCpe23uriTable);
+        await db.execute(createCpe23uriCveTable);
+        await db.execute(createCveTable);
+        await db.execute(createCveImpactV3Table);
         await db.execute(createTagTable);
       },
       version: 1,
