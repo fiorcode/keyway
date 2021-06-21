@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-
-// import 'dart:math';
-// import 'package:encrypt/encrypt.dart' as e;
-// import 'package:keyway/providers/cripto_provider.dart';
+import 'package:keyway/models/cpe23uri.dart';
+import 'package:keyway/models/cpe23uri_cve.dart';
+import 'package:keyway/models/cve.dart';
 
 import '../helpers/db_helper.dart';
 
@@ -25,6 +24,14 @@ class ItemProvider with ChangeNotifier {
   List<Item> _allItems = [];
   List<ItemPassword> _itemsPasswords = [];
   List<Password> _passwords = [];
+  List<Username> _usernames = [];
+  List<Pin> _pins = [];
+  List<LongText> _notes = [];
+  List<Address> _addresses = [];
+  List<Device> _devices = [];
+  List<Cpe23uri> _cpe23uris = [];
+  List<Cpe23uriCve> _cpe23uriCves = [];
+  List<Cve> _cves = [];
 
   List<Item> get items => [..._items];
   List<Item> get itemsWithOldPasswords => [..._itemsWithOldPasswords];
@@ -34,6 +41,14 @@ class ItemProvider with ChangeNotifier {
   List<Item> get allItems => [..._allItems];
   List<ItemPassword> get itemPasswords => [..._itemsPasswords];
   List<Password> get passwords => [..._passwords];
+  List<Username> get usernames => [..._usernames];
+  List<Pin> get pins => [..._pins];
+  List<LongText> get notes => [..._notes];
+  List<Address> get addresses => [..._addresses];
+  List<Device> get devices => [..._devices];
+  List<Cpe23uri> get cpe23uris => [..._cpe23uris];
+  List<Cpe23uriCve> get cpe23uriCves => [..._cpe23uriCves];
+  List<Cve> get cves => [..._cves];
 
   Future<void> fetchItems(String title) async {
     Iterable<Item> _iter;
@@ -76,11 +91,83 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> fetchPasswords() async {
     Iterable<Password> _iter;
-    _itemsPasswords.clear();
+    _passwords.clear();
     await DBHelper.getData(DBHelper.passwordTable).then((data) {
       _iter = data.map((i) => Password.fromMap(i));
     });
     _passwords.addAll(_iter.toList());
+  }
+
+  Future<void> fetchUsernames() async {
+    Iterable<Username> _iter;
+    _usernames.clear();
+    await DBHelper.getData(DBHelper.usernameTable).then((data) {
+      _iter = data.map((i) => Username.fromMap(i));
+    });
+    _usernames.addAll(_iter.toList());
+  }
+
+  Future<void> fetchPins() async {
+    Iterable<Pin> _iter;
+    _pins.clear();
+    await DBHelper.getData(DBHelper.pinTable).then((data) {
+      _iter = data.map((i) => Pin.fromMap(i));
+    });
+    _pins.addAll(_iter.toList());
+  }
+
+  Future<void> fetchNotes() async {
+    Iterable<LongText> _iter;
+    _notes.clear();
+    await DBHelper.getData(DBHelper.longTextTable).then((data) {
+      _iter = data.map((i) => LongText.fromMap(i));
+    });
+    _notes.addAll(_iter.toList());
+  }
+
+  Future<void> fetchAddresses() async {
+    Iterable<Address> _iter;
+    _addresses.clear();
+    await DBHelper.getData(DBHelper.addressTable).then((data) {
+      _iter = data.map((i) => Address.fromMap(i));
+    });
+    _addresses.addAll(_iter.toList());
+  }
+
+  Future<void> fetchDevices() async {
+    Iterable<Device> _iter;
+    _devices.clear();
+    await DBHelper.getData(DBHelper.deviceTable).then((data) {
+      _iter = data.map((i) => Device.fromMap(i));
+    });
+    _devices.addAll(_iter.toList());
+  }
+
+  Future<void> fetchCpe23uris() async {
+    Iterable<Cpe23uri> _iter;
+    _cpe23uris.clear();
+    await DBHelper.getData(DBHelper.cpe23uriTable).then((data) {
+      _iter = data.map((i) => Cpe23uri.fromMap(i));
+    });
+    _cpe23uris.addAll(_iter.toList());
+  }
+
+  Future<void> fetchCpe23uriCves() async {
+    Iterable<Cpe23uriCve> _iter;
+    _cpe23uriCves.clear();
+    await DBHelper.getData(DBHelper.cpe23uriCveTable).then((data) {
+      _iter = data.map((i) => Cpe23uriCve.fromMap(i));
+    });
+    _cpe23uriCves.addAll(_iter.toList());
+  }
+
+  Future<void> fetchCves() async {
+    Iterable<Cve> _iter;
+    _cves.clear();
+    await DBHelper.getData(DBHelper.cveTable).then((data) {
+      _iter = data.map((i) => Cve.fromMap(i));
+    });
+    _cves.addAll(_iter.toList());
   }
 
   Future<void> _buildItems() async {
@@ -300,117 +387,11 @@ class ItemProvider with ChangeNotifier {
 
   Future<List<Tag>> getTags() async {
     Iterable<Tag> _iter;
-    await DBHelper.getTags().then((data) {
+    await DBHelper.getData(DBHelper.tagTable).then((data) {
       _iter = data.map((e) => Tag.fromMap(e));
     });
     return _iter.toList();
   }
-
-  // Future<void> mockData(CriptoProvider _cripto) async {
-  //   List<String> _titles = [
-  //     'Facebook',
-  //     'Instagram',
-  //     'Spotify',
-  //     'Github',
-  //     'Discord',
-  //     'Google',
-  //     'Steam',
-  //     'Hotmail',
-  //     'Siglo21',
-  //   ];
-  //   List<String> _users = [
-  //     'FacebookUser',
-  //     'InstagramUser',
-  //     'SpotifyUser',
-  //     'GithubUser',
-  //     'DiscordUser',
-  //     'GoogleUser',
-  //     'SteamUser',
-  //     'HotmailUser',
-  //     'Siglo21User',
-  //   ];
-  //   List<String> _passes = [
-  //     'FacebookPass',
-  //     'InstagramPass',
-  //     'SpotifyPass',
-  //     'GithubPass',
-  //     'DiscordPass',
-  //     'GooglePass',
-  //     'SteamPass',
-  //     'HotmailPass',
-  //     'Siglo21Pass',
-  //   ];
-  //   List<int> _colors = [
-  //     Colors.lightBlue.value,
-  //     Colors.pink.value,
-  //     Colors.green.value,
-  //     Colors.deepPurple.value,
-  //     Colors.purple.value,
-  //     Colors.deepOrange.value,
-  //     Colors.blue.value,
-  //     Colors.teal.value,
-  //     Colors.lightGreen.value,
-  //   ];
-  //   List<String> _pins = [
-  //     '',
-  //     '',
-  //     '3358',
-  //     '',
-  //     '9967',
-  //     '2518',
-  //     '',
-  //     '',
-  //     '',
-  //   ];
-  //   List<Tag> _tags = [
-  //     Tag('personal'),
-  //     Tag('shared'),
-  //     Tag('work'),
-  //     Tag('family'),
-  //     Tag('social'),
-  //     Tag('gaming'),
-  //   ];
-  //   _tags.forEach(
-  //       (_tag) async => await DBHelper.insert(DBHelper.tagTable, _tag.toMap()));
-  //   Random _ran = Random(59986674);
-  //   await _cripto.unlock('Qwe123!');
-  //   for (int i = 0; i < _titles.length; i++) {
-  //     String _tagsList = '';
-  //     _tagsList += '<${_tags[_ran.nextInt(5)].tagName}>';
-  //     String _secTag = '<${_tags[_ran.nextInt(5)].tagName}>';
-  //     if (!_tagsList.contains(_secTag)) _tagsList += _secTag;
-  //     DateTime _d = DateTime(2020, _ran.nextInt(11) + 1, _ran.nextInt(27) + 1);
-  //     String _ivUser = e.IV.fromSecureRandom(16).base16;
-  //     String _ivPass = e.IV.fromSecureRandom(16).base16;
-  //     String _ivPin = e.IV.fromSecureRandom(16).base16;
-  //     insertAlpha(
-  //       Alpha(
-  //         title: _titles[i],
-  //         username: _cripto.doCrypt(_users[i], _ivUser),
-  //         usernameIV: _users[i].isEmpty ? '' : _ivUser,
-  //         password: _cripto.doCrypt(_passes[i], _ivPass),
-  //         passwordIV: _passes[i].isEmpty ? '' : _ivPass,
-  //         passwordHash: _passes[i].isEmpty ? '' : _cripto.doHash(_passes[i]),
-  //         passwordStatus: _passes[i].isEmpty ? '' : '',
-  //         passwordDate: _passes[i].isEmpty ? '' : _d.toIso8601String(),
-  //         passwordLevel: _passes[i].isEmpty ? '' : 'WEAK',
-  //         pin: _cripto.doCrypt(_pins[i], _ivPin),
-  //         pinIV: _pins[i].isEmpty ? '' : _ivPin,
-  //         pinHash: _pins[i].isEmpty ? '' : _cripto.doHash(_pins[i]),
-  //         pinDate: _pins[i].isEmpty ? '' : _d.toIso8601String(),
-  //         pinStatus: _pins[i].isEmpty ? '' : '',
-  //         ip: '',
-  //         ipIV: '',
-  //         longText: '',
-  //         longTextIV: '',
-  //         date: _d.toIso8601String(),
-  //         avatarColor: _colors[i],
-  //         avatarColorLetter: -1,
-  //         tags: _tagsList,
-  //       ),
-  //     );
-  //   }
-  // }
 
   void dispose() {
     super.dispose();
