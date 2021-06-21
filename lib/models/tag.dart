@@ -6,7 +6,7 @@ class Tag {
   Tag(this.tagName);
 
   Tag.fromMap(Map<String, dynamic> map) {
-    id = map['id'];
+    id = map['tag_id'];
     tagName = map['tag_name'];
   }
 
@@ -14,7 +14,7 @@ class Tag {
     var map = <String, dynamic>{
       'tag_name': tagName,
     };
-    if (id != null) map['id'] = id;
+    if (id != null) map['tag_id'] = id;
     return map;
   }
 }
