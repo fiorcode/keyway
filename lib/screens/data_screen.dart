@@ -1,11 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keyway/screens/addresses_screen.dart';
 import 'package:keyway/screens/all_items_screen.dart';
+import 'package:keyway/screens/cpe23uri_cve_screen.dart';
+import 'package:keyway/screens/cpe23uri_screen.dart';
+import 'package:keyway/screens/cve_screen.dart';
+import 'package:keyway/screens/devices_screen.dart';
 import 'package:keyway/screens/item_password_screen.dart';
+import 'package:keyway/screens/notes_screen.dart';
 import 'package:keyway/screens/passwords_screen.dart';
+import 'package:keyway/screens/tags_screen.dart';
+import 'package:keyway/screens/usernames_screen.dart';
 import 'package:keyway/widgets/Cards/dashboard_card.dart';
 
 import '../helpers/db_helper.dart';
+import 'pins_screen.dart';
 // import '../helpers/warning_helper.dart';
 // import '../screens/items_deleted_screen.dart';
 // import '../screens/items_with_old_passwords_screen.dart';
@@ -219,8 +228,8 @@ class _DataScreenState extends State<DataScreen> {
                       'Usernames',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(UsernamesListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.pin, color: _primary, size: 48),
@@ -228,8 +237,8 @@ class _DataScreenState extends State<DataScreen> {
                       'PINs',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(PinsListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.note_alt, color: _primary, size: 48),
@@ -237,8 +246,8 @@ class _DataScreenState extends State<DataScreen> {
                       'Notes',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(NotesListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.dns, color: _primary, size: 48),
@@ -246,8 +255,8 @@ class _DataScreenState extends State<DataScreen> {
                       'Addresses',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(AddressesListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.router, color: _primary, size: 48),
@@ -255,8 +264,8 @@ class _DataScreenState extends State<DataScreen> {
                       'Devices',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(DevicesListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.receipt, color: _primary, size: 48),
@@ -264,8 +273,18 @@ class _DataScreenState extends State<DataScreen> {
                       'Devices CPEs',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(Cpe23uriListScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.pivot_table_chart,
+                        color: _primary, size: 48),
+                    title: Text(
+                      'CpeCves',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(Cpe23uriCveListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.coronavirus, color: _primary, size: 48),
@@ -273,8 +292,8 @@ class _DataScreenState extends State<DataScreen> {
                       'CVEs',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                    goTo: () => Navigator.of(context)
+                        .pushNamed(CveListScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.tag, color: _primary, size: 48),
@@ -283,7 +302,7 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     goTo: () =>
-                        Navigator.of(context).pushNamed(DataScreen.routeName),
+                        Navigator.of(context).pushNamed(TagsScreen.routeName),
                   ),
                 ],
               ),
