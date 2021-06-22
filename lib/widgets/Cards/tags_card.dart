@@ -124,7 +124,7 @@ class _TagsCardState extends State<TagsCard> {
                                     icon: Icon(
                                       Icons.add_circle_outline_rounded,
                                       size: 32,
-                                      color: Theme.of(context).primaryColor,
+                                      color: Colors.grey,
                                     ),
                                     onPressed: () => Navigator.push(
                                       context,
@@ -136,7 +136,10 @@ class _TagsCardState extends State<TagsCard> {
                                 ],
                               )
                             : TextButton.icon(
-                                icon: Icon(Icons.add_circle),
+                                icon: Icon(
+                                  Icons.add_circle,
+                                  color: Colors.grey,
+                                ),
                                 label: Text(
                                   'ADD NEW TAG',
                                   style: TextStyle(fontSize: 16),
