@@ -43,12 +43,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
+  final _protocolCtrler = TextEditingController();
   final _addressCtrler = TextEditingController();
   final _portCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
+  FocusNode _protocolFocusNode;
   FocusNode _addressFocusNode;
   FocusNode _portFocusNode;
 
@@ -77,8 +79,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     return _userCtrler.text.isNotEmpty ||
         _passCtrler.text.isNotEmpty ||
         _pinCtrler.text.isNotEmpty ||
-        _longCtrler.text.isNotEmpty ||
-        _addressCtrler.text.isNotEmpty;
+        _longCtrler.text.isNotEmpty;
   }
 
   void _save() async {
@@ -391,8 +392,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   if (_item.address != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: AddressCard(_addressCtrler, _portCtrler,
-                          _refreshScreen, _addressFocusNode, _portFocusNode),
+                      child: AddressCard(_item.address),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
