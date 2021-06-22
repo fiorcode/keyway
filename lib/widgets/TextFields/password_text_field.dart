@@ -44,16 +44,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       focusNode: widget.focus,
       decoration: InputDecoration(
         hintText: 'Password',
-        // border: OutlineInputBorder(),
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 1),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 3),
-        // ),
-        // filled: true,
-        // fillColor: Theme.of(context).backgroundColor,
-        // labelText: 'Password',
         prefixIcon: _empty
             ? null
             : InkWell(
