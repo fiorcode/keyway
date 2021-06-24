@@ -36,7 +36,7 @@ class PresetsWrap extends StatelessWidget {
     refreshScreen();
   }
 
-  void _deviceSwitch() {
+  void _addressSwitch() {
     item.address = item.address != null ? null : Address();
     refreshScreen();
   }
@@ -125,7 +125,7 @@ class PresetsWrap extends StatelessWidget {
                 ),
                 elevation: item.address != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _deviceSwitch,
+                onPressed: _addressSwitch,
               ),
             ),
           ],
