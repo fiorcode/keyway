@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class TitleTextField extends StatelessWidget {
-  const TitleTextField(this.ctrler, this.refreshScreen, this.focus);
+  const TitleTextField(this.ctrler, this.focus, this.refreshScreen);
 
   final TextEditingController ctrler;
-  final Function refreshScreen;
   final FocusNode focus;
+  final Function refreshScreen;
 
   @override
   Widget build(BuildContext context) {
