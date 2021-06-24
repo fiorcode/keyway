@@ -9,23 +9,24 @@ import '../models/password.dart';
 
 class PasswordHelper {
   static List<String> _conectors = [
-    '!',
-    '#',
     '@',
+    '#',
     '%',
+    '&',
+    '-',
+    '+',
     '(',
     ')',
-    ',',
-    ':',
-    '<',
-    '>',
-    '"',
-    '&',
     '*',
-    '.',
+    '"',
+    "'",
+    ':',
+    ';',
+    '!',
     '?',
-    '<',
-    '>'
+    ',',
+    '_',
+    '.',
   ];
   static bool minLong(String s) => s.length > 5;
   static bool maxLong(String s) => s.length < 33;
