@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/Cards/address_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -49,16 +50,23 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
+  final _addressCtrler = TextEditingController();
+  final _protocolCtrler = TextEditingController();
+  final _portCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
+  FocusNode _addressFocusNode;
+  FocusNode _protocolFocusNode;
+  FocusNode _portFocusNode;
 
   bool _passwordRepeatedWarning = true;
   bool _pinRepeatedWarning = true;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
+  bool _loadingRandomPass = false;
 
   void _refreshScreen() => setState(() {
         _item.title = _titleCtrler.text;
@@ -108,18 +116,26 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
             widget.item.longText.longTextIv,
           );
         }
+        if (widget.item.address != null) {
+          _addressCtrler.text = widget.item.address.value;
+          _protocolCtrler.text = widget.item.address.protocol;
+          _portCtrler.text = widget.item.address.port.toString();
+        }
       });
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
 
-  bool _notEmptyFields() {
-    return _userCtrler.text.isNotEmpty ||
-        _passCtrler.text.isNotEmpty ||
-        _pinCtrler.text.isNotEmpty ||
-        _longCtrler.text.isNotEmpty;
-  }
+  // bool _notEmptyFields() {
+  //   return _userCtrler.text.isNotEmpty ||
+  //       _passCtrler.text.isNotEmpty ||
+  //       _pinCtrler.text.isNotEmpty ||
+  //       _longCtrler.text.isNotEmpty ||
+  //       _addressCtrler.text.isNotEmpty ||
+  //       _protocolCtrler.text.isNotEmpty ||
+  //       _portCtrler.text.isNotEmpty;
+  // }
 
   void _save() async {
     try {
@@ -136,24 +152,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
           _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
           _item.fkUsernameId = await _items.insertUsername(_u);
         }
-
-        // if (widget.item.username == null) {
-        //   _item.username = Username();
-        //   _item.username.usernameIv = e.IV.fromSecureRandom(16).base16;
-        //   _item.username.usernameEnc = _cripto.doCrypt(
-        //     _userCtrler.text,
-        //     _item.username.usernameIv,
-        //   );
-        //   _item.fkUsernameId = await _items.insertUsername(_item.username);
-        // } else {
-        //   _item.username.usernameEnc = _cripto.doCrypt(
-        //     _userCtrler.text,
-        //     _item.username.usernameIv,
-        //   );
-        //   if (widget.item.username.usernameEnc != _item.username.usernameEnc) {
-        //     _items.updateUsername(_item.username);
-        //   }
-        // }
       } else {
         _item.fkUsernameId = null;
         _item.username = null;
@@ -283,10 +281,39 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         _item.longText = null;
       }
 
+      if (_item.address != null) {
+        if (_addressCtrler.text.isNotEmpty) {
+          _item.address.value = _addressCtrler.text;
+          _item.address.protocol = _protocolCtrler.text;
+          _item.address.port = int.parse(_portCtrler.text);
+          if (widget.item.address != null) {
+            if (widget.item.address.value != _item.address.value ||
+                widget.item.address.protocol != _item.address.protocol ||
+                widget.item.address.port != _item.address.port) {
+              _items.updateAddress(_item.address);
+            } else {
+              _item.fkAddressId = await _items.insertAddress(_item.address);
+            }
+          }
+        }
+      } else {
+        _item.fkAddressId = null;
+      }
+
       _items.updateItem(_item).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
+  }
+
+  Future<void> _loadRandomPassword() async {
+    setState(() => _loadingRandomPass = true);
+    PasswordHelper.dicePassword().then((p) {
+      setState(() {
+        _passCtrler.text = p;
+        _loadingRandomPass = false;
+      });
+    });
   }
 
   //TODO: Chequear que se eliminen las notas
@@ -322,8 +349,13 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _passCtrler.dispose();
     _pinCtrler.dispose();
     _longCtrler.dispose();
-    _passFocusNode.dispose();
+    _addressCtrler.dispose();
+    _protocolCtrler.dispose();
+    _portCtrler.dispose();
     _userFocusNode.dispose();
+    _passFocusNode.dispose();
+    _protocolFocusNode.dispose();
+    _portFocusNode.dispose();
     super.dispose();
   }
 
@@ -346,24 +378,19 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               )
             : null,
         actions: [
-          if (_titleCtrler.text.isNotEmpty &&
-              !_cripto.locked &&
-              _notEmptyFields())
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: _save,
-            ),
+          if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
+            IconButton(icon: Icon(Icons.save), onPressed: _save),
         ],
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _refreshScreen, _titleFocusNode),
+                  TitleTextField(_titleCtrler, _titleFocusNode, _refreshScreen),
                   PresetsWrap(item: _item, refreshScreen: _refreshScreen),
                   if (_item.username != null)
                     Padding(
@@ -385,7 +412,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                               IconButton(
                                 icon: Icon(Icons.list_rounded),
                                 onPressed: _userListSwitch,
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -410,15 +437,20 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                       _passFocusNode,
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.bolt),
-                                    onPressed: () {},
-                                  ),
+                                  _loadingRandomPass
+                                      ? CircularProgressIndicator()
+                                      : IconButton(
+                                          icon: Icon(Icons.bolt),
+                                          onPressed: _loadRandomPassword,
+                                        ),
                                 ],
                               ),
                               if (_passCtrler.text.isNotEmpty)
                                 StrengthLevelCard(
-                                  PasswordHelper.strength(_passCtrler.text),
+                                  PasswordHelper.strength(
+                                    _passCtrler.text,
+                                    password: _item.password,
+                                  ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(
@@ -526,6 +558,18 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                             child: LongTextTextField(_longCtrler),
                           ),
                         ),
+                      ),
+                    ),
+                  if (_item.address != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: AddressCard(
+                        _addressCtrler,
+                        _addressFocusNode,
+                        _protocolCtrler,
+                        _protocolFocusNode,
+                        _portCtrler,
+                        _portFocusNode,
                       ),
                     ),
                   Padding(
