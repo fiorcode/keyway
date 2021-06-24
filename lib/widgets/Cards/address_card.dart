@@ -1,25 +1,27 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:keyway/models/address.dart';
-
 class AddressCard extends StatefulWidget {
-  const AddressCard(this.address);
+  const AddressCard(
+    this.addressCtrler,
+    this.addressFocus,
+    this.protocolCtrler,
+    this.protocolFocus,
+    this.portCtrler,
+    this.portFocus,
+  );
 
-  final Address address;
+  final TextEditingController addressCtrler;
+  final TextEditingController protocolCtrler;
+  final TextEditingController portCtrler;
+  final FocusNode addressFocus;
+  final FocusNode protocolFocus;
+  final FocusNode portFocus;
 
   @override
   _AddressCardState createState() => _AddressCardState();
 }
 
 class _AddressCardState extends State<AddressCard> {
-  final protocolCtrler = TextEditingController();
-  final addressCtrler = TextEditingController();
-  final portCtrler = TextEditingController();
-  final protocolFocus = FocusNode();
-  final addressFocus = FocusNode();
-  final portFocus = FocusNode();
-
   Map<String, int> _protocols = {
     'HTTPS': 443,
     'SFTP': 22,
@@ -47,6 +49,9 @@ class _AddressCardState extends State<AddressCard> {
   void _inputModeSwitch() => setState(() => _inputMode = !_inputMode);
 
   void _protocolSwitch() {
+    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
+    widget.portCtrler.text =
+        _protocols.values.elementAt(_protocolIndex).toString();
     setState(() {
       if (_protocolIndex == _protocols.length - 1)
         _protocolIndex = 0;
@@ -57,6 +62,9 @@ class _AddressCardState extends State<AddressCard> {
 
   @override
   void initState() {
+    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
+    widget.portCtrler.text =
+        _protocols.values.elementAt(_protocolIndex).toString();
     super.initState();
   }
 
@@ -75,8 +83,8 @@ class _AddressCardState extends State<AddressCard> {
                   child: TextField(
                     autocorrect: false,
                     keyboardType: _type,
-                    controller: addressCtrler,
-                    focusNode: addressFocus,
+                    controller: widget.addressCtrler,
+                    focusNode: widget.addressFocus,
                     decoration: InputDecoration(
                       hintText: 'Address',
                       suffixIcon: _type == TextInputType.url
@@ -121,8 +129,8 @@ class _AddressCardState extends State<AddressCard> {
                         width: 128,
                         child: TextField(
                           autocorrect: false,
-                          controller: protocolCtrler,
-                          focusNode: protocolFocus,
+                          controller: widget.protocolCtrler,
+                          focusNode: widget.protocolFocus,
                           decoration: InputDecoration(hintText: 'Protocol'),
                           textAlign: TextAlign.center,
                           onChanged: (_) {},
@@ -158,8 +166,8 @@ class _AddressCardState extends State<AddressCard> {
                         width: 64,
                         child: TextField(
                           autocorrect: false,
-                          controller: portCtrler,
-                          focusNode: portFocus,
+                          controller: widget.portCtrler,
+                          focusNode: widget.portFocus,
                           decoration: InputDecoration(hintText: 'Port'),
                           textAlign: TextAlign.center,
                           onChanged: (_) {},
