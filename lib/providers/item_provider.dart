@@ -309,6 +309,12 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateLongText(LongText l) async =>
       await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
 
+  Future<int> insertAddress(Address a) async =>
+      await DBHelper.insert(DBHelper.addressTable, a.toMap());
+
+  Future<int> updateAddress(Address a) async =>
+      await DBHelper.update(DBHelper.addressTable, a.toMap(), 'address_id');
+
   Future<bool> passUsed(Password p) async {
     if (p.hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.passwordTable, 'hash', p.hash))
