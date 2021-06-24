@@ -7,7 +7,7 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
 import '../models/username.dart';
-import '../models/long_text.dart';
+// import '../models/long_text.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -43,15 +43,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   final _passCtrler = TextEditingController();
   final _pinCtrler = TextEditingController();
   final _longCtrler = TextEditingController();
-  final _protocolCtrler = TextEditingController();
   final _addressCtrler = TextEditingController();
+  final _protocolCtrler = TextEditingController();
   final _portCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
-  FocusNode _protocolFocusNode;
   FocusNode _addressFocusNode;
+  FocusNode _protocolFocusNode;
   FocusNode _portFocusNode;
 
   bool _passwordRepeatedWarning = true;
@@ -61,7 +61,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   bool _unlocking = false;
   bool _loadingRandomPass = false;
 
-  void _refreshScreen() => setState(() => _item.title = _titleCtrler.text);
+  void _refreshScreen() => setState(() {
+        _item.title = _titleCtrler.text;
+        if (_item.username == null) _userCtrler.clear();
+        if (_item.password == null) _passCtrler.clear();
+        if (_item.pin == null) _pinCtrler.clear();
+        if (_item.longText == null) _longCtrler.clear();
+      });
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -75,12 +81,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _userListSwitch();
   }
 
-  bool _notEmptyFields() {
-    return _userCtrler.text.isNotEmpty ||
-        _passCtrler.text.isNotEmpty ||
-        _pinCtrler.text.isNotEmpty ||
-        _longCtrler.text.isNotEmpty;
-  }
+  // bool _notEmptyFields() {
+  //   return _userCtrler.text.isNotEmpty ||
+  //       _passCtrler.text.isNotEmpty ||
+  //       _pinCtrler.text.isNotEmpty ||
+  //       _longCtrler.text.isNotEmpty ||
+  //       _addressCtrler.text.isNotEmpty ||
+  //       _protocolCtrler.text.isNotEmpty ||
+  //       _portCtrler.text.isNotEmpty;
+  // }
 
   void _save() async {
     try {
@@ -117,22 +126,33 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
             await _items.insertPassword(_item.password);
       }
 
-      if (_pinCtrler.text.isNotEmpty) {
-        _item.pin.pinIv = e.IV.fromSecureRandom(16).base16;
-        _item.pin.pinEnc = _cripto.doCrypt(_pinCtrler.text, _item.pin.pinIv);
-        _item.pin.pinDate = _item.date;
-        _item.pin.pinStatus = '';
-        _item.fkPinId = await _items.insertPin(_item.pin);
+      if (_item.pin != null) {
+        if (_pinCtrler.text.isNotEmpty) {
+          _item.pin.pinIv = e.IV.fromSecureRandom(16).base16;
+          _item.pin.pinEnc = _cripto.doCrypt(_pinCtrler.text, _item.pin.pinIv);
+          _item.pin.pinDate = _item.date;
+          _item.pin.pinStatus = '';
+          _item.fkPinId = await _items.insertPin(_item.pin);
+        }
       }
 
-      if (_longCtrler.text.isNotEmpty) {
-        LongText _long = LongText();
-        _long.longTextIv = e.IV.fromSecureRandom(16).base16;
-        _long.longTextEnc = _cripto.doCrypt(_longCtrler.text, _long.longTextIv);
-        _item.fkLongTextId = await _items.insertLongText(_long);
+      if (_item.longText != null) {
+        if (_longCtrler.text.isNotEmpty) {
+          _item.longText.longTextIv = e.IV.fromSecureRandom(16).base16;
+          _item.longText.longTextEnc =
+              _cripto.doCrypt(_longCtrler.text, _item.longText.longTextIv);
+          _item.fkLongTextId = await _items.insertLongText(_item.longText);
+        }
       }
 
-      if (_item.address != null) {}
+      if (_item.address != null) {
+        if (_addressCtrler.text.isNotEmpty) {
+          _item.address.value = _addressCtrler.text;
+          _item.address.protocol = _protocolCtrler.text;
+          _item.address.port = int.parse(_portCtrler.text);
+          _item.fkAddressId = await _items.insertAddress(_item.address);
+        }
+      }
 
       _items.insertItem(_item).then((itemId) {
         if (_item.password != null) {
@@ -178,8 +198,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _passCtrler.dispose();
     _pinCtrler.dispose();
     _longCtrler.dispose();
+    _addressCtrler.dispose();
+    _protocolCtrler.dispose();
+    _portCtrler.dispose();
     _userFocusNode.dispose();
     _passFocusNode.dispose();
+    _protocolFocusNode.dispose();
+    _portFocusNode.dispose();
     super.dispose();
   }
 
@@ -202,24 +227,19 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               )
             : null,
         actions: [
-          if (_titleCtrler.text.isNotEmpty &&
-              !_cripto.locked &&
-              _notEmptyFields())
-            IconButton(
-              icon: Icon(Icons.save),
-              onPressed: _save,
-            ),
+          if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
+            IconButton(icon: Icon(Icons.save), onPressed: _save),
         ],
       ),
       body: Stack(
         children: [
           SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _refreshScreen, _titleFocusNode),
+                  TitleTextField(_titleCtrler, _titleFocusNode, _refreshScreen),
                   PresetsWrap(item: _item, refreshScreen: _refreshScreen),
                   if (_item.username != null)
                     Padding(
@@ -392,7 +412,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   if (_item.address != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: AddressCard(_item.address),
+                      child: AddressCard(
+                        _addressCtrler,
+                        _addressFocusNode,
+                        _protocolCtrler,
+                        _protocolFocusNode,
+                        _portCtrler,
+                        _portFocusNode,
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
