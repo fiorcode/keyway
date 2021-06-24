@@ -11,7 +11,7 @@ class ItemPassword {
     this.fkPasswordId,
     this.date,
     this.lapse = 320,
-    this.passwordStatus = '',
+    this.passwordStatus = 'active',
     this.dateTime,
   });
 
