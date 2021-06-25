@@ -427,7 +427,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                   if (_item.product != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
-                      child: ProductCard(_trademarkCtrler, _modelCtrler),
+                      child: ProductCard(
+                        _item.product,
+                        _trademarkCtrler,
+                        _modelCtrler,
+                      ),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
