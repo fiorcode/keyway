@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/widgets/Cards/address_card.dart';
+import 'package:keyway/widgets/Cards/product_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -46,6 +47,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   final _addressCtrler = TextEditingController();
   final _protocolCtrler = TextEditingController();
   final _portCtrler = TextEditingController();
+  final _trademarkCtrler = TextEditingController();
+  final _modelCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
@@ -420,6 +423,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         _portCtrler,
                         _portFocusNode,
                       ),
+                    ),
+                  if (_item.product != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ProductCard(_trademarkCtrler, _modelCtrler),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
