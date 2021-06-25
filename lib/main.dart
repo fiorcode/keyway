@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyway/screens/cpe23uri_screen.dart';
-import 'package:keyway/screens/devices_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/drive_provider.dart';
@@ -16,6 +14,7 @@ import 'screens/item_view_screen.dart';
 import 'screens/items_with_old_passwords_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/pins_screen.dart';
+import 'screens/product_search_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
@@ -32,6 +31,8 @@ import 'screens/item_password_screen.dart';
 import 'screens/passwords_screen.dart';
 import 'screens/usernames_screen.dart';
 import 'package:keyway/screens/notes_screen.dart';
+import 'package:keyway/screens/cpe23uri_screen.dart';
+import 'package:keyway/screens/devices_screen.dart';
 
 void main() => runApp(MyApp());
 
@@ -85,6 +86,7 @@ class MyApp extends StatelessWidget {
           Cpe23uriListScreen.routeName: (ctx) => Cpe23uriListScreen(),
           Cpe23uriCveListScreen.routeName: (ctx) => Cpe23uriCveListScreen(),
           CveListScreen.routeName: (ctx) => CveListScreen(),
+          ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
         },
       ),
     );
