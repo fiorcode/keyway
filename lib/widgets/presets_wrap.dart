@@ -7,6 +7,7 @@ import '../models/item_password.dart';
 import '../models/pin.dart';
 import '../models/long_text.dart';
 import '../models/address.dart';
+import '../models/product.dart';
 
 class PresetsWrap extends StatelessWidget {
   const PresetsWrap({Key key, @required this.item, this.refreshScreen})
@@ -41,14 +42,19 @@ class PresetsWrap extends StatelessWidget {
     refreshScreen();
   }
 
+  void _productSwitch() {
+    item.product = item.product != null ? null : Product();
+    refreshScreen();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 92,
       child: Center(
-        child: ListView(
-          scrollDirection: Axis.horizontal,
-          shrinkWrap: true,
+        child: Wrap(
+          // scrollDirection: Axis.horizontal,
+          // shrinkWrap: true,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -56,7 +62,7 @@ class PresetsWrap extends StatelessWidget {
                 backgroundColor:
                     item.username != null ? Colors.white : Colors.grey,
                 child: Icon(
-                  Icons.account_circle,
+                  Icons.account_box,
                   size: item.username != null ? 32 : 24,
                   color: item.username != null ? Colors.grey : Colors.white,
                 ),
@@ -70,14 +76,10 @@ class PresetsWrap extends StatelessWidget {
               child: FloatingActionButton(
                 backgroundColor:
                     item.password != null ? Colors.white : Colors.grey,
-                child: Text(
-                  '*',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: item.password != null ? 32 : 24,
-                    fontWeight: FontWeight.bold,
-                    color: item.password != null ? Colors.grey : Colors.white,
-                  ),
+                child: Icon(
+                  Icons.password,
+                  size: item.password != null ? 32 : 24,
+                  color: item.password != null ? Colors.grey : Colors.white,
                 ),
                 elevation: item.password != null ? 8 : 0,
                 heroTag: null,
@@ -126,6 +128,21 @@ class PresetsWrap extends StatelessWidget {
                 elevation: item.address != null ? 8 : 0,
                 heroTag: null,
                 onPressed: _addressSwitch,
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              child: FloatingActionButton(
+                backgroundColor:
+                    item.product != null ? Colors.white : Colors.grey,
+                child: Icon(
+                  Icons.security,
+                  size: item.product != null ? 32 : 24,
+                  color: item.product != null ? Colors.grey : Colors.white,
+                ),
+                elevation: item.product != null ? 8 : 0,
+                heroTag: null,
+                onPressed: _productSwitch,
               ),
             ),
           ],
