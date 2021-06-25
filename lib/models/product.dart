@@ -5,6 +5,9 @@ class Product {
   String productModel;
   String productVersion;
   String productUpdate;
+  String productStatus;
+  int trackVulnerabilities;
+  String lastTracking;
   int fkCpe23uriId;
 
   Product({
@@ -14,8 +17,17 @@ class Product {
     this.productModel = '',
     this.productVersion = '',
     this.productUpdate = '',
+    this.productStatus = '',
+    this.trackVulnerabilities = 1,
+    this.lastTracking = '',
     this.fkCpe23uriId,
   });
+
+  bool get tracked => this.trackVulnerabilities == 1 ? true : false;
+
+  void trackSwitch() => this.trackVulnerabilities == 1
+      ? this.trackVulnerabilities = 0
+      : this.trackVulnerabilities = 1;
 
   Product.fromMap(Map<String, dynamic> map) {
     this.productId = map['prodcut_id'];
@@ -24,6 +36,9 @@ class Product {
     this.productModel = map['prodcut_model'];
     this.productVersion = map['prodcut_version'];
     this.productUpdate = map['prodcut_update'];
+    this.productStatus = map['prodcut_status'];
+    this.trackVulnerabilities = map['track_vulnerabilities'];
+    this.lastTracking = map['last_tracking'];
     this.fkCpe23uriId = map['fk_cpe23uri_id'];
   }
 
@@ -34,6 +49,9 @@ class Product {
       'prodcut_model': this.productModel,
       'prodcut_version': this.productVersion,
       'prodcut_update': this.productUpdate,
+      'prodcut_status': this.productStatus,
+      'track_vulnerabilities': this.trackVulnerabilities,
+      'last_tracking': this.lastTracking,
       'fk_cpe23uri_id': this.fkCpe23uriId,
     };
     if (this.productId != null) map['product_id'] = this.productId;
