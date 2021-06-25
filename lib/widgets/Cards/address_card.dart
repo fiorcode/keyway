@@ -77,33 +77,25 @@ class _AddressCardState extends State<AddressCard> {
         padding: const EdgeInsets.all(8),
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    autocorrect: false,
-                    keyboardType: _type,
-                    controller: widget.addressCtrler,
-                    focusNode: widget.addressFocus,
-                    decoration: InputDecoration(
-                      hintText: 'Address',
-                      suffixIcon: _type == TextInputType.url
-                          ? IconButton(
-                              onPressed: _inputSwitch,
-                              icon: Icon(Icons.dialpad_outlined,
-                                  color: Colors.grey),
-                            )
-                          : IconButton(
-                              onPressed: _inputSwitch,
-                              icon: Icon(Icons.keyboard_outlined,
-                                  color: Colors.grey),
-                            ),
-                    ),
-                    textAlign: TextAlign.center,
-                    onChanged: (_) {},
-                  ),
-                ),
-              ],
+            TextField(
+              autocorrect: false,
+              keyboardType: _type,
+              controller: widget.addressCtrler,
+              focusNode: widget.addressFocus,
+              decoration: InputDecoration(
+                hintText: 'Address',
+                suffixIcon: _type == TextInputType.url
+                    ? IconButton(
+                        onPressed: _inputSwitch,
+                        icon: Icon(Icons.dialpad_outlined, color: Colors.grey),
+                      )
+                    : IconButton(
+                        onPressed: _inputSwitch,
+                        icon: Icon(Icons.keyboard_outlined, color: Colors.grey),
+                      ),
+              ),
+              textAlign: TextAlign.center,
+              onChanged: (_) {},
             ),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
