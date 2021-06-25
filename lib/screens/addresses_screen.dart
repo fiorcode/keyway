@@ -103,7 +103,7 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          a.fkDeviceId.toString(),
+                                          a.fkProductId.toString(),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
