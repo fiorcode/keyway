@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/cpe23uri.dart';
-import 'package:keyway/models/cpe23uri_cve.dart';
-import 'package:keyway/models/cve.dart';
 
 import '../helpers/db_helper.dart';
 
-import '../models/device.dart';
 import '../models/item.dart';
 import '../models/item_password.dart';
 import '../models/password.dart';
 import '../models/username.dart';
 import '../models/pin.dart';
 import '../models/long_text.dart';
-import '../models/tag.dart';
 import '../models/address.dart';
+import '../models/product.dart';
+import '../models/cpe23uri.dart';
+import '../models/cpe23uri_cve.dart';
+import '../models/cve.dart';
+import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
@@ -28,7 +28,7 @@ class ItemProvider with ChangeNotifier {
   List<Pin> _pins = [];
   List<LongText> _notes = [];
   List<Address> _addresses = [];
-  List<Device> _devices = [];
+  List<Product> _products = [];
   List<Cpe23uri> _cpe23uris = [];
   List<Cpe23uriCve> _cpe23uriCves = [];
   List<Cve> _cves = [];
@@ -45,7 +45,7 @@ class ItemProvider with ChangeNotifier {
   List<Pin> get pins => [..._pins];
   List<LongText> get notes => [..._notes];
   List<Address> get addresses => [..._addresses];
-  List<Device> get devices => [..._devices];
+  List<Product> get products => [..._products];
   List<Cpe23uri> get cpe23uris => [..._cpe23uris];
   List<Cpe23uriCve> get cpe23uriCves => [..._cpe23uriCves];
   List<Cve> get cves => [..._cves];
@@ -134,13 +134,13 @@ class ItemProvider with ChangeNotifier {
     _addresses.addAll(_iter.toList());
   }
 
-  Future<void> fetchDevices() async {
-    Iterable<Device> _iter;
-    _devices.clear();
-    await DBHelper.getData(DBHelper.deviceTable).then((data) {
-      _iter = data.map((i) => Device.fromMap(i));
+  Future<void> fetchProducts() async {
+    Iterable<Product> _iter;
+    _products.clear();
+    await DBHelper.getData(DBHelper.productTable).then((data) {
+      _iter = data.map((i) => Product.fromMap(i));
     });
-    _devices.addAll(_iter.toList());
+    _products.addAll(_iter.toList());
   }
 
   Future<void> fetchCpe23uris() async {
@@ -315,6 +315,12 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateAddress(Address a) async =>
       await DBHelper.update(DBHelper.addressTable, a.toMap(), 'address_id');
 
+  Future<int> insertProduct(Product p) async =>
+      await DBHelper.insert(DBHelper.productTable, p.toMap());
+
+  Future<int> updateProduct(Product p) async =>
+      await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
+
   Future<bool> passUsed(Password p) async {
     if (p.hash.isEmpty) return false;
     if ((await DBHelper.getByValue(DBHelper.passwordTable, 'hash', p.hash))
@@ -370,9 +376,9 @@ class ItemProvider with ChangeNotifier {
     return Address.fromMap(_a.first);
   }
 
-  Future<Device> getDevice(int id) async {
-    List<Map<String, dynamic>> _d = await DBHelper.getDeviceById(id);
-    return Device.fromMap(_d.first);
+  Future<Product> getDevice(int id) async {
+    List<Map<String, dynamic>> _d = await DBHelper.getProductById(id);
+    return Product.fromMap(_d.first);
   }
 
   Future<List<Username>> getUsers() async {
