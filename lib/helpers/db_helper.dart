@@ -13,7 +13,7 @@ class DBHelper {
   static const String pinTable = "pin";
   static const String longTextTable = "long_text";
   static const String addressTable = "address";
-  static const String deviceTable = "device";
+  static const String productTable = "product";
   static const String cpe23uriTable = "cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
@@ -34,7 +34,7 @@ class DBHelper {
         await db.execute(createPinTable);
         await db.execute(createLongTextTable);
         await db.execute(createAddressTable);
-        await db.execute(createDeviceTable);
+        await db.execute(createProductTable);
         await db.execute(createCpe23uriTable);
         await db.execute(createCpe23uriCveTable);
         await db.execute(createCveTable);
@@ -178,10 +178,10 @@ class DBHelper {
     );
   }
 
-  static Future<List<Map<String, dynamic>>> getDeviceById(int id) async {
+  static Future<List<Map<String, dynamic>>> getProductById(int id) async {
     return (await DBHelper.database()).query(
-      DBHelper.deviceTable,
-      where: 'device_id = ?',
+      DBHelper.productTable,
+      where: 'product_id = ?',
       whereArgs: [id],
     );
   }
@@ -272,10 +272,12 @@ class DBHelper {
     fk_pin_id INTEGER,
     fk_long_text_id INTEGER,
     fk_address_id INTEGER,
+    fk_product_id INTEGER,
     FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
     FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
     FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
-    FOREIGN KEY (fk_address_id) REFERENCES $addressTable (address_id))''';
+    FOREIGN KEY (fk_address_id) REFERENCES $addressTable (address_id),
+    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id))''';
 
   static const createPasswordTable = '''CREATE TABLE $passwordTable(
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -308,6 +310,7 @@ class DBHelper {
     pin_lapse INTEGER,
     pin_status TEXT)''';
 
+  //TODO: replace long_text for note
   static const createLongTextTable = '''CREATE TABLE $longTextTable(
     long_text_id INTEGER PRIMARY KEY AUTOINCREMENT,
     long_text_enc TEXT,
@@ -318,16 +321,16 @@ class DBHelper {
     protocol TEXT,
     value TEXT,
     port INTEGER,
-    fk_device_id INTEGER,
-    FOREIGN KEY (fk_device_id) REFERENCES $deviceTable (device_id))''';
+    fk_product_id INTEGER,
+    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id))''';
 
-  static const createDeviceTable = '''CREATE TABLE $deviceTable(
-    device_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    type TEXT,
-    vendor TEXT,
-    product TEXT,
-    version TEXT,
-    update_code TEXT,
+  static const createProductTable = '''CREATE TABLE $productTable(
+    product_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_type TEXT,
+    product_trademark TEXT,
+    product_model TEXT,
+    product_version TEXT,
+    product_update TEXT,
     fk_cpe23uri_id INTEGER,
     FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
