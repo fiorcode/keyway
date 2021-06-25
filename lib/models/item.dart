@@ -1,3 +1,4 @@
+import 'package:keyway/models/product.dart';
 import 'package:keyway/models/username.dart';
 import 'package:keyway/models/item_password.dart';
 import 'package:keyway/models/password.dart';
@@ -18,6 +19,7 @@ class Item {
   int fkPinId;
   int fkLongTextId;
   int fkAddressId;
+  int fkProcutId;
 
   Username username;
   Password password;
@@ -25,6 +27,7 @@ class Item {
   Pin pin;
   LongText longText;
   Address address;
+  Product product;
 
   Item.factory() {
     this.title = '';
