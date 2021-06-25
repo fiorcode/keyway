@@ -1,19 +1,19 @@
-import 'package:keyway/models/device.dart';
+import 'package:keyway/models/product.dart';
 
 class Address {
   int addressId;
   String protocol;
   String value;
   int port;
-  int fkDeviceId;
+  int fkProductId;
 
-  Device device;
+  Product product;
 
   Address.factory() {
     this.protocol = '';
     this.value = '';
     this.port = 0;
-    this.device = Device();
+    this.product = Product();
   }
 
   Address({
@@ -21,8 +21,8 @@ class Address {
     this.protocol = '',
     this.value = '',
     this.port = 0,
-    this.fkDeviceId,
-    this.device,
+    this.fkProductId,
+    this.product,
   });
 
   Address.fromMap(Map<String, dynamic> map) {
@@ -30,7 +30,7 @@ class Address {
     protocol = map['protocol'];
     value = map['value'];
     port = map['port'];
-    fkDeviceId = map['fk_device_id'];
+    fkProductId = map['fk_product_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -38,7 +38,7 @@ class Address {
       'protocol': protocol,
       'value': value,
       'port': port,
-      'fk_device_id': fkDeviceId,
+      'fk_product_id': fkProductId,
     };
     if (addressId != null) map['address_id'] = addressId;
     return map;
@@ -49,6 +49,6 @@ class Address {
         protocol: this.protocol,
         value: this.value,
         port: this.port,
-        fkDeviceId: this.fkDeviceId,
+        fkProductId: this.fkProductId,
       );
 }
