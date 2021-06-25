@@ -331,6 +331,9 @@ class DBHelper {
     product_model TEXT,
     product_version TEXT,
     product_update TEXT,
+    product_status TEXT,
+    track_vulnerabilities TEXT,
+    last_tracking TEXT,
     fk_cpe23uri_id INTEGER,
     FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
