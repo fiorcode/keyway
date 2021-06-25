@@ -100,11 +100,19 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         break;
       three:
       case 3:
-        if (widget.item.username == null) continue cero;
+        if (widget.item.username == null) continue four;
         _showValue = 3;
         _subtitle = 'Username';
         return _cripto.doDecrypt(
             widget.item.username.usernameEnc, widget.item.username.usernameIv);
+        break;
+      four:
+      case 4:
+        if (widget.item.address == null) continue cero;
+        _showValue = 4;
+        _subtitle =
+            'Protocol: ${widget.item.address.protocol}, Port: ${widget.item.address.port}';
+        return widget.item.address.value;
         break;
       cero:
       default:
@@ -137,7 +145,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   void _switchShowValue() => setState(() {
-        if (_showValue > 4)
+        if (_showValue > 5)
           _showValue = 0;
         else
           _showValue++;
