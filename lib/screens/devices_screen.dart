@@ -16,7 +16,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   ItemProvider _item;
   Future _getDevicesAsync;
 
-  Future<void> _getDevices() async => await _item.fetchDevices();
+  Future<void> _getDevices() async => await _item.fetchProducts();
 
   @override
   void didChangeDependencies() {
@@ -45,34 +45,34 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
               if (snap.hasError)
                 return ErrorHelper.errorBody(snap.error);
               else
-                return _item.devices.length <= 0
+                return _item.products.length <= 0
                     ? EmptyItems()
                     : DataTable(
                         columnSpacing: 8,
                         columns: [
                           DataColumn(label: Text('id')),
                           DataColumn(label: Text('type')),
-                          DataColumn(label: Text('vendor')),
-                          DataColumn(label: Text('product')),
+                          DataColumn(label: Text('trademark')),
+                          DataColumn(label: Text('model')),
                           DataColumn(label: Text('version')),
                           DataColumn(label: Text('update')),
                           DataColumn(label: Text('cpe_id')),
                         ],
-                        rows: _item.devices
+                        rows: _item.products
                             .map(
-                              (d) => DataRow(
+                              (p) => DataRow(
                                 cells: [
                                   DataCell(Container(
                                     width: 16,
                                     child: Center(
-                                        child: Text(d.deviceId.toString())),
+                                        child: Text(p.productId.toString())),
                                   )),
                                   DataCell(
                                     Container(
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.type,
+                                          p.productType,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -83,7 +83,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.vendor,
+                                          p.productTrademark,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -94,7 +94,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.product,
+                                          p.productModel,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -105,7 +105,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.version,
+                                          p.productVersion,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -116,7 +116,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.updateCode,
+                                          p.productUpdate,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -127,7 +127,7 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          d.fkCpe23uriId.toString(),
+                                          p.fkCpe23uriId.toString(),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
