@@ -27,48 +27,50 @@ class _ProductCardState extends State<ProductCard> {
       color: Colors.white,
       elevation: 4,
       child: Padding(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           children: [
-            TextField(
-              autocorrect: true,
-              controller: widget.trademarkCtrler,
-              decoration: InputDecoration(
-                hintText: 'Trademark',
-                // suffixIcon: _type == TextInputType.url
-                //     ? IconButton(
-                //         onPressed: _inputSwitch,
-                //         icon: Icon(Icons.dialpad_outlined,
-                //             color: Colors.grey),
-                //       )
-                //     : IconButton(
-                //         onPressed: _inputSwitch,
-                //         icon: Icon(Icons.keyboard_outlined,
-                //             color: Colors.grey),
-                //       ),
-              ),
-              textAlign: TextAlign.center,
-              onChanged: (_) {},
-            ),
-            TextField(
-              autocorrect: true,
-              controller: widget.modelCtrler,
-              decoration: InputDecoration(
-                hintText: 'Model',
-                // suffixIcon: _type == TextInputType.url
-                //     ? IconButton(
-                //         onPressed: _inputSwitch,
-                //         icon: Icon(Icons.dialpad_outlined,
-                //             color: Colors.grey),
-                //       )
-                //     : IconButton(
-                //         onPressed: _inputSwitch,
-                //         icon: Icon(Icons.keyboard_outlined,
-                //             color: Colors.grey),
-                //       ),
-              ),
-              textAlign: TextAlign.center,
-              onChanged: (_) {},
+            Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      TextField(
+                        autocorrect: true,
+                        controller: widget.trademarkCtrler,
+                        decoration: InputDecoration(hintText: 'Trademark'),
+                        textAlign: TextAlign.center,
+                        onChanged: (value) =>
+                            widget.product.productTrademark = value,
+                      ),
+                      TextField(
+                        autocorrect: true,
+                        controller: widget.modelCtrler,
+                        decoration:
+                            InputDecoration(hintText: 'Model / Program'),
+                        textAlign: TextAlign.center,
+                        onChanged: (value) =>
+                            widget.product.productModel = value,
+                      ),
+                    ],
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                    size: 32,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductSearchScreen(
+                        product: widget.product,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -91,13 +93,6 @@ class _ProductCardState extends State<ProductCard> {
                 ),
               ],
             ),
-            IconButton(
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ProductSearchScreen()),
-              ),
-              icon: Icon(Icons.search),
-            )
           ],
         ),
       ),
