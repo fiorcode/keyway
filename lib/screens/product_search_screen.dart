@@ -1,35 +1,40 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:keyway/models/cpe23uri.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:keyway/models/product.dart';
 
 import '../helpers/error_helper.dart';
+import '../models/cpe.dart';
+import '../models/cpe_body.dart';
 import '../widgets/empty_items.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   static const routeName = '/product-search';
+
+  ProductSearchScreen({this.product});
+
+  final Product product;
 
   @override
   _ProductSearchScreenState createState() => _ProductSearchScreenState();
 }
 
 class _ProductSearchScreenState extends State<ProductSearchScreen> {
-  List<Cpe23uri> _cpes;
+  List<Cpe> _cpes;
   Future _getCpesAsync;
   TextEditingController _searchCtrler;
   FocusNode _searchFocusNode;
   bool _searching = false;
 
-  Future<List<Cpe23uri>> _getCpes() async {
+  Future<void> _getCpes() async {
+    CpeBody _body;
     final response = await http.get(Uri.parse(
-        'https://services.nvd.nist.gov/rest/json/cpes/1.0?cpeMatchString=cpe:2.3:h:zte&resultsPerPage=100'));
+        'https://services.nvd.nist.gov/rest/json/cpes/1.0?cpeMatchString=cpe:2.3:h:zte&resultsPerPage=50'));
     if (response.statusCode == 200) {
-      final i = jsonDecode(response.body);
-      _cpes = List<Cpe23uri>.from(i.map((e) => Cpe23uri.fromMap(e)));
+      final _bodyJson = jsonDecode(response.body);
+      _body = CpeBody.fromJson(_bodyJson);
     }
-    return _cpes;
+    _cpes = _body.result.cpes;
   }
 
   void _searchSwitch() {
@@ -102,7 +107,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                             itemCount: _cpes.length,
                             itemBuilder: (ctx, i) {
                               return ListTile(
-                                title: Text(_cpes[i].title),
+                                title: Text(_cpes[i].titles[0].title),
                               );
                             },
                           ),
