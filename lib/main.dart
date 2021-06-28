@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
+import 'providers/nist_provider.dart';
 import 'screens/addresses_screen.dart';
 import 'screens/cpe23uri_cve_screen.dart';
 import 'screens/cve_screen.dart';
@@ -45,6 +46,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: CriptoProvider()),
         ChangeNotifierProvider.value(value: ItemProvider()),
         ChangeNotifierProvider.value(value: DriveProvider()),
+        ChangeNotifierProvider.value(value: NistProvider()),
       ],
       child: MaterialApp(
         title: 'Keyway',
