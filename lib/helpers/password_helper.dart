@@ -49,7 +49,8 @@ class PasswordHelper {
   static ZxcvbnResult strength(String s, {Password password}) {
     if (s.isEmpty) return null;
     var _evaluation = Zxcvbn().evaluate(s);
-    if (password != null) password.strength = _evaluation.score.toString();
+    if (password != null)
+      password.passwordStrength = _evaluation.score.toString();
     return ZxcvbnResult(
       score: _evaluation.score.toInt(),
       suggestions: _evaluation.feedback.suggestions,
