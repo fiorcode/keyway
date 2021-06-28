@@ -322,8 +322,9 @@ class ItemProvider with ChangeNotifier {
       await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
 
   Future<bool> passUsed(Password p) async {
-    if (p.hash.isEmpty) return false;
-    if ((await DBHelper.getByValue(DBHelper.passwordTable, 'hash', p.hash))
+    if (p.passwordHash.isEmpty) return false;
+    if ((await DBHelper.getByValue(
+            DBHelper.passwordTable, 'password_hash', p.passwordHash))
         .isNotEmpty) return true;
     return false;
   }
@@ -349,7 +350,8 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<Password> getPasswordByHash(String hash) async => Password.fromMap(
-      (await DBHelper.getByValue(DBHelper.passwordTable, 'hash', hash)).first);
+      (await DBHelper.getByValue(DBHelper.passwordTable, 'password_hash', hash))
+          .first);
 
   Future<List<ItemPassword>> getLastItemPassword(int itemId) async {
     Iterable<ItemPassword> _iter;
