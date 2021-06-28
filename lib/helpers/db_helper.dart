@@ -15,6 +15,7 @@ class DBHelper {
   static const String addressTable = "address";
   static const String productTable = "product";
   static const String cpe23uriTable = "cpe23uri";
+  static const String productCpe23uriCveTable = "product_cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
   static const String cveImpactV3Table = "cve_impact_v3";
@@ -36,6 +37,7 @@ class DBHelper {
         await db.execute(createAddressTable);
         await db.execute(createProductTable);
         await db.execute(createCpe23uriTable);
+        await db.execute(createProductCpe23uriTable);
         await db.execute(createCpe23uriCveTable);
         await db.execute(createCveTable);
         await db.execute(createCveImpactV3Table);
@@ -283,15 +285,15 @@ class DBHelper {
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
     password_enc TEXT,
     password_iv TEXT,
-    strength TEXT,
-    hash TEXT)''';
+    password_strength TEXT,
+    password_hash TEXT)''';
 
   static const createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
     fk_item_id INTEGER,
     fk_password_id INTEGER,
-    lapse INTEGER,
+    password_lapse INTEGER,
     password_status TEXT,
-    date TEXT,
+    password_date TEXT,
     PRIMARY KEY (fk_item_id, fk_password_id),
     FOREIGN KEY (fk_item_id) REFERENCES $itemTable (item_id),
     FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id))''';
@@ -318,11 +320,10 @@ class DBHelper {
 
   static const createAddressTable = '''CREATE TABLE $addressTable(
     address_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    protocol TEXT,
-    value TEXT,
-    port INTEGER,
-    fk_product_id INTEGER,
-    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id))''';
+    address_enc TEXT,
+    address_iv TEXT,
+    address_protocol TEXT,
+    address_port INTEGER)''';
 
   static const createProductTable = '''CREATE TABLE $productTable(
     product_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -332,10 +333,8 @@ class DBHelper {
     product_version TEXT,
     product_update TEXT,
     product_status TEXT,
-    track_vulnerabilities TEXT,
-    last_tracking TEXT,
-    fk_cpe23uri_id INTEGER,
-    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
+    track_vulnerabilities INTEGER,
+    last_tracking TEXT)''';
 
   static const createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
     cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -345,6 +344,14 @@ class DBHelper {
     title TEXT,
     ref TEXT,
     ref_type TEXT)''';
+
+  static const createProductCpe23uriTable =
+      '''CREATE TABLE $productCpe23uriCveTable(
+    fk_product_id INTEGER,
+    fk_cpe23uri_id INTEGER,
+    PRIMARY KEY (fk_product_id, fk_cpe23uri_id),
+    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id),
+    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
   static const createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
     fk_cpe23uri_id INTEGER,
