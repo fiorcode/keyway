@@ -1,16 +1,16 @@
 class ItemPassword {
   int fkItemId;
   int fkPasswordId;
-  String date;
-  int lapse;
+  String passwordDate;
+  int passwordLapse;
   String passwordStatus;
   DateTime dateTime;
 
   ItemPassword({
     this.fkItemId,
     this.fkPasswordId,
-    this.date,
-    this.lapse = 320,
+    this.passwordDate,
+    this.passwordLapse = 320,
     this.passwordStatus = 'active',
     this.dateTime,
   });
@@ -18,17 +18,17 @@ class ItemPassword {
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
     fkPasswordId = map['fk_password_id'];
-    date = map['date'];
-    lapse = map['lapse'];
+    passwordDate = map['password_date'];
+    passwordLapse = map['password_lapse'];
     passwordStatus = map['password_status'];
-    dateTime = DateTime.parse(map['date']);
+    dateTime = DateTime.parse(map['password_date']);
   }
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         'fk_item_id': fkItemId,
         'fk_password_id': fkPasswordId,
-        'date': date,
-        'lapse': lapse,
+        'password_date': passwordDate,
+        'password_lapse': passwordLapse,
         'password_status': passwordStatus,
       };
 
@@ -36,8 +36,8 @@ class ItemPassword {
     ItemPassword _ip = ItemPassword(
       fkItemId: this.fkItemId,
       fkPasswordId: this.fkPasswordId,
-      date: this.date,
-      lapse: this.lapse,
+      passwordDate: this.passwordDate,
+      passwordLapse: this.passwordLapse,
       passwordStatus: this.passwordStatus,
       dateTime: this.dateTime,
     );
