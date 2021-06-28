@@ -110,7 +110,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       }
 
       if (_passCtrler.text.isNotEmpty) {
-        _item.password.hash = _cripto.doHash(_passCtrler.text);
+        _item.password.passwordHash = _cripto.doHash(_passCtrler.text);
         if (_passwordRepeatedWarning) {
           if (await _items.passUsed(_item.password)) {
             bool _warning = await WarningHelper.repeat(context, 'Password');
@@ -124,7 +124,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
         _item.password.passwordEnc =
             _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
-        _item.itemPassword.date = _item.date;
+        _item.itemPassword.passwordDate = _item.date;
         _item.itemPassword.fkPasswordId =
             await _items.insertPassword(_item.password);
       }
@@ -206,8 +206,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _portCtrler.dispose();
     _userFocusNode.dispose();
     _passFocusNode.dispose();
-    _protocolFocusNode.dispose();
-    _portFocusNode.dispose();
+    // _protocolFocusNode.dispose();
+    // _portFocusNode.dispose();
     super.dispose();
   }
 
