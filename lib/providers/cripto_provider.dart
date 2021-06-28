@@ -124,7 +124,7 @@ class CriptoProvider with ChangeNotifier {
   createPassword(Password password, String p) {
     if (p.isEmpty) return;
     if (password == null) password = Password();
-    password.hash = doHash(p);
+    password.passwordHash = doHash(p);
     password.passwordIv = e.IV.fromSecureRandom(16).base16;
     password.passwordEnc = doCrypt(p, password.passwordIv);
   }
