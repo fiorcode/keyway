@@ -73,11 +73,13 @@ class _ItemPasswordListScreenState extends State<ItemPasswordListScreen> {
                                       child: Text(ip.fkItemId.toString()))),
                                   DataCell(Center(
                                       child: Text(ip.fkPasswordId.toString()))),
-                                  DataCell(
-                                      Center(child: Text(ip.lapse.toString()))),
+                                  DataCell(Center(
+                                      child:
+                                          Text(ip.passwordLapse.toString()))),
                                   DataCell(
                                       Center(child: Text(ip.passwordStatus))),
-                                  DataCell(Center(child: Text(ip.date))),
+                                  DataCell(
+                                      Center(child: Text(ip.passwordDate))),
                                 ],
                               ),
                             )
