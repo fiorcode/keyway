@@ -19,7 +19,8 @@ class _PasswordChangeReminderCardState
 
   @override
   void initState() {
-    if (widget.itemPass.lapse != 96 && widget.itemPass.lapse != 320) {
+    if (widget.itemPass.passwordLapse != 96 &&
+        widget.itemPass.passwordLapse != 320) {
       _custom = true;
     }
     super.initState();
@@ -47,66 +48,72 @@ class _PasswordChangeReminderCardState
           children: [
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.itemPass.lapse == -1,
+              selected: widget.itemPass.passwordLapse == -1,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.itemPass.lapse = -1;
+                      widget.itemPass.passwordLapse = -1;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 'Never',
                 style: TextStyle(
-                  color:
-                      widget.itemPass.lapse == -1 ? Colors.grey : Colors.white,
-                  fontWeight:
-                      widget.itemPass.lapse == -1 ? FontWeight.bold : null,
+                  color: widget.itemPass.passwordLapse == -1
+                      ? Colors.grey
+                      : Colors.white,
+                  fontWeight: widget.itemPass.passwordLapse == -1
+                      ? FontWeight.bold
+                      : null,
                 ),
               ),
-              elevation: widget.itemPass.lapse == -1 ? 8.0 : 0.0,
+              elevation: widget.itemPass.passwordLapse == -1 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.itemPass.lapse == 96,
+              selected: widget.itemPass.passwordLapse == 96,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.itemPass.lapse = 96;
+                      widget.itemPass.passwordLapse = 96;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 '96 Days',
                 style: TextStyle(
-                  color:
-                      widget.itemPass.lapse == 96 ? Colors.grey : Colors.white,
-                  fontWeight:
-                      widget.itemPass.lapse == 96 ? FontWeight.bold : null,
+                  color: widget.itemPass.passwordLapse == 96
+                      ? Colors.grey
+                      : Colors.white,
+                  fontWeight: widget.itemPass.passwordLapse == 96
+                      ? FontWeight.bold
+                      : null,
                 ),
               ),
-              elevation: widget.itemPass.lapse == 96 ? 8.0 : 0.0,
+              elevation: widget.itemPass.passwordLapse == 96 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.itemPass.lapse == 320,
+              selected: widget.itemPass.passwordLapse == 320,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.itemPass.lapse = 320;
+                      widget.itemPass.passwordLapse = 320;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 '320 Days',
                 style: TextStyle(
-                  color:
-                      widget.itemPass.lapse == 320 ? Colors.grey : Colors.white,
-                  fontWeight:
-                      widget.itemPass.lapse == 320 ? FontWeight.bold : null,
+                  color: widget.itemPass.passwordLapse == 320
+                      ? Colors.grey
+                      : Colors.white,
+                  fontWeight: widget.itemPass.passwordLapse == 320
+                      ? FontWeight.bold
+                      : null,
                 ),
               ),
-              elevation: widget.itemPass.lapse == 320 ? 8.0 : 0.0,
+              elevation: widget.itemPass.passwordLapse == 320 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
@@ -127,7 +134,7 @@ class _PasswordChangeReminderCardState
                 children: [
                   SizedBox(height: 8),
                   Text(
-                    widget.itemPass.lapse.toString() + ' Days',
+                    widget.itemPass.passwordLapse.toString() + ' Days',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -143,9 +150,9 @@ class _PasswordChangeReminderCardState
                     child: Slider(
                       min: 0,
                       max: 364,
-                      value: widget.itemPass.lapse.toDouble(),
+                      value: widget.itemPass.passwordLapse.toDouble(),
                       onChanged: (value) => setState(
-                        () => widget.itemPass.lapse = value.round(),
+                        () => widget.itemPass.passwordLapse = value.round(),
                       ),
                     ),
                   ),
