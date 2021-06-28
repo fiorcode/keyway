@@ -82,12 +82,13 @@ class _PasswordsListScreenState extends State<PasswordsListScreen> {
                                         p.passwordIv,
                                         overflow: TextOverflow.ellipsis,
                                       )))),
-                                  DataCell(Center(child: Text(p.strength))),
+                                  DataCell(
+                                      Center(child: Text(p.passwordStrength))),
                                   DataCell(Container(
                                       width: 92,
                                       child: Center(
                                           child: Text(
-                                        p.hash,
+                                        p.passwordHash,
                                         overflow: TextOverflow.ellipsis,
                                       )))),
                                 ],
