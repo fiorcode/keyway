@@ -158,7 +158,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       }
 
       if (_passCtrler.text.isNotEmpty) {
-        _item.password.hash = _cripto.doHash(_passCtrler.text);
+        _item.password.passwordHash = _cripto.doHash(_passCtrler.text);
         if (widget.item.password == null) {
           _item.password = Password();
           _item.itemPassword = ItemPassword();
@@ -168,9 +168,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               _warning = await WarningHelper.repeat(context, 'Password');
               if (_warning) {
                 Password _p =
-                    await _items.getPasswordByHash(_item.password.hash);
+                    await _items.getPasswordByHash(_item.password.passwordHash);
                 _item.itemPassword.fkPasswordId = _p.passwordId;
-                _item.itemPassword.date = _date.toIso8601String();
+                _item.itemPassword.passwordDate = _date.toIso8601String();
                 _item.itemPassword.passwordStatus = 'REPEATED';
                 _item.itemPassword.fkItemId = _item.itemId;
                 await _items.insertItemPassword(_item.itemPassword);
@@ -185,21 +185,22 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               );
               _item.itemPassword.fkPasswordId =
                   await _items.insertPassword(_item.password);
-              _item.itemPassword.date = _date.toIso8601String();
+              _item.itemPassword.passwordDate = _date.toIso8601String();
               _item.itemPassword.passwordStatus = '';
               _item.itemPassword.fkItemId = _item.itemId;
               await _items.insertItemPassword(_item.itemPassword);
             }
           }
         } else {
-          if (widget.item.password.hash != _item.password.hash) {
+          if (widget.item.password.passwordHash !=
+              _item.password.passwordHash) {
             if (_passwordRepeatedWarning) {
               if (await _items.passUsed(_item.password)) {
                 bool _warning = false;
                 _warning = await WarningHelper.repeat(context, 'Password');
                 if (_warning) {
-                  Password _p =
-                      await _items.getPasswordByHash(_item.password.hash);
+                  Password _p = await _items
+                      .getPasswordByHash(_item.password.passwordHash);
                   _item.itemPassword.fkPasswordId = _p.passwordId;
                   _item.itemPassword.passwordStatus = 'REPEATED';
                   await _items.insertItemPassword(_item.itemPassword);
@@ -217,7 +218,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
                 await _items.insertPassword(_item.password).then((_id) async {
                   _item.itemPassword.fkPasswordId = _id;
-                  _item.itemPassword.date = _date.toIso8601String();
+                  _item.itemPassword.passwordDate = _date.toIso8601String();
                   _item.itemPassword.passwordStatus = '';
                   _item.itemPassword.fkItemId = _item.itemId;
                   await _items.insertItemPassword(_item.itemPassword);
@@ -225,7 +226,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               }
             }
           } else {
-            if (widget.item.itemPassword.lapse != _item.itemPassword.lapse ||
+            if (widget.item.itemPassword.passwordLapse !=
+                    _item.itemPassword.passwordLapse ||
                 widget.item.itemPassword.passwordStatus !=
                     _item.itemPassword.passwordStatus) {
               _items.updateItemPassword(_item.itemPassword);
