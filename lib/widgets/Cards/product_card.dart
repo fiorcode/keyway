@@ -30,6 +30,72 @@ class _ProductCardState extends State<ProductCard> {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Column(
           children: [
+            Wrap(
+              alignment: WrapAlignment.center,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              spacing: 12.0,
+              children: [
+                ChoiceChip(
+                  backgroundColor: Colors.grey,
+                  selected: widget.product.productType == 'h',
+                  selectedColor: Colors.grey[200],
+                  onSelected: (selected) => selected
+                      ? setState(() => widget.product.productType = 'h')
+                      : null,
+                  label: Text(
+                    'Hardware',
+                    style: TextStyle(
+                      color: widget.product.productType == 'h'
+                          ? Colors.grey
+                          : Colors.white,
+                      fontWeight: widget.product.productType == 'h'
+                          ? FontWeight.bold
+                          : null,
+                    ),
+                  ),
+                  elevation: widget.product.productType == 'h' ? 8.0 : 0.0,
+                ),
+                ChoiceChip(
+                  backgroundColor: Colors.grey,
+                  selected: widget.product.productType == 'o',
+                  selectedColor: Colors.grey[200],
+                  onSelected: (selected) => selected
+                      ? setState(() => widget.product.productType = 'o')
+                      : null,
+                  label: Text(
+                    'OS/Firmware',
+                    style: TextStyle(
+                      color: widget.product.productType == 'o'
+                          ? Colors.grey
+                          : Colors.white,
+                      fontWeight: widget.product.productType == 'o'
+                          ? FontWeight.bold
+                          : null,
+                    ),
+                  ),
+                  elevation: widget.product.productType == 'o' ? 8.0 : 0.0,
+                ),
+                ChoiceChip(
+                  backgroundColor: Colors.grey,
+                  selected: widget.product.productType == 'a',
+                  selectedColor: Colors.grey[200],
+                  onSelected: (selected) =>
+                      setState(() => widget.product.productType = 'a'),
+                  label: Text(
+                    'App/Program',
+                    style: TextStyle(
+                      color: widget.product.productType == 'a'
+                          ? Colors.grey
+                          : Colors.white,
+                      fontWeight: widget.product.productType == 'a'
+                          ? FontWeight.bold
+                          : null,
+                    ),
+                  ),
+                  elevation: widget.product.productType == 'a' ? 8.0 : 0.0,
+                ),
+              ],
+            ),
             Row(
               children: [
                 Expanded(
@@ -38,7 +104,8 @@ class _ProductCardState extends State<ProductCard> {
                       TextField(
                         autocorrect: true,
                         controller: widget.trademarkCtrler,
-                        decoration: InputDecoration(hintText: 'Trademark'),
+                        decoration:
+                            InputDecoration(hintText: 'Trademark / Developer'),
                         textAlign: TextAlign.center,
                         onChanged: (value) =>
                             widget.product.productTrademark = value,
@@ -55,11 +122,15 @@ class _ProductCardState extends State<ProductCard> {
                     ],
                   ),
                 ),
-                IconButton(
+                TextButton.icon(
                   icon: Icon(
                     Icons.search,
                     color: Colors.grey,
                     size: 32,
+                  ),
+                  label: Text(
+                    'Find CPE',
+                    textAlign: TextAlign.center,
                   ),
                   onPressed: () => Navigator.push(
                     context,
