@@ -68,10 +68,11 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     bool _passExp = false;
     bool _pinExp = false;
     if (widget.item.itemPassword != null) {
-      DateTime _passDate = DateTime.parse(widget.item.itemPassword.date);
+      DateTime _passDate =
+          DateTime.parse(widget.item.itemPassword.passwordDate);
       int _daysOfPass = _nowUTC.difference(_passDate).inDays;
-      _passExp = widget.item.itemPassword.lapse <= _daysOfPass;
-      if (widget.item.itemPassword.lapse <= 0) _passExp = false;
+      _passExp = widget.item.itemPassword.passwordLapse <= _daysOfPass;
+      if (widget.item.itemPassword.passwordLapse <= 0) _passExp = false;
     }
     if (widget.item.pin != null) {
       DateTime _pinDate = DateTime.parse(widget.item.pin.pinDate);
