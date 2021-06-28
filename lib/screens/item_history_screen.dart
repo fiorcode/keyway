@@ -120,7 +120,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                           child: Text(
                                             DateHelper.shortDate(
                                               _items.itemAndOldPasswords[i]
-                                                  .itemPassword.date,
+                                                  .itemPassword.passwordDate,
                                             ),
                                           ),
                                         ),
