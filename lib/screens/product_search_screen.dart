@@ -1,12 +1,11 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:keyway/models/product.dart';
+import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
 import '../models/cpe.dart';
-import '../models/cpe_body.dart';
 import '../widgets/empty_items.dart';
+import '../models/product.dart';
+import '../providers/nist_provider.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   static const routeName = '/product-search';
@@ -20,42 +19,14 @@ class ProductSearchScreen extends StatefulWidget {
 }
 
 class _ProductSearchScreenState extends State<ProductSearchScreen> {
-  List<Cpe> _cpes;
-  Future _getCpesAsync;
-  TextEditingController _searchCtrler;
-  FocusNode _searchFocusNode;
-  bool _searching = false;
-
-  Future<void> _getCpes() async {
-    CpeBody _body;
-    final response = await http.get(Uri.parse(
-        'https://services.nvd.nist.gov/rest/json/cpes/1.0?cpeMatchString=cpe:2.3:h:zte&resultsPerPage=50'));
-    if (response.statusCode == 200) {
-      final _bodyJson = jsonDecode(response.body);
-      _body = CpeBody.fromJson(_bodyJson);
-    }
-    _cpes = _body.result.cpes;
-  }
-
-  void _searchSwitch() {
-    setState(() {
-      _searching = !_searching;
-      _searching ? _searchFocusNode.requestFocus() : _searchFocusNode.unfocus();
-      if (!_searching) _clearSearch();
-    });
-  }
-
-  void _clearSearch() {
-    _searchCtrler.clear();
-    _getCpesAsync = _getCpes();
-    setState(() {});
-  }
+  NistProvider _nist;
+  Future<List<Cpe>> _getCpesAsync;
 
   @override
   void didChangeDependencies() {
-    _searchCtrler = TextEditingController();
-    _searchFocusNode = FocusNode();
-    _getCpesAsync = _getCpes();
+    _nist = Provider.of<NistProvider>(context, listen: false);
+    _getCpesAsync =
+        _nist.getCpesByCpeMatch(trademark: widget.product.productTrademark);
     super.didChangeDependencies();
   }
 
@@ -66,25 +37,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        centerTitle: true,
-        title: _searching
-            ? TextField(
-                autocorrect: false,
-                controller: _searchCtrler,
-                focusNode: _searchFocusNode,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  suffixIcon: InkWell(
-                    child: Icon(Icons.search),
-                    onTap: _searchSwitch,
-                  ),
-                ),
-                onChanged: (_) {},
-              )
-            : IconButton(
-                icon: Icon(Icons.search),
-                onPressed: _searchSwitch,
-              ),
       ),
       body: FutureBuilder(
         future: _getCpesAsync,
@@ -100,14 +52,14 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
               else
                 return Stack(
                   children: [
-                    _cpes.length <= 0
+                    snap.data.length <= 0
                         ? EmptyItems()
                         : ListView.builder(
                             padding: EdgeInsets.all(12.0),
-                            itemCount: _cpes.length,
+                            itemCount: snap.data.length,
                             itemBuilder: (ctx, i) {
                               return ListTile(
-                                title: Text(_cpes[i].titles[0].title),
+                                title: Text(snap.data[i].titles[0].title),
                               );
                             },
                           ),
