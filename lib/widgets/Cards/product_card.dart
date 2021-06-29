@@ -19,7 +19,47 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
+  bool _emptyTrademark;
+  bool _emptyModel;
+
   void _trackSwitch() => setState(() => widget.product.trackSwitch());
+
+  void _onChangedTrademark(String value) {
+    setState(() {
+      _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
+      widget.product.productTrademark = value;
+    });
+  }
+
+  void _clearTrademark() {
+    setState(() {
+      widget.trademarkCtrler.clear();
+      widget.product.productTrademark = '';
+      _emptyTrademark = true;
+    });
+  }
+
+  void _onChangedModel(String value) {
+    setState(() {
+      _emptyModel = widget.modelCtrler.text.isEmpty;
+      widget.product.productModel = value;
+    });
+  }
+
+  void _clearModel() {
+    setState(() {
+      widget.modelCtrler.clear();
+      widget.product.productModel = '';
+      _emptyModel = true;
+    });
+  }
+
+  @override
+  void initState() {
+    _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
+    _emptyModel = widget.modelCtrler.text.isEmpty;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,43 +144,58 @@ class _ProductCardState extends State<ProductCard> {
                       TextField(
                         autocorrect: true,
                         controller: widget.trademarkCtrler,
-                        decoration:
-                            InputDecoration(hintText: 'Trademark / Developer'),
+                        decoration: InputDecoration(
+                          hintText: 'Trademark / Developer',
+                          suffixIcon: _emptyTrademark
+                              ? null
+                              : InkWell(
+                                  child: Icon(Icons.clear),
+                                  onTap: _clearTrademark,
+                                ),
+                        ),
                         textAlign: TextAlign.center,
-                        onChanged: (value) =>
-                            widget.product.productTrademark = value,
+                        onChanged: (value) => _onChangedTrademark(value),
                       ),
                       TextField(
                         autocorrect: true,
                         controller: widget.modelCtrler,
-                        decoration:
-                            InputDecoration(hintText: 'Model / Program'),
+                        decoration: InputDecoration(
+                          hintText: 'Model / Program',
+                          suffixIcon: _emptyModel
+                              ? null
+                              : InkWell(
+                                  child: Icon(Icons.clear),
+                                  onTap: _clearModel,
+                                ),
+                        ),
                         textAlign: TextAlign.center,
-                        onChanged: (value) =>
-                            widget.product.productModel = value,
+                        onChanged: (value) => _onChangedModel(value),
                       ),
                     ],
                   ),
                 ),
-                TextButton.icon(
-                  icon: Icon(
-                    Icons.search,
-                    color: Colors.grey,
-                    size: 32,
-                  ),
-                  label: Text(
-                    'Find CPE',
-                    textAlign: TextAlign.center,
-                  ),
-                  onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductSearchScreen(
-                        product: widget.product,
+                if (widget.product.tracked)
+                  TextButton.icon(
+                    icon: Icon(
+                      Icons.search,
+                      color: Colors.grey,
+                      size: 32,
+                    ),
+                    label: Text(
+                      'Find CPE',
+                      textAlign: TextAlign.center,
+                    ),
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProductSearchScreen(
+                          product: widget.product,
+                          trademarkCtrler: widget.trademarkCtrler,
+                          modelCtrler: widget.modelCtrler,
+                        ),
                       ),
                     ),
                   ),
-                ),
               ],
             ),
             Row(
