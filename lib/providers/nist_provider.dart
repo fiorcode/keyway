@@ -22,4 +22,16 @@ class NistProvider with ChangeNotifier {
       throw Exception('Failed. Status code: ${response.statusCode}');
     }
   }
+
+  Future<CpeBody> getCpesByKeyword(String keyword) async {
+    keyword = keyword.trim();
+    keyword = keyword.replaceAll(' ', '_');
+    final urlString = '$_baseUrl/cpes/1.0?keyword=$keyword&resultsPerPage=100';
+    final response = await http.get(Uri.parse(urlString));
+    if (response.statusCode == 200) {
+      return CpeBody.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed. Status code: ${response.statusCode}');
+    }
+  }
 }
