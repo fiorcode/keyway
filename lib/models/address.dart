@@ -1,44 +1,39 @@
-import 'package:keyway/models/product.dart';
-
 class Address {
   int addressId;
-  String protocol;
-  String value;
-  int port;
-  int fkProductId;
-
-  Product product;
+  String addressEnc;
+  String addressIv;
+  String addressProtocol;
+  int addressPort;
 
   Address.factory() {
-    this.protocol = '';
-    this.value = '';
-    this.port = 0;
-    this.product = Product();
+    this.addressEnc = '';
+    this.addressIv = '';
+    this.addressProtocol = '';
+    this.addressPort = 0;
   }
 
   Address({
     this.addressId,
-    this.protocol = '',
-    this.value = '',
-    this.port = 0,
-    this.fkProductId,
-    this.product,
+    this.addressEnc = '',
+    this.addressIv = '',
+    this.addressProtocol = '',
+    this.addressPort = 0,
   });
 
   Address.fromMap(Map<String, dynamic> map) {
     addressId = map['address_id'];
-    protocol = map['protocol'];
-    value = map['value'];
-    port = map['port'];
-    fkProductId = map['fk_product_id'];
+    addressEnc = map['address_enc'];
+    addressIv = map['address_iv'];
+    addressProtocol = map['address_protocol'];
+    addressPort = map['address_port'];
   }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{
-      'protocol': protocol,
-      'value': value,
-      'port': port,
-      'fk_product_id': fkProductId,
+      'address_enc': addressEnc,
+      'address_iv': addressIv,
+      'address_protocol': addressProtocol,
+      'address_port': addressPort,
     };
     if (addressId != null) map['address_id'] = addressId;
     return map;
@@ -46,9 +41,9 @@ class Address {
 
   Address clone() => Address(
         addressId: this.addressId,
-        protocol: this.protocol,
-        value: this.value,
-        port: this.port,
-        fkProductId: this.fkProductId,
+        addressEnc: this.addressEnc,
+        addressIv: this.addressIv,
+        addressProtocol: this.addressProtocol,
+        addressPort: this.addressPort,
       );
 }
