@@ -112,8 +112,8 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         if (widget.item.address == null) continue cero;
         _showValue = 4;
         _subtitle =
-            'Protocol: ${widget.item.address.protocol}, Port: ${widget.item.address.port}';
-        return widget.item.address.value;
+            'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
+        return widget.item.address.addressEnc;
         break;
       cero:
       default:
