@@ -51,10 +51,10 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                         columnSpacing: 8,
                         columns: [
                           DataColumn(label: Text('id')),
-                          DataColumn(label: Text('proto')),
-                          DataColumn(label: Text('value')),
+                          DataColumn(label: Text('enc')),
+                          DataColumn(label: Text('iv')),
+                          DataColumn(label: Text('prot')),
                           DataColumn(label: Text('port')),
-                          DataColumn(label: Text('dev_id')),
                         ],
                         rows: _item.addresses
                             .map(
@@ -70,7 +70,7 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          a.protocol,
+                                          a.addressEnc,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -81,7 +81,7 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          a.value,
+                                          a.addressIv,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -92,7 +92,7 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          a.port.toString(),
+                                          a.addressProtocol,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
@@ -103,7 +103,7 @@ class _AddressesListScreenState extends State<AddressesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          a.fkProductId.toString(),
+                                          a.addressPort.toString(),
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
