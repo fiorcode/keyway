@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/Cards/cpe_selection_card.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
 import '../providers/nist_provider.dart';
-import '../models/cpe.dart';
-import '../widgets/empty_items.dart';
 import '../models/product.dart';
 import '../models/cpe_body.dart';
 
@@ -30,8 +29,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   bool _emptyModel;
   bool _emptyKeyword;
   bool _byKeyword = false;
-
-  // void _byKweywordSwitch() => setState(() => _byKeyword = !_byKeyword);
 
   bool _productNotEmpty() {
     if (widget.product.productTrademark.isNotEmpty) return true;
@@ -82,13 +79,39 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     });
   }
 
+  void _byKeywordSwitch() {
+    _clearTrademark();
+    _clearModel();
+    _clearKeyword();
+    setState(() => _byKeyword = !_byKeyword);
+  }
+
+  void _search() {
+    if (_byKeyword) {
+      if (_keywordCtrler.text.isEmpty) return;
+      setState(() {
+        _getCpesAsync = _nist.getCpesByKeyword(_keywordCtrler.text);
+      });
+    } else {
+      if (_productNotEmpty()) {
+        setState(() {
+          _getCpesAsync = _nist.getCpesByCpeMatch(
+            type: widget.product.productType,
+            trademark: widget.product.productTrademark,
+            model: widget.product.productModel,
+          );
+        });
+      }
+    }
+  }
+
   @override
   void initState() {
     _nist = Provider.of<NistProvider>(context, listen: false);
     _keywordCtrler = TextEditingController();
     _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
     _emptyModel = widget.modelCtrler.text.isEmpty;
-    _emptyKeyword = true;
+    _emptyKeyword = _keywordCtrler.text.isEmpty;
     if (_productNotEmpty()) {
       _getCpesAsync = _nist.getCpesByCpeMatch(
         type: widget.product.productType,
@@ -250,12 +273,11 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                             ),
                           ),
                           TextButton(
-                            onPressed: () =>
-                                setState(() => _byKeyword = !_byKeyword),
+                            onPressed: _byKeywordSwitch,
                             child: Text(
                               !_byKeyword
-                                  ? 'Search\nby\nkeyword'
-                                  : 'Search\nby\ntrademark / model',
+                                  ? 'Search by\nkeyword'
+                                  : 'Search by\ntrademark\nor\nmodel',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: Colors.grey,
@@ -275,63 +297,59 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                           'Find CPE',
                           textAlign: TextAlign.center,
                         ),
-                        onPressed: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProductSearchScreen(
-                              product: widget.product,
-                              trademarkCtrler: widget.trademarkCtrler,
-                              modelCtrler: widget.modelCtrler,
-                            ),
-                          ),
-                        ),
+                        onPressed: _search,
                       ),
                     ],
                   ),
                 ),
               ),
-              _productNotEmpty()
-                  ? FutureBuilder(
-                      future: _getCpesAsync,
-                      builder: (ctx, snap) {
-                        switch (snap.connectionState) {
-                          case ConnectionState.none:
-                            return Center(child: Text('none'));
-                          case (ConnectionState.waiting):
-                            return Center(child: CircularProgressIndicator());
-                          case (ConnectionState.done):
-                            if (snap.hasError)
-                              return ErrorHelper.errorBody(snap.error);
-                            else
-                              return snap.data.result.cpes.length <= 0
-                                  ? EmptyItems()
-                                  : Column(
-                                      children: [
-                                        Text(
-                                            'Total results: ${snap.data.totalResults}'),
-                                        ListView.builder(
-                                          padding: EdgeInsets.all(12.0),
-                                          physics:
-                                              NeverScrollableScrollPhysics(),
-                                          shrinkWrap: true,
-                                          itemCount:
-                                              snap.data.result.cpes.length,
-                                          itemBuilder: (ctx, i) {
-                                            return ListTile(
-                                              title: Text(snap.data.result
-                                                  .cpes[i].titles[0].title),
-                                            );
-                                          },
-                                        ),
-                                      ],
-                                    );
-                            break;
-                          default:
-                            return Center(child: Text('default'));
-                        }
-                      },
-                    )
-                  : EmptyItems(),
+              if (_getCpesAsync != null)
+                FutureBuilder(
+                  future: _getCpesAsync,
+                  builder: (ctx, snap) {
+                    switch (snap.connectionState) {
+                      case ConnectionState.none:
+                        return Center(child: Text('none'));
+                      case (ConnectionState.waiting):
+                        return Center(child: CircularProgressIndicator());
+                      case (ConnectionState.done):
+                        if (snap.hasError)
+                          return ErrorHelper.errorBody(snap.error);
+                        else
+                          return snap.data.result.cpes.length <= 0
+                              ? Padding(
+                                  padding: const EdgeInsets.all(32.0),
+                                  child: Center(
+                                    child: Image.asset(
+                                      'assets/empty.png',
+                                      width: MediaQuery.of(context).size.width *
+                                          .3,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                )
+                              : Column(
+                                  children: [
+                                    Text(
+                                        'Total results: ${snap.data.totalResults}'),
+                                    ListView.builder(
+                                      padding: EdgeInsets.all(12.0),
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: snap.data.result.cpes.length,
+                                      itemBuilder: (ctx, i) {
+                                        return CpeSelectionCard(
+                                            snap.data.result.cpes[i]);
+                                      },
+                                    ),
+                                  ],
+                                );
+                        break;
+                      default:
+                        return Center(child: Text('default'));
+                    }
+                  },
+                ),
             ],
           ),
         ));
