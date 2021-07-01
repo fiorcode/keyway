@@ -117,9 +117,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
           );
         }
         if (widget.item.address != null) {
-          _addressCtrler.text = widget.item.address.value;
-          _protocolCtrler.text = widget.item.address.protocol;
-          _portCtrler.text = widget.item.address.port.toString();
+          _addressCtrler.text = widget.item.address.addressEnc;
+          _protocolCtrler.text = widget.item.address.addressProtocol;
+          _portCtrler.text = widget.item.address.addressPort.toString();
         }
       });
     } catch (error) {
@@ -285,13 +285,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
       if (_item.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          _item.address.value = _addressCtrler.text;
-          _item.address.protocol = _protocolCtrler.text;
-          _item.address.port = int.parse(_portCtrler.text);
+          _item.address.addressEnc = _addressCtrler.text;
+          _item.address.addressIv = _addressCtrler.text;
+          _item.address.addressProtocol = _protocolCtrler.text;
+          _item.address.addressPort = int.parse(_portCtrler.text);
           if (widget.item.address != null) {
-            if (widget.item.address.value != _item.address.value ||
-                widget.item.address.protocol != _item.address.protocol ||
-                widget.item.address.port != _item.address.port) {
+            if (widget.item.address.addressEnc != _item.address.addressEnc ||
+                widget.item.address.addressProtocol !=
+                    _item.address.addressProtocol ||
+                widget.item.address.addressPort != _item.address.addressPort) {
               _items.updateAddress(_item.address);
             } else {
               _item.fkAddressId = await _items.insertAddress(_item.address);
