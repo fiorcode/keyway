@@ -150,9 +150,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
       if (_item.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          _item.address.value = _addressCtrler.text;
-          _item.address.protocol = _protocolCtrler.text;
-          _item.address.port = int.parse(_portCtrler.text);
+          _item.address.addressEnc = _addressCtrler.text;
+          _item.address.addressIv = _addressCtrler.text;
+          _item.address.addressProtocol = _protocolCtrler.text;
+          _item.address.addressPort = int.parse(_portCtrler.text);
           _item.fkAddressId = await _items.insertAddress(_item.address);
         }
       }
