@@ -6,7 +6,7 @@ import '../providers/item_provider.dart';
 import '../widgets/empty_items.dart';
 
 class DevicesListScreen extends StatefulWidget {
-  static const routeName = '/devices';
+  static const routeName = '/products';
 
   @override
   _DevicesListScreenState createState() => _DevicesListScreenState();
@@ -54,9 +54,11 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                           DataColumn(label: Text('type')),
                           DataColumn(label: Text('trademark')),
                           DataColumn(label: Text('model')),
-                          DataColumn(label: Text('version')),
-                          DataColumn(label: Text('update')),
-                          DataColumn(label: Text('cpe_id')),
+                          DataColumn(label: Text('v')),
+                          DataColumn(label: Text('u')),
+                          DataColumn(label: Text('ps')),
+                          DataColumn(label: Text('t')),
+                          DataColumn(label: Text('lt')),
                         ],
                         rows: _item.products
                             .map(
@@ -127,7 +129,29 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       width: 92,
                                       child: Center(
                                         child: Text(
-                                          p.fkCpe23uriId.toString(),
+                                          p.productStatus,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Container(
+                                      width: 92,
+                                      child: Center(
+                                        child: Text(
+                                          p.trackVulnerabilities.toString(),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Container(
+                                      width: 92,
+                                      child: Center(
+                                        child: Text(
+                                          p.lastTracking,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
