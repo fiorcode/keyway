@@ -250,7 +250,7 @@ class _DataScreenState extends State<DataScreen> {
                         .pushNamed(NotesListScreen.routeName),
                   ),
                   DashboardCard(
-                    icon: Icon(Icons.dns, color: _primary, size: 48),
+                    icon: Icon(Icons.router, color: _primary, size: 48),
                     title: Text(
                       'Addresses',
                       style: TextStyle(color: _primary, fontSize: 16),
@@ -259,9 +259,9 @@ class _DataScreenState extends State<DataScreen> {
                         .pushNamed(AddressesListScreen.routeName),
                   ),
                   DashboardCard(
-                    icon: Icon(Icons.router, color: _primary, size: 48),
+                    icon: Icon(Icons.security, color: _primary, size: 48),
                     title: Text(
-                      'Devices',
+                      'Products',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     goTo: () => Navigator.of(context)
