@@ -358,8 +358,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _portCtrler.dispose();
     _userFocusNode.dispose();
     _passFocusNode.dispose();
-    _protocolFocusNode.dispose();
-    _portFocusNode.dispose();
+    // _protocolFocusNode.dispose();
+    // _portFocusNode.dispose();
     super.dispose();
   }
 
