@@ -109,11 +109,18 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
         break;
       four:
       case 4:
-        if (widget.item.address == null) continue cero;
+        if (widget.item.address == null) continue five;
         _showValue = 4;
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
         return widget.item.address.addressEnc;
+        break;
+      five:
+      case 5:
+        if (widget.item.product == null) continue cero;
+        _showValue = 5;
+        _subtitle = 'Product';
+        return '${widget.item.product.productTrademark}, ${widget.item.product.productModel}';
         break;
       cero:
       default:
@@ -146,7 +153,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
   }
 
   void _switchShowValue() => setState(() {
-        if (_showValue > 5)
+        if (_showValue > 6)
           _showValue = 0;
         else
           _showValue++;
