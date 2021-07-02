@@ -19,7 +19,7 @@ class Item {
   int fkPinId;
   int fkLongTextId;
   int fkAddressId;
-  int fkProcutId;
+  int fkProductId;
 
   Username username;
   Password password;
@@ -55,12 +55,14 @@ class Item {
     this.fkPinId,
     this.fkLongTextId,
     this.fkAddressId,
+    this.fkProductId,
     this.username,
     this.password,
     this.itemPassword,
     this.pin,
     this.longText,
     this.address,
+    this.product,
   });
 
   Item.fromMap(Map<String, dynamic> map) {
@@ -76,6 +78,7 @@ class Item {
     fkPinId = map['fk_pin_id'];
     fkLongTextId = map['fk_long_text_id'];
     fkAddressId = map['fk_address_id'];
+    fkProductId = map['fk_product_id'];
   }
 
   Map<String, dynamic> toMap() {
@@ -91,6 +94,7 @@ class Item {
       'fk_pin_id': fkPinId,
       'fk_long_text_id': fkLongTextId,
       'fk_address_id': fkAddressId,
+      'fk_product_id': fkProductId,
     };
     if (itemId != null) map['item_id'] = itemId;
     return map;
@@ -110,6 +114,7 @@ class Item {
       fkPinId: this.fkPinId,
       fkLongTextId: this.fkLongTextId,
       fkAddressId: this.fkAddressId,
+      fkProductId: this.fkAddressId,
       username: this.username != null ? this.username.clone() : null,
       password: this.password != null ? this.password.clone() : null,
       itemPassword:
@@ -117,6 +122,7 @@ class Item {
       pin: this.pin != null ? this.pin.clone() : null,
       longText: this.longText != null ? this.longText.clone() : null,
       address: this.address != null ? this.address.clone() : null,
+      product: this.product != null ? this.product.clone() : null,
     );
     return _i;
   }
