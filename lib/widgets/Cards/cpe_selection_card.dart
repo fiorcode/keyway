@@ -19,45 +19,43 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Expanded(
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child: Text(
-                        widget.cpe.titles[0].title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                    Text(
-                      widget.cpe.cpe23Uri,
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Text(
+                      widget.cpe.titles[0].title,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(4.0),
-                      child:
-                          Text('Last modified: ${widget.cpe.lastModifiedDate}'),
-                    ),
-                  ],
-                ),
+                  ),
+                  Text(
+                    widget.cpe.cpe23Uri,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child:
+                        Text('Last modified: ${widget.cpe.lastModifiedDate}'),
+                  ),
+                ],
               ),
-              Checkbox(
-                value: _selected,
-                onChanged: (selected) => setState(() => _selected = selected),
-                checkColor: Colors.green,
-              ),
-            ],
-          ),
+            ),
+            Checkbox(
+              value: _selected,
+              onChanged: (selected) => setState(() => _selected = selected),
+              checkColor: Colors.green,
+            ),
+          ],
         ),
       ),
     );
