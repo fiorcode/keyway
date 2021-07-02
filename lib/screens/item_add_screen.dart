@@ -158,6 +158,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         }
       }
 
+      if (_item.product != null) {
+        if (_trademarkCtrler.text.isNotEmpty || _modelCtrler.text.isNotEmpty) {
+          _item.fkProductId = await _items.insertProduct(_item.product);
+        }
+      }
+
       _items.insertItem(_item).then((itemId) {
         if (_item.password != null) {
           _item.itemPassword.fkItemId = itemId;
