@@ -190,6 +190,9 @@ class ItemProvider with ChangeNotifier {
       if (i.fkAddressId != null) {
         i.address = await getAdress(i.fkAddressId);
       }
+      if (i.fkProductId != null) {
+        i.product = await getProduct(i.fkProductId);
+      }
     });
   }
 
@@ -212,6 +215,9 @@ class ItemProvider with ChangeNotifier {
       }
       if (i.fkAddressId != null) {
         i.address = await getAdress(i.fkAddressId);
+      }
+      if (i.fkProductId != null) {
+        i.product = await getProduct(i.fkProductId);
       }
     });
   }
@@ -378,7 +384,7 @@ class ItemProvider with ChangeNotifier {
     return Address.fromMap(_a.first);
   }
 
-  Future<Product> getDevice(int id) async {
+  Future<Product> getProduct(int id) async {
     List<Map<String, dynamic>> _d = await DBHelper.getProductById(id);
     return Product.fromMap(_d.first);
   }
