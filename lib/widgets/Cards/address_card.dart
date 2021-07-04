@@ -189,7 +189,7 @@ class _AddressCardState extends State<AddressCard> {
                   icon: Icon(Icons.edit_outlined, color: Colors.grey, size: 32),
                 ),
               ],
-            )
+            ),
           ],
         ),
       ),
