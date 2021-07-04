@@ -29,6 +29,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   bool _emptyModel;
   bool _emptyKeyword;
   bool _byKeyword = false;
+  int _typeIndex = 0;
+  String _type = 'All types';
 
   bool _productNotEmpty() {
     if (widget.product.productTrademark.isNotEmpty) return true;
@@ -79,18 +81,14 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     });
   }
 
-  void _byKeywordSwitch() {
-    _clearTrademark();
-    _clearModel();
-    _clearKeyword();
-    setState(() => _byKeyword = !_byKeyword);
-  }
-
-  void _search() {
+  void _search({int startIndex = 0}) {
     if (_byKeyword) {
       if (_keywordCtrler.text.isEmpty) return;
       setState(() {
-        _getCpesAsync = _nist.getCpesByKeyword(_keywordCtrler.text);
+        _getCpesAsync = _nist.getCpesByKeyword(
+          _keywordCtrler.text,
+          startIndex: startIndex,
+        );
       });
     } else {
       if (_productNotEmpty()) {
@@ -99,11 +97,42 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             type: widget.product.productType,
             trademark: widget.product.productTrademark,
             model: widget.product.productModel,
+            startIndex: startIndex,
           );
         });
       }
     }
   }
+
+  void _byKeywordSwitch() => setState(() => _byKeyword = !_byKeyword);
+
+  void _typeSwitch() {
+    setState(() {
+      if (_typeIndex == 3)
+        _typeIndex = 0;
+      else
+        _typeIndex += 1;
+      switch (_typeIndex) {
+        case 1:
+          _type = 'Hardware';
+          widget.product.productType = 'h';
+          break;
+        case 2:
+          _type = 'OS/Firmware';
+          widget.product.productType = 'o';
+          break;
+        case 3:
+          _type = 'App/Program';
+          widget.product.productType = 'a';
+          break;
+        default:
+          _type = 'All types';
+          widget.product.productType = '';
+      }
+    });
+  }
+
+  int _pages(int totalResults) => (totalResults.toDouble() / 100).ceil();
 
   @override
   void initState() {
@@ -142,161 +171,151 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Column(
                     children: [
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 12.0,
-                        children: [
-                          ChoiceChip(
-                            backgroundColor: Colors.grey,
-                            selected: widget.product.productType == 'h',
-                            selectedColor: Colors.grey[200],
-                            onSelected: (selected) => selected
-                                ? setState(
-                                    () => widget.product.productType = 'h')
-                                : null,
-                            label: Text(
-                              'Hardware',
-                              style: TextStyle(
-                                color: widget.product.productType == 'h'
-                                    ? Colors.grey
-                                    : Colors.white,
-                                fontWeight: widget.product.productType == 'h'
-                                    ? FontWeight.bold
-                                    : null,
-                              ),
-                            ),
-                            elevation:
-                                widget.product.productType == 'h' ? 8.0 : 0.0,
-                          ),
-                          ChoiceChip(
-                            backgroundColor: Colors.grey,
-                            selected: widget.product.productType == 'o',
-                            selectedColor: Colors.grey[200],
-                            onSelected: (selected) => selected
-                                ? setState(
-                                    () => widget.product.productType = 'o')
-                                : null,
-                            label: Text(
-                              'OS/Firmware',
-                              style: TextStyle(
-                                color: widget.product.productType == 'o'
-                                    ? Colors.grey
-                                    : Colors.white,
-                                fontWeight: widget.product.productType == 'o'
-                                    ? FontWeight.bold
-                                    : null,
-                              ),
-                            ),
-                            elevation:
-                                widget.product.productType == 'o' ? 8.0 : 0.0,
-                          ),
-                          ChoiceChip(
-                            backgroundColor: Colors.grey,
-                            selected: widget.product.productType == 'a',
-                            selectedColor: Colors.grey[200],
-                            onSelected: (selected) => setState(
-                                () => widget.product.productType = 'a'),
-                            label: Text(
-                              'App/Program',
-                              style: TextStyle(
-                                color: widget.product.productType == 'a'
-                                    ? Colors.grey
-                                    : Colors.white,
-                                fontWeight: widget.product.productType == 'a'
-                                    ? FontWeight.bold
-                                    : null,
-                              ),
-                            ),
-                            elevation:
-                                widget.product.productType == 'a' ? 8.0 : 0.0,
-                          ),
-                        ],
-                      ),
                       Row(
                         children: [
-                          Expanded(
-                            child: Column(
-                              children: [
-                                if (!_byKeyword)
-                                  TextField(
-                                    autocorrect: true,
-                                    controller: widget.trademarkCtrler,
-                                    decoration: InputDecoration(
-                                      hintText: 'Trademark / Developer',
-                                      suffixIcon: _emptyTrademark
-                                          ? null
-                                          : InkWell(
-                                              child: Icon(Icons.clear),
-                                              onTap: _clearTrademark,
-                                            ),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    onChanged: (value) =>
-                                        _onChangedTrademark(value),
-                                  ),
-                                if (!_byKeyword)
-                                  TextField(
-                                    autocorrect: true,
-                                    controller: widget.modelCtrler,
-                                    decoration: InputDecoration(
-                                      hintText: 'Model / Program',
-                                      suffixIcon: _emptyModel
-                                          ? null
-                                          : InkWell(
-                                              child: Icon(Icons.clear),
-                                              onTap: _clearModel,
-                                            ),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    onChanged: (value) =>
-                                        _onChangedModel(value),
-                                  ),
-                                if (_byKeyword)
-                                  TextField(
-                                    autocorrect: true,
-                                    controller: _keywordCtrler,
-                                    decoration: InputDecoration(
-                                      hintText: 'Keyword',
-                                      suffixIcon: _emptyKeyword
-                                          ? null
-                                          : InkWell(
-                                              child: Icon(Icons.clear),
-                                              onTap: _clearKeyword,
-                                            ),
-                                    ),
-                                    textAlign: TextAlign.center,
-                                    onChanged: (value) =>
-                                        _onChangedKeyword(value),
-                                  ),
-                              ],
+                          Text(
+                            'Type',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[600],
                             ),
                           ),
-                          TextButton(
-                            onPressed: _byKeywordSwitch,
-                            child: Text(
-                              !_byKeyword
-                                  ? 'Search by\nkeyword'
-                                  : 'Search by\ntrademark\nor\nmodel',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: ChoiceChip(
+                              backgroundColor: Colors.grey,
+                              selected: true,
+                              selectedColor: Colors.grey[200],
+                              onSelected: (_) {},
+                              label: Text(
+                                _type,
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
+                              elevation: 8.0,
                             ),
+                          ),
+                          IconButton(
+                            onPressed: _typeSwitch,
+                            icon: Icon(Icons.change_circle_outlined,
+                                color: Colors.grey, size: 32),
                           ),
                         ],
                       ),
+                      if (!_byKeyword)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Trademark',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                autocorrect: true,
+                                controller: widget.trademarkCtrler,
+                                decoration: InputDecoration(
+                                  hintText: 'Trademark / Developer',
+                                  suffixIcon: _emptyTrademark
+                                      ? null
+                                      : InkWell(
+                                          child: Icon(Icons.clear),
+                                          onTap: _clearTrademark,
+                                        ),
+                                ),
+                                textAlign: TextAlign.center,
+                                onChanged: (value) =>
+                                    _onChangedTrademark(value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (!_byKeyword)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Model',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                autocorrect: true,
+                                controller: widget.modelCtrler,
+                                decoration: InputDecoration(
+                                  hintText: 'Model / Program',
+                                  suffixIcon: _emptyModel
+                                      ? null
+                                      : InkWell(
+                                          child: Icon(Icons.clear),
+                                          onTap: _clearModel,
+                                        ),
+                                ),
+                                textAlign: TextAlign.center,
+                                onChanged: (value) => _onChangedModel(value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (_byKeyword)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'Keyword',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            Expanded(
+                              child: TextField(
+                                autocorrect: true,
+                                controller: _keywordCtrler,
+                                decoration: InputDecoration(
+                                  hintText: 'Keyword',
+                                  suffixIcon: _emptyKeyword
+                                      ? null
+                                      : InkWell(
+                                          child: Icon(Icons.clear),
+                                          onTap: _clearKeyword,
+                                        ),
+                                ),
+                                textAlign: TextAlign.center,
+                                onChanged: (value) => _onChangedKeyword(value),
+                              ),
+                            ),
+                          ],
+                        ),
+                      TextButton(
+                        onPressed: _byKeywordSwitch,
+                        child: Text(
+                          'Search by keyword',
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ),
                       TextButton.icon(
-                        icon: Icon(
-                          Icons.search,
-                          color: Colors.grey,
-                          size: 32,
-                        ),
-                        label: Text(
-                          'Find CPE',
-                          textAlign: TextAlign.center,
-                        ),
+                        icon: Icon(Icons.search, color: Colors.grey, size: 32),
+                        label: Text('Search', textAlign: TextAlign.center),
                         onPressed: _search,
                       ),
                     ],
@@ -330,10 +349,49 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                 )
                               : Column(
                                   children: [
-                                    Text(
-                                        'Total results: ${snap.data.totalResults}'),
+                                    Text('${snap.data.totalResults} results'),
+                                    if (snap.data.totalResults > 100)
+                                      Container(
+                                        height: 64,
+                                        padding:
+                                            EdgeInsets.symmetric(vertical: 4.0),
+                                        child: ListView.builder(
+                                          scrollDirection: Axis.horizontal,
+                                          shrinkWrap: true,
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12.0),
+                                          itemCount:
+                                              _pages(snap.data.totalResults),
+                                          itemBuilder: (ctx, i) {
+                                            return FloatingActionButton(
+                                              elevation:
+                                                  snap.data.startIndex / 100 ==
+                                                          i
+                                                      ? 8.0
+                                                      : 0.0,
+                                              backgroundColor:
+                                                  snap.data.startIndex / 100 ==
+                                                          i
+                                                      ? Colors.white
+                                                      : Colors.grey,
+                                              onPressed: () =>
+                                                  _search(startIndex: i * 100),
+                                              heroTag: null,
+                                              child: Text(
+                                                (i + 1).toString(),
+                                                style: TextStyle(
+                                                  color: snap.data.startIndex /
+                                                              100 ==
+                                                          i
+                                                      ? Colors.grey
+                                                      : Colors.white,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ),
                                     ListView.builder(
-                                      padding: EdgeInsets.all(12.0),
                                       physics: NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       itemCount: snap.data.result.cpes.length,
