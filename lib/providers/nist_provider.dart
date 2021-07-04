@@ -12,9 +12,10 @@ class NistProvider with ChangeNotifier {
     String type = '*',
     String trademark = '*',
     String model = '*',
+    int startIndex = 0,
   }) async {
     final urlString =
-        '$_baseUrl/cpes/1.0?cpeMatchString=cpe:2.3:$type:$trademark:$model&resultsPerPage=100';
+        '$_baseUrl/cpes/1.0?cpeMatchString=cpe:2.3:$type:$trademark:$model&addOns=cves&resultsPerPage=100&startIndex=$startIndex';
     final response = await http.get(Uri.parse(urlString));
     if (response.statusCode == 200) {
       return CpeBody.fromJson(jsonDecode(response.body));
@@ -23,10 +24,11 @@ class NistProvider with ChangeNotifier {
     }
   }
 
-  Future<CpeBody> getCpesByKeyword(String keyword) async {
+  Future<CpeBody> getCpesByKeyword(String keyword, {int startIndex = 0}) async {
     keyword = keyword.trim();
     keyword = keyword.replaceAll(' ', '_');
-    final urlString = '$_baseUrl/cpes/1.0?keyword=$keyword&resultsPerPage=100';
+    final urlString =
+        '$_baseUrl/cpes/1.0?keyword=$keyword&resultsPerPage=100&startIndex=$startIndex';
     final response = await http.get(Uri.parse(urlString));
     if (response.statusCode == 200) {
       return CpeBody.fromJson(jsonDecode(response.body));
