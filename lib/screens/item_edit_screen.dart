@@ -314,7 +314,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
       setState(() {
-        _passCtrler.text = p;
+        _passCtrler.text = p.passwordEnc;
         _loadingRandomPass = false;
       });
     });
