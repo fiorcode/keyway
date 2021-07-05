@@ -183,7 +183,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
       setState(() {
-        _passCtrler.text = p;
+        _passCtrler.text = p.passwordEnc;
         _loadingRandomPass = false;
       });
     });
