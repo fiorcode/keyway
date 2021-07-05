@@ -50,7 +50,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
-      _passCtrler.text = p;
+      _passCtrler.text = p.passwordEnc;
       _zxcvbnResult = PasswordHelper.strength(_passCtrler.text);
       setState(() => _loadingRandomPass = false);
     });
