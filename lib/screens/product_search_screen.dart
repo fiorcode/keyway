@@ -349,12 +349,20 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                 )
                               : Column(
                                   children: [
-                                    Text('${snap.data.totalResults} results'),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8.0),
+                                      child: Text(
+                                        '${snap.data.totalResults} results',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.grey[600],
+                                        ),
+                                      ),
+                                    ),
                                     if (snap.data.totalResults > 100)
                                       Container(
                                         height: 64,
-                                        padding:
-                                            EdgeInsets.symmetric(vertical: 4.0),
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
                                           shrinkWrap: true,
