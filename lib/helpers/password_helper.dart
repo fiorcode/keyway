@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:keyway/models/word.dart';
 import 'package:zxcvbn/zxcvbn.dart';
 
