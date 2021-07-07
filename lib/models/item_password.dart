@@ -11,9 +11,12 @@ class ItemPassword {
     this.fkPasswordId,
     this.passwordDate,
     this.passwordLapse = 320,
-    this.passwordStatus = 'active',
+    this.passwordStatus = '<active>',
     this.dateTime,
   });
+
+  bool get repeatWarning => !this.passwordStatus.contains('<no-warning>');
+  bool get repeated => !this.passwordStatus.contains('<repeated>');
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
@@ -31,6 +34,20 @@ class ItemPassword {
         'password_lapse': passwordLapse,
         'password_status': passwordStatus,
       };
+
+  void repeatWarningSwitch() {
+    if (repeatWarning)
+      this.passwordStatus += '<no-warning>';
+    else
+      this.passwordStatus = this.passwordStatus.replaceAll('<no-warning>', '');
+  }
+
+  void setRepeat() {
+    if (repeated)
+      return;
+    else
+      this.passwordStatus += '<repeated>';
+  }
 
   ItemPassword clone() {
     ItemPassword _ip = ItemPassword(
