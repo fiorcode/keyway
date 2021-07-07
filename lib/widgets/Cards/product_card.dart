@@ -22,8 +22,6 @@ class _ProductCardState extends State<ProductCard> {
   bool _emptyTrademark;
   bool _emptyModel;
 
-  void _trackSwitch() => setState(() => widget.product.trackSwitch());
-
   void _onChangedTrademark(String value) {
     setState(() {
       _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
@@ -174,48 +172,26 @@ class _ProductCardState extends State<ProductCard> {
                     ],
                   ),
                 ),
-                if (widget.product.tracked)
-                  TextButton.icon(
-                    icon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                      size: 32,
-                    ),
-                    label: Text(
-                      'Find CPE',
-                      textAlign: TextAlign.center,
-                    ),
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ProductSearchScreen(
-                          product: widget.product,
-                          trademarkCtrler: widget.trademarkCtrler,
-                          modelCtrler: widget.modelCtrler,
-                        ),
+                TextButton.icon(
+                  icon: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                    size: 32,
+                  ),
+                  label: Text(
+                    'Find CPE',
+                    textAlign: TextAlign.center,
+                  ),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ProductSearchScreen(
+                        product: widget.product,
+                        trademarkCtrler: widget.trademarkCtrler,
+                        modelCtrler: widget.modelCtrler,
                       ),
                     ),
                   ),
-              ],
-            ),
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Text(
-                    'Track vulnerabilities',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                ),
-                Switch(
-                  activeColor: Colors.green,
-                  value: widget.product.tracked,
-                  onChanged: (_) => _trackSwitch(),
                 ),
               ],
             ),
