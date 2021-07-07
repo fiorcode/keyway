@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/cpe_selection_card.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
 import '../providers/nist_provider.dart';
 import '../models/product.dart';
-import '../models/cpe_body.dart';
+import '../models/api/nist/cpe_body.dart';
+import '../widgets/Cards/cpe_selection_card.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   static const routeName = '/product-search';
