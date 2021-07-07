@@ -13,8 +13,10 @@ class Pin {
     this.pinIv = '',
     this.pinDate,
     this.pinLapse = 320,
-    this.pinStatus = '',
+    this.pinStatus = '<active>',
   });
+
+  bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
 
   Pin.fromMap(Map<String, dynamic> map) {
     pinId = map['pin_id'];
@@ -35,6 +37,13 @@ class Pin {
     };
     if (pinId != null) map['pin_id'] = pinId;
     return map;
+  }
+
+  void repeatWarningSwitch() {
+    if (repeatWarning)
+      this.pinStatus += '<no-warning>';
+    else
+      this.pinStatus = this.pinStatus.replaceAll('<no-warning>', '');
   }
 
   Pin clone() => Pin(
