@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/address_card.dart';
-import 'package:keyway/widgets/Cards/product_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -8,7 +6,6 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
 import '../models/username.dart';
-// import '../models/long_text.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -25,6 +22,8 @@ import '../widgets/Cards/strength_level_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
 import '../widgets/Cards/tags_card.dart';
+import '../widgets/Cards/address_card.dart';
+import '../widgets/Cards/product_card.dart';
 
 class ItemAddScreen extends StatefulWidget {
   static const routeName = '/add-item';
@@ -53,12 +52,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
   FocusNode _passFocusNode;
+  FocusNode _pinFocusNode;
+  FocusNode _longFocusNode;
   FocusNode _addressFocusNode;
   FocusNode _protocolFocusNode;
   FocusNode _portFocusNode;
-
-  bool _passwordRepeatedWarning = true;
-  bool _pinRepeatedWarning = true;
+  FocusNode _trademarkFocusNode;
+  FocusNode _modelFocusNode;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
@@ -84,16 +84,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _userListSwitch();
   }
 
-  // bool _notEmptyFields() {
-  //   return _userCtrler.text.isNotEmpty ||
-  //       _passCtrler.text.isNotEmpty ||
-  //       _pinCtrler.text.isNotEmpty ||
-  //       _longCtrler.text.isNotEmpty ||
-  //       _addressCtrler.text.isNotEmpty ||
-  //       _protocolCtrler.text.isNotEmpty ||
-  //       _portCtrler.text.isNotEmpty;
-  // }
-
   void _save() async {
     try {
       _item.date = DateTime.now().toIso8601String();
@@ -111,12 +101,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
       if (_passCtrler.text.isNotEmpty) {
         _item.password.passwordHash = _cripto.doHash(_passCtrler.text);
-        if (_passwordRepeatedWarning) {
+        if (_item.itemPassword.repeatWarning) {
           if (await _items.passUsed(_item.password)) {
             bool _warning = await WarningHelper.repeat(context, 'Password');
             _warning = _warning == null ? false : _warning;
             if (_warning)
-              _item.itemPassword.passwordStatus = 'REPEATED';
+              _item.itemPassword.setRepeat();
             else
               return;
           }
@@ -335,16 +325,13 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _passwordRepeatedWarning,
-                                      onChanged: (value) => setState(() {
-                                        _passwordRepeatedWarning = value;
-                                        if (value)
-                                          _item.itemPassword.passwordStatus =
-                                              '';
-                                        else
-                                          _item.itemPassword.passwordStatus =
-                                              'NO-WARNING';
-                                      }),
+                                      value: _item.itemPassword.repeatWarning,
+                                      onChanged: (_) {
+                                        setState(() {
+                                          _item.itemPassword
+                                              .repeatWarningSwitch();
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
@@ -388,14 +375,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _pinRepeatedWarning,
-                                      onChanged: (value) => setState(() {
-                                        _pinRepeatedWarning = value;
-                                        if (value)
-                                          _item.pin.pinStatus = '';
-                                        else
-                                          _item.pin.pinStatus = 'NO-WARNING';
-                                      }),
+                                      value: _item.pin.repeatWarning,
+                                      onChanged: (_) {
+                                        setState(() {
+                                          _item.pin.repeatWarningSwitch();
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
