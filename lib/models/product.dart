@@ -1,3 +1,5 @@
+import 'package:keyway/models/cpe23uri.dart';
+
 class Product {
   int productId;
   String productType;
@@ -6,8 +8,8 @@ class Product {
   String productVersion;
   String productUpdate;
   String productStatus;
-  int trackVulnerabilities;
-  String lastTracking;
+
+  List<Cpe23uri> cpes = <Cpe23uri>[];
 
   Product({
     this.productId,
@@ -17,15 +19,9 @@ class Product {
     this.productVersion = '',
     this.productUpdate = '',
     this.productStatus = '',
-    this.trackVulnerabilities = 1,
-    this.lastTracking = '',
   });
 
-  bool get tracked => this.trackVulnerabilities == 1 ? true : false;
-
-  void trackSwitch() => this.trackVulnerabilities == 1
-      ? this.trackVulnerabilities = 0
-      : this.trackVulnerabilities = 1;
+  //TODO: tracking vulns in status
 
   Product.fromMap(Map<String, dynamic> map) {
     this.productId = map['product_id'];
@@ -35,8 +31,6 @@ class Product {
     this.productVersion = map['product_version'];
     this.productUpdate = map['product_update'];
     this.productStatus = map['product_status'];
-    this.trackVulnerabilities = map['track_vulnerabilities'];
-    this.lastTracking = map['last_tracking'];
   }
 
   Map<String, dynamic> toMap() {
@@ -47,8 +41,6 @@ class Product {
       'product_version': this.productVersion,
       'product_update': this.productUpdate,
       'product_status': this.productStatus,
-      'track_vulnerabilities': this.trackVulnerabilities,
-      'last_tracking': this.lastTracking,
     };
     if (this.productId != null) map['product_id'] = this.productId;
     return map;
@@ -61,7 +53,5 @@ class Product {
         productModel: this.productModel,
         productVersion: this.productVersion,
         productUpdate: this.productUpdate,
-        trackVulnerabilities: this.trackVulnerabilities,
-        lastTracking: this.lastTracking,
       );
 }
