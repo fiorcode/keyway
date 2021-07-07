@@ -57,18 +57,18 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                           DataColumn(label: Text('v')),
                           DataColumn(label: Text('u')),
                           DataColumn(label: Text('ps')),
-                          DataColumn(label: Text('t')),
-                          DataColumn(label: Text('lt')),
                         ],
                         rows: _item.products
                             .map(
                               (p) => DataRow(
                                 cells: [
-                                  DataCell(Container(
-                                    width: 16,
-                                    child: Center(
-                                        child: Text(p.productId.toString())),
-                                  )),
+                                  DataCell(
+                                    Container(
+                                      width: 16,
+                                      child: Center(
+                                          child: Text(p.productId.toString())),
+                                    ),
+                                  ),
                                   DataCell(
                                     Container(
                                       width: 92,
@@ -130,28 +130,6 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
                                       child: Center(
                                         child: Text(
                                           p.productStatus,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Container(
-                                      width: 92,
-                                      child: Center(
-                                        child: Text(
-                                          p.trackVulnerabilities.toString(),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  DataCell(
-                                    Container(
-                                      width: 92,
-                                      child: Center(
-                                        child: Text(
-                                          p.lastTracking,
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
