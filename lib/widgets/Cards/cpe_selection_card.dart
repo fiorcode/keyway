@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:keyway/models/cpe.dart';
+import 'package:keyway/models/api/nist/cpe.dart';
 
 class CpeSelectionCard extends StatefulWidget {
   const CpeSelectionCard(this.cpe);
