@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../models/cpe_body.dart';
+import '../models/api/nist/cpe_body.dart';
 
 class NistProvider with ChangeNotifier {
   static const _baseUrl = 'https://services.nvd.nist.gov/rest/json';
