@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/api/nist/cpe.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
@@ -133,6 +134,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   }
 
   int _pages(int totalResults) => (totalResults.toDouble() / 100).ceil();
+
+  void _addRemoveCpe(Cpe cpe) => widget.product.addRemoveCpe(cpe);
 
   @override
   void initState() {
@@ -405,7 +408,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                       itemCount: snap.data.result.cpes.length,
                                       itemBuilder: (ctx, i) {
                                         return CpeSelectionCard(
-                                            snap.data.result.cpes[i]);
+                                          snap.data.result.cpes[i],
+                                          _addRemoveCpe,
+                                        );
                                       },
                                     ),
                                   ],
