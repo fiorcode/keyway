@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:keyway/models/api/nist/cpe.dart';
 
 class CpeSelectionCard extends StatefulWidget {
-  const CpeSelectionCard(this.cpe);
+  const CpeSelectionCard(this.cpe, this.addRemoveCpe);
 
   final Cpe cpe;
+  final Function addRemoveCpe;
 
   @override
   _CpeSelectionCardState createState() => _CpeSelectionCardState();
@@ -14,7 +15,10 @@ class CpeSelectionCard extends StatefulWidget {
 class _CpeSelectionCardState extends State<CpeSelectionCard> {
   bool _selected = false;
 
-  void _onTap() => setState(() => _selected = !_selected);
+  void _onTap() {
+    setState(() => _selected = !_selected);
+    widget.addRemoveCpe(widget.cpe);
+  }
 
   @override
   Widget build(BuildContext context) {
