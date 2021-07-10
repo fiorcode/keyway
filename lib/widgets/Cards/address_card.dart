@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 
 class AddressCard extends StatefulWidget {
-  const AddressCard(
-    this.addressCtrler,
-    this.addressFocus,
-    this.protocolCtrler,
-    this.protocolFocus,
-    this.portCtrler,
-    this.portFocus,
-  );
+  const AddressCard(this.addressCtrler, this.protocolCtrler, this.portCtrler);
 
   final TextEditingController addressCtrler;
   final TextEditingController protocolCtrler;
   final TextEditingController portCtrler;
-  final FocusNode addressFocus;
-  final FocusNode protocolFocus;
-  final FocusNode portFocus;
 
   @override
   _AddressCardState createState() => _AddressCardState();
@@ -81,7 +71,6 @@ class _AddressCardState extends State<AddressCard> {
               autocorrect: false,
               keyboardType: _type,
               controller: widget.addressCtrler,
-              focusNode: widget.addressFocus,
               decoration: InputDecoration(
                 hintText: 'Address',
                 suffixIcon: _type == TextInputType.url
@@ -122,7 +111,6 @@ class _AddressCardState extends State<AddressCard> {
                         child: TextField(
                           autocorrect: false,
                           controller: widget.protocolCtrler,
-                          focusNode: widget.protocolFocus,
                           decoration: InputDecoration(hintText: 'Protocol'),
                           textAlign: TextAlign.center,
                           onChanged: (_) {},
@@ -159,7 +147,6 @@ class _AddressCardState extends State<AddressCard> {
                         child: TextField(
                           autocorrect: false,
                           controller: widget.portCtrler,
-                          focusNode: widget.portFocus,
                           decoration: InputDecoration(hintText: 'Port'),
                           textAlign: TextAlign.center,
                           onChanged: (_) {},
