@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/password.dart';
+import 'package:keyway/models/product_cpe23uri.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -51,20 +53,20 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
-  FocusNode _passFocusNode;
-  FocusNode _pinFocusNode;
-  FocusNode _longFocusNode;
-  FocusNode _addressFocusNode;
-  FocusNode _protocolFocusNode;
-  FocusNode _portFocusNode;
-  FocusNode _trademarkFocusNode;
-  FocusNode _modelFocusNode;
+  // FocusNode _passFocusNode;
+  // FocusNode _pinFocusNode;
+  // FocusNode _longFocusNode;
+  // FocusNode _addressFocusNode;
+  // FocusNode _protocolFocusNode;
+  // FocusNode _portFocusNode;
+  // FocusNode _trademarkFocusNode;
+  // FocusNode _modelFocusNode;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
   bool _loadingRandomPass = false;
 
-  void _refreshScreen() => setState(() {
+  void _updateScreen() => setState(() {
         _item.title = _titleCtrler.text;
         if (_item.username == null) _userCtrler.clear();
         if (_item.password == null) _passCtrler.clear();
@@ -89,9 +91,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       _item.date = DateTime.now().toIso8601String();
 
       if (_userCtrler.text.isNotEmpty) {
-        List<Username> _users = await _items.getUsers();
-        Username _u = _cripto.searchUsername(_users, _userCtrler.text);
+        _item.username.usernameHash = _cripto.doHash(_userCtrler.text);
+        Username _u = await _items.usernameInDB(_item.username);
         if (_u != null) {
+          _item.username = _u;
           _item.fkUsernameId = _u.usernameId;
         } else {
           _u = _cripto.createUsername(_userCtrler.text);
@@ -101,22 +104,25 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
       if (_passCtrler.text.isNotEmpty) {
         _item.password.passwordHash = _cripto.doHash(_passCtrler.text);
-        if (_item.itemPassword.repeatWarning) {
-          if (await _items.passUsed(_item.password)) {
+        Password _p = await _items.passwordInDB(_item.password);
+        if (_p != null) {
+          if (_item.itemPassword.repeatWarning) {
             bool _warning = await WarningHelper.repeat(context, 'Password');
             _warning = _warning == null ? false : _warning;
-            if (_warning)
-              _item.itemPassword.setRepeat();
-            else
-              return;
+            if (!_warning) return;
           }
+          _item.itemPassword.setRepeat();
+          _item.password = _p;
+          _item.itemPassword.fkPasswordId = _p.passwordId;
+        } else {
+          // _cripto.createPassword(_passCtrler.text);
+          _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
+          _item.password.passwordEnc =
+              _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
+          _item.itemPassword.passwordDate = _item.date;
+          _item.itemPassword.fkPasswordId =
+              await _items.insertPassword(_item.password);
         }
-        _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
-        _item.password.passwordEnc =
-            _cripto.doCrypt(_passCtrler.text, _item.password.passwordIv);
-        _item.itemPassword.passwordDate = _item.date;
-        _item.itemPassword.fkPasswordId =
-            await _items.insertPassword(_item.password);
       }
 
       if (_item.pin != null) {
@@ -150,7 +156,21 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
       if (_item.product != null) {
         if (_trademarkCtrler.text.isNotEmpty || _modelCtrler.text.isNotEmpty) {
-          _item.fkProductId = await _items.insertProduct(_item.product);
+          _items.insertProduct(_item.product).then((productId) {
+            _item.fkProductId = productId;
+            if (_item.product.cpes.isNotEmpty) {
+              _item.product.cpes.forEach((cpe) {
+                _items.insertCpe23uri(cpe).then((cpe23uriId) {
+                  _items.insertProductCpe23uri(
+                    ProductCpe23uri(
+                      fkProductId: productId,
+                      fkCpe23uriId: cpe23uriId,
+                    ),
+                  );
+                });
+              });
+            }
+          });
         }
       }
 
@@ -186,7 +206,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _item = Item.factory();
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
-    _passFocusNode = FocusNode();
+    // _passFocusNode = FocusNode();
     _titleFocusNode.requestFocus();
     super.initState();
   }
@@ -202,7 +222,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _protocolCtrler.dispose();
     _portCtrler.dispose();
     _userFocusNode.dispose();
-    _passFocusNode.dispose();
+    // _passFocusNode.dispose();
     // _protocolFocusNode.dispose();
     // _portFocusNode.dispose();
     super.dispose();
@@ -239,8 +259,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _titleFocusNode, _refreshScreen),
-                  PresetsWrap(item: _item, refreshScreen: _refreshScreen),
+                  TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
+                  PresetsWrap(item: _item, refreshScreen: _updateScreen),
                   if (_item.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -254,7 +274,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               Expanded(
                                 child: UsernameTextField(
                                   _userCtrler,
-                                  _refreshScreen,
+                                  _updateScreen,
                                   _userFocusNode,
                                 ),
                               ),
@@ -282,8 +302,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   Expanded(
                                     child: PasswordTextField(
                                       _passCtrler,
-                                      _refreshScreen,
-                                      _passFocusNode,
+                                      _updateScreen,
+                                      // _passFocusNode,
                                     ),
                                   ),
                                   _loadingRandomPass
@@ -350,7 +370,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              PinTextField(_pinCtrler, _refreshScreen),
+                              PinTextField(_pinCtrler, _updateScreen),
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
@@ -409,11 +429,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
                         _addressCtrler,
-                        _addressFocusNode,
                         _protocolCtrler,
-                        _protocolFocusNode,
                         _portCtrler,
-                        _portFocusNode,
                       ),
                     ),
                   if (_item.product != null)
