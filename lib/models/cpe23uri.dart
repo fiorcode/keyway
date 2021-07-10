@@ -24,9 +24,9 @@ class Cpe23uri {
   Cpe23uri.fromCpe(Cpe cpe) {
     this.value = cpe.cpe23Uri;
     this.lastModifiedDate = cpe.lastModifiedDate;
-    this.title = cpe.titles.first.title;
-    this.ref = cpe.refs.first.ref;
-    this.refType = cpe.refs.first.type;
+    this.title = cpe.titles.isEmpty ? '' : cpe.titles.first.title;
+    this.ref = cpe.refs.isEmpty ? '' : cpe.refs.first.ref;
+    this.refType = cpe.refs.isEmpty ? '' : cpe.refs.first.type;
   }
 
   Cpe23uri.fromMap(Map<String, dynamic> map) {
