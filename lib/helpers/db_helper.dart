@@ -15,7 +15,7 @@ class DBHelper {
   static const String addressTable = "address";
   static const String productTable = "product";
   static const String cpe23uriTable = "cpe23uri";
-  static const String productCpe23uriCveTable = "product_cpe23uri";
+  static const String productCpe23uriTable = "product_cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
   static const String cveImpactV3Table = "cve_impact_v3";
@@ -332,9 +332,7 @@ class DBHelper {
     product_model TEXT,
     product_version TEXT,
     product_update TEXT,
-    product_status TEXT,
-    track_vulnerabilities INTEGER,
-    last_tracking TEXT)''';
+    product_status TEXT)''';
 
   static const createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
     cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -343,10 +341,11 @@ class DBHelper {
     last_modified_date TEXT,
     title TEXT,
     ref TEXT,
-    ref_type TEXT)''';
+    ref_type TEXT,
+    last_tracking TEXT)''';
 
   static const createProductCpe23uriTable =
-      '''CREATE TABLE $productCpe23uriCveTable(
+      '''CREATE TABLE $productCpe23uriTable(
     fk_product_id INTEGER,
     fk_cpe23uri_id INTEGER,
     PRIMARY KEY (fk_product_id, fk_cpe23uri_id),
