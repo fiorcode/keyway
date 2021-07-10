@@ -105,28 +105,20 @@ class CriptoProvider with ChangeNotifier {
     return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
   }
 
-  Username createUsername(String u) {
-    if (u.isEmpty) return null;
-    Username _u = Username();
-    _u.usernameIv = e.IV.fromSecureRandom(16).base16;
-    _u.usernameEnc = doCrypt(u, _u.usernameIv);
-    return _u;
-  }
-
-  Username searchUsername(List<Username> usernames, String username) {
-    if (usernames.isEmpty) return null;
-    usernames.forEach((u) {
-      if (doDecrypt(u.usernameEnc, u.usernameIv) == username) return u;
-    });
-    return null;
-  }
-
   createPassword(Password password, String p) {
     if (p.isEmpty) return;
     if (password == null) password = Password();
     password.passwordHash = doHash(p);
     password.passwordIv = e.IV.fromSecureRandom(16).base16;
     password.passwordEnc = doCrypt(p, password.passwordIv);
+  }
+
+  Username createUsername(String u) {
+    if (u.isEmpty) return null;
+    Username _u = Username();
+    _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+    _u.usernameEnc = doCrypt(u, _u.usernameIv);
+    return _u;
   }
 
   void dispose() {
