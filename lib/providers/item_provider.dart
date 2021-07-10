@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/product_cpe23uri.dart';
 
 import '../helpers/db_helper.dart';
 
@@ -327,12 +328,42 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateProduct(Product p) async =>
       await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
 
-  Future<bool> passUsed(Password p) async {
-    if (p.passwordHash.isEmpty) return false;
-    if ((await DBHelper.getByValue(
-            DBHelper.passwordTable, 'password_hash', p.passwordHash))
-        .isNotEmpty) return true;
-    return false;
+  Future<int> insertCpe23uri(Cpe23uri c) {
+    return DBHelper.getByValue(DBHelper.cpe23uriTable, 'value', c.value).then(
+      (list) async {
+        if (list.isEmpty) {
+          return await DBHelper.insert(DBHelper.cpe23uriTable, c.toMap());
+        } else
+          return Cpe23uri.fromMap(list.first).cpe23uriId;
+      },
+    );
+  }
+
+  Future<void> insertProductCpe23uri(ProductCpe23uri pc) async =>
+      await DBHelper.insert(DBHelper.productCpe23uriTable, pc.toMap());
+
+  Future<Password> passwordInDB(Password p) async {
+    if (p.passwordHash.isEmpty) return null;
+    return DBHelper.getByValue(
+            DBHelper.passwordTable, 'password_hash', p.passwordHash)
+        .then((list) {
+      if (list.isEmpty)
+        return null;
+      else
+        return Password.fromMap(list.first);
+    });
+  }
+
+  Future<Username> usernameInDB(Username u) async {
+    if (u.usernameHash.isEmpty) return null;
+    return DBHelper.getByValue(
+            DBHelper.usernameTable, 'username_hash', u.usernameHash)
+        .then((list) {
+      if (list.isEmpty)
+        return null;
+      else
+        return Username.fromMap(list.first);
+    });
   }
 
   Future<void> refreshItemPasswordStatus(int passwordId) async =>
@@ -397,7 +428,7 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  Future<void> insertTag(Tag a) async =>
+  Future<int> insertTag(Tag a) async =>
       await DBHelper.insert(DBHelper.tagTable, a.toMap());
 
   Future<void> deleteTag(Tag t) async {
