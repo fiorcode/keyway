@@ -1,3 +1,4 @@
+import 'package:keyway/models/api/nist/cpe.dart';
 import 'package:keyway/models/cpe23uri.dart';
 
 class Product {
@@ -54,4 +55,12 @@ class Product {
         productVersion: this.productVersion,
         productUpdate: this.productUpdate,
       );
+
+  void addRemoveCpe(Cpe cpe) {
+    if (cpes.any((c) => c.value == cpe.cpe23Uri)) {
+      cpes.removeWhere((c) => c.value == cpe.cpe23Uri);
+    } else {
+      cpes.add(Cpe23uri.fromCpe(cpe));
+    }
+  }
 }
