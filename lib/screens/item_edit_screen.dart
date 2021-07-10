@@ -56,10 +56,10 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
-  FocusNode _passFocusNode;
-  FocusNode _addressFocusNode;
-  FocusNode _protocolFocusNode;
-  FocusNode _portFocusNode;
+  // FocusNode _passFocusNode;
+  // FocusNode _addressFocusNode;
+  // FocusNode _protocolFocusNode;
+  // FocusNode _portFocusNode;
 
   bool _passwordRepeatedWarning = true;
   bool _pinRepeatedWarning = true;
@@ -142,16 +142,14 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       DateTime _date = DateTime.now().toUtc();
 
       if (_userCtrler.text.isNotEmpty) {
-        List<Username> _users = await _items.getUsers();
-        Username _u = _cripto.searchUsername(_users, _userCtrler.text);
-        if (_u != null) {
-          _item.fkUsernameId = _u.usernameId;
-        } else {
-          _u = Username();
-          _u.usernameIv = e.IV.fromSecureRandom(16).base16;
-          _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
-          _item.fkUsernameId = await _items.insertUsername(_u);
-        }
+        // if (_u != null) {
+        //   _item.fkUsernameId = _u.usernameId;
+        // } else {
+        //   _u = Username();
+        //   _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+        //   _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
+        //   _item.fkUsernameId = await _items.insertUsername(_u);
+        // }
       } else {
         _item.fkUsernameId = null;
         _item.username = null;
@@ -163,7 +161,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
           _item.password = Password();
           _item.itemPassword = ItemPassword();
           if (_passwordRepeatedWarning) {
-            if (await _items.passUsed(_item.password)) {
+            if (await _items.passwordInDB(_item.password)) {
               bool _warning = false;
               _warning = await WarningHelper.repeat(context, 'Password');
               if (_warning) {
@@ -195,7 +193,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
           if (widget.item.password.passwordHash !=
               _item.password.passwordHash) {
             if (_passwordRepeatedWarning) {
-              if (await _items.passUsed(_item.password)) {
+              if (await _items.passwordInDB(_item.password)) {
                 bool _warning = false;
                 _warning = await WarningHelper.repeat(context, 'Password');
                 if (_warning) {
@@ -336,12 +334,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
-    _passFocusNode = FocusNode();
+    // _passFocusNode = FocusNode();
     _item = widget.item.clone();
-    if (_item.password != null) {
-      _passwordRepeatedWarning =
-          _item.itemPassword.passwordStatus != 'NO-WARNING';
-    }
     _load();
     super.initState();
   }
@@ -357,7 +351,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _protocolCtrler.dispose();
     _portCtrler.dispose();
     _userFocusNode.dispose();
-    _passFocusNode.dispose();
+    // _passFocusNode.dispose();
     // _protocolFocusNode.dispose();
     // _portFocusNode.dispose();
     super.dispose();
@@ -438,7 +432,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                     child: PasswordTextField(
                                       _passCtrler,
                                       _refreshScreen,
-                                      _passFocusNode,
+                                      // _passFocusNode,
                                     ),
                                   ),
                                   _loadingRandomPass
@@ -569,11 +563,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
                         _addressCtrler,
-                        _addressFocusNode,
                         _protocolCtrler,
-                        _protocolFocusNode,
                         _portCtrler,
-                        _portFocusNode,
                       ),
                     ),
                   Padding(
