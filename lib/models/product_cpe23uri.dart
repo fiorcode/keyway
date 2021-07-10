@@ -17,11 +17,11 @@ class ProductCpe23uri {
         'fk_cpe23uri_id': fkCpe23uriId,
       };
 
-  ProductCpe23uri clone() {
-    ProductCpe23uri _pc = ProductCpe23uri(
-      fkProductId: this.fkProductId,
-      fkCpe23uriId: this.fkCpe23uriId,
-    );
-    return _pc;
-  }
+  // ProductCpe23uri clone() {
+  //   ProductCpe23uri _pc = ProductCpe23uri(
+  //     fkProductId: this.fkProductId,
+  //     fkCpe23uriId: this.fkCpe23uriId,
+  //   );
+  //   return _pc;
+  // }
 }
