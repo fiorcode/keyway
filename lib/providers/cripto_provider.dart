@@ -2,6 +2,9 @@ import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:keyway/models/address.dart';
+import 'package:keyway/models/long_text.dart';
+import 'package:keyway/models/pin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart' as e;
@@ -10,6 +13,7 @@ import 'package:keyway/helpers/db_helper.dart';
 import 'package:keyway/models/user.dart';
 import 'package:keyway/models/username.dart';
 import 'package:keyway/models/password.dart';
+import 'package:zxcvbn/zxcvbn.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
@@ -105,20 +109,43 @@ class CriptoProvider with ChangeNotifier {
     return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
   }
 
-  createPassword(Password password, String p) {
-    if (p.isEmpty) return;
-    if (password == null) password = Password();
-    password.passwordHash = doHash(p);
-    password.passwordIv = e.IV.fromSecureRandom(16).base16;
-    password.passwordEnc = doCrypt(p, password.passwordIv);
+  Password createPassword(String p) {
+    if (p.isEmpty) return null;
+    Password _p = Password(
+      passwordIv: e.IV.fromSecureRandom(16).base16,
+      passwordHash: doHash(p),
+    );
+    _p.passwordEnc = doCrypt(p, _p.passwordIv);
+    _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
+    return _p;
   }
 
   Username createUsername(String u) {
     if (u.isEmpty) return null;
-    Username _u = Username();
-    _u.usernameIv = e.IV.fromSecureRandom(16).base16;
+    Username _u = Username(usernameIv: e.IV.fromSecureRandom(16).base16);
     _u.usernameEnc = doCrypt(u, _u.usernameIv);
     return _u;
+  }
+
+  Pin createPin(String p) {
+    if (p.isEmpty) return null;
+    Pin _p = Pin(pinIv: e.IV.fromSecureRandom(16).base16);
+    _p.pinEnc = doCrypt(p, _p.pinIv);
+    return _p;
+  }
+
+  LongText createLongText(String l) {
+    if (l.isEmpty) return null;
+    LongText _l = LongText(longTextIv: e.IV.fromSecureRandom(16).base16);
+    _l.longTextEnc = doCrypt(l, _l.longTextIv);
+    return _l;
+  }
+
+  Address createAddress(String a) {
+    if (a.isEmpty) return null;
+    Address _a = Address(addressIv: e.IV.fromSecureRandom(16).base16);
+    _a.addressEnc = doCrypt(a, _a.addressIv);
+    return _a;
   }
 
   void dispose() {
