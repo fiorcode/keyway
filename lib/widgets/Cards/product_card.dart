@@ -79,7 +79,7 @@ class _ProductCardState extends State<ProductCard> {
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
                       ? setState(() => widget.product.productType = 'h')
-                      : null,
+                      : setState(() => widget.product.productType = ''),
                   label: Text(
                     'Hardware',
                     style: TextStyle(
@@ -99,7 +99,7 @@ class _ProductCardState extends State<ProductCard> {
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
                       ? setState(() => widget.product.productType = 'o')
-                      : null,
+                      : setState(() => widget.product.productType = ''),
                   label: Text(
                     'OS/Firmware',
                     style: TextStyle(
@@ -117,8 +117,9 @@ class _ProductCardState extends State<ProductCard> {
                   backgroundColor: Colors.grey,
                   selected: widget.product.productType == 'a',
                   selectedColor: Colors.grey[200],
-                  onSelected: (selected) =>
-                      setState(() => widget.product.productType = 'a'),
+                  onSelected: (selected) => selected
+                      ? setState(() => widget.product.productType = 'a')
+                      : setState(() => widget.product.productType = ''),
                   label: Text(
                     'App/Program',
                     style: TextStyle(
