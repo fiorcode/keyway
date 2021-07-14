@@ -34,6 +34,22 @@ class Product {
     this.productStatus = map['product_status'];
   }
 
+  String get type {
+    switch (productType) {
+      case 'h':
+        return 'Hardware';
+        break;
+      case 'o':
+        return 'OS/Firmware';
+        break;
+      case 'a':
+        return 'Application';
+        break;
+      default:
+        return 'All types';
+    }
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{
       'product_type': this.productType,
