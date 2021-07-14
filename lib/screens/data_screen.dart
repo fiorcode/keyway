@@ -270,7 +270,7 @@ class _DataScreenState extends State<DataScreen> {
                   DashboardCard(
                     icon: Icon(Icons.receipt, color: _primary, size: 48),
                     title: Text(
-                      'Devices CPEs',
+                      'CPEs',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     goTo: () => Navigator.of(context)
