@@ -31,7 +31,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   bool _emptyKeyword;
   bool _byKeyword = false;
   int _typeIndex = 0;
-  String _type = 'All types';
 
   bool _productNotEmpty() {
     if (widget.product.productTrademark.isNotEmpty) return true;
@@ -115,19 +114,15 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
         _typeIndex += 1;
       switch (_typeIndex) {
         case 1:
-          _type = 'Hardware';
           widget.product.productType = 'h';
           break;
         case 2:
-          _type = 'OS/Firmware';
           widget.product.productType = 'o';
           break;
         case 3:
-          _type = 'App/Program';
           widget.product.productType = 'a';
           break;
         default:
-          _type = 'All types';
           widget.product.productType = '';
       }
     });
@@ -174,41 +169,42 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Text(
-                            'Type',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: ChoiceChip(
-                              backgroundColor: Colors.grey,
-                              selected: true,
-                              selectedColor: Colors.grey[200],
-                              onSelected: (_) {},
-                              label: Text(
-                                _type,
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                      if (!_byKeyword)
+                        Row(
+                          children: [
+                            Text(
+                              'Type',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
                               ),
-                              elevation: 8.0,
                             ),
-                          ),
-                          IconButton(
-                            onPressed: _typeSwitch,
-                            icon: Icon(Icons.change_circle_outlined,
-                                color: Colors.grey, size: 32),
-                          ),
-                        ],
-                      ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: ChoiceChip(
+                                backgroundColor: Colors.grey,
+                                selected: true,
+                                selectedColor: Colors.grey[200],
+                                onSelected: (_) {},
+                                label: Text(
+                                  widget.product.type,
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                elevation: 8.0,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _typeSwitch,
+                              icon: Icon(Icons.change_circle_outlined,
+                                  color: Colors.grey, size: 32),
+                            ),
+                          ],
+                        ),
                       if (!_byKeyword)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -312,7 +308,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                       TextButton(
                         onPressed: _byKeywordSwitch,
                         child: Text(
-                          'Search by keyword',
+                          _byKeyword
+                              ? 'Search by Trademark/Model'
+                              : 'Search by keyword',
                           style: TextStyle(color: Colors.grey),
                         ),
                       ),
