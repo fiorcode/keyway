@@ -281,8 +281,56 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<int> insertItem(Item i) async =>
-      await DBHelper.insert(DBHelper.itemTable, i.toMap());
+  Future<void> insertItem(Item i) async {
+    i.date = DateTime.now().toIso8601String();
+    if (i.password != null) {
+      i.itemPassword.passwordDate = i.date;
+      i.itemPassword.fkPasswordId = await insertPassword(i.password);
+    }
+    if (i.username != null) {
+      if (i.username.usernameId == null) {
+        i.fkUsernameId = await insertUsername(i.username);
+      } else {
+        i.fkUsernameId = i.username.usernameId;
+      }
+    }
+    if (i.pin != null) {
+      i.pin.pinDate = i.date;
+      i.fkPinId = await insertPin(i.pin);
+    }
+    if (i.longText != null) {
+      i.fkLongTextId = await insertLongText(i.longText);
+    }
+    if (i.address != null) {
+      i.fkAddressId = await insertAddress(i.address);
+    }
+    if (i.product != null) {
+      insertProduct(i.product).then((productId) {
+        i.fkProductId = productId;
+        if (i.product.cpes.isNotEmpty) {
+          i.product.cpes.forEach((cpe) {
+            insertCpe23uri(cpe).then((cpe23uriId) {
+              insertProductCpe23uri(
+                ProductCpe23uri(
+                  fkProductId: productId,
+                  fkCpe23uriId: cpe23uriId,
+                ),
+              );
+            });
+          });
+        }
+      });
+    }
+    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) {
+      if (i.password != null) {
+        i.itemPassword.fkItemId = itemId;
+        insertItemPassword(i.itemPassword);
+      }
+    });
+  }
+
+  // Future<int> insertItem(Item i) async =>
+  //     await DBHelper.insert(DBHelper.itemTable, i.toMap());
 
   Future<int> updateItem(Item i) async => await DBHelper.updateItem(i.toMap());
 
@@ -342,10 +390,9 @@ class ItemProvider with ChangeNotifier {
   Future<void> insertProductCpe23uri(ProductCpe23uri pc) async =>
       await DBHelper.insert(DBHelper.productCpe23uriTable, pc.toMap());
 
-  Future<Password> passwordInDB(Password p) async {
-    if (p.passwordHash.isEmpty) return null;
-    return DBHelper.getByValue(
-            DBHelper.passwordTable, 'password_hash', p.passwordHash)
+  Future<Password> passwordInDB(String hash) async {
+    if (hash.isEmpty) return null;
+    return DBHelper.getByValue(DBHelper.passwordTable, 'password_hash', hash)
         .then((list) {
       if (list.isEmpty)
         return null;
