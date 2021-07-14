@@ -6,7 +6,6 @@ import 'package:encrypt/encrypt.dart' as e;
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
-import '../models/username.dart';
 import '../models/password.dart';
 import '../models/item_password.dart';
 import '../models/pin.dart';
@@ -156,12 +155,13 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       }
 
       if (_passCtrler.text.isNotEmpty) {
-        _item.password.passwordHash = _cripto.doHash(_passCtrler.text);
         if (widget.item.password == null) {
           _item.password = Password();
           _item.itemPassword = ItemPassword();
-          if (_passwordRepeatedWarning) {
-            if (await _items.passwordInDB(_item.password)) {
+          if (_item.itemPassword.repeatWarning) {
+            Password _p =
+                await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+            if (_p != null) {
               bool _warning = false;
               _warning = await WarningHelper.repeat(context, 'Password');
               if (_warning) {
@@ -193,7 +193,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
           if (widget.item.password.passwordHash !=
               _item.password.passwordHash) {
             if (_passwordRepeatedWarning) {
-              if (await _items.passwordInDB(_item.password)) {
+              Password _p =
+                  await _items.passwordInDB(_item.password.passwordHash);
+              if (_p != null) {
                 bool _warning = false;
                 _warning = await WarningHelper.repeat(context, 'Password');
                 if (_warning) {
