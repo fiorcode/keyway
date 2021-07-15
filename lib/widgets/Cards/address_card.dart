@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
-class AddressCard extends StatefulWidget {
-  const AddressCard(this.addressCtrler, this.protocolCtrler, this.portCtrler);
+import 'package:keyway/models/address.dart';
 
+class AddressCard extends StatefulWidget {
+  const AddressCard(
+    this.address,
+    this.addressCtrler,
+    this.protocolCtrler,
+    this.portCtrler,
+  );
+
+  final Address address;
   final TextEditingController addressCtrler;
   final TextEditingController protocolCtrler;
   final TextEditingController portCtrler;
@@ -29,6 +37,8 @@ class _AddressCardState extends State<AddressCard> {
   bool _inputMode = false;
   int _protocolIndex = 0;
 
+  //TODO: onChange functions
+
   void _inputSwitch() {
     FocusScope.of(context).unfocus();
     setState(() => _type == TextInputType.url
@@ -39,22 +49,26 @@ class _AddressCardState extends State<AddressCard> {
   void _inputModeSwitch() => setState(() => _inputMode = !_inputMode);
 
   void _protocolSwitch() {
-    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
-    widget.portCtrler.text =
-        _protocols.values.elementAt(_protocolIndex).toString();
     setState(() {
       if (_protocolIndex == _protocols.length - 1)
         _protocolIndex = 0;
       else
         _protocolIndex += 1;
     });
+    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
+    widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
+    widget.portCtrler.text =
+        _protocols.values.elementAt(_protocolIndex).toString();
+    widget.address.addressPort = int.parse(widget.portCtrler.text);
   }
 
   @override
   void initState() {
     widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
+    widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
     widget.portCtrler.text =
         _protocols.values.elementAt(_protocolIndex).toString();
+    widget.address.addressPort = int.parse(widget.portCtrler.text);
     super.initState();
   }
 
