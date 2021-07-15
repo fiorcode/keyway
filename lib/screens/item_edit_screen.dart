@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/address_card.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -26,6 +25,7 @@ import '../widgets/Cards/strength_level_card.dart';
 import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
 import '../widgets/Cards/tags_card.dart';
+import '../widgets/Cards/address_card.dart';
 
 class ItemEditScreen extends StatefulWidget {
   static const routeName = '/edit-item';
@@ -41,9 +41,9 @@ class ItemEditScreen extends StatefulWidget {
 class _ItemEditScreenState extends State<ItemEditScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
-
   Item _item;
 
+  //TODO: Create when its necesary
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
   final _passCtrler = TextEditingController();
@@ -52,27 +52,31 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   final _addressCtrler = TextEditingController();
   final _protocolCtrler = TextEditingController();
   final _portCtrler = TextEditingController();
+  final _trademarkCtrler = TextEditingController();
+  final _modelCtrler = TextEditingController();
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
-  // FocusNode _passFocusNode;
-  // FocusNode _addressFocusNode;
-  // FocusNode _protocolFocusNode;
-  // FocusNode _portFocusNode;
-
-  bool _passwordRepeatedWarning = true;
-  bool _pinRepeatedWarning = true;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
   bool _loadingRandomPass = false;
 
-  void _refreshScreen() => setState(() {
+  void _updateScreen() => setState(() {
         _item.title = _titleCtrler.text;
         if (_item.username == null) _userCtrler.clear();
         if (_item.password == null) _passCtrler.clear();
         if (_item.pin == null) _pinCtrler.clear();
         if (_item.longText == null) _longCtrler.clear();
+        if (_item.address == null) {
+          _addressCtrler.clear();
+          _protocolCtrler.clear();
+          _portCtrler.clear();
+        }
+        if (_item.product == null) {
+          _trademarkCtrler.clear();
+          _modelCtrler.clear();
+        }
       });
 
   void _userListSwitch() => setState(() {
@@ -89,66 +93,38 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
   void _load() {
     try {
-      setState(() {
-        _titleCtrler.text = widget.item.title;
-        if (widget.item.username != null) {
-          _userCtrler.text = _cripto.doDecrypt(
-            widget.item.username.usernameEnc,
-            widget.item.username.usernameIv,
-          );
-        }
-        if (widget.item.password != null) {
-          _passCtrler.text = _cripto.doDecrypt(
-            widget.item.password.passwordEnc,
-            widget.item.password.passwordIv,
-          );
-        }
-        if (widget.item.pin != null) {
-          _pinCtrler.text = _cripto.doDecrypt(
-            widget.item.pin.pinEnc,
-            widget.item.pin.pinIv,
-          );
-        }
-        if (widget.item.longText != null) {
-          _longCtrler.text = _cripto.doDecrypt(
-            widget.item.longText.longTextEnc,
-            widget.item.longText.longTextIv,
-          );
-        }
-        if (widget.item.address != null) {
-          _addressCtrler.text = widget.item.address.addressEnc;
-          _protocolCtrler.text = widget.item.address.addressProtocol;
-          _portCtrler.text = widget.item.address.addressPort.toString();
-        }
-      });
+      _titleCtrler.text = widget.item.title;
+      _userCtrler.text = _cripto.decryptUsername(_item.username);
+      _passCtrler.text = _cripto.decryptPassword(_item.password);
+      _pinCtrler.text = _cripto.decryptPin(_item.pin);
+      _longCtrler.text = _cripto.decryptLongText(_item.longText);
+      _addressCtrler.text = _cripto.decryptAddress(_item.address);
+      _protocolCtrler.text = _item.address.addressProtocol;
+      _portCtrler.text = _item.address.addressProtocol;
+      _trademarkCtrler.text = _item.product.productTrademark;
+      _modelCtrler.text = _item.product.productModel;
+      //setState(() {});
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
 
-  // bool _notEmptyFields() {
-  //   return _userCtrler.text.isNotEmpty ||
-  //       _passCtrler.text.isNotEmpty ||
-  //       _pinCtrler.text.isNotEmpty ||
-  //       _longCtrler.text.isNotEmpty ||
-  //       _addressCtrler.text.isNotEmpty ||
-  //       _protocolCtrler.text.isNotEmpty ||
-  //       _portCtrler.text.isNotEmpty;
-  // }
-
   void _save() async {
     try {
-      DateTime _date = DateTime.now().toUtc();
+      if (widget.item.password != null) {
+        if (_item.password != null) {
+          //UPDATE
+        } else {
+          //DELETE
+        }
+      } else {
+        if (widget.item.password != null) {
+          //CREATE
+          _item.password = _cripto.createPassword(_passCtrler.text);
+        }
+      }
 
       if (_userCtrler.text.isNotEmpty) {
-        // if (_u != null) {
-        //   _item.fkUsernameId = _u.usernameId;
-        // } else {
-        //   _u = Username();
-        //   _u.usernameIv = e.IV.fromSecureRandom(16).base16;
-        //   _u.usernameEnc = _cripto.doCrypt(_userCtrler.text, _u.usernameIv);
-        //   _item.fkUsernameId = await _items.insertUsername(_u);
-        // }
       } else {
         _item.fkUsernameId = null;
         _item.username = null;
@@ -320,7 +296,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     });
   }
 
-  //TODO: Chequear que se eliminen las notas
+  //TODO: Check deletions of all elements of item
   void _delete() async {
     bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
@@ -336,7 +312,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
-    // _passFocusNode = FocusNode();
     _item = widget.item.clone();
     _load();
     super.initState();
@@ -350,12 +325,12 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _pinCtrler.dispose();
     _longCtrler.dispose();
     _addressCtrler.dispose();
+    _trademarkCtrler.dispose();
+    _modelCtrler.dispose();
     _protocolCtrler.dispose();
     _portCtrler.dispose();
+    _titleFocusNode.dispose();
     _userFocusNode.dispose();
-    // _passFocusNode.dispose();
-    // _protocolFocusNode.dispose();
-    // _portFocusNode.dispose();
     super.dispose();
   }
 
@@ -390,8 +365,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _titleFocusNode, _refreshScreen),
-                  PresetsWrap(item: _item, refreshScreen: _refreshScreen),
+                  TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
+                  PresetsWrap(item: _item, refreshScreen: _updateScreen),
                   if (_item.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -405,7 +380,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                               Expanded(
                                 child: UsernameTextField(
                                   _userCtrler,
-                                  _refreshScreen,
+                                  _updateScreen,
                                   _userFocusNode,
                                 ),
                               ),
@@ -433,7 +408,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                   Expanded(
                                     child: PasswordTextField(
                                       _passCtrler,
-                                      _refreshScreen,
+                                      _updateScreen,
                                       // _passFocusNode,
                                     ),
                                   ),
@@ -504,7 +479,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Column(
                             children: [
-                              PinTextField(_pinCtrler, _refreshScreen),
+                              PinTextField(_pinCtrler, _updateScreen),
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
@@ -564,6 +539,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
+                        _item.address,
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
