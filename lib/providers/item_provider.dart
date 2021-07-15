@@ -285,7 +285,12 @@ class ItemProvider with ChangeNotifier {
     i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
-      i.itemPassword.fkPasswordId = await insertPassword(i.password);
+      if (i.password.passwordId == null) {
+        i.itemPassword.fkPasswordId = await insertPassword(i.password);
+      } else {
+        i.itemPassword.fkPasswordId = i.password.passwordId;
+        i.itemPassword.setRepeat();
+      }
     }
     if (i.username != null) {
       if (i.username.usernameId == null) {
@@ -305,21 +310,26 @@ class ItemProvider with ChangeNotifier {
       i.fkAddressId = await insertAddress(i.address);
     }
     if (i.product != null) {
-      insertProduct(i.product).then((productId) {
-        i.fkProductId = productId;
-        if (i.product.cpes.isNotEmpty) {
-          i.product.cpes.forEach((cpe) {
-            insertCpe23uri(cpe).then((cpe23uriId) {
-              insertProductCpe23uri(
-                ProductCpe23uri(
-                  fkProductId: productId,
-                  fkCpe23uriId: cpe23uriId,
-                ),
-              );
-            });
-          });
-        }
-      });
+      if (i.product.productTrademark.isNotEmpty ||
+          i.product.productModel.isNotEmpty) {
+        insertProduct(i.product).then(
+          (productId) {
+            i.fkProductId = productId;
+            if (i.product.cpes.isNotEmpty) {
+              i.product.cpes.forEach((cpe) {
+                insertCpe23uri(cpe).then((cpe23uriId) {
+                  insertProductCpe23uri(
+                    ProductCpe23uri(
+                      fkProductId: productId,
+                      fkCpe23uriId: cpe23uriId,
+                    ),
+                  );
+                });
+              });
+            }
+          },
+        );
+      }
     }
     DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) {
       if (i.password != null) {
@@ -328,9 +338,6 @@ class ItemProvider with ChangeNotifier {
       }
     });
   }
-
-  // Future<int> insertItem(Item i) async =>
-  //     await DBHelper.insert(DBHelper.itemTable, i.toMap());
 
   Future<int> updateItem(Item i) async => await DBHelper.updateItem(i.toMap());
 
@@ -401,10 +408,9 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<Username> usernameInDB(Username u) async {
-    if (u.usernameHash.isEmpty) return null;
-    return DBHelper.getByValue(
-            DBHelper.usernameTable, 'username_hash', u.usernameHash)
+  Future<Username> usernameInDB(String hash) async {
+    if (hash.isEmpty) return null;
+    return DBHelper.getByValue(DBHelper.usernameTable, 'username_hash', hash)
         .then((list) {
       if (list.isEmpty)
         return null;
