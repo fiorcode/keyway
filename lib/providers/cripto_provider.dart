@@ -109,6 +109,41 @@ class CriptoProvider with ChangeNotifier {
     return _crypter.decrypt64(value, iv: e.IV.fromBase16(iv));
   }
 
+  String decryptPassword(Password p) {
+    if (p == null) return '';
+    if (p.passwordIv.isEmpty) return '';
+    if (p.passwordEnc.isEmpty) return '';
+    return _crypter.decrypt64(p.passwordEnc, iv: e.IV.fromBase16(p.passwordIv));
+  }
+
+  String decryptUsername(Username u) {
+    if (u == null) return '';
+    if (u.usernameIv.isEmpty) return '';
+    if (u.usernameEnc.isEmpty) return '';
+    return _crypter.decrypt64(u.usernameEnc, iv: e.IV.fromBase16(u.usernameIv));
+  }
+
+  String decryptPin(Pin p) {
+    if (p == null) return '';
+    if (p.pinIv.isEmpty) return '';
+    if (p.pinEnc.isEmpty) return '';
+    return _crypter.decrypt64(p.pinEnc, iv: e.IV.fromBase16(p.pinIv));
+  }
+
+  String decryptLongText(LongText l) {
+    if (l == null) return '';
+    if (l.longTextIv.isEmpty) return '';
+    if (l.longTextEnc.isEmpty) return '';
+    return _crypter.decrypt64(l.longTextEnc, iv: e.IV.fromBase16(l.longTextIv));
+  }
+
+  String decryptAddress(Address a) {
+    if (a == null) return '';
+    if (a.addressIv.isEmpty) return '';
+    if (a.addressEnc.isEmpty) return '';
+    return _crypter.decrypt64(a.addressEnc, iv: e.IV.fromBase16(a.addressIv));
+  }
+
   Password createPassword(String p) {
     if (p.isEmpty) return null;
     Password _p = Password(
