@@ -8,16 +8,16 @@ class Address {
   Address.factory() {
     this.addressEnc = '';
     this.addressIv = '';
-    this.addressProtocol = '';
-    this.addressPort = 0;
+    this.addressProtocol = 'https';
+    this.addressPort = 443;
   }
 
   Address({
     this.addressId,
     this.addressEnc = '',
     this.addressIv = '',
-    this.addressProtocol = '',
-    this.addressPort = 0,
+    this.addressProtocol = 'https',
+    this.addressPort = 443,
   });
 
   Address.fromMap(Map<String, dynamic> map) {
