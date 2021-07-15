@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/password.dart';
 import 'package:provider/provider.dart';
-import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
 import '../models/username.dart';
+import '../models/password.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -36,7 +35,6 @@ class ItemAddScreen extends StatefulWidget {
 class _ItemAddScreenState extends State<ItemAddScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
-
   Item _item;
 
   final _titleCtrler = TextEditingController();
@@ -63,6 +61,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         if (_item.password == null) _passCtrler.clear();
         if (_item.pin == null) _pinCtrler.clear();
         if (_item.longText == null) _longCtrler.clear();
+        if (_item.address == null) {
+          _addressCtrler.clear();
+          _protocolCtrler.clear();
+          _portCtrler.clear();
+        }
+        if (_item.product == null) {
+          _trademarkCtrler.clear();
+          _modelCtrler.clear();
+        }
       });
 
   void _userListSwitch() => setState(() {
@@ -87,14 +94,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
           if (!_warning) return;
         }
         _item.password = _p;
-        _item.itemPassword.setRepeat();
-        _item.itemPassword.fkPasswordId = _p.passwordId;
       } else {
         _item.password = _cripto.createPassword(_passCtrler.text);
       }
 
-      _item.username.usernameHash = _cripto.doHash(_userCtrler.text);
-      Username _u = await _items.usernameInDB(_item.username);
+      Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
       if (_u != null) {
         _item.username = _u;
       } else {
@@ -102,28 +106,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       }
 
       _item.pin = _cripto.createPin(_pinCtrler.text);
-
-      if (_longCtrler.text.isNotEmpty) {
-        _item.longText.longTextIv = e.IV.fromSecureRandom(16).base16;
-        _item.longText.longTextEnc =
-            _cripto.doCrypt(_longCtrler.text, _item.longText.longTextIv);
-      } else {
-        _item.longText = null;
-      }
-
-      if (_addressCtrler.text.isNotEmpty) {
-        _item.address.addressIv = e.IV.fromSecureRandom(16).base16;
-        _item.address.addressEnc =
-            _cripto.doCrypt(_addressCtrler.text, _item.address.addressIv);
-        _item.address.addressProtocol = _protocolCtrler.text;
-        _item.address.addressPort = int.parse(_portCtrler.text);
-      } else {
-        _item.address = null;
-      }
-
-      if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
-        _item.product = null;
-      }
+      _item.longText = _cripto.createLongText(_longCtrler.text);
+      _item.address = _cripto.createAddress(_addressCtrler.text);
 
       _items.insertItem(_item).then((_) => Navigator.of(context).pop());
     } catch (error) {
@@ -131,6 +115,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     }
   }
 
+  //TODO: ???
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
@@ -160,8 +145,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _pinCtrler.dispose();
     _longCtrler.dispose();
     _addressCtrler.dispose();
+    _trademarkCtrler.dispose();
+    _modelCtrler.dispose();
     _protocolCtrler.dispose();
     _portCtrler.dispose();
+    _titleFocusNode.dispose();
     _userFocusNode.dispose();
     super.dispose();
   }
@@ -366,6 +354,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
+                        _item.address,
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
