@@ -39,4 +39,12 @@ class Password {
         passwordStrength: this.passwordStrength,
         passwordHash: this.passwordHash,
       );
+
+  bool notEqual(Password p) {
+    if (p == null) return true;
+    if (this.passwordHash != p.passwordHash) return true;
+    if (this.passwordIv != p.passwordIv) return true;
+    if (this.passwordEnc != p.passwordEnc) return true;
+    return false;
+  }
 }
