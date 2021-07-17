@@ -109,117 +109,39 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     }
   }
 
-  void _save() async {
+  Future<void> _setPassword() async {
+    Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+    if (_p != null) {
+      if (_i.itemPassword.repeatWarning) {
+        bool _warning = await WarningHelper.repeat(context, 'Password');
+        _warning = _warning == null ? false : _warning;
+        if (!_warning) return;
+      }
+      _i.password = _p;
+    } else {
+      _i.password = _cripto.createPassword(_passCtrler.text);
+      if (_i.password == null) _i.itemPassword = null;
+    }
+  }
+
+  void _updateItem() async {
     try {
       if (widget.item.password != null) {
-        if (_i.password != null) {
-          //UPDATE
+        if (_passCtrler.text.isNotEmpty) {
           _i.password.passwordHash = _cripto.doHash(_passCtrler.text);
           if (widget.item.password.passwordHash != _i.password.passwordHash) {
-            Password _p = await _items.passwordInDB(_i.password.passwordHash);
-            if (_p != null) {
-              if (_i.itemPassword.repeatWarning) {
-                bool _warning = await WarningHelper.repeat(context, 'Password');
-                _warning = _warning == null ? false : _warning;
-                if (!_warning) return;
-              }
-              _i.password = _p;
-            }
+            await _setPassword();
           }
         } else {
-          //DELETE
+          _i.password = null;
         }
       } else {
-        if (_i.password != null) {
-          //CREATE
+        if (_passCtrler.text.isNotEmpty) {
+          await _setPassword();
         }
       }
 
-      if (_userCtrler.text.isNotEmpty) {
-      } else {
-        _i.fkUsernameId = null;
-        _i.username = null;
-      }
-
-      if (_passCtrler.text.isNotEmpty) {
-        if (widget.item.password == null) {
-          _i.password = Password();
-          _i.itemPassword = ItemPassword();
-          if (_i.itemPassword.repeatWarning) {
-            Password _p =
-                await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
-            if (_p != null) {
-              bool _warning = false;
-              _warning = await WarningHelper.repeat(context, 'Password');
-              if (_warning) {
-                Password _p =
-                    await _items.getPasswordByHash(_i.password.passwordHash);
-                _i.itemPassword.fkPasswordId = _p.passwordId;
-                _i.itemPassword.passwordDate = _date.toIso8601String();
-                _i.itemPassword.passwordStatus = 'REPEATED';
-                _i.itemPassword.fkItemId = _i.itemId;
-                await _items.insertItemPassword(_i.itemPassword);
-              } else {
-                return;
-              }
-            } else {
-              _i.password.passwordIv = e.IV.fromSecureRandom(16).base16;
-              _i.password.passwordEnc = _cripto.doCrypt(
-                _passCtrler.text,
-                _i.password.passwordIv,
-              );
-              _i.itemPassword.fkPasswordId =
-                  await _items.insertPassword(_i.password);
-              _i.itemPassword.passwordDate = _date.toIso8601String();
-              _i.itemPassword.passwordStatus = '';
-              _i.itemPassword.fkItemId = _i.itemId;
-              await _items.insertItemPassword(_i.itemPassword);
-            }
-          }
-        } else {
-          if (widget.item.password.passwordHash != _i.password.passwordHash) {
-            if (_passwordRepeatedWarning) {
-              Password _p = await _items.passwordInDB(_i.password.passwordHash);
-              if (_p != null) {
-                bool _warning = false;
-                _warning = await WarningHelper.repeat(context, 'Password');
-                if (_warning) {
-                  Password _p =
-                      await _items.getPasswordByHash(_i.password.passwordHash);
-                  _i.itemPassword.fkPasswordId = _p.passwordId;
-                  _i.itemPassword.passwordStatus = 'REPEATED';
-                  await _items.insertItemPassword(_i.itemPassword);
-                  await _items.refreshItemPasswordStatus(_p.passwordId);
-                } else {
-                  return;
-                }
-              } else {
-                _i.password = Password();
-                _i.password.passwordIv = e.IV.fromSecureRandom(16).base16;
-                _i.password.passwordEnc = _cripto.doCrypt(
-                  _passCtrler.text,
-                  _i.password.passwordIv,
-                );
-
-                await _items.insertPassword(_i.password).then((_id) async {
-                  _i.itemPassword.fkPasswordId = _id;
-                  _i.itemPassword.passwordDate = _date.toIso8601String();
-                  _i.itemPassword.passwordStatus = '';
-                  _i.itemPassword.fkItemId = _i.itemId;
-                  await _items.insertItemPassword(_i.itemPassword);
-                });
-              }
-            }
-          } else {
-            if (widget.item.itemPassword.passwordLapse !=
-                    _i.itemPassword.passwordLapse ||
-                widget.item.itemPassword.passwordStatus !=
-                    _i.itemPassword.passwordStatus) {
-              _items.updateItemPassword(_i.itemPassword);
-            }
-          }
-        }
-      }
+      if (_userCtrler.text.isEmpty) _i.username = null;
 
       if (_pinCtrler.text.isNotEmpty) {
         if (widget.item.pin == null) {
@@ -363,7 +285,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
             : null,
         actions: [
           if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
-            IconButton(icon: Icon(Icons.save), onPressed: _save),
+            IconButton(icon: Icon(Icons.save), onPressed: _updateItem),
         ],
       ),
       body: Stack(
