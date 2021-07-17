@@ -41,7 +41,7 @@ class ItemEditScreen extends StatefulWidget {
 class _ItemEditScreenState extends State<ItemEditScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
-  Item _item;
+  Item _i;
 
   //TODO: Create when its necesary
   final _titleCtrler = TextEditingController();
@@ -63,17 +63,17 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   bool _loadingRandomPass = false;
 
   void _updateScreen() => setState(() {
-        _item.title = _titleCtrler.text;
-        if (_item.username == null) _userCtrler.clear();
-        if (_item.password == null) _passCtrler.clear();
-        if (_item.pin == null) _pinCtrler.clear();
-        if (_item.longText == null) _longCtrler.clear();
-        if (_item.address == null) {
+        _i.title = _titleCtrler.text;
+        if (_i.username == null) _userCtrler.clear();
+        if (_i.password == null) _passCtrler.clear();
+        if (_i.pin == null) _pinCtrler.clear();
+        if (_i.longText == null) _longCtrler.clear();
+        if (_i.address == null) {
           _addressCtrler.clear();
           _protocolCtrler.clear();
           _portCtrler.clear();
         }
-        if (_item.product == null) {
+        if (_i.product == null) {
           _trademarkCtrler.clear();
           _modelCtrler.clear();
         }
@@ -94,15 +94,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   void _load() {
     try {
       _titleCtrler.text = widget.item.title;
-      _userCtrler.text = _cripto.decryptUsername(_item.username);
-      _passCtrler.text = _cripto.decryptPassword(_item.password);
-      _pinCtrler.text = _cripto.decryptPin(_item.pin);
-      _longCtrler.text = _cripto.decryptLongText(_item.longText);
-      _addressCtrler.text = _cripto.decryptAddress(_item.address);
-      _protocolCtrler.text = _item.address.addressProtocol;
-      _portCtrler.text = _item.address.addressProtocol;
-      _trademarkCtrler.text = _item.product.productTrademark;
-      _modelCtrler.text = _item.product.productModel;
+      _userCtrler.text = _cripto.decryptUsername(_i.username);
+      _passCtrler.text = _cripto.decryptPassword(_i.password);
+      _pinCtrler.text = _cripto.decryptPin(_i.pin);
+      _longCtrler.text = _cripto.decryptLongText(_i.longText);
+      _addressCtrler.text = _cripto.decryptAddress(_i.address);
+      _protocolCtrler.text = _i.address.addressProtocol;
+      _portCtrler.text = _i.address.addressProtocol;
+      _trademarkCtrler.text = _i.product.productTrademark;
+      _modelCtrler.text = _i.product.productModel;
       //setState(() {});
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
@@ -112,29 +112,40 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   void _save() async {
     try {
       if (widget.item.password != null) {
-        if (_item.password != null) {
+        if (_i.password != null) {
           //UPDATE
+          _i.password.passwordHash = _cripto.doHash(_passCtrler.text);
+          if (widget.item.password.passwordHash != _i.password.passwordHash) {
+            Password _p = await _items.passwordInDB(_i.password.passwordHash);
+            if (_p != null) {
+              if (_i.itemPassword.repeatWarning) {
+                bool _warning = await WarningHelper.repeat(context, 'Password');
+                _warning = _warning == null ? false : _warning;
+                if (!_warning) return;
+              }
+              _i.password = _p;
+            }
+          }
         } else {
           //DELETE
         }
       } else {
-        if (widget.item.password != null) {
+        if (_i.password != null) {
           //CREATE
-          _item.password = _cripto.createPassword(_passCtrler.text);
         }
       }
 
       if (_userCtrler.text.isNotEmpty) {
       } else {
-        _item.fkUsernameId = null;
-        _item.username = null;
+        _i.fkUsernameId = null;
+        _i.username = null;
       }
 
       if (_passCtrler.text.isNotEmpty) {
         if (widget.item.password == null) {
-          _item.password = Password();
-          _item.itemPassword = ItemPassword();
-          if (_item.itemPassword.repeatWarning) {
+          _i.password = Password();
+          _i.itemPassword = ItemPassword();
+          if (_i.itemPassword.repeatWarning) {
             Password _p =
                 await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
             if (_p != null) {
@@ -142,71 +153,69 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               _warning = await WarningHelper.repeat(context, 'Password');
               if (_warning) {
                 Password _p =
-                    await _items.getPasswordByHash(_item.password.passwordHash);
-                _item.itemPassword.fkPasswordId = _p.passwordId;
-                _item.itemPassword.passwordDate = _date.toIso8601String();
-                _item.itemPassword.passwordStatus = 'REPEATED';
-                _item.itemPassword.fkItemId = _item.itemId;
-                await _items.insertItemPassword(_item.itemPassword);
+                    await _items.getPasswordByHash(_i.password.passwordHash);
+                _i.itemPassword.fkPasswordId = _p.passwordId;
+                _i.itemPassword.passwordDate = _date.toIso8601String();
+                _i.itemPassword.passwordStatus = 'REPEATED';
+                _i.itemPassword.fkItemId = _i.itemId;
+                await _items.insertItemPassword(_i.itemPassword);
               } else {
                 return;
               }
             } else {
-              _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
-              _item.password.passwordEnc = _cripto.doCrypt(
+              _i.password.passwordIv = e.IV.fromSecureRandom(16).base16;
+              _i.password.passwordEnc = _cripto.doCrypt(
                 _passCtrler.text,
-                _item.password.passwordIv,
+                _i.password.passwordIv,
               );
-              _item.itemPassword.fkPasswordId =
-                  await _items.insertPassword(_item.password);
-              _item.itemPassword.passwordDate = _date.toIso8601String();
-              _item.itemPassword.passwordStatus = '';
-              _item.itemPassword.fkItemId = _item.itemId;
-              await _items.insertItemPassword(_item.itemPassword);
+              _i.itemPassword.fkPasswordId =
+                  await _items.insertPassword(_i.password);
+              _i.itemPassword.passwordDate = _date.toIso8601String();
+              _i.itemPassword.passwordStatus = '';
+              _i.itemPassword.fkItemId = _i.itemId;
+              await _items.insertItemPassword(_i.itemPassword);
             }
           }
         } else {
-          if (widget.item.password.passwordHash !=
-              _item.password.passwordHash) {
+          if (widget.item.password.passwordHash != _i.password.passwordHash) {
             if (_passwordRepeatedWarning) {
-              Password _p =
-                  await _items.passwordInDB(_item.password.passwordHash);
+              Password _p = await _items.passwordInDB(_i.password.passwordHash);
               if (_p != null) {
                 bool _warning = false;
                 _warning = await WarningHelper.repeat(context, 'Password');
                 if (_warning) {
-                  Password _p = await _items
-                      .getPasswordByHash(_item.password.passwordHash);
-                  _item.itemPassword.fkPasswordId = _p.passwordId;
-                  _item.itemPassword.passwordStatus = 'REPEATED';
-                  await _items.insertItemPassword(_item.itemPassword);
+                  Password _p =
+                      await _items.getPasswordByHash(_i.password.passwordHash);
+                  _i.itemPassword.fkPasswordId = _p.passwordId;
+                  _i.itemPassword.passwordStatus = 'REPEATED';
+                  await _items.insertItemPassword(_i.itemPassword);
                   await _items.refreshItemPasswordStatus(_p.passwordId);
                 } else {
                   return;
                 }
               } else {
-                _item.password = Password();
-                _item.password.passwordIv = e.IV.fromSecureRandom(16).base16;
-                _item.password.passwordEnc = _cripto.doCrypt(
+                _i.password = Password();
+                _i.password.passwordIv = e.IV.fromSecureRandom(16).base16;
+                _i.password.passwordEnc = _cripto.doCrypt(
                   _passCtrler.text,
-                  _item.password.passwordIv,
+                  _i.password.passwordIv,
                 );
 
-                await _items.insertPassword(_item.password).then((_id) async {
-                  _item.itemPassword.fkPasswordId = _id;
-                  _item.itemPassword.passwordDate = _date.toIso8601String();
-                  _item.itemPassword.passwordStatus = '';
-                  _item.itemPassword.fkItemId = _item.itemId;
-                  await _items.insertItemPassword(_item.itemPassword);
+                await _items.insertPassword(_i.password).then((_id) async {
+                  _i.itemPassword.fkPasswordId = _id;
+                  _i.itemPassword.passwordDate = _date.toIso8601String();
+                  _i.itemPassword.passwordStatus = '';
+                  _i.itemPassword.fkItemId = _i.itemId;
+                  await _items.insertItemPassword(_i.itemPassword);
                 });
               }
             }
           } else {
             if (widget.item.itemPassword.passwordLapse !=
-                    _item.itemPassword.passwordLapse ||
+                    _i.itemPassword.passwordLapse ||
                 widget.item.itemPassword.passwordStatus !=
-                    _item.itemPassword.passwordStatus) {
-              _items.updateItemPassword(_item.itemPassword);
+                    _i.itemPassword.passwordStatus) {
+              _items.updateItemPassword(_i.itemPassword);
             }
           }
         }
@@ -214,73 +223,73 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
       if (_pinCtrler.text.isNotEmpty) {
         if (widget.item.pin == null) {
-          _item.pin = Pin();
-          _item.pin.pinDate = _date.toIso8601String();
-          _item.pin.pinIv = e.IV.fromSecureRandom(16).base16;
-          _item.pin.pinEnc = _cripto.doCrypt(
+          _i.pin = Pin();
+          _i.pin.pinDate = _date.toIso8601String();
+          _i.pin.pinIv = e.IV.fromSecureRandom(16).base16;
+          _i.pin.pinEnc = _cripto.doCrypt(
             _pinCtrler.text,
-            _item.pin.pinIv,
+            _i.pin.pinIv,
           );
-          _item.fkPinId = await _items.insertPin(_item.pin);
+          _i.fkPinId = await _items.insertPin(_i.pin);
         } else {
-          _item.pin.pinEnc = _cripto.doCrypt(
+          _i.pin.pinEnc = _cripto.doCrypt(
             _pinCtrler.text,
-            _item.pin.pinIv,
+            _i.pin.pinIv,
           );
-          if (widget.item.pin.pinEnc != _item.pin.pinEnc) {
-            _items.updatePin(_item.pin);
+          if (widget.item.pin.pinEnc != _i.pin.pinEnc) {
+            _items.updatePin(_i.pin);
           }
         }
       } else {
-        _item.fkPinId = null;
-        _item.pin = null;
+        _i.fkPinId = null;
+        _i.pin = null;
       }
 
       if (_longCtrler.text.isNotEmpty) {
         if (widget.item.longText == null) {
-          _item.longText = LongText();
-          _item.longText.longTextIv = e.IV.fromSecureRandom(16).base16;
-          _item.longText.longTextEnc = _cripto.doCrypt(
+          _i.longText = LongText();
+          _i.longText.longTextIv = e.IV.fromSecureRandom(16).base16;
+          _i.longText.longTextEnc = _cripto.doCrypt(
             _longCtrler.text,
-            _item.longText.longTextIv,
+            _i.longText.longTextIv,
           );
-          _item.fkLongTextId = await _items.insertLongText(_item.longText);
+          _i.fkLongTextId = await _items.insertLongText(_i.longText);
         } else {
-          _item.longText.longTextEnc = _cripto.doCrypt(
+          _i.longText.longTextEnc = _cripto.doCrypt(
             _longCtrler.text,
-            _item.longText.longTextIv,
+            _i.longText.longTextIv,
           );
-          if (widget.item.longText.longTextEnc != _item.longText.longTextEnc) {
-            _items.updateLongText(_item.longText);
+          if (widget.item.longText.longTextEnc != _i.longText.longTextEnc) {
+            _items.updateLongText(_i.longText);
           }
         }
       } else {
-        _item.fkLongTextId = null;
-        _item.longText = null;
+        _i.fkLongTextId = null;
+        _i.longText = null;
       }
 
-      if (_item.address != null) {
+      if (_i.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          _item.address.addressEnc = _addressCtrler.text;
-          _item.address.addressIv = _addressCtrler.text;
-          _item.address.addressProtocol = _protocolCtrler.text;
-          _item.address.addressPort = int.parse(_portCtrler.text);
+          _i.address.addressEnc = _addressCtrler.text;
+          _i.address.addressIv = _addressCtrler.text;
+          _i.address.addressProtocol = _protocolCtrler.text;
+          _i.address.addressPort = int.parse(_portCtrler.text);
           if (widget.item.address != null) {
-            if (widget.item.address.addressEnc != _item.address.addressEnc ||
+            if (widget.item.address.addressEnc != _i.address.addressEnc ||
                 widget.item.address.addressProtocol !=
-                    _item.address.addressProtocol ||
-                widget.item.address.addressPort != _item.address.addressPort) {
-              _items.updateAddress(_item.address);
+                    _i.address.addressProtocol ||
+                widget.item.address.addressPort != _i.address.addressPort) {
+              _items.updateAddress(_i.address);
             } else {
-              _item.fkAddressId = await _items.insertAddress(_item.address);
+              _i.fkAddressId = await _items.insertAddress(_i.address);
             }
           }
         }
       } else {
-        _item.fkAddressId = null;
+        _i.fkAddressId = null;
       }
 
-      _items.updateItem(_item).then((_) => Navigator.of(context).pop());
+      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -301,8 +310,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
     if (_warning) {
-      _item.itemStatus = _item.itemStatus + '<DELETED>';
-      _items.updateItem(_item).then((_) => Navigator.of(context).pop());
+      _i.itemStatus = _i.itemStatus + '<DELETED>';
+      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
     }
   }
 
@@ -312,7 +321,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
-    _item = widget.item.clone();
+    _i = widget.item.clone();
     _load();
     super.initState();
   }
@@ -366,8 +375,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
-                  PresetsWrap(item: _item, refreshScreen: _updateScreen),
-                  if (_item.username != null)
+                  PresetsWrap(item: _i, refreshScreen: _updateScreen),
+                  if (_i.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -393,7 +402,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         ),
                       ),
                     ),
-                  if (_item.password != null)
+                  if (_i.password != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -424,14 +433,14 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                 StrengthLevelCard(
                                   PasswordHelper.strength(
                                     _passCtrler.text,
-                                    password: _item.password,
+                                    password: _i.password,
                                   ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: PasswordChangeReminderCard(
-                                    itemPass: _item.itemPassword,
+                                    itemPass: _i.itemPassword,
                                   ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
@@ -455,10 +464,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                       onChanged: (value) => setState(() {
                                         _passwordRepeatedWarning = value;
                                         if (value)
-                                          _item.itemPassword.passwordStatus =
-                                              '';
+                                          _i.itemPassword.passwordStatus = '';
                                         else
-                                          _item.itemPassword.passwordStatus =
+                                          _i.itemPassword.passwordStatus =
                                               'NO-WARNING';
                                       }),
                                     ),
@@ -469,7 +477,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         ),
                       ),
                     ),
-                  if (_item.pin != null)
+                  if (_i.pin != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -483,7 +491,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
-                                  child: PinChangeReminderCard(pin: _item.pin),
+                                  child: PinChangeReminderCard(pin: _i.pin),
                                 ),
                               if (_pinCtrler.text.isNotEmpty)
                                 Row(
@@ -508,9 +516,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                       onChanged: (value) => setState(() {
                                         _pinRepeatedWarning = value;
                                         if (value)
-                                          _item.pin.pinStatus = '';
+                                          _i.pin.pinStatus = '';
                                         else
-                                          _item.pin.pinStatus = 'NO-WARNING';
+                                          _i.pin.pinStatus = 'NO-WARNING';
                                       }),
                                     ),
                                   ],
@@ -520,7 +528,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         ),
                       ),
                     ),
-                  if (_item.longText != null)
+                  if (_i.longText != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -535,11 +543,11 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         ),
                       ),
                     ),
-                  if (_item.address != null)
+                  if (_i.address != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
-                        _item.address,
+                        _i.address,
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
@@ -547,9 +555,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TagsCard(item: _item),
+                    child: TagsCard(item: _i),
                   ),
-                  ItemPreviewCard(_item),
+                  ItemPreviewCard(_i),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: FloatingActionButton(
