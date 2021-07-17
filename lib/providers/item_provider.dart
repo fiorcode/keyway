@@ -289,7 +289,7 @@ class ItemProvider with ChangeNotifier {
         i.itemPassword.fkPasswordId = await insertPassword(i.password);
       } else {
         i.itemPassword.fkPasswordId = i.password.passwordId;
-        i.itemPassword.setRepeat();
+        i.itemPassword.setRepeated();
       }
     }
     if (i.username != null) {
@@ -339,7 +339,91 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<int> updateItem(Item i) async => await DBHelper.updateItem(i.toMap());
+  Future<int> updateItem(Item oldItem, Item i) async {
+    if (oldItem.password != null) {
+      if (i.password != null) {
+        if (i.password.passwordId == null) {
+          i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+          i.itemPassword.fkPasswordId = await insertPassword(i.password);
+          oldItem.itemPassword.setOld();
+        } else {
+          if (oldItem.password.passwordId != i.password.passwordId) {
+            i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+            i.itemPassword.fkPasswordId = i.password.passwordId;
+            i.itemPassword.setRepeated();
+            oldItem.itemPassword.setOld();
+          }
+        }
+      } else {
+        oldItem.itemPassword.setDeleted();
+      }
+    } else {
+      if (i.password != null) {
+        i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+        if (i.password.passwordId == null) {
+          i.itemPassword.fkPasswordId = await insertPassword(i.password);
+        } else {
+          i.itemPassword.fkPasswordId = i.password.passwordId;
+          i.itemPassword.setRepeated();
+        }
+      }
+    }
+
+    if (i.username != null) {
+      if (i.username.usernameId == null) {
+        i.fkUsernameId = await insertUsername(i.username);
+      } else {
+        i.fkUsernameId = i.username.usernameId;
+      }
+    } else {
+      i.fkUsernameId = null;
+    }
+
+    if (i.pin != null) {
+      if (i.pin.pinId == null) {
+        i.fkPinId = await insertPin(i.pin);
+      } else {
+        i.fkPinId = i.pin.pinId;
+      }
+    } else {
+      i.fkPinId = null;
+    }
+
+    if (i.longText != null) {
+      i.fkLongTextId = await insertLongText(i.longText);
+    }
+    if (i.address != null) {
+      i.fkAddressId = await insertAddress(i.address);
+    }
+    if (i.product != null) {
+      if (i.product.productTrademark.isNotEmpty ||
+          i.product.productModel.isNotEmpty) {
+        insertProduct(i.product).then(
+          (productId) {
+            i.fkProductId = productId;
+            if (i.product.cpes.isNotEmpty) {
+              i.product.cpes.forEach((cpe) {
+                insertCpe23uri(cpe).then((cpe23uriId) {
+                  insertProductCpe23uri(
+                    ProductCpe23uri(
+                      fkProductId: productId,
+                      fkCpe23uriId: cpe23uriId,
+                    ),
+                  );
+                });
+              });
+            }
+          },
+        );
+      }
+    }
+    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) {
+      if (i.password != null) {
+        i.itemPassword.fkItemId = itemId;
+        insertItemPassword(i.itemPassword);
+      }
+    });
+  }
 
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
@@ -449,7 +533,7 @@ class ItemProvider with ChangeNotifier {
       _iter = data.map((e) => ItemPassword.fromMap(e));
     });
     List<ItemPassword> _ips = _iter.toList();
-    _ips.sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    _ips.sort((a, b) => b.passwordDate.compareTo(a.passwordDate));
     return _ips;
   }
 
