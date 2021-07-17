@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
+
 class ItemPassword {
   int fkItemId;
   int fkPasswordId;
   String passwordDate;
   int passwordLapse;
   String passwordStatus;
-  DateTime dateTime;
 
   ItemPassword({
     this.fkItemId,
@@ -12,7 +13,6 @@ class ItemPassword {
     this.passwordDate,
     this.passwordLapse = 320,
     this.passwordStatus = '<active>',
-    this.dateTime,
   });
 
   bool get repeatWarning => !this.passwordStatus.contains('<no-warning>');
@@ -24,7 +24,6 @@ class ItemPassword {
     passwordDate = map['password_date'];
     passwordLapse = map['password_lapse'];
     passwordStatus = map['password_status'];
-    dateTime = DateTime.parse(map['password_date']);
   }
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -56,8 +55,24 @@ class ItemPassword {
       passwordDate: this.passwordDate,
       passwordLapse: this.passwordLapse,
       passwordStatus: this.passwordStatus,
-      dateTime: this.dateTime,
     );
     return _ip;
+  }
+
+  bool equal(ItemPassword ip) {
+    if (this.fkItemId != ip.fkItemId) return false;
+    if (this.fkPasswordId != ip.fkPasswordId) return false;
+    if (this.passwordDate != ip.passwordDate) return false;
+    if (this.passwordLapse != ip.passwordLapse) return false;
+    if (!_equalStatus(ip.passwordStatus)) return false;
+    return true;
+  }
+
+  bool _equalStatus(String ps) {
+    List<String> _s1 = ps.split("<");
+    List<String> _s2 = this.passwordStatus.split("<");
+    _s1.sort();
+    _s2.sort();
+    return listEquals(_s1, _s2);
   }
 }
