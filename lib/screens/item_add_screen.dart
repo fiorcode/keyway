@@ -35,7 +35,7 @@ class ItemAddScreen extends StatefulWidget {
 class _ItemAddScreenState extends State<ItemAddScreen> {
   CriptoProvider _cripto;
   ItemProvider _items;
-  Item _item;
+  Item _i;
 
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
@@ -56,17 +56,17 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   bool _loadingRandomPass = false;
 
   void _updateScreen() => setState(() {
-        _item.title = _titleCtrler.text;
-        if (_item.username == null) _userCtrler.clear();
-        if (_item.password == null) _passCtrler.clear();
-        if (_item.pin == null) _pinCtrler.clear();
-        if (_item.longText == null) _longCtrler.clear();
-        if (_item.address == null) {
+        _i.title = _titleCtrler.text;
+        if (_i.username == null) _userCtrler.clear();
+        if (_i.password == null) _passCtrler.clear();
+        if (_i.pin == null) _pinCtrler.clear();
+        if (_i.longText == null) _longCtrler.clear();
+        if (_i.address == null) {
           _addressCtrler.clear();
           _protocolCtrler.clear();
           _portCtrler.clear();
         }
-        if (_item.product == null) {
+        if (_i.product == null) {
           _trademarkCtrler.clear();
           _modelCtrler.clear();
         }
@@ -84,32 +84,38 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _userListSwitch();
   }
 
-  void _save() async {
+  Future<void> _setPassword() async {
+    Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+    if (_p != null) {
+      if (_i.itemPassword.repeatWarning) {
+        bool _warning = await WarningHelper.repeat(context, 'Password');
+        _warning = _warning == null ? false : _warning;
+        if (!_warning) return;
+      }
+      _i.password = _p;
+    } else {
+      _i.password = _cripto.createPassword(_passCtrler.text);
+      if (_i.password == null) _i.itemPassword = null;
+    }
+  }
+
+  Future<void> _setUsername() async {
+    Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
+    if (_u != null) {
+      _i.username = _u;
+    } else {
+      _i.username = _cripto.createUsername(_userCtrler.text);
+    }
+  }
+
+  Future<void> _insertItem() async {
     try {
-      Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
-      if (_p != null) {
-        if (_item.itemPassword.repeatWarning) {
-          bool _warning = await WarningHelper.repeat(context, 'Password');
-          _warning = _warning == null ? false : _warning;
-          if (!_warning) return;
-        }
-        _item.password = _p;
-      } else {
-        _item.password = _cripto.createPassword(_passCtrler.text);
-      }
-
-      Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
-      if (_u != null) {
-        _item.username = _u;
-      } else {
-        _item.username = _cripto.createUsername(_userCtrler.text);
-      }
-
-      _item.pin = _cripto.createPin(_pinCtrler.text);
-      _item.longText = _cripto.createLongText(_longCtrler.text);
-      _item.address = _cripto.createAddress(_addressCtrler.text);
-
-      _items.insertItem(_item).then((_) => Navigator.of(context).pop());
+      await _setPassword();
+      await _setUsername();
+      _i.pin = _cripto.createPin(_pinCtrler.text);
+      _i.longText = _cripto.createLongText(_longCtrler.text);
+      _i.address = _cripto.createAddress(_addressCtrler.text);
+      _items.insertItem(_i).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -130,7 +136,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _items = Provider.of<ItemProvider>(context, listen: false);
-    _item = Item.factory();
+    _i = Item.factory();
     _titleFocusNode = FocusNode();
     _userFocusNode = FocusNode();
     _titleFocusNode.requestFocus();
@@ -174,7 +180,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
             : null,
         actions: [
           if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
-            IconButton(icon: Icon(Icons.save), onPressed: _save),
+            IconButton(icon: Icon(Icons.save), onPressed: _insertItem),
         ],
       ),
       body: Stack(
@@ -186,8 +192,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
-                  PresetsWrap(item: _item, refreshScreen: _updateScreen),
-                  if (_item.username != null)
+                  PresetsWrap(item: _i, refreshScreen: _updateScreen),
+                  if (_i.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -213,7 +219,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_item.password != null)
+                  if (_i.password != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -244,14 +250,14 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                 StrengthLevelCard(
                                   PasswordHelper.strength(
                                     _passCtrler.text,
-                                    password: _item.password,
+                                    password: _i.password,
                                   ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: PasswordChangeReminderCard(
-                                    itemPass: _item.itemPassword,
+                                    itemPass: _i.itemPassword,
                                   ),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
@@ -271,11 +277,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _item.itemPassword.repeatWarning,
+                                      value: _i.itemPassword.repeatWarning,
                                       onChanged: (_) {
                                         setState(() {
-                                          _item.itemPassword
-                                              .repeatWarningSwitch();
+                                          _i.itemPassword.repeatWarningSwitch();
                                         });
                                       },
                                     ),
@@ -286,7 +291,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_item.pin != null)
+                  if (_i.pin != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -300,7 +305,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
-                                  child: PinChangeReminderCard(pin: _item.pin),
+                                  child: PinChangeReminderCard(pin: _i.pin),
                                 ),
                               if (_pinCtrler.text.isNotEmpty)
                                 Row(
@@ -321,10 +326,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _item.pin.repeatWarning,
+                                      value: _i.pin.repeatWarning,
                                       onChanged: (_) {
                                         setState(() {
-                                          _item.pin.repeatWarningSwitch();
+                                          _i.pin.repeatWarningSwitch();
                                         });
                                       },
                                     ),
@@ -335,7 +340,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_item.longText != null)
+                  if (_i.longText != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -350,30 +355,30 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_item.address != null)
+                  if (_i.address != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
-                        _item.address,
+                        _i.address,
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
                       ),
                     ),
-                  if (_item.product != null)
+                  if (_i.product != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: ProductCard(
-                        _item.product,
+                        _i.product,
                         _trademarkCtrler,
                         _modelCtrler,
                       ),
                     ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: TagsCard(item: _item),
+                    child: TagsCard(item: _i),
                   ),
-                  ItemPreviewCard(_item),
+                  ItemPreviewCard(_i),
                 ],
               ),
             ),
