@@ -16,7 +16,55 @@ class ItemPassword {
   });
 
   bool get repeatWarning => !this.passwordStatus.contains('<no-warning>');
-  bool get repeated => !this.passwordStatus.contains('<repeated>');
+  bool get active => this.passwordStatus.contains('<active>');
+  bool get repeated => this.passwordStatus.contains('<repeated>');
+  bool get deleted => this.passwordStatus.contains('<deleted>');
+  bool get old => this.passwordStatus.contains('<old>');
+
+  void repeatWarningSwitch() {
+    if (repeatWarning)
+      this.passwordStatus += '<no-warning>';
+    else
+      this.passwordStatus = this.passwordStatus.replaceAll('<no-warning>', '');
+  }
+
+  void setActive() {
+    if (!active) {
+      unSetDeleted();
+      unSetOld();
+      this.passwordStatus += '<active>';
+    }
+  }
+
+  void unSetActive() =>
+      this.passwordStatus = this.passwordStatus.replaceAll('<active>', '');
+
+  void setRepeated() {
+    if (!repeated) this.passwordStatus += '<repeated>';
+  }
+
+  void unSetRepeated() =>
+      this.passwordStatus = this.passwordStatus.replaceAll('<repeated>', '');
+
+  void setDeleted() {
+    if (!deleted) {
+      unSetActive();
+      this.passwordStatus += '<deleted>';
+    }
+  }
+
+  void unSetDeleted() =>
+      this.passwordStatus = this.passwordStatus.replaceAll('<deleted>', '');
+
+  void setOld() {
+    if (!old) {
+      unSetActive();
+      this.passwordStatus += '<old>';
+    }
+  }
+
+  void unSetOld() =>
+      this.passwordStatus = this.passwordStatus.replaceAll('<old>', '');
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
@@ -33,20 +81,6 @@ class ItemPassword {
         'password_lapse': passwordLapse,
         'password_status': passwordStatus,
       };
-
-  void repeatWarningSwitch() {
-    if (repeatWarning)
-      this.passwordStatus += '<no-warning>';
-    else
-      this.passwordStatus = this.passwordStatus.replaceAll('<no-warning>', '');
-  }
-
-  void setRepeat() {
-    if (repeated)
-      return;
-    else
-      this.passwordStatus += '<repeated>';
-  }
 
   ItemPassword clone() {
     ItemPassword _ip = ItemPassword(
