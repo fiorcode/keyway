@@ -15,7 +15,7 @@ class DBHelper {
   static const String addressTable = "address";
   static const String productTable = "product";
   static const String cpe23uriTable = "cpe23uri";
-  static const String productCpe23uriTable = "product_cpe23uri";
+  // static const String productCpe23uriTable = "product_cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
   static const String cveImpactV3Table = "cve_impact_v3";
@@ -37,7 +37,7 @@ class DBHelper {
         await db.execute(createAddressTable);
         await db.execute(createProductTable);
         await db.execute(createCpe23uriTable);
-        await db.execute(createProductCpe23uriTable);
+        // await db.execute(createProductCpe23uriTable);
         await db.execute(createCpe23uriCveTable);
         await db.execute(createCveTable);
         await db.execute(createCveImpactV3Table);
@@ -347,7 +347,9 @@ class DBHelper {
     product_model TEXT,
     product_version TEXT,
     product_update TEXT,
-    product_status TEXT)''';
+    product_status TEXT,
+    fk_cpe23uri_id INTEGER,
+    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
   static const createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
     cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -359,13 +361,13 @@ class DBHelper {
     ref_type TEXT,
     last_tracking TEXT)''';
 
-  static const createProductCpe23uriTable =
-      '''CREATE TABLE $productCpe23uriTable(
-    fk_product_id INTEGER,
-    fk_cpe23uri_id INTEGER,
-    PRIMARY KEY (fk_product_id, fk_cpe23uri_id),
-    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id),
-    FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
+  // static const createProductCpe23uriTable =
+  //     '''CREATE TABLE $productCpe23uriTable(
+  //   fk_product_id INTEGER,
+  //   fk_cpe23uri_id INTEGER,
+  //   PRIMARY KEY (fk_product_id, fk_cpe23uri_id),
+  //   FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id),
+  //   FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
   static const createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
     fk_cpe23uri_id INTEGER,
