@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/product_cpe23uri.dart';
 
 import '../helpers/db_helper.dart';
-
 import '../models/item.dart';
 import '../models/item_password.dart';
 import '../models/password.dart';
@@ -310,31 +308,19 @@ class ItemProvider with ChangeNotifier {
       i.fkAddressId = await insertAddress(i.address);
     }
     if (i.product != null) {
-      if (i.product.productTrademark.isNotEmpty ||
-          i.product.productModel.isNotEmpty) {
-        insertProduct(i.product).then(
-          (productId) {
-            i.fkProductId = productId;
-            if (i.product.cpes.isNotEmpty) {
-              i.product.cpes.forEach((cpe) {
-                insertCpe23uri(cpe).then((cpe23uriId) {
-                  insertProductCpe23uri(
-                    ProductCpe23uri(
-                      fkProductId: productId,
-                      fkCpe23uriId: cpe23uriId,
-                    ),
-                  );
-                });
-              });
-            }
-          },
-        );
+      if (i.product.cpe23uri != null) {
+        insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
+          i.product.fkCpe23uriId = cpe23uriId;
+          await insertProduct(i.product);
+        });
+      } else {
+        await insertProduct(i.product);
       }
     }
-    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) {
+    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) async {
       if (i.password != null) {
         i.itemPassword.fkItemId = itemId;
-        insertItemPassword(i.itemPassword);
+        await insertItemPassword(i.itemPassword);
       }
     });
   }
@@ -390,7 +376,6 @@ class ItemProvider with ChangeNotifier {
       }
     } else {
       i.fkPinId = null;
-      if (oldItem.pin != null) await deletePin(oldItem.pin);
     }
 
     if (i.longText != null) {
@@ -401,7 +386,6 @@ class ItemProvider with ChangeNotifier {
       }
     } else {
       i.fkLongTextId = null;
-      if (oldItem.longText != null) await deleteLongText(oldItem.longText);
     }
 
     if (i.address != null) {
@@ -412,36 +396,59 @@ class ItemProvider with ChangeNotifier {
       }
     } else {
       i.fkAddressId = null;
-      if (oldItem.address != null) await deleteAddress(oldItem.address);
     }
 
-    //CONTINUE
-    if (i.product != null) {
-      if (i.product.productTrademark.isNotEmpty ||
-          i.product.productModel.isNotEmpty) {
-        insertProduct(i.product).then(
-          (productId) {
-            i.fkProductId = productId;
-            if (i.product.cpes.isNotEmpty) {
-              i.product.cpes.forEach((cpe) {
-                insertCpe23uri(cpe).then((cpe23uriId) {
-                  insertProductCpe23uri(
-                    ProductCpe23uri(
-                      fkProductId: productId,
-                      fkCpe23uriId: cpe23uriId,
-                    ),
-                  );
-                });
-              });
+    if (oldItem.product != null) {
+      if (i.product != null) {
+        //PRODUCT (SAME OR MODIFIED)
+        if (oldItem.product.cpe23uri != null) {
+          if (i.product.cpe23uri != null) {
+            //CPE (SAME OR MODIFIED)
+            if (!oldItem.product.cpe23uri.equal(i.product.cpe23uri)) {
+              if (i.product.cpe23uri.cpe23uriId == null) {
+                i.product.fkCpe23uriId =
+                    await insertCpe23uri(i.product.cpe23uri);
+              } else {
+                i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+              }
             }
-          },
-        );
+          } else {
+            //CPE DELETED
+            i.product.fkCpe23uriId = null;
+          }
+        } else {
+          //CPE ADDED
+          if (i.product.cpe23uri.cpe23uriId == null) {
+            i.product.fkCpe23uriId = await insertCpe23uri(i.product.cpe23uri);
+          } else {
+            i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+          }
+        }
+        if (i.product.productId != null) updateProduct(i.product);
+      } else {
+        //PRODUCT DELETED
+        i.fkProductId = null;
+        await deleteProduct(oldItem.product);
+      }
+    } else {
+      if (i.product != null) {
+        //PRODUCT ADDED
+        if (i.product.cpe23uri != null) {
+          insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
+            i.product.fkCpe23uriId = cpe23uriId;
+            await insertProduct(i.product);
+          });
+        } else {
+          await insertProduct(i.product);
+        }
       }
     }
-    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id').then((itemId) {
+
+    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id')
+        .then((itemId) async {
       if (i.password != null) {
         i.itemPassword.fkItemId = itemId;
-        insertItemPassword(i.itemPassword);
+        await insertItemPassword(i.itemPassword);
       }
     });
   }
@@ -506,6 +513,9 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateProduct(Product p) async =>
       await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
 
+  Future<int> deleteProduct(Product p) async =>
+      await DBHelper.delete(DBHelper.productTable, p.toMap(), 'product_id');
+
   Future<int> insertCpe23uri(Cpe23uri c) {
     return DBHelper.getByValue(DBHelper.cpe23uriTable, 'value', c.value).then(
       (list) async {
@@ -517,8 +527,8 @@ class ItemProvider with ChangeNotifier {
     );
   }
 
-  Future<void> insertProductCpe23uri(ProductCpe23uri pc) async =>
-      await DBHelper.insert(DBHelper.productCpe23uriTable, pc.toMap());
+  // Future<void> insertProductCpe23uri(ProductCpe23uri pc) async =>
+  //     await DBHelper.insert(DBHelper.productCpe23uriTable, pc.toMap());
 
   Future<Password> passwordInDB(String hash) async {
     if (hash.isEmpty) return null;
