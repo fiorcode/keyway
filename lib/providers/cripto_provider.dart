@@ -90,7 +90,7 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> setMasterKey() async {
     return SharedPreferences.getInstance().then((pref) {
-      DBHelper.getData(DBHelper.userTable).then((data) {
+      DBHelper.read(DBHelper.userTable).then((data) {
         User _user = User.fromMap(data.first);
         pref.setString('masterKey', _user.encMK);
         pref.setString('masterKeyIV', _user.mkIV);
