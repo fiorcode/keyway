@@ -59,21 +59,29 @@ class DBHelper {
     return File('$_dbPath/kw.db').lastModified();
   }
 
-  static Future<List<Map<String, dynamic>>> getData(String table) async =>
-      (await DBHelper.database()).query(table);
-
   static Future<int> insert(String table, Map<String, Object> data) async =>
       (await DBHelper.database()).insert(
         table,
         data,
-        conflictAlgorithm: sql.ConflictAlgorithm.replace,
+        conflictAlgorithm: sql.ConflictAlgorithm.fail,
       );
+
+  static Future<List<Map<String, dynamic>>> read(String table) async =>
+      (await DBHelper.database()).query(table);
 
   static Future<int> update(
           String table, Map<String, Object> data, String idName) async =>
       (await DBHelper.database()).update(
         table,
         data,
+        where: '$idName = ?',
+        whereArgs: [data[idName]],
+      );
+
+  static Future<int> delete(
+          String table, Map<String, Object> data, String idName) async =>
+      (await DBHelper.database()).delete(
+        table,
         where: '$idName = ?',
         whereArgs: [data[idName]],
       );
@@ -114,6 +122,13 @@ class DBHelper {
       (await DBHelper.database()).update(
         itemPasswordTable,
         data,
+        where: 'fk_item_id = ? AND fk_password_id = ?',
+        whereArgs: [data['fk_item_id'], data['fk_password_id']],
+      );
+
+  static Future<int> deleteItemPassword(Map<String, Object> data) async =>
+      (await DBHelper.database()).delete(
+        itemPasswordTable,
         where: 'fk_item_id = ? AND fk_password_id = ?',
         whereArgs: [data['fk_item_id'], data['fk_password_id']],
       );
