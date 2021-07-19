@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/username.dart';
 import 'package:provider/provider.dart';
 import 'package:encrypt/encrypt.dart' as e;
 
@@ -124,6 +125,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     }
   }
 
+  Future<void> _setUsername() async {
+    Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
+    if (_u != null) {
+      _i.username = _u;
+    } else {
+      _i.username = _cripto.createUsername(_userCtrler.text);
+    }
+  }
+
   void _updateItem() async {
     try {
       if (widget.item.password != null) {
@@ -138,56 +148,40 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       } else {
         if (_passCtrler.text.isNotEmpty) {
           await _setPassword();
+        } else {
+          _i.password = null;
         }
       }
 
-      if (_userCtrler.text.isEmpty) _i.username = null;
+      await _setUsername();
 
-      if (_pinCtrler.text.isNotEmpty) {
-        if (widget.item.pin == null) {
-          _i.pin = Pin();
-          _i.pin.pinDate = _date.toIso8601String();
-          _i.pin.pinIv = e.IV.fromSecureRandom(16).base16;
-          _i.pin.pinEnc = _cripto.doCrypt(
-            _pinCtrler.text,
-            _i.pin.pinIv,
-          );
-          _i.fkPinId = await _items.insertPin(_i.pin);
-        } else {
-          _i.pin.pinEnc = _cripto.doCrypt(
-            _pinCtrler.text,
-            _i.pin.pinIv,
-          );
-          if (widget.item.pin.pinEnc != _i.pin.pinEnc) {
-            _items.updatePin(_i.pin);
+      if (widget.item.pin != null) {
+        if (_pinCtrler.text.isNotEmpty) {
+          if (_cripto.decryptPin(widget.item.pin) != _pinCtrler.text) {
+            _i.pin = _cripto.createPin(_pinCtrler.text);
           }
+        } else {
+          _i.pin = null;
         }
       } else {
-        _i.fkPinId = null;
-        _i.pin = null;
+        if (_i.pin != null) {
+          _i.pin = _cripto.createPin(_pinCtrler.text);
+        }
       }
 
-      if (_longCtrler.text.isNotEmpty) {
-        if (widget.item.longText == null) {
-          _i.longText = LongText();
-          _i.longText.longTextIv = e.IV.fromSecureRandom(16).base16;
-          _i.longText.longTextEnc = _cripto.doCrypt(
-            _longCtrler.text,
-            _i.longText.longTextIv,
-          );
-          _i.fkLongTextId = await _items.insertLongText(_i.longText);
-        } else {
-          _i.longText.longTextEnc = _cripto.doCrypt(
-            _longCtrler.text,
-            _i.longText.longTextIv,
-          );
-          if (widget.item.longText.longTextEnc != _i.longText.longTextEnc) {
-            _items.updateLongText(_i.longText);
+      if (widget.item.longText != null) {
+        if (_longCtrler.text.isNotEmpty) {
+          if (_cripto.decryptLongText(widget.item.longText) !=
+              _longCtrler.text) {
+            _i.longText = _cripto.createLongText(_longCtrler.text);
           }
+        } else {
+          _i.longText = null;
         }
       } else {
-        _i.fkLongTextId = null;
-        _i.longText = null;
+        if (_i.longText != null) {
+          _i.longText = _cripto.createLongText(_longCtrler.text);
+        }
       }
 
       if (_i.address != null) {
