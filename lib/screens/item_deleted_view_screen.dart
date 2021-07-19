@@ -71,9 +71,10 @@ class _ItemDeletedViewScreenState extends State<ItemDeletedViewScreen> {
 
   void _restore() async {
     if (widget.item.itemPassword != null) {
-      widget.item.itemStatus =
-          widget.item.itemStatus.replaceAll('<DELETED>', '');
-      _items.updateItem(widget.item).then((_) => Navigator.of(context).pop());
+      widget.item.unSetDeleted();
+      _items
+          .updateItem(widget.item, widget.item)
+          .then((_) => Navigator.of(context).pop());
     }
   }
 
