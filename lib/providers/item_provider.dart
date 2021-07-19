@@ -70,11 +70,11 @@ class ItemProvider with ChangeNotifier {
     Iterable<Item> _iter;
     _allItems.clear();
     if (title.isEmpty) {
-      await DBHelper.getData(DBHelper.itemTable).then((data) {
+      await DBHelper.read(DBHelper.itemTable).then((data) {
         _iter = data.map((i) => Item.fromMap(i));
       });
     } else {
-      await DBHelper.getData(DBHelper.itemTable)
+      await DBHelper.read(DBHelper.itemTable)
           .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     }
     _allItems.addAll(_iter.toList());
@@ -84,7 +84,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchItemPasswords() async {
     Iterable<ItemPassword> _iter;
     _itemsPasswords.clear();
-    await DBHelper.getData(DBHelper.itemPasswordTable).then((data) {
+    await DBHelper.read(DBHelper.itemPasswordTable).then((data) {
       _iter = data.map((i) => ItemPassword.fromMap(i));
     });
     _itemsPasswords.addAll(_iter.toList());
@@ -93,7 +93,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchPasswords() async {
     Iterable<Password> _iter;
     _passwords.clear();
-    await DBHelper.getData(DBHelper.passwordTable).then((data) {
+    await DBHelper.read(DBHelper.passwordTable).then((data) {
       _iter = data.map((i) => Password.fromMap(i));
     });
     _passwords.addAll(_iter.toList());
@@ -102,7 +102,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchUsernames() async {
     Iterable<Username> _iter;
     _usernames.clear();
-    await DBHelper.getData(DBHelper.usernameTable).then((data) {
+    await DBHelper.read(DBHelper.usernameTable).then((data) {
       _iter = data.map((i) => Username.fromMap(i));
     });
     _usernames.addAll(_iter.toList());
@@ -111,7 +111,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchPins() async {
     Iterable<Pin> _iter;
     _pins.clear();
-    await DBHelper.getData(DBHelper.pinTable).then((data) {
+    await DBHelper.read(DBHelper.pinTable).then((data) {
       _iter = data.map((i) => Pin.fromMap(i));
     });
     _pins.addAll(_iter.toList());
@@ -120,7 +120,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchNotes() async {
     Iterable<LongText> _iter;
     _notes.clear();
-    await DBHelper.getData(DBHelper.longTextTable).then((data) {
+    await DBHelper.read(DBHelper.longTextTable).then((data) {
       _iter = data.map((i) => LongText.fromMap(i));
     });
     _notes.addAll(_iter.toList());
@@ -129,7 +129,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchAddresses() async {
     Iterable<Address> _iter;
     _addresses.clear();
-    await DBHelper.getData(DBHelper.addressTable).then((data) {
+    await DBHelper.read(DBHelper.addressTable).then((data) {
       _iter = data.map((i) => Address.fromMap(i));
     });
     _addresses.addAll(_iter.toList());
@@ -138,7 +138,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchProducts() async {
     Iterable<Product> _iter;
     _products.clear();
-    await DBHelper.getData(DBHelper.productTable).then((data) {
+    await DBHelper.read(DBHelper.productTable).then((data) {
       _iter = data.map((i) => Product.fromMap(i));
     });
     _products.addAll(_iter.toList());
@@ -147,7 +147,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchCpe23uris() async {
     Iterable<Cpe23uri> _iter;
     _cpe23uris.clear();
-    await DBHelper.getData(DBHelper.cpe23uriTable).then((data) {
+    await DBHelper.read(DBHelper.cpe23uriTable).then((data) {
       _iter = data.map((i) => Cpe23uri.fromMap(i));
     });
     _cpe23uris.addAll(_iter.toList());
@@ -156,7 +156,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchCpe23uriCves() async {
     Iterable<Cpe23uriCve> _iter;
     _cpe23uriCves.clear();
-    await DBHelper.getData(DBHelper.cpe23uriCveTable).then((data) {
+    await DBHelper.read(DBHelper.cpe23uriCveTable).then((data) {
       _iter = data.map((i) => Cpe23uriCve.fromMap(i));
     });
     _cpe23uriCves.addAll(_iter.toList());
@@ -165,7 +165,7 @@ class ItemProvider with ChangeNotifier {
   Future<void> fetchCves() async {
     Iterable<Cve> _iter;
     _cves.clear();
-    await DBHelper.getData(DBHelper.cveTable).then((data) {
+    await DBHelper.read(DBHelper.cveTable).then((data) {
       _iter = data.map((i) => Cve.fromMap(i));
     });
     _cves.addAll(_iter.toList());
@@ -339,23 +339,26 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<int> updateItem(Item oldItem, Item i) async {
+  Future<void> updateItem(Item oldItem, Item i) async {
     if (oldItem.password != null) {
       if (i.password != null) {
         if (i.password.passwordId == null) {
           i.itemPassword.passwordDate = DateTime.now().toIso8601String();
           i.itemPassword.fkPasswordId = await insertPassword(i.password);
           oldItem.itemPassword.setOld();
+          await updateItemPassword(oldItem.itemPassword);
         } else {
           if (oldItem.password.passwordId != i.password.passwordId) {
             i.itemPassword.passwordDate = DateTime.now().toIso8601String();
             i.itemPassword.fkPasswordId = i.password.passwordId;
             i.itemPassword.setRepeated();
             oldItem.itemPassword.setOld();
+            await updateItemPassword(oldItem.itemPassword);
           }
         }
       } else {
         oldItem.itemPassword.setDeleted();
+        await updateItemPassword(oldItem.itemPassword);
       }
     } else {
       if (i.password != null) {
@@ -387,14 +390,32 @@ class ItemProvider with ChangeNotifier {
       }
     } else {
       i.fkPinId = null;
+      if (oldItem.pin != null) await deletePin(oldItem.pin);
     }
 
     if (i.longText != null) {
-      i.fkLongTextId = await insertLongText(i.longText);
+      if (i.longText.longTextId == null) {
+        i.fkLongTextId = await insertLongText(i.longText);
+      } else {
+        i.fkLongTextId = i.longText.longTextId;
+      }
+    } else {
+      i.fkLongTextId = null;
+      if (oldItem.longText != null) await deleteLongText(oldItem.longText);
     }
+
     if (i.address != null) {
-      i.fkAddressId = await insertAddress(i.address);
+      if (i.address.addressId == null) {
+        i.fkAddressId = await insertAddress(i.address);
+      } else {
+        i.fkAddressId = i.address.addressId;
+      }
+    } else {
+      i.fkAddressId = null;
+      if (oldItem.address != null) await deleteAddress(oldItem.address);
     }
+
+    //CONTINUE
     if (i.product != null) {
       if (i.product.productTrademark.isNotEmpty ||
           i.product.productModel.isNotEmpty) {
@@ -417,7 +438,7 @@ class ItemProvider with ChangeNotifier {
         );
       }
     }
-    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) {
+    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id').then((itemId) {
       if (i.password != null) {
         i.itemPassword.fkItemId = itemId;
         insertItemPassword(i.itemPassword);
@@ -425,17 +446,14 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<int> insertUsername(Username u) async =>
-      await DBHelper.insert(DBHelper.usernameTable, u.toMap());
-
-  Future<int> updateUsername(Username u) async =>
-      await DBHelper.update(DBHelper.usernameTable, u.toMap(), 'username_id');
-
   Future<int> insertPassword(Password p) async =>
       await DBHelper.insert(DBHelper.passwordTable, p.toMap());
 
   Future<int> updatePassword(Password p) async =>
       await DBHelper.update(DBHelper.passwordTable, p.toMap(), 'password_id');
+
+  Future<int> deletePassword(Password p) async =>
+      await DBHelper.delete(DBHelper.passwordTable, p.toMap(), 'password_id');
 
   Future<void> insertItemPassword(ItemPassword ip) async =>
       await DBHelper.insert(DBHelper.itemPasswordTable, ip.toMap());
@@ -443,11 +461,26 @@ class ItemProvider with ChangeNotifier {
   Future<void> updateItemPassword(ItemPassword ip) async =>
       await DBHelper.updateItemPassword(ip.toMap());
 
+  Future<void> deleteItemPassword(ItemPassword ip) async =>
+      await DBHelper.deleteItemPassword(ip.toMap());
+
+  Future<int> insertUsername(Username u) async =>
+      await DBHelper.insert(DBHelper.usernameTable, u.toMap());
+
+  Future<int> updateUsername(Username u) async =>
+      await DBHelper.update(DBHelper.usernameTable, u.toMap(), 'username_id');
+
+  Future<int> deleteUsername(Username u) async =>
+      await DBHelper.delete(DBHelper.usernameTable, u.toMap(), 'username_id');
+
   Future<int> insertPin(Pin p) async =>
       await DBHelper.insert(DBHelper.pinTable, p.toMap());
 
   Future<int> updatePin(Pin p) async =>
       await DBHelper.update(DBHelper.pinTable, p.toMap(), 'pin_id');
+
+  Future<int> deletePin(Pin p) async =>
+      await DBHelper.delete(DBHelper.pinTable, p.toMap(), 'pin_id');
 
   Future<int> insertLongText(LongText l) async =>
       await DBHelper.insert(DBHelper.longTextTable, l.toMap());
@@ -455,11 +488,17 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateLongText(LongText l) async =>
       await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
 
+  Future<int> deleteLongText(LongText l) async =>
+      await DBHelper.delete(DBHelper.longTextTable, l.toMap(), 'long_text_id');
+
   Future<int> insertAddress(Address a) async =>
       await DBHelper.insert(DBHelper.addressTable, a.toMap());
 
   Future<int> updateAddress(Address a) async =>
       await DBHelper.update(DBHelper.addressTable, a.toMap(), 'address_id');
+
+  Future<int> deleteAddress(Address a) async =>
+      await DBHelper.delete(DBHelper.addressTable, a.toMap(), 'address_id');
 
   Future<int> insertProduct(Product p) async =>
       await DBHelper.insert(DBHelper.productTable, p.toMap());
@@ -559,7 +598,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<List<Username>> getUsers() async {
     Iterable<Username> _iter;
-    await DBHelper.getData(DBHelper.usernameTable).then((data) {
+    await DBHelper.read(DBHelper.usernameTable).then((data) {
       _iter = data.map((e) => Username.fromMap(e));
     });
     return _iter.toList();
@@ -575,7 +614,7 @@ class ItemProvider with ChangeNotifier {
 
   Future<List<Tag>> getTags() async {
     Iterable<Tag> _iter;
-    await DBHelper.getData(DBHelper.tagTable).then((data) {
+    await DBHelper.read(DBHelper.tagTable).then((data) {
       _iter = data.map((e) => Tag.fromMap(e));
     });
     return _iter.toList();
