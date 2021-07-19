@@ -9,30 +9,16 @@ class Product {
   String productVersion;
   String productUpdate;
   String productStatus;
+  int fkCpe23uriId;
 
-  List<Cpe23uri> cpes = <Cpe23uri>[];
+  Cpe23uri cpe23uri;
 
-  Product({
-    this.productId,
-    this.productType = '',
-    this.productTrademark = '',
-    this.productModel = '',
-    this.productVersion = '',
-    this.productUpdate = '',
-    this.productStatus = '',
-  });
+  void setCpe23uri(Cpe cpe) => this.cpe23uri = Cpe23uri.fromCpe(cpe);
 
-  //TODO: tracking vulns in status
-
-  Product.fromMap(Map<String, dynamic> map) {
-    this.productId = map['product_id'];
-    this.productType = map['product_type'];
-    this.productTrademark = map['product_trademark'];
-    this.productModel = map['product_model'];
-    this.productVersion = map['product_version'];
-    this.productUpdate = map['product_update'];
-    this.productStatus = map['product_status'];
-  }
+  bool get isEmpty =>
+      this.productTrademark.isEmpty &&
+      this.productModel.isEmpty &&
+      this.cpe23uri == null;
 
   String get type {
     switch (productType) {
@@ -50,6 +36,28 @@ class Product {
     }
   }
 
+  Product({
+    this.productId,
+    this.productType = '',
+    this.productTrademark = '',
+    this.productModel = '',
+    this.productVersion = '',
+    this.productUpdate = '',
+    this.productStatus = '',
+    this.fkCpe23uriId,
+  });
+
+  Product.fromMap(Map<String, dynamic> map) {
+    this.productId = map['product_id'];
+    this.productType = map['product_type'];
+    this.productTrademark = map['product_trademark'];
+    this.productModel = map['product_model'];
+    this.productVersion = map['product_version'];
+    this.productUpdate = map['product_update'];
+    this.productStatus = map['product_status'];
+    this.fkCpe23uriId = map['fk_cpe23uri_id'];
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{
       'product_type': this.productType,
@@ -58,6 +66,7 @@ class Product {
       'product_version': this.productVersion,
       'product_update': this.productUpdate,
       'product_status': this.productStatus,
+      'fk_cpe23uri_id': this.fkCpe23uriId,
     };
     if (this.productId != null) map['product_id'] = this.productId;
     return map;
@@ -70,13 +79,6 @@ class Product {
         productModel: this.productModel,
         productVersion: this.productVersion,
         productUpdate: this.productUpdate,
+        fkCpe23uriId: this.fkCpe23uriId,
       );
-
-  void addRemoveCpe(Cpe cpe) {
-    if (cpes.any((c) => c.value == cpe.cpe23Uri)) {
-      cpes.removeWhere((c) => c.value == cpe.cpe23Uri);
-    } else {
-      cpes.add(Cpe23uri.fromCpe(cpe));
-    }
-  }
 }
