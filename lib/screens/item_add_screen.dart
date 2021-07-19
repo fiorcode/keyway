@@ -278,11 +278,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     Switch(
                                       activeColor: Colors.green,
                                       value: _i.itemPassword.repeatWarning,
-                                      onChanged: (_) {
-                                        setState(() {
-                                          _i.itemPassword.repeatWarningSwitch();
-                                        });
-                                      },
+                                      onChanged: (_) => setState(() {
+                                        _i.itemPassword.repeatWarningSwitch();
+                                      }),
                                     ),
                                   ],
                                 ),
