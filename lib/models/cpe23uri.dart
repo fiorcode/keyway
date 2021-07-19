@@ -53,4 +53,10 @@ class Cpe23uri {
     if (cpe23uriId != null) map['cpe23uri_id'] = cpe23uriId;
     return map;
   }
+
+  bool equal(Cpe23uri cpe) {
+    if (this.cpe23uriId != cpe.cpe23uriId) return false;
+    if (this.value != cpe.value) return false;
+    return true;
+  }
 }
