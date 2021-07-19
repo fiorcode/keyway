@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/username.dart';
 import 'package:provider/provider.dart';
-import 'package:encrypt/encrypt.dart' as e;
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../models/item.dart';
 import '../models/password.dart';
-import '../models/item_password.dart';
-import '../models/pin.dart';
-import '../models/long_text.dart';
+import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
@@ -184,28 +180,26 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      if (_i.address != null) {
+      if (widget.item.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          _i.address.addressEnc = _addressCtrler.text;
-          _i.address.addressIv = _addressCtrler.text;
-          _i.address.addressProtocol = _protocolCtrler.text;
-          _i.address.addressPort = int.parse(_portCtrler.text);
-          if (widget.item.address != null) {
-            if (widget.item.address.addressEnc != _i.address.addressEnc ||
-                widget.item.address.addressProtocol !=
-                    _i.address.addressProtocol ||
-                widget.item.address.addressPort != _i.address.addressPort) {
-              _items.updateAddress(_i.address);
-            } else {
-              _i.fkAddressId = await _items.insertAddress(_i.address);
-            }
+          if (_cripto.decryptAddress(widget.item.address) !=
+              _addressCtrler.text) {
+            _i.address = _cripto.createAddress(_addressCtrler.text);
           }
+        } else {
+          _i.address = null;
         }
       } else {
-        _i.fkAddressId = null;
+        if (_i.address != null) {
+          _i.address = _cripto.createAddress(_addressCtrler.text);
+        }
       }
 
-      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
+      if (_i.product.isEmpty) _i.product = null;
+
+      _items.updateItem(widget.item, _i).then(
+            (_) => Navigator.of(context).pop(),
+          );
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -226,8 +220,10 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     bool _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
     if (_warning) {
-      _i.itemStatus = _i.itemStatus + '<DELETED>';
-      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
+      _i.setDeleted();
+      _items.updateItem(widget.item, _i).then(
+            (_) => Navigator.of(context).pop(),
+          );
     }
   }
 
@@ -376,14 +372,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _passwordRepeatedWarning,
-                                      onChanged: (value) => setState(() {
-                                        _passwordRepeatedWarning = value;
-                                        if (value)
-                                          _i.itemPassword.passwordStatus = '';
-                                        else
-                                          _i.itemPassword.passwordStatus =
-                                              'NO-WARNING';
+                                      value: _i.itemPassword.repeatWarning,
+                                      onChanged: (_) => setState(() {
+                                        _i.itemPassword.repeatWarningSwitch();
                                       }),
                                     ),
                                   ],
@@ -428,14 +419,12 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _pinRepeatedWarning,
-                                      onChanged: (value) => setState(() {
-                                        _pinRepeatedWarning = value;
-                                        if (value)
-                                          _i.pin.pinStatus = '';
-                                        else
-                                          _i.pin.pinStatus = 'NO-WARNING';
-                                      }),
+                                      value: _i.pin.repeatWarning,
+                                      onChanged: (_) {
+                                        setState(() {
+                                          _i.pin.repeatWarningSwitch();
+                                        });
+                                      },
                                     ),
                                   ],
                                 ),
