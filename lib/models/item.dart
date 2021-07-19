@@ -29,6 +29,8 @@ class Item {
   Address address;
   Product product;
 
+  bool get deleted => this.itemStatus.contains('<deleted>');
+
   Item.factory() {
     this.title = '';
     this.date = '';
@@ -64,6 +66,13 @@ class Item {
     this.address,
     this.product,
   });
+
+  void setDeleted() {
+    if (!deleted) this.itemStatus += '<deleted>';
+  }
+
+  void unSetDeleted() =>
+      this.itemStatus = this.itemStatus.replaceAll('<deleted>', '');
 
   Item.fromMap(Map<String, dynamic> map) {
     itemId = map['item_id'];
