@@ -130,7 +130,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
 
   int _pages(int totalResults) => (totalResults.toDouble() / 100).ceil();
 
-  void _addRemoveCpe(Cpe cpe) => widget.product.addRemoveCpe(cpe);
+  void _setCpe(Cpe cpe) => widget.product.setCpe23uri(cpe);
 
   @override
   void initState() {
@@ -407,7 +407,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                       itemBuilder: (ctx, i) {
                                         return CpeSelectionCard(
                                           snap.data.result.cpes[i],
-                                          _addRemoveCpe,
+                                          _setCpe,
                                         );
                                       },
                                     ),
