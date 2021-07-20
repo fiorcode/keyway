@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/Cards/strength_level_card.dart';
 import 'package:provider/provider.dart';
 
 import 'restore_screen.dart';
@@ -7,9 +6,10 @@ import 'items_screen.dart';
 import '../helpers/password_helper.dart';
 import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
+import '../widgets/Cards/strength_level_card.dart';
 
 class SetPasswordScreen extends StatefulWidget {
-  static const routeName = '/set-master-password';
+  static const routeName = '/set-password';
 
   @override
   _SetPasswordScreenState createState() => _SetPasswordScreenState();
@@ -17,54 +17,76 @@ class SetPasswordScreen extends StatefulWidget {
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
   CriptoProvider _cripto;
+  ZxcvbnResult _zxcvbnResult;
+
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
-
-  ZxcvbnResult _zxcvbnResult;
 
   bool _obscurePass = false;
   bool _obscureConfirm = false;
   bool _loadingRandomPass = false;
-
   bool _equals = false;
 
-  void _checkPassword() => setState(() {
-        _zxcvbnResult = PasswordHelper.strength(_passCtrler.text);
-      });
+  void _checkPassword(String p) {
+    setState(() => _zxcvbnResult = PasswordHelper.evaluate(p));
+  }
 
-  _checkConfirmPassword() =>
-      setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
+  void _checkConfirmPassword(String cp) {
+    setState(() => _equals = _passCtrler.text == cp);
+  }
 
-  _clear() => setState(() {
-        _zxcvbnResult = null;
-        _confirmCtrler.clear();
-        _passCtrler.clear();
-      });
+  void _clear() {
+    setState(() {
+      _zxcvbnResult = ZxcvbnResult();
+      _confirmCtrler.clear();
+      _passCtrler.clear();
+    });
+  }
 
-  _clearConfirm() => setState(() => _confirmCtrler.clear());
+  void _clearConfirm() {
+    setState(() => _confirmCtrler.clear());
+  }
 
-  _obscurePassSwitch() => setState(() => _obscurePass = !_obscurePass);
+  void _obscurePassSwitch() {
+    setState(() => _obscurePass = !_obscurePass);
+  }
 
-  _obscureConfirmSwitch() => setState(() => _obscureConfirm = !_obscureConfirm);
+  void _obscureConfirmSwitch() {
+    setState(() => _obscureConfirm = !_obscureConfirm);
+  }
 
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
-    PasswordHelper.dicePassword().then((p) {
-      _passCtrler.text = p.passwordEnc;
-      _zxcvbnResult = PasswordHelper.strength(_passCtrler.text);
+    PasswordHelper.dicePassword().then((result) {
+      _zxcvbnResult = result;
+      _passCtrler.text = result.password;
       setState(() => _loadingRandomPass = false);
     });
   }
 
-  _setPassword() async {
+  void _setPassword() async {
     try {
-      _cripto = Provider.of<CriptoProvider>(context, listen: false);
       if (await _cripto.initialSetup(_passCtrler.text)) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
+  }
+
+  void _restoreData() =>
+      Navigator.of(context).pushNamed(RestoreScreen.routeName);
+
+  @override
+  void initState() {
+    _zxcvbnResult = ZxcvbnResult();
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    super.didChangeDependencies();
   }
 
   @override
@@ -115,20 +137,20 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                         onTap: _clear,
                       )
                     : _loadingRandomPass
-                        ? CircularProgressIndicator()
+                        ? null
                         : IconButton(
                             icon: Icon(Icons.bolt),
                             onPressed: _loadRandomPassword,
                           ),
               ),
               obscureText: _obscurePass,
-              onChanged: (_) => _checkPassword(),
+              onChanged: (p) => _checkPassword(p),
             ),
-            if (_zxcvbnResult != null)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                child: StrengthLevelCard(_zxcvbnResult),
-              ),
+            if (_loadingRandomPass) LinearProgressIndicator(),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: StrengthLevelCard(_zxcvbnResult),
+            ),
             SizedBox(height: 32),
             TextField(
               autocorrect: false,
@@ -156,7 +178,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     : null,
               ),
               obscureText: _obscureConfirm,
-              onChanged: (_) => _checkConfirmPassword(),
+              onChanged: (cp) => _checkConfirmPassword(cp),
               textInputAction: TextInputAction.next,
               onSubmitted: (_) => _setPassword(),
             ),
@@ -174,8 +196,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                   primary: Theme.of(context).primaryColor),
-              onPressed: () =>
-                  Navigator.of(context).pushNamed(RestoreScreen.routeName),
+              onPressed: _restoreData,
               child: Text(
                 'RESTORE MY DATA',
                 style: TextStyle(color: Colors.white),
