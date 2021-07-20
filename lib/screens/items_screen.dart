@@ -22,7 +22,7 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   ItemProvider _item;
   CriptoProvider _cripto;
-  Future _getItemsAsync;
+  Future<void> _getItems;
   TextEditingController _searchCtrler;
   FocusNode _searchFocusNode;
   bool _unlocking = false;
@@ -30,12 +30,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItems() async => await _item.fetchItems(
+  Future<void> _getItemsAsync() async => await _item.fetchItems(
         _searchCtrler.text == null ? '' : _searchCtrler.text,
       );
 
   _onReturn() {
-    _getItemsAsync = _getItems();
+    _getItems = _getItemsAsync();
     setState(() {});
   }
 
@@ -49,7 +49,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   void _clearSearch() {
     _searchCtrler.clear();
-    _getItemsAsync = _getItems();
+    _getItems = _getItemsAsync();
     setState(() {});
   }
 
@@ -67,7 +67,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     _item = Provider.of<ItemProvider>(context);
     _searchCtrler = TextEditingController();
     _searchFocusNode = FocusNode();
-    _getItemsAsync = _getItems();
+    _getItems = _getItemsAsync();
     super.didChangeDependencies();
   }
 
@@ -90,7 +90,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 onPressed: () => _cripto.unlock('Qwe123!'),
               )
             : FutureBuilder(
-                future: _getItemsAsync,
+                future: _getItems,
                 builder: (ctx, snap) {
                   switch (snap.connectionState) {
                     case ConnectionState.done:
@@ -129,7 +129,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         actions: [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
       ),
       body: FutureBuilder(
-        future: _getItemsAsync,
+        future: _getItems,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
             case ConnectionState.none:
