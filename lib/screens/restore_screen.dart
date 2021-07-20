@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
-import '../providers/cripto_provider.dart';
+// import '../providers/cripto_provider.dart';
 
 class RestoreScreen extends StatefulWidget {
   static const routeName = '/restore';
@@ -11,17 +11,17 @@ class RestoreScreen extends StatefulWidget {
 }
 
 class _RestoreScreenState extends State<RestoreScreen> {
-  CriptoProvider _cripto;
-  bool _working = false;
+  // CriptoProvider _cripto;
+  // bool _working = false;
   Future<void> _searchBacks;
 
-  Future<void> _searchBacksAsync() async {}
+  // Future<void> _searchBacksAsync() async {}
 
-  @override
-  void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   _cripto = Provider.of<CriptoProvider>(context, listen: false);
+  //   super.initState();
+  // }
 
   @override
   Widget build(BuildContext context) {
