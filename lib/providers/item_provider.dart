@@ -309,12 +309,12 @@ class ItemProvider with ChangeNotifier {
     }
     if (i.product != null) {
       if (i.product.cpe23uri != null) {
-        insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
+        await insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
           i.product.fkCpe23uriId = cpe23uriId;
-          await insertProduct(i.product);
+          i.fkProductId = await insertProduct(i.product);
         });
       } else {
-        await insertProduct(i.product);
+        i.fkProductId = await insertProduct(i.product);
       }
     }
     DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) async {
