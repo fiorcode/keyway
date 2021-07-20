@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'providers/drive_provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
@@ -21,7 +20,6 @@ import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
 import 'screens/items_screen.dart';
 import 'screens/item_add_screen.dart';
-import 'screens/backup_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
 import 'screens/items_deleted_screen.dart';
@@ -45,7 +43,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider.value(value: CriptoProvider()),
         ChangeNotifierProvider.value(value: ItemProvider()),
-        ChangeNotifierProvider.value(value: DriveProvider()),
         ChangeNotifierProvider.value(value: NistProvider()),
       ],
       child: MaterialApp(
@@ -69,7 +66,6 @@ class MyApp extends StatelessWidget {
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
           ItemDeletedViewScreen.routeName: (ctx) => ItemDeletedViewScreen(),
-          BackupScreen.routeName: (ctx) => BackupScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemsWithOldPasswordsScreen.routeName: (ctx) =>
               ItemsWithOldPasswordsScreen(),
