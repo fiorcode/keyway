@@ -20,21 +20,23 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  ItemProvider _item;
   CriptoProvider _cripto;
+  ItemProvider _item;
   Future<void> _getItems;
-  TextEditingController _searchCtrler;
-  FocusNode _searchFocusNode;
+
+  TextEditingController _searchCtrler = TextEditingController();
+  FocusNode _searchFN = FocusNode();
+
   bool _unlocking = false;
   bool _searching = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
-  Future<void> _getItemsAsync() async => await _item.fetchItems(
-        _searchCtrler.text == null ? '' : _searchCtrler.text,
-      );
+  Future<void> _getItemsAsync() async {
+    await _item.fetchItems(_searchCtrler.text);
+  }
 
-  _onReturn() {
+  void _onReturn() {
     _getItems = _getItemsAsync();
     setState(() {});
   }
@@ -42,7 +44,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   void _searchSwitch() {
     setState(() {
       _searching = !_searching;
-      _searching ? _searchFocusNode.requestFocus() : _searchFocusNode.unfocus();
+      _searching ? _searchFN.requestFocus() : _searchFN.unfocus();
       if (!_searching) _clearSearch();
     });
   }
@@ -65,10 +67,15 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
     _item = Provider.of<ItemProvider>(context);
-    _searchCtrler = TextEditingController();
-    _searchFocusNode = FocusNode();
     _getItems = _getItemsAsync();
     super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _searchCtrler.dispose();
+    _searchFN.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,13 +103,13 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     case ConnectionState.done:
                       if (_item.items.length > 10 || _searching) {
                         if (_searching) {
-                          _searchFocusNode.requestFocus();
+                          _searchFN.requestFocus();
                           return SearchBarTextField(
                             _searchCtrler,
                             _onReturn,
                             _searchSwitch,
                             _clearSearch,
-                            _searchFocusNode,
+                            _searchFN,
                           );
                         } else {
                           return IconButton(
