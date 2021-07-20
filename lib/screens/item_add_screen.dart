@@ -126,7 +126,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
       setState(() {
-        _passCtrler.text = p.passwordEnc;
+        _passCtrler.text = p.password;
         _loadingRandomPass = false;
       });
     });
@@ -248,7 +248,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               ),
                               if (_passCtrler.text.isNotEmpty)
                                 StrengthLevelCard(
-                                  PasswordHelper.strength(
+                                  PasswordHelper.evaluate(
                                     _passCtrler.text,
                                     password: _i.password,
                                   ),
