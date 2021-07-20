@@ -25,24 +25,15 @@ class StrengthLevelCard extends StatelessWidget {
         return Colors.green;
         break;
       default:
-        return Colors.grey;
+        return null;
     }
   }
-
-  // List<Text> _suggestionList() {
-  //   List<Text> _list = [];
-  //   _suggestions.forEach((sugg) {
-  //     _list.add(Text(sugg));
-  //   });
-  //   return _list;
-  // }
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      // elevation: zxcvbnResult.score < 0 ? 0 : 8,
+      elevation: 2,
       shadowColor: _shadowColor(),
-      // margin: EdgeInsets.all(16),
       child: Row(
         children: [
           Expanded(
@@ -50,10 +41,7 @@ class StrengthLevelCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: zxcvbnResult.score == 0 ? Colors.red : Colors.red[200],
                 border: zxcvbnResult.score == 0
-                    ? Border.all(
-                        width: 2,
-                        color: Colors.red[600],
-                      )
+                    ? Border.all(width: 2, color: Colors.red[600])
                     : null,
               ),
               height: 32,
