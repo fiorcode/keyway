@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../screens/backup_screen.dart';
 import '../screens/data_screen.dart';
 import '../widgets/Cards/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
-  static const routeName = '/dash';
+  static const routeName = '/dashboard';
   @override
   Widget build(BuildContext context) {
     Color _primary = Theme.of(context).primaryColor;
@@ -32,19 +31,19 @@ class DashboardScreen extends StatelessWidget {
               ),
               goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
             ),
-            DashboardCard(
-              icon: Icon(
-                Icons.settings_backup_restore,
-                color: _primary,
-                size: 64,
-              ),
-              title: Text(
-                'Backup',
-                style: TextStyle(color: _primary, fontSize: 20),
-              ),
-              goTo: () =>
-                  Navigator.of(context).pushNamed(BackupScreen.routeName),
-            ),
+            // DashboardCard(
+            //   icon: Icon(
+            //     Icons.settings_backup_restore,
+            //     color: _primary,
+            //     size: 64,
+            //   ),
+            //   title: Text(
+            //     'Backup',
+            //     style: TextStyle(color: _primary, fontSize: 20),
+            //   ),
+            //   goTo: () =>
+            //       Navigator.of(context).pushNamed(BackupScreen.routeName),
+            // ),
             DashboardCard(
               icon:
                   Icon(Icons.settings_applications, color: _primary, size: 64),
