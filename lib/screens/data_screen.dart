@@ -1,25 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
+import '../helpers/db_helper.dart';
+
+import 'data_views/item_table.dart';
+import 'data_views/item_password_table.dart';
+
 import 'package:keyway/screens/addresses_screen.dart';
-import 'package:keyway/screens/all_items_screen.dart';
 import 'package:keyway/screens/cpe23uri_cve_screen.dart';
 import 'package:keyway/screens/cpe23uri_screen.dart';
 import 'package:keyway/screens/cve_screen.dart';
 import 'package:keyway/screens/devices_screen.dart';
-import 'package:keyway/screens/item_password_screen.dart';
 import 'package:keyway/screens/notes_screen.dart';
 import 'package:keyway/screens/passwords_screen.dart';
 import 'package:keyway/screens/tags_screen.dart';
 import 'package:keyway/screens/usernames_screen.dart';
 import 'package:keyway/widgets/Cards/dashboard_card.dart';
-
-import '../helpers/db_helper.dart';
 import 'pins_screen.dart';
-// import '../helpers/warning_helper.dart';
-// import '../screens/items_deleted_screen.dart';
-// import '../screens/items_with_old_passwords_screen.dart';
-// import '../screens/splash_screen.dart';
-// import '../screens/tags_screen.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -113,6 +110,8 @@ class _DataScreenState extends State<DataScreen> {
   //   }
   // }
 
+  void _goTo(String route) => Navigator.of(context).pushNamed(route);
+
   @override
   void initState() {
     _dbSize = _getDBSize();
@@ -197,11 +196,10 @@ class _DataScreenState extends State<DataScreen> {
                   DashboardCard(
                     icon: Icon(Icons.view_list, color: _primary, size: 48),
                     title: Text(
-                      'All items',
+                      'Item',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => Navigator.of(context)
-                        .pushNamed(AllItemsListScreen.routeName),
+                    goTo: () => _goTo(ItemTableScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.pivot_table_chart,
@@ -210,8 +208,7 @@ class _DataScreenState extends State<DataScreen> {
                       'ItemPasswords',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => Navigator.of(context)
-                        .pushNamed(ItemPasswordListScreen.routeName),
+                    goTo: () => _goTo(ItemPasswordTableScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.password, color: _primary, size: 48),
