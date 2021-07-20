@@ -37,34 +37,6 @@ class PasswordHelper {
     return s.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
   }
 
-  static bool isStrong(String s) {
-    return minLong(s) &&
-        maxLong(s) &&
-        hasLow(s) &&
-        hasUpp(s) &&
-        hasNum(s) &&
-        hasSpec(s);
-  }
-
-  static ZxcvbnResult strength(String s, {Password password}) {
-    if (s.isEmpty) return null;
-    var _evaluation = Zxcvbn().evaluate(s);
-    if (password != null)
-      password.passwordStrength = _evaluation.score.toString();
-    return ZxcvbnResult(
-      score: _evaluation.score.toInt(),
-      suggestions: _evaluation.feedback.suggestions,
-      warning: _evaluation.feedback.warning,
-    );
-  }
-
-  static List<String> suggestions(String s) {
-    var _sugs = [];
-    if (s.isEmpty) return <String>[];
-    _sugs = Zxcvbn().evaluate(s).feedback.suggestions;
-    return _sugs;
-  }
-
   static Future<List<Word>> getWordList() async {
     List<Word> _wordList = <Word>[];
     final _list =
@@ -75,25 +47,27 @@ class PasswordHelper {
     return _wordList;
   }
 
-  static Future<Password> dicePassword() async {
+  static ZxcvbnResult evaluate(String s, {Password password}) {
+    if (s.isEmpty) return null;
+    var _evaluation = Zxcvbn().evaluate(s);
+    if (password != null)
+      password.passwordStrength = _evaluation.score.toString();
+    return ZxcvbnResult(
+      password: _evaluation.password,
+      score: _evaluation.score.toInt(),
+      suggestions: _evaluation.feedback.suggestions,
+      warning: _evaluation.feedback.warning,
+    );
+  }
+
+  static Future<ZxcvbnResult> dicePassword() async {
     List<Word> _wordList = await getWordList();
     Random _rdm = Random.secure();
     String _pass = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value +
         _conectors.elementAt(_rdm.nextInt(_conectors.length)) +
         _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
-    Password _p = Password(
-        passwordEnc: _pass, passwordStrength: strength(_pass).score.toString());
-    return _p;
+    return evaluate(_pass);
   }
-
-  // static Future<bool> secureDicePassword() async {
-  //   List<Word> _wordList = await getWordList();
-  //   Random _rdm = Random.secure();
-  //   String _word1 = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
-  //   String _conect = _conectors.elementAt(_rdm.nextInt(_conectors.length));
-  //   String _word2 = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
-  //   return strength(_word1 + _conect + _word2).score > 2;
-  // }
 
   static Future<Password> secureDicePassword() async {
     List<Word> _wordList = await getWordList();
@@ -108,8 +82,32 @@ class PasswordHelper {
     String _conect2 = _conectors.elementAt(_rdm.nextInt(_conectors.length));
     String _pass = _word1 + _conect + _word2 + _conect2;
     return Password(
-        passwordEnc: _pass, passwordStrength: strength(_pass).score.toString());
+        passwordEnc: _pass, passwordStrength: evaluate(_pass).score.toString());
   }
+}
+
+class ZxcvbnResult {
+  String password;
+  int score;
+  List<String> suggestions;
+  String warning;
+
+  ZxcvbnResult({
+    this.password = '',
+    this.score = -1,
+    this.suggestions,
+    this.warning = '',
+  });
+}
+
+  // static Future<bool> secureDicePassword() async {
+  //   List<Word> _wordList = await getWordList();
+  //   Random _rdm = Random.secure();
+  //   String _word1 = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
+  //   String _conect = _conectors.elementAt(_rdm.nextInt(_conectors.length));
+  //   String _word2 = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
+  //   return strength(_word1 + _conect + _word2).score > 2;
+  // }
 
   // static Future<bool> secureDicePassword() async {
   //   List<Word> _wordList = await getWordList();
@@ -133,12 +131,10 @@ class PasswordHelper {
   //           toBeginningOfSentenceCase(_word2.substring(_rdmIndex));
   //   return strength(_word1 + _conect + _word2).score > 2;
   // }
-}
 
-class ZxcvbnResult {
-  int score;
-  List<String> suggestions;
-  String warning;
-
-  ZxcvbnResult({this.score, this.suggestions, this.warning});
-}
+  // static List<String> suggestions(String s) {
+  //   var _sugs = [];
+  //   if (s.isEmpty) return <String>[];
+  //   _sugs = Zxcvbn().evaluate(s).feedback.suggestions;
+  //   return _sugs;
+  // }
