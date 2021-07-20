@@ -23,6 +23,7 @@ import '../widgets/Cards/password_change_reminder_card.dart';
 import '../widgets/Cards/pin_change_reminder_card.dart';
 import '../widgets/Cards/tags_card.dart';
 import '../widgets/Cards/address_card.dart';
+import '../widgets/Cards/product_card.dart';
 
 class ItemEditScreen extends StatefulWidget {
   static const routeName = '/edit-item';
@@ -40,7 +41,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   ItemProvider _items;
   Item _i;
 
-  //TODO: Create when its necesary
   final _titleCtrler = TextEditingController();
   final _userCtrler = TextEditingController();
   final _passCtrler = TextEditingController();
@@ -100,7 +100,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       _portCtrler.text = _i.address.addressProtocol;
       _trademarkCtrler.text = _i.product.productTrademark;
       _modelCtrler.text = _i.product.productModel;
-      //setState(() {});
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -209,7 +208,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
       setState(() {
-        _passCtrler.text = p.passwordEnc;
+        _passCtrler.text = p.password;
         _loadingRandomPass = false;
       });
     });
@@ -343,7 +342,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                               ),
                               if (_passCtrler.text.isNotEmpty)
                                 StrengthLevelCard(
-                                  PasswordHelper.strength(
+                                  PasswordHelper.evaluate(
                                     _passCtrler.text,
                                     password: _i.password,
                                   ),
@@ -456,6 +455,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
+                      ),
+                    ),
+                  if (_i.product != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: ProductCard(
+                        _i.product,
+                        _trademarkCtrler,
+                        _modelCtrler,
                       ),
                     ),
                   Padding(
