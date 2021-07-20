@@ -35,7 +35,7 @@ class _AddressCardState extends State<AddressCard> {
 
   TextInputType _type = TextInputType.url;
   bool _inputMode = false;
-  int _protocolIndex = 0;
+  int _index = 0;
 
   //TODO: onChange functions
 
@@ -50,25 +50,24 @@ class _AddressCardState extends State<AddressCard> {
 
   void _protocolSwitch() {
     setState(() {
-      if (_protocolIndex == _protocols.length - 1)
-        _protocolIndex = 0;
+      if (_index == _protocols.length - 1)
+        _index = 0;
       else
-        _protocolIndex += 1;
+        _index += 1;
     });
-    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
+    loadPresets();
+  }
+
+  void loadPresets() {
+    widget.protocolCtrler.text = _protocols.keys.elementAt(_index);
     widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
-    widget.portCtrler.text =
-        _protocols.values.elementAt(_protocolIndex).toString();
+    widget.portCtrler.text = _protocols.values.elementAt(_index).toString();
     widget.address.addressPort = int.parse(widget.portCtrler.text);
   }
 
   @override
   void initState() {
-    widget.protocolCtrler.text = _protocols.keys.elementAt(_protocolIndex);
-    widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
-    widget.portCtrler.text =
-        _protocols.values.elementAt(_protocolIndex).toString();
-    widget.address.addressPort = int.parse(widget.portCtrler.text);
+    loadPresets();
     super.initState();
   }
 
@@ -138,7 +137,7 @@ class _AddressCardState extends State<AddressCard> {
                           selectedColor: Colors.grey[200],
                           onSelected: (_) {},
                           label: Text(
-                            _protocols.keys.elementAt(_protocolIndex),
+                            _protocols.keys.elementAt(_index),
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
@@ -174,9 +173,7 @@ class _AddressCardState extends State<AddressCard> {
                           selectedColor: Colors.grey[200],
                           onSelected: (_) {},
                           label: Text(
-                            _protocols.values
-                                .elementAt(_protocolIndex)
-                                .toString(),
+                            _protocols.values.elementAt(_index).toString(),
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,
