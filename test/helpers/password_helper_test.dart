@@ -29,9 +29,7 @@ void main() {
     while (i < 1000) {
       i = i + 1;
       test("Test de 1000 contraseñas comunes", () {
-        expectLater(
-            PasswordHelper.dicePassword()
-                .then((p) => int.parse(p.passwordStrength) > 2),
+        expectLater(PasswordHelper.dicePassword().then((p) => p.score > 2),
             completion(true));
       });
     }
