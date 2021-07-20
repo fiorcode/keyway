@@ -25,13 +25,14 @@ import 'screens/data_screen.dart';
 import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
-import 'screens/all_items_screen.dart';
-import 'screens/item_password_screen.dart';
 import 'screens/passwords_screen.dart';
 import 'screens/usernames_screen.dart';
 import 'package:keyway/screens/notes_screen.dart';
 import 'package:keyway/screens/cpe23uri_screen.dart';
 import 'package:keyway/screens/devices_screen.dart';
+
+import 'screens/data_views/item_table.dart';
+import 'screens/data_views/item_password_table.dart';
 
 void main() => runApp(MyApp());
 
@@ -73,8 +74,8 @@ class MyApp extends StatelessWidget {
           ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
-          AllItemsListScreen.routeName: (ctx) => AllItemsListScreen(),
-          ItemPasswordListScreen.routeName: (ctx) => ItemPasswordListScreen(),
+          ItemTableScreen.routeName: (ctx) => ItemTableScreen(),
+          ItemPasswordTableScreen.routeName: (ctx) => ItemPasswordTableScreen(),
           PasswordsListScreen.routeName: (ctx) => PasswordsListScreen(),
           UsernamesListScreen.routeName: (ctx) => UsernamesListScreen(),
           PinsListScreen.routeName: (ctx) => PinsListScreen(),
