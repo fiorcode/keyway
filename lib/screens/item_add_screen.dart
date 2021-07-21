@@ -60,7 +60,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         if (_i.username == null) _userCtrler.clear();
         if (_i.password == null) _passCtrler.clear();
         if (_i.pin == null) _pinCtrler.clear();
-        if (_i.longText == null) _longCtrler.clear();
+        if (_i.note == null) _longCtrler.clear();
         if (_i.address == null) {
           _addressCtrler.clear();
           _protocolCtrler.clear();
@@ -113,7 +113,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       await _setPassword();
       await _setUsername();
       _i.pin = _cripto.createPin(_pinCtrler.text);
-      _i.longText = _cripto.createLongText(_longCtrler.text);
+      _i.note = _cripto.createNote(_longCtrler.text);
       _i.address = _cripto.createAddress(_addressCtrler.text);
       _items.insertItem(_i).then((_) => Navigator.of(context).pop());
     } catch (error) {
@@ -338,7 +338,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_i.longText != null)
+                  if (_i.note != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
