@@ -11,11 +11,10 @@ class DBHelper {
   static const String passwordTable = "password";
   static const String usernameTable = "username";
   static const String pinTable = "pin";
-  static const String longTextTable = "long_text";
+  static const String noteTable = "note";
   static const String addressTable = "address";
   static const String productTable = "product";
   static const String cpe23uriTable = "cpe23uri";
-  // static const String productCpe23uriTable = "product_cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
   static const String cveImpactV3Table = "cve_impact_v3";
@@ -33,11 +32,10 @@ class DBHelper {
         await db.execute(createPasswordTable);
         await db.execute(createUsernameTable);
         await db.execute(createPinTable);
-        await db.execute(createLongTextTable);
+        await db.execute(createNoteTable);
         await db.execute(createAddressTable);
         await db.execute(createProductTable);
         await db.execute(createCpe23uriTable);
-        // await db.execute(createProductCpe23uriTable);
         await db.execute(createCpe23uriCveTable);
         await db.execute(createCveTable);
         await db.execute(createCveImpactV3Table);
@@ -102,7 +100,7 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getDeletedItems() async =>
       (await DBHelper.database()).rawQuery('''SELECT *
         FROM $itemTable
-        WHERE item_status LIKE '%<DELETED>%' ''');
+        WHERE item_status LIKE '%<deleted>%' ''');
 
   static Future<List<Map<String, dynamic>>> getDeletedItemsByTitle(
           String title) async =>
@@ -179,10 +177,10 @@ class DBHelper {
     );
   }
 
-  static Future<List<Map<String, dynamic>>> getLongTextById(int id) async {
+  static Future<List<Map<String, dynamic>>> getNoteById(int id) async {
     return (await DBHelper.database()).query(
-      DBHelper.longTextTable,
-      where: 'long_text_id = ?',
+      DBHelper.noteTable,
+      where: 'note_id = ?',
       whereArgs: [id],
     );
   }
@@ -287,12 +285,12 @@ class DBHelper {
     tags TEXT,
     fk_username_id INTEGER,
     fk_pin_id INTEGER,
-    fk_long_text_id INTEGER,
+    fk_note_id INTEGER,
     fk_address_id INTEGER,
     fk_product_id INTEGER,
     FOREIGN KEY (fk_username_id) REFERENCES $usernameTable (username_id),
     FOREIGN KEY (fk_pin_id) REFERENCES $pinTable (pin_id),
-    FOREIGN KEY (fk_long_text_id) REFERENCES $longTextTable (long_text_id),
+    FOREIGN KEY (fk_note_id) REFERENCES $noteTable (note_id),
     FOREIGN KEY (fk_address_id) REFERENCES $addressTable (address_id),
     FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id))''';
 
@@ -327,11 +325,10 @@ class DBHelper {
     pin_lapse INTEGER,
     pin_status TEXT)''';
 
-  //TODO: replace long_text for note
-  static const createLongTextTable = '''CREATE TABLE $longTextTable(
-    long_text_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    long_text_enc TEXT,
-    long_text_iv TEXT)''';
+  static const createNoteTable = '''CREATE TABLE $noteTable(
+    note_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    note_enc TEXT,
+    note_iv TEXT)''';
 
   static const createAddressTable = '''CREATE TABLE $addressTable(
     address_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -360,14 +357,6 @@ class DBHelper {
     ref TEXT,
     ref_type TEXT,
     last_tracking TEXT)''';
-
-  // static const createProductCpe23uriTable =
-  //     '''CREATE TABLE $productCpe23uriTable(
-  //   fk_product_id INTEGER,
-  //   fk_cpe23uri_id INTEGER,
-  //   PRIMARY KEY (fk_product_id, fk_cpe23uri_id),
-  //   FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id),
-  //   FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
   static const createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
     fk_cpe23uri_id INTEGER,
