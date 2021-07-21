@@ -167,9 +167,9 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                               ),
                               Row(
                                 children: [
-                                  Text('fk_long_text_id: '),
+                                  Text('fk_note_id: '),
                                   Text(
-                                    _item.items[i].fkLongTextId.toString(),
+                                    _item.items[i].fkNoteId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
