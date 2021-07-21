@@ -5,15 +5,11 @@ import 'package:provider/provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
-import 'screens/addresses_screen.dart';
-import 'screens/cpe23uri_cve_screen.dart';
-import 'screens/cve_screen.dart';
 import 'screens/item_deleted_view_screen.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
 import 'screens/items_with_old_passwords_screen.dart';
 import 'screens/item_history_screen.dart';
-import 'screens/pins_screen.dart';
 import 'screens/product_search_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
@@ -25,14 +21,18 @@ import 'screens/data_screen.dart';
 import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
-import 'screens/passwords_screen.dart';
-import 'screens/usernames_screen.dart';
-import 'package:keyway/screens/notes_screen.dart';
-import 'package:keyway/screens/cpe23uri_screen.dart';
-import 'package:keyway/screens/devices_screen.dart';
 
+import 'screens/data_views/address_table.dart';
 import 'screens/data_views/item_table.dart';
 import 'screens/data_views/item_password_table.dart';
+import 'screens/data_views/note_table.dart';
+import 'screens/data_views/password_table.dart';
+import 'screens/data_views/pin_table.dart';
+import 'screens/data_views/username_table.dart';
+import 'screens/data_views/product_table.dart';
+import 'screens/data_views/cpe23uri_table.dart';
+import 'screens/data_views/cpe23uri_cve_table.dart';
+import 'screens/data_views/cve_table.dart';
 
 void main() => runApp(MyApp());
 
@@ -74,18 +74,18 @@ class MyApp extends StatelessWidget {
           ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
+          ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
           ItemTableScreen.routeName: (ctx) => ItemTableScreen(),
           ItemPasswordTableScreen.routeName: (ctx) => ItemPasswordTableScreen(),
-          PasswordsListScreen.routeName: (ctx) => PasswordsListScreen(),
-          UsernamesListScreen.routeName: (ctx) => UsernamesListScreen(),
-          PinsListScreen.routeName: (ctx) => PinsListScreen(),
-          NotesListScreen.routeName: (ctx) => NotesListScreen(),
-          AddressesListScreen.routeName: (ctx) => AddressesListScreen(),
-          DevicesListScreen.routeName: (ctx) => DevicesListScreen(),
-          Cpe23uriListScreen.routeName: (ctx) => Cpe23uriListScreen(),
-          Cpe23uriCveListScreen.routeName: (ctx) => Cpe23uriCveListScreen(),
-          CveListScreen.routeName: (ctx) => CveListScreen(),
-          ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
+          PasswordTableScreen.routeName: (ctx) => PasswordTableScreen(),
+          UsernameTableScreen.routeName: (ctx) => UsernameTableScreen(),
+          PinTableScreen.routeName: (ctx) => PinTableScreen(),
+          NoteTableScreen.routeName: (ctx) => NoteTableScreen(),
+          AddressTableScreen.routeName: (ctx) => AddressTableScreen(),
+          ProductTableScreen.routeName: (ctx) => ProductTableScreen(),
+          Cpe23uriTableScreen.routeName: (ctx) => Cpe23uriTableScreen(),
+          Cpe23uriCveTableScreen.routeName: (ctx) => Cpe23uriCveTableScreen(),
+          CveTableScreen.routeName: (ctx) => CveTableScreen(),
         },
       ),
     );
