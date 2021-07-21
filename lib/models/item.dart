@@ -1,10 +1,10 @@
-import 'package:keyway/models/product.dart';
-import 'package:keyway/models/username.dart';
-import 'package:keyway/models/item_password.dart';
-import 'package:keyway/models/password.dart';
-import 'package:keyway/models/pin.dart';
-import 'package:keyway/models/long_text.dart';
-import 'package:keyway/models/address.dart';
+import 'product.dart';
+import 'username.dart';
+import 'item_password.dart';
+import 'password.dart';
+import 'pin.dart';
+import 'address.dart';
+import 'note.dart';
 
 class Item {
   int itemId;
@@ -17,7 +17,7 @@ class Item {
   String tags;
   int fkUsernameId;
   int fkPinId;
-  int fkLongTextId;
+  int fkNoteId;
   int fkAddressId;
   int fkProductId;
 
@@ -25,7 +25,7 @@ class Item {
   Password password;
   ItemPassword itemPassword;
   Pin pin;
-  LongText longText;
+  Note note;
   Address address;
   Product product;
 
@@ -55,14 +55,14 @@ class Item {
     this.tags = '',
     this.fkUsernameId,
     this.fkPinId,
-    this.fkLongTextId,
+    this.fkNoteId,
     this.fkAddressId,
     this.fkProductId,
     this.username,
     this.password,
     this.itemPassword,
     this.pin,
-    this.longText,
+    this.note,
     this.address,
     this.product,
   });
@@ -85,7 +85,7 @@ class Item {
     tags = map['tags'];
     fkUsernameId = map['fk_username_id'];
     fkPinId = map['fk_pin_id'];
-    fkLongTextId = map['fk_long_text_id'];
+    fkNoteId = map['fk_note_id'];
     fkAddressId = map['fk_address_id'];
     fkProductId = map['fk_product_id'];
   }
@@ -101,7 +101,7 @@ class Item {
       'tags': tags,
       'fk_username_id': fkUsernameId,
       'fk_pin_id': fkPinId,
-      'fk_long_text_id': fkLongTextId,
+      'fk_note_id': fkNoteId,
       'fk_address_id': fkAddressId,
       'fk_product_id': fkProductId,
     };
@@ -121,7 +121,7 @@ class Item {
       tags: this.tags,
       fkUsernameId: this.fkUsernameId,
       fkPinId: this.fkPinId,
-      fkLongTextId: this.fkLongTextId,
+      fkNoteId: this.fkNoteId,
       fkAddressId: this.fkAddressId,
       fkProductId: this.fkAddressId,
       username: this.username != null ? this.username.clone() : null,
@@ -129,7 +129,7 @@ class Item {
       itemPassword:
           this.itemPassword != null ? this.itemPassword.clone() : null,
       pin: this.pin != null ? this.pin.clone() : null,
-      longText: this.longText != null ? this.longText.clone() : null,
+      note: this.note != null ? this.note.clone() : null,
       address: this.address != null ? this.address.clone() : null,
       product: this.product != null ? this.product.clone() : null,
     );
