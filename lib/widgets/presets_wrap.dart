@@ -5,7 +5,7 @@ import '../models/username.dart';
 import '../models/password.dart';
 import '../models/item_password.dart';
 import '../models/pin.dart';
-import '../models/long_text.dart';
+import '../models/note.dart';
 import '../models/address.dart';
 import '../models/product.dart';
 
@@ -33,7 +33,7 @@ class PresetsWrap extends StatelessWidget {
   }
 
   void _longTextSwitch() {
-    item.longText = item.longText != null ? null : LongText();
+    item.note = item.note != null ? null : Note();
     refreshScreen();
   }
 
@@ -103,14 +103,13 @@ class PresetsWrap extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
-                backgroundColor:
-                    item.longText != null ? Colors.white : Colors.grey,
+                backgroundColor: item.note != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.notes_rounded,
-                  size: item.longText != null ? 32 : 24,
-                  color: item.longText != null ? Colors.grey : Colors.white,
+                  size: item.note != null ? 32 : 24,
+                  color: item.note != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.longText != null ? 8 : 0,
+                elevation: item.note != null ? 8 : 0,
                 heroTag: null,
                 onPressed: _longTextSwitch,
               ),
