@@ -64,7 +64,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         if (_i.username == null) _userCtrler.clear();
         if (_i.password == null) _passCtrler.clear();
         if (_i.pin == null) _pinCtrler.clear();
-        if (_i.longText == null) _longCtrler.clear();
+        if (_i.note == null) _longCtrler.clear();
         if (_i.address == null) {
           _addressCtrler.clear();
           _protocolCtrler.clear();
@@ -94,7 +94,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       _userCtrler.text = _cripto.decryptUsername(_i.username);
       _passCtrler.text = _cripto.decryptPassword(_i.password);
       _pinCtrler.text = _cripto.decryptPin(_i.pin);
-      _longCtrler.text = _cripto.decryptLongText(_i.longText);
+      _longCtrler.text = _cripto.decryptNote(_i.note);
       _addressCtrler.text = _cripto.decryptAddress(_i.address);
       _protocolCtrler.text = _i.address.addressProtocol;
       _portCtrler.text = _i.address.addressProtocol;
@@ -164,18 +164,17 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      if (widget.item.longText != null) {
+      if (widget.item.note != null) {
         if (_longCtrler.text.isNotEmpty) {
-          if (_cripto.decryptLongText(widget.item.longText) !=
-              _longCtrler.text) {
-            _i.longText = _cripto.createLongText(_longCtrler.text);
+          if (_cripto.decryptNote(widget.item.note) != _longCtrler.text) {
+            _i.note = _cripto.createNote(_longCtrler.text);
           }
         } else {
-          _i.longText = null;
+          _i.note = null;
         }
       } else {
-        if (_i.longText != null) {
-          _i.longText = _cripto.createLongText(_longCtrler.text);
+        if (_i.note != null) {
+          _i.note = _cripto.createNote(_longCtrler.text);
         }
       }
 
@@ -432,7 +431,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                         ),
                       ),
                     ),
-                  if (_i.longText != null)
+                  if (_i.note != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
