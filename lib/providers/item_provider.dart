@@ -6,7 +6,7 @@ import '../models/item_password.dart';
 import '../models/password.dart';
 import '../models/username.dart';
 import '../models/pin.dart';
-import '../models/long_text.dart';
+import '../models/note.dart';
 import '../models/address.dart';
 import '../models/product.dart';
 import '../models/cpe23uri.dart';
@@ -25,7 +25,7 @@ class ItemProvider with ChangeNotifier {
   List<Password> _passwords = [];
   List<Username> _usernames = [];
   List<Pin> _pins = [];
-  List<LongText> _notes = [];
+  List<Note> _notes = [];
   List<Address> _addresses = [];
   List<Product> _products = [];
   List<Cpe23uri> _cpe23uris = [];
@@ -42,7 +42,7 @@ class ItemProvider with ChangeNotifier {
   List<Password> get passwords => [..._passwords];
   List<Username> get usernames => [..._usernames];
   List<Pin> get pins => [..._pins];
-  List<LongText> get notes => [..._notes];
+  List<Note> get notes => [..._notes];
   List<Address> get addresses => [..._addresses];
   List<Product> get products => [..._products];
   List<Cpe23uri> get cpe23uris => [..._cpe23uris];
@@ -116,10 +116,10 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<void> fetchNotes() async {
-    Iterable<LongText> _iter;
+    Iterable<Note> _iter;
     _notes.clear();
-    await DBHelper.read(DBHelper.longTextTable).then((data) {
-      _iter = data.map((i) => LongText.fromMap(i));
+    await DBHelper.read(DBHelper.noteTable).then((data) {
+      _iter = data.map((i) => Note.fromMap(i));
     });
     _notes.addAll(_iter.toList());
   }
@@ -183,8 +183,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkPinId != null) {
         i.pin = await getPin(i.fkPinId);
       }
-      if (i.fkLongTextId != null) {
-        i.longText = await getLongText(i.fkLongTextId);
+      if (i.fkNoteId != null) {
+        i.note = await getNote(i.fkNoteId);
       }
       if (i.fkAddressId != null) {
         i.address = await getAdress(i.fkAddressId);
@@ -209,8 +209,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkPinId != null) {
         i.pin = await getPin(i.fkPinId);
       }
-      if (i.fkLongTextId != null) {
-        i.longText = await getLongText(i.fkLongTextId);
+      if (i.fkNoteId != null) {
+        i.note = await getNote(i.fkNoteId);
       }
       if (i.fkAddressId != null) {
         i.address = await getAdress(i.fkAddressId);
@@ -270,8 +270,8 @@ class ItemProvider with ChangeNotifier {
       if (i.fkPinId != null) {
         i.pin = await getPin(i.fkPinId);
       }
-      if (i.fkLongTextId != null) {
-        i.longText = await getLongText(i.fkLongTextId);
+      if (i.fkNoteId != null) {
+        i.note = await getNote(i.fkNoteId);
       }
       if (i.fkAddressId != null) {
         i.address = await getAdress(i.fkAddressId);
@@ -301,8 +301,8 @@ class ItemProvider with ChangeNotifier {
       i.pin.pinDate = i.date;
       i.fkPinId = await insertPin(i.pin);
     }
-    if (i.longText != null) {
-      i.fkLongTextId = await insertLongText(i.longText);
+    if (i.note != null) {
+      i.fkNoteId = await insertNote(i.note);
     }
     if (i.address != null) {
       i.fkAddressId = await insertAddress(i.address);
@@ -378,14 +378,14 @@ class ItemProvider with ChangeNotifier {
       i.fkPinId = null;
     }
 
-    if (i.longText != null) {
-      if (i.longText.longTextId == null) {
-        i.fkLongTextId = await insertLongText(i.longText);
+    if (i.note != null) {
+      if (i.note.noteId == null) {
+        i.fkNoteId = await insertNote(i.note);
       } else {
-        i.fkLongTextId = i.longText.longTextId;
+        i.fkNoteId = i.note.noteId;
       }
     } else {
-      i.fkLongTextId = null;
+      i.fkNoteId = null;
     }
 
     if (i.address != null) {
@@ -489,14 +489,14 @@ class ItemProvider with ChangeNotifier {
   Future<int> deletePin(Pin p) async =>
       await DBHelper.delete(DBHelper.pinTable, p.toMap(), 'pin_id');
 
-  Future<int> insertLongText(LongText l) async =>
-      await DBHelper.insert(DBHelper.longTextTable, l.toMap());
+  Future<int> insertNote(Note n) async =>
+      await DBHelper.insert(DBHelper.noteTable, n.toMap());
 
-  Future<int> updateLongText(LongText l) async =>
-      await DBHelper.update(DBHelper.longTextTable, l.toMap(), 'long_text_id');
+  Future<int> updateNote(Note n) async =>
+      await DBHelper.update(DBHelper.noteTable, n.toMap(), 'note_id');
 
-  Future<int> deleteLongText(LongText l) async =>
-      await DBHelper.delete(DBHelper.longTextTable, l.toMap(), 'long_text_id');
+  Future<int> deleteNote(Note n) async =>
+      await DBHelper.delete(DBHelper.noteTable, n.toMap(), 'note_id');
 
   Future<int> insertAddress(Address a) async =>
       await DBHelper.insert(DBHelper.addressTable, a.toMap());
@@ -526,9 +526,6 @@ class ItemProvider with ChangeNotifier {
       },
     );
   }
-
-  // Future<void> insertProductCpe23uri(ProductCpe23uri pc) async =>
-  //     await DBHelper.insert(DBHelper.productCpe23uriTable, pc.toMap());
 
   Future<Password> passwordInDB(String hash) async {
     if (hash.isEmpty) return null;
@@ -591,9 +588,9 @@ class ItemProvider with ChangeNotifier {
     return Pin.fromMap(_p.first);
   }
 
-  Future<LongText> getLongText(int id) async {
-    List<Map<String, dynamic>> _lt = await DBHelper.getLongTextById(id);
-    return LongText.fromMap(_lt.first);
+  Future<Note> getNote(int id) async {
+    List<Map<String, dynamic>> _n = await DBHelper.getNoteById(id);
+    return Note.fromMap(_n.first);
   }
 
   Future<Address> getAdress(int id) async {
