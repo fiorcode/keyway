@@ -56,11 +56,11 @@ class _ItemDeletedViewScreenState extends State<ItemDeletedViewScreen> {
             widget.item.pin.pinIv,
           );
         }
-        if (widget.item.longText != null) {
+        if (widget.item.note != null) {
           _longCtrler = TextEditingController();
           _longCtrler.text = _cripto.doDecrypt(
-            widget.item.longText.longTextEnc,
-            widget.item.longText.longTextIv,
+            widget.item.note.noteEnc,
+            widget.item.note.noteIv,
           );
         }
       });
@@ -207,7 +207,7 @@ class _ItemDeletedViewScreenState extends State<ItemDeletedViewScreen> {
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  if (widget.item.longText != null)
+                  if (widget.item.note != null)
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
                       child: Container(
