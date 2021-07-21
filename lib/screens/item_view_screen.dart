@@ -59,10 +59,10 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
           );
           _pin = true;
         }
-        if (widget.item.longText != null) {
+        if (widget.item.note != null) {
           _longCtrler.text = _cripto.doDecrypt(
-            widget.item.longText.longTextEnc,
-            widget.item.longText.longTextIv,
+            widget.item.note.noteEnc,
+            widget.item.note.noteIv,
           );
           _longText = true;
         }
