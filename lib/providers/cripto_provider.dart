@@ -3,7 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:keyway/models/address.dart';
-import 'package:keyway/models/long_text.dart';
+import 'package:keyway/models/note.dart';
 import 'package:keyway/models/pin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:crypto/crypto.dart';
@@ -130,11 +130,11 @@ class CriptoProvider with ChangeNotifier {
     return _crypter.decrypt64(p.pinEnc, iv: e.IV.fromBase16(p.pinIv));
   }
 
-  String decryptLongText(LongText l) {
-    if (l == null) return '';
-    if (l.longTextIv.isEmpty) return '';
-    if (l.longTextEnc.isEmpty) return '';
-    return _crypter.decrypt64(l.longTextEnc, iv: e.IV.fromBase16(l.longTextIv));
+  String decryptNote(Note n) {
+    if (n == null) return '';
+    if (n.noteIv.isEmpty) return '';
+    if (n.noteEnc.isEmpty) return '';
+    return _crypter.decrypt64(n.noteEnc, iv: e.IV.fromBase16(n.noteIv));
   }
 
   String decryptAddress(Address a) {
@@ -169,11 +169,11 @@ class CriptoProvider with ChangeNotifier {
     return _p;
   }
 
-  LongText createLongText(String l) {
+  Note createNote(String l) {
     if (l.isEmpty) return null;
-    LongText _l = LongText(longTextIv: e.IV.fromSecureRandom(16).base16);
-    _l.longTextEnc = doCrypt(l, _l.longTextIv);
-    return _l;
+    Note _n = Note(noteIv: e.IV.fromSecureRandom(16).base16);
+    _n.noteEnc = doCrypt(l, _n.noteIv);
+    return _n;
   }
 
   Address createAddress(String a) {
