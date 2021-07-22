@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../screens/data_screen.dart';
-import '../widgets/Cards/dashboard_card.dart';
+import '../widgets/card/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const routeName = '/dashboard';

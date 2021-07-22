@@ -7,18 +7,17 @@ import '../../models/item.dart';
 import '../../screens/item_edit_screen.dart';
 import '../../screens/item_view_screen.dart';
 
-class AlphaUnlockedCard extends StatefulWidget {
-  const AlphaUnlockedCard({Key key, this.item, this.onReturn})
-      : super(key: key);
+class ItemUnlockedCard extends StatefulWidget {
+  const ItemUnlockedCard({Key key, this.item, this.onReturn}) : super(key: key);
 
   final Item item;
   final Function onReturn;
 
   @override
-  _AlphaUnlockedCardState createState() => _AlphaUnlockedCardState();
+  _ItemUnlockedCardState createState() => _ItemUnlockedCardState();
 }
 
-class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
+class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   CriptoProvider _cripto;
 
   int _showValue = 0;
@@ -130,24 +129,49 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
     }
   }
 
+  Widget _setAvatarIcon() {
+    switch (_showValue) {
+      case 1:
+        return Icon(Icons.password, color: _setAvatarLetterColor());
+        break;
+      case 2:
+        return Icon(Icons.pin, color: _setAvatarLetterColor());
+        break;
+      case 3:
+        return Icon(Icons.account_box, color: _setAvatarLetterColor());
+        break;
+      case 4:
+        return Icon(Icons.http, color: _setAvatarLetterColor());
+        break;
+      case 5:
+        return Icon(Icons.router, color: _setAvatarLetterColor());
+        break;
+      default:
+        _showValue = 0;
+        _subtitle = '';
+        return Text(
+          widget.item.title != null ?? widget.item.title.isNotEmpty
+              ? widget.item.title.substring(0, 1).toUpperCase()
+              : '',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: _setAvatarLetterColor(),
+          ),
+        );
+    }
+  }
+
   Color _setWarningColor() {
     if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.passwordStatus == 'REPEATED')
-        return Colors.red[300];
-    }
-    if (widget.item.pin != null) {
-      if (widget.item.pin.pinStatus == 'REPEATED') return Colors.red[300];
+      if (widget.item.itemPassword.repeated) return Colors.red[300];
     }
     return Colors.grey[100];
   }
 
   Color _setIconColor() {
     if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.passwordStatus == 'REPEATED')
-        return Colors.grey[200];
-    }
-    if (widget.item.pin != null) {
-      if (widget.item.pin.pinStatus == 'REPEATED') return Colors.grey[200];
+      if (widget.item.itemPassword.repeated) return Colors.grey[200];
     }
     return Colors.grey;
   }
@@ -187,16 +211,7 @@ class _AlphaUnlockedCardState extends State<AlphaUnlockedCard> {
           backgroundColor: widget.item.avatarColor != null
               ? Color(widget.item.avatarColor)
               : Colors.grey,
-          child: Text(
-            widget.item.title != null ?? widget.item.title.isNotEmpty
-                ? widget.item.title.substring(0, 1).toUpperCase()
-                : '',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: _setAvatarLetterColor(),
-            ),
-          ),
+          child: _setAvatarIcon(),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

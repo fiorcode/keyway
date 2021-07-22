@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:keyway/screens/tables_screen.dart';
 
 import '../helpers/db_helper.dart';
-import '../widgets/Cards/dashboard_card.dart';
+import '../screens/danger_zone_screen.dart';
+import '../screens/tables_screen.dart';
+import '../widgets/card/dashboard_card.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -148,7 +149,7 @@ class _DataScreenState extends State<DataScreen> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          'Local Database Status',
+                          'Database status',
                           textAlign: TextAlign.center,
                           style: TextStyle(fontSize: 18),
                         ),
@@ -189,12 +190,13 @@ class _DataScreenState extends State<DataScreen> {
                     goTo: () => _goTo(TablesScreen.routeName),
                   ),
                   DashboardCard(
-                    icon: Icon(Icons.dangerous, color: Colors.red, size: 48),
+                    icon: Icon(Icons.dangerous, color: Colors.white, size: 48),
                     title: Text(
-                      'Danger Zone',
-                      style: TextStyle(color: _primary, fontSize: 16),
+                      'Danger zone',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
-                    // goTo: () => _goTo(ItemTableScreen.routeName),
+                    color: Colors.red,
+                    goTo: () => _goTo(DangerZoneScreen.routeName),
                   ),
                 ],
               ),

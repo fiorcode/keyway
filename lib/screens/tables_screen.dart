@@ -12,8 +12,8 @@ import 'data_views/product_table.dart';
 import 'data_views/cpe23uri_table.dart';
 import 'data_views/cpe23uri_cve_table.dart';
 
-import 'package:keyway/screens/tags_screen.dart';
-import 'package:keyway/widgets/Cards/dashboard_card.dart';
+import '../screens/tags_screen.dart';
+import '../widgets/card/dashboard_card.dart';
 
 class TablesScreen extends StatefulWidget {
   static const routeName = '/tables';
@@ -33,6 +33,8 @@ class _TablesScreenState extends State<TablesScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        title: Text('Tables', style: TextStyle(color: Colors.grey)),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(16.0),

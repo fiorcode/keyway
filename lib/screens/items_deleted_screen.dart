@@ -6,7 +6,7 @@ import '../providers/item_provider.dart';
 import '../helpers/error_helper.dart';
 import '../widgets/empty_items.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/Cards/item_deleted_card.dart';
+import '../widgets/card/item_deleted_card.dart';
 
 class ItemsDeletedScreen extends StatefulWidget {
   static const routeName = '/items-deleted';

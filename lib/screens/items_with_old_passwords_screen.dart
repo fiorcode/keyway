@@ -6,7 +6,7 @@ import '../providers/item_provider.dart';
 import '../helpers/error_helper.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/empty_items.dart';
-import '../widgets/Cards/item_with_old_passwords_card.dart';
+import '../widgets/card/item_with_old_passwords_card.dart';
 
 class ItemsWithOldPasswordsScreen extends StatefulWidget {
   static const routeName = '/items-with-old-passwords';

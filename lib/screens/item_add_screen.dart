@@ -16,14 +16,14 @@ import '../widgets/TextFields/pin_text_field.dart';
 import '../widgets/TextFields/title_text_field.dart';
 import '../widgets/TextFields/username_text_field.dart';
 import '../widgets/TextFields/long_text_text_field.dart';
-import '../widgets/Cards/item_preview_card.dart';
-import '../widgets/Cards/user_list_card.dart';
-import '../widgets/Cards/strength_level_card.dart';
-import '../widgets/Cards/password_change_reminder_card.dart';
-import '../widgets/Cards/pin_change_reminder_card.dart';
-import '../widgets/Cards/tags_card.dart';
-import '../widgets/Cards/address_card.dart';
-import '../widgets/Cards/product_card.dart';
+import '../widgets/card/item_preview_card.dart';
+import '../widgets/card/user_list_card.dart';
+import '../widgets/card/strength_level_card.dart';
+import '../widgets/card/password_change_reminder_card.dart';
+import '../widgets/card/pin_change_reminder_card.dart';
+import '../widgets/card/tags_card.dart';
+import '../widgets/card/address_card.dart';
+import '../widgets/card/product_card.dart';
 
 class ItemAddScreen extends StatefulWidget {
   static const routeName = '/add-item';

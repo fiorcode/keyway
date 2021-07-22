@@ -6,7 +6,7 @@ import 'items_screen.dart';
 import '../helpers/password_helper.dart';
 import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
-import '../widgets/Cards/strength_level_card.dart';
+import '../widgets/card/strength_level_card.dart';
 
 class SetPasswordScreen extends StatefulWidget {
   static const routeName = '/set-password';

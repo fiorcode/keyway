@@ -91,7 +91,7 @@ class PresetsWrap extends StatelessWidget {
               child: FloatingActionButton(
                 backgroundColor: item.pin != null ? Colors.white : Colors.grey,
                 child: Icon(
-                  Icons.dialpad,
+                  Icons.pin,
                   size: item.pin != null ? 32 : 24,
                   color: item.pin != null ? Colors.grey : Colors.white,
                 ),
@@ -120,7 +120,7 @@ class PresetsWrap extends StatelessWidget {
                 backgroundColor:
                     item.address != null ? Colors.white : Colors.grey,
                 child: Icon(
-                  Icons.router,
+                  Icons.http,
                   size: item.address != null ? 32 : 24,
                   color: item.address != null ? Colors.grey : Colors.white,
                 ),
@@ -135,7 +135,7 @@ class PresetsWrap extends StatelessWidget {
                 backgroundColor:
                     item.product != null ? Colors.white : Colors.grey,
                 child: Icon(
-                  Icons.security,
+                  Icons.router,
                   size: item.product != null ? 32 : 24,
                   color: item.product != null ? Colors.grey : Colors.white,
                 ),

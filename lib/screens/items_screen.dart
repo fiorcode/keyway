@@ -6,9 +6,9 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/dashboard_screen.dart';
+import 'package:keyway/widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/Cards/alpha_locked_card.dart';
-import '../widgets/Cards/alpha_unlocked_card.dart';
+import '../widgets/card/alpha_locked_card.dart';
 import '../widgets/empty_items.dart';
 import '../widgets/TextFields/search_bar_text_field.dart';
 
@@ -157,7 +157,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                             itemBuilder: (ctx, i) {
                               return _cripto.locked
                                   ? AlphaLockedCard(item: _item.items[i])
-                                  : AlphaUnlockedCard(
+                                  : ItemUnlockedCard(
                                       item: _item.items[i],
                                       onReturn: _onReturn,
                                     );
