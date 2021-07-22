@@ -1,22 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keyway/screens/tables_screen.dart';
 
 import '../helpers/db_helper.dart';
-
-import 'data_views/address_table.dart';
-import 'data_views/cve_table.dart';
-import 'data_views/item_table.dart';
-import 'data_views/item_password_table.dart';
-import 'data_views/note_table.dart';
-import 'data_views/password_table.dart';
-import 'data_views/pin_table.dart';
-import 'data_views/username_table.dart';
-import 'data_views/product_table.dart';
-import 'data_views/cpe23uri_table.dart';
-import 'data_views/cpe23uri_cve_table.dart';
-
-import 'package:keyway/screens/tags_screen.dart';
-import 'package:keyway/widgets/Cards/dashboard_card.dart';
+import '../widgets/Cards/dashboard_card.dart';
 
 class DataScreen extends StatefulWidget {
   static const routeName = '/data';
@@ -194,103 +181,20 @@ class _DataScreenState extends State<DataScreen> {
                 padding: EdgeInsets.all(16.0),
                 children: [
                   DashboardCard(
-                    icon: Icon(Icons.view_list, color: _primary, size: 48),
+                    icon: Icon(Icons.table_view, color: _primary, size: 48),
                     title: Text(
-                      'Item',
+                      'Tables',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => _goTo(ItemTableScreen.routeName),
+                    goTo: () => _goTo(TablesScreen.routeName),
                   ),
                   DashboardCard(
-                    icon: Icon(Icons.pivot_table_chart,
-                        color: _primary, size: 48),
+                    icon: Icon(Icons.dangerous, color: Colors.red, size: 48),
                     title: Text(
-                      'ItemPasswords',
+                      'Danger Zone',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => _goTo(ItemPasswordTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.password, color: _primary, size: 48),
-                    title: Text(
-                      'Passwords',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(PasswordTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.account_box, color: _primary, size: 48),
-                    title: Text(
-                      'Usernames',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(UsernameTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.pin, color: _primary, size: 48),
-                    title: Text(
-                      'PINs',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(PinTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.note_alt, color: _primary, size: 48),
-                    title: Text(
-                      'Notes',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(NoteTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.router, color: _primary, size: 48),
-                    title: Text(
-                      'Addresses',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(AddressTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.security, color: _primary, size: 48),
-                    title: Text(
-                      'Products',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(ProductTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.receipt, color: _primary, size: 48),
-                    title: Text(
-                      'CPEs',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(Cpe23uriTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.pivot_table_chart,
-                        color: _primary, size: 48),
-                    title: Text(
-                      'CpeCves',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(Cpe23uriCveTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.coronavirus, color: _primary, size: 48),
-                    title: Text(
-                      'CVEs',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () => _goTo(CveTableScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.tag, color: _primary, size: 48),
-                    title: Text(
-                      'Tags',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    goTo: () =>
-                        Navigator.of(context).pushNamed(TagsScreen.routeName),
+                    // goTo: () => _goTo(ItemTableScreen.routeName),
                   ),
                 ],
               ),
