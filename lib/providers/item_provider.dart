@@ -64,6 +64,36 @@ class ItemProvider with ChangeNotifier {
     await _buildItems();
   }
 
+  Future<void> _buildItems() async {
+    _items.forEach((i) async {
+      if (i.fkUsernameId != null) {
+        i.username = await getUsername(i.fkUsernameId);
+      }
+      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
+        if (_ips.isNotEmpty) {
+          await Future.forEach(_ips, (_ip) async {
+            i.passwords.add(await getPassword(_ip.fkPasswordId));
+          }).then((_) {
+            i.itemPassword = _ips.first;
+            i.password = i.passwords.first;
+          });
+        }
+      });
+      if (i.fkPinId != null) {
+        i.pin = await getPin(i.fkPinId);
+      }
+      if (i.fkNoteId != null) {
+        i.note = await getNote(i.fkNoteId);
+      }
+      if (i.fkAddressId != null) {
+        i.address = await getAdress(i.fkAddressId);
+      }
+      if (i.fkProductId != null) {
+        i.product = await getProduct(i.fkProductId);
+      }
+    });
+  }
+
   Future<void> fetchAllItems(String title) async {
     Iterable<Item> _iter;
     _allItems.clear();
@@ -169,38 +199,12 @@ class ItemProvider with ChangeNotifier {
     _cves.addAll(_iter.toList());
   }
 
-  Future<void> _buildItems() async {
-    _items.forEach((i) async {
-      if (i.fkUsernameId != null) {
-        i.username = await getUsername(i.fkUsernameId);
-      }
-      await getLastItemPassword(i.itemId).then((_ips) async {
-        if (_ips.isNotEmpty) {
-          i.itemPassword = _ips.first;
-          i.password = await getPassword(_ips.first.fkPasswordId);
-        }
-      });
-      if (i.fkPinId != null) {
-        i.pin = await getPin(i.fkPinId);
-      }
-      if (i.fkNoteId != null) {
-        i.note = await getNote(i.fkNoteId);
-      }
-      if (i.fkAddressId != null) {
-        i.address = await getAdress(i.fkAddressId);
-      }
-      if (i.fkProductId != null) {
-        i.product = await getProduct(i.fkProductId);
-      }
-    });
-  }
-
   Future<void> _buildAllItems() async {
     _allItems.forEach((i) async {
       if (i.fkUsernameId != null) {
         i.username = await getUsername(i.fkUsernameId);
       }
-      await getLastItemPassword(i.itemId).then((_ips) async {
+      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
         if (_ips.isNotEmpty) {
           i.itemPassword = _ips.first;
           i.password = await getPassword(_ips.first.fkPasswordId);
@@ -261,7 +265,7 @@ class ItemProvider with ChangeNotifier {
       if (i.fkUsernameId != null) {
         i.username = await getUsername(i.fkUsernameId);
       }
-      await getLastItemPassword(i.itemId).then((_ips) async {
+      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
         if (_ips.isNotEmpty) {
           i.itemPassword = _ips.first;
           i.password = await getPassword(_ips.first.fkPasswordId);
@@ -418,10 +422,12 @@ class ItemProvider with ChangeNotifier {
           }
         } else {
           //CPE ADDED
-          if (i.product.cpe23uri.cpe23uriId == null) {
-            i.product.fkCpe23uriId = await insertCpe23uri(i.product.cpe23uri);
-          } else {
-            i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+          if (i.product.cpe23uri != null) {
+            if (i.product.cpe23uri.cpe23uriId == null) {
+              i.product.fkCpe23uriId = await insertCpe23uri(i.product.cpe23uri);
+            } else {
+              i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+            }
           }
         }
         if (i.product.productId != null) updateProduct(i.product);
@@ -573,13 +579,12 @@ class ItemProvider with ChangeNotifier {
       (await DBHelper.getByValue(DBHelper.passwordTable, 'password_hash', hash))
           .first);
 
-  Future<List<ItemPassword>> getLastItemPassword(int itemId) async {
-    Iterable<ItemPassword> _iter;
-    await DBHelper.getItemPass(itemId).then((data) {
-      _iter = data.map((e) => ItemPassword.fromMap(e));
+  Future<List<ItemPassword>> getItemPasswordsByItemId(int itemId) async {
+    List<ItemPassword> _ips;
+    await DBHelper.getItemPasswordsByItemId(itemId).then((data) {
+      _ips = data.map((e) => ItemPassword.fromMap(e)).toList();
+      _ips.sort((a, b) => b.passwordDate.compareTo(a.passwordDate));
     });
-    List<ItemPassword> _ips = _iter.toList();
-    _ips.sort((a, b) => b.passwordDate.compareTo(a.passwordDate));
     return _ips;
   }
 
