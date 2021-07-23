@@ -210,7 +210,8 @@ class DBHelper {
     );
   }
 
-  static Future<List<Map<String, dynamic>>> getItemPass(int itemId) async {
+  static Future<List<Map<String, dynamic>>> getItemPasswordsByItemId(
+      int itemId) async {
     return (await DBHelper.database()).rawQuery('''SELECT * 
         FROM $itemPasswordTable 
         WHERE fk_item_id = $itemId''');
