@@ -23,7 +23,9 @@ class Item {
 
   Username username;
   Password password;
+  List<Password> passwords;
   ItemPassword itemPassword;
+  List<ItemPassword> itemPasswords;
   Pin pin;
   Note note;
   Address address;
@@ -75,19 +77,21 @@ class Item {
       this.itemStatus = this.itemStatus.replaceAll('<deleted>', '');
 
   Item.fromMap(Map<String, dynamic> map) {
-    itemId = map['item_id'];
-    title = map['title'];
-    date = map['date'];
-    avatarColor = map['avatar_color'];
-    avatarLetterColor = map['avatar_letter_color'];
-    font = map['font'];
-    itemStatus = map['item_status'];
-    tags = map['tags'];
-    fkUsernameId = map['fk_username_id'];
-    fkPinId = map['fk_pin_id'];
-    fkNoteId = map['fk_note_id'];
-    fkAddressId = map['fk_address_id'];
-    fkProductId = map['fk_product_id'];
+    this.itemId = map['item_id'];
+    this.title = map['title'];
+    this.date = map['date'];
+    this.avatarColor = map['avatar_color'];
+    this.avatarLetterColor = map['avatar_letter_color'];
+    this.font = map['font'];
+    this.itemStatus = map['item_status'];
+    this.tags = map['tags'];
+    this.fkUsernameId = map['fk_username_id'];
+    this.fkPinId = map['fk_pin_id'];
+    this.fkNoteId = map['fk_note_id'];
+    this.fkAddressId = map['fk_address_id'];
+    this.fkProductId = map['fk_product_id'];
+    this.itemPasswords = <ItemPassword>[];
+    this.passwords = <Password>[];
   }
 
   Map<String, dynamic> toMap() {
