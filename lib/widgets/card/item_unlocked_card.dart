@@ -50,7 +50,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
-  void _passToClipBoard() async {
+  void _toClipBoard() async {
     Clipboard.setData(ClipboardData(text: _setTitleSubtitle())).then(
       (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -87,7 +87,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
       case 1:
         if (widget.item.password == null) continue two;
         _showValue = 1;
-        _subtitle = 'Password';
+        _subtitle = '';
         return _cripto.doDecrypt(
             widget.item.password.passwordEnc, widget.item.password.passwordIv);
         break;
@@ -95,16 +95,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
       case 2:
         if (widget.item.pin == null) continue three;
         _showValue = 2;
-        _subtitle = 'PIN';
-        return _cripto.doDecrypt(widget.item.pin.pinEnc, widget.item.pin.pinIv);
+        _subtitle = '';
+        return _cripto.decryptPin(widget.item.pin);
         break;
       three:
       case 3:
         if (widget.item.username == null) continue four;
         _showValue = 3;
-        _subtitle = 'Username';
-        return _cripto.doDecrypt(
-            widget.item.username.usernameEnc, widget.item.username.usernameIv);
+        _subtitle = '';
+        return _cripto.decryptUsername(widget.item.username);
         break;
       four:
       case 4:
@@ -112,14 +111,16 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         _showValue = 4;
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
-        return widget.item.address.addressEnc;
+        return _cripto.decryptAddress(widget.item.address);
         break;
       five:
       case 5:
         if (widget.item.product == null) continue cero;
         _showValue = 5;
-        _subtitle = 'Product';
-        return '${widget.item.product.productTrademark}, ${widget.item.product.productModel}';
+        _subtitle = widget.item.product.productModel.isNotEmpty
+            ? 'Model: ${widget.item.product.productModel}'
+            : '';
+        return '${widget.item.product.productTrademark}';
         break;
       cero:
       default:
@@ -148,11 +149,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         break;
       default:
         _showValue = 0;
-        _subtitle = '';
         return Text(
-          widget.item.title != null ?? widget.item.title.isNotEmpty
-              ? widget.item.title.substring(0, 1).toUpperCase()
-              : '',
+          widget.item.title.substring(0, 1).toUpperCase(),
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
@@ -231,7 +229,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                 ),
               ),
             ),
-            if (_showValue != 0)
+            if (_subtitle.isNotEmpty)
               FittedBox(
                 fit: BoxFit.fitWidth,
                 child: Text(
@@ -265,7 +263,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                     backgroundColor: _setWarningColor(),
                     child: Icon(Icons.copy, color: _setIconColor(), size: 24),
                     heroTag: null,
-                    onPressed: _passToClipBoard,
+                    onPressed: _toClipBoard,
                   ),
                 ),
               SizedBox(width: 4),
