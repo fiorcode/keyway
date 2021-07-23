@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/card/dashboard_card.dart';
+
+import '../widgets/card/dashboard_card.dart';
 
 class DangerZoneScreen extends StatefulWidget {
   static const routeName = '/danger-zone';
@@ -11,7 +12,6 @@ class DangerZoneScreen extends StatefulWidget {
 class _DangerZoneScreenState extends State<DangerZoneScreen> {
   @override
   Widget build(BuildContext context) {
-    // Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -40,11 +40,7 @@ class _DangerZoneScreenState extends State<DangerZoneScreen> {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Icon(
-                          Icons.warning,
-                          size: 92,
-                          color: Colors.red,
-                        ),
+                        child: Image.asset('assets/error.png', height: 92),
                       ),
                       Text(
                         'This actions are final',
