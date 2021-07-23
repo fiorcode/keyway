@@ -26,7 +26,7 @@ import '../widgets/card/address_card.dart';
 import '../widgets/card/product_card.dart';
 
 class ItemAddScreen extends StatefulWidget {
-  static const routeName = '/add-item';
+  static const routeName = '/item-add';
 
   @override
   _ItemAddScreenState createState() => _ItemAddScreenState();
