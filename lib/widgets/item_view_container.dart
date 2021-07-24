@@ -30,7 +30,7 @@ class ItemViewContainer extends StatelessWidget {
             color: Colors.black,
             child: Text(
               this.title,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(fontSize: 18, color: Colors.white),
             ),
           ),
           Expanded(

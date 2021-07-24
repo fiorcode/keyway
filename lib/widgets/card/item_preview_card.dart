@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
 import '../../models/item.dart';
-import '../Pickers/red_color_picker.dart';
-import '../Pickers/green_color_picker.dart';
-import '../Pickers/blue_color_picker.dart';
-import '../Pickers/color_alpha_picker.dart';
-import '../Pickers/letter_red_color_picker.dart';
-import '../Pickers/letter_green_color_picker.dart';
-import '../Pickers/letter_blue_color_picker.dart';
-import '../Pickers/letter_color_alpha_picker.dart';
+import '../picker/red_color_picker.dart';
+import '../picker/green_color_picker.dart';
+import '../picker/blue_color_picker.dart';
+import '../picker/color_alpha_picker.dart';
+import '../picker/letter_red_color_picker.dart';
+import '../picker/letter_green_color_picker.dart';
+import '../picker/letter_blue_color_picker.dart';
+import '../picker/letter_color_alpha_picker.dart';
 
 class ItemPreviewCard extends StatefulWidget {
   ItemPreviewCard(this.item);

@@ -8,7 +8,6 @@ import 'providers/nist_provider.dart';
 import 'screens/item_deleted_view_screen.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
-import 'screens/items_with_old_passwords_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/product_search_screen.dart';
 import 'screens/restore_screen.dart';
@@ -70,8 +69,6 @@ class MyApp extends StatelessWidget {
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
           ItemDeletedViewScreen.routeName: (ctx) => ItemDeletedViewScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
-          ItemsWithOldPasswordsScreen.routeName: (ctx) =>
-              ItemsWithOldPasswordsScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),

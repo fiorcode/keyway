@@ -157,7 +157,10 @@ class CriptoProvider with ChangeNotifier {
 
   Username createUsername(String u) {
     if (u.isEmpty) return null;
-    Username _u = Username(usernameIv: e.IV.fromSecureRandom(16).base16);
+    Username _u = Username(
+      usernameIv: e.IV.fromSecureRandom(16).base16,
+      usernameHash: doHash(u),
+    );
     _u.usernameEnc = doCrypt(u, _u.usernameIv);
     return _u;
   }

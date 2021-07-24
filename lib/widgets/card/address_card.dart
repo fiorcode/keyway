@@ -21,21 +21,21 @@ class AddressCard extends StatefulWidget {
 
 class _AddressCardState extends State<AddressCard> {
   Map<String, int> _protocols = {
-    'HTTPS': 443,
-    'SFTP': 22,
-    'SSH': 22,
-    'SMTP': 25,
-    'HTTP': 80,
-    'Telnet': 23,
-    'DNS': 53,
-    'TFTP': 69,
-    'LDAP': 389,
-    'SMB': 445,
+    'https': 443,
+    'sftp': 22,
+    'ssh': 22,
+    'smtp': 25,
+    'http': 80,
+    'telnet': 23,
+    'dns': 53,
+    'tftp': 69,
+    'ldap': 389,
+    'smb': 445,
   };
 
   TextInputType _type = TextInputType.url;
   bool _inputMode = false;
-  int _index = 0;
+  int _index;
 
   //TODO: onChange functions
 
@@ -55,19 +55,38 @@ class _AddressCardState extends State<AddressCard> {
       else
         _index += 1;
     });
-    loadPresets();
+    _loadPresets();
   }
 
-  void loadPresets() {
+  void _loadPresets() {
     widget.protocolCtrler.text = _protocols.keys.elementAt(_index);
     widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
     widget.portCtrler.text = _protocols.values.elementAt(_index).toString();
     widget.address.addressPort = int.parse(widget.portCtrler.text);
   }
 
+  void _loadItemValues() {
+    if (_protocols.containsKey(widget.address.addressProtocol)) {
+      int i = 0;
+      _protocols.forEach((key, value) {
+        if (key == widget.address.addressProtocol) {
+          _index = i;
+        }
+        i += 1;
+      });
+    } else {
+      _inputMode = true;
+    }
+  }
+
   @override
   void initState() {
-    loadPresets();
+    if (widget.address.addressProtocol.isEmpty) {
+      _index = 0;
+      _loadPresets();
+    } else {
+      _loadItemValues();
+    }
     super.initState();
   }
 
@@ -137,7 +156,7 @@ class _AddressCardState extends State<AddressCard> {
                           selectedColor: Colors.grey[200],
                           onSelected: (_) {},
                           label: Text(
-                            _protocols.keys.elementAt(_index),
+                            _protocols.keys.elementAt(_index).toUpperCase(),
                             style: TextStyle(
                               color: Colors.grey,
                               fontWeight: FontWeight.bold,

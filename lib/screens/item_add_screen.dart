@@ -11,11 +11,11 @@ import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
 import '../widgets/presets_wrap.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/TextFields/password_text_field.dart';
-import '../widgets/TextFields/pin_text_field.dart';
-import '../widgets/TextFields/title_text_field.dart';
-import '../widgets/TextFields/username_text_field.dart';
-import '../widgets/TextFields/long_text_text_field.dart';
+import '../widgets/text_field/password_text_field.dart';
+import '../widgets/text_field/pin_text_field.dart';
+import '../widgets/text_field/title_text_field.dart';
+import '../widgets/text_field/username_text_field.dart';
+import '../widgets/text_field/long_text_text_field.dart';
 import '../widgets/card/item_preview_card.dart';
 import '../widgets/card/user_list_card.dart';
 import '../widgets/card/strength_level_card.dart';
@@ -115,13 +115,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       _i.pin = _cripto.createPin(_pinCtrler.text);
       _i.note = _cripto.createNote(_longCtrler.text);
       _i.address = _cripto.createAddress(_addressCtrler.text);
+      if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
+        _i.product = null;
+      }
       _items.insertItem(_i).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
   }
 
-  //TODO: ???
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
@@ -168,19 +170,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
-        title: _cripto.locked
-            ? IconButton(
-                icon: Icon(
-                  Icons.lock_outline,
-                  color: _unlocking ? Colors.orange : Colors.red,
-                ),
-                // onPressed: _cripto.locked ? _lockSwitch : null,
-                onPressed: () => _cripto.unlock('Qwe123!'),
-              )
-            : null,
+        title: TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
         actions: [
-          if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
-            IconButton(icon: Icon(Icons.save), onPressed: _insertItem),
+          _titleCtrler.text.isNotEmpty && !_cripto.locked
+              ? IconButton(icon: Icon(Icons.save), onPressed: _insertItem)
+              : SizedBox(width: 48),
         ],
       ),
       body: Stack(
@@ -191,7 +185,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
                   PresetsWrap(item: _i, refreshScreen: _updateScreen),
                   if (_i.username != null)
                     Padding(

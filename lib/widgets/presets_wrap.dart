@@ -52,9 +52,9 @@ class PresetsWrap extends StatelessWidget {
     return Container(
       height: 92,
       child: Center(
-        child: Wrap(
-          // scrollDirection: Axis.horizontal,
-          // shrinkWrap: true,
+        child: ListView(
+          scrollDirection: Axis.horizontal,
+          shrinkWrap: true,
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),

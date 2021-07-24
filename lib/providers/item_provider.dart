@@ -109,6 +109,32 @@ class ItemProvider with ChangeNotifier {
     await _buildAllItems();
   }
 
+  Future<void> _buildAllItems() async {
+    _allItems.forEach((i) async {
+      if (i.fkUsernameId != null) {
+        i.username = await getUsername(i.fkUsernameId);
+      }
+      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
+        if (_ips.isNotEmpty) {
+          i.itemPassword = _ips.first;
+          i.password = await getPassword(_ips.first.fkPasswordId);
+        }
+      });
+      if (i.fkPinId != null) {
+        i.pin = await getPin(i.fkPinId);
+      }
+      if (i.fkNoteId != null) {
+        i.note = await getNote(i.fkNoteId);
+      }
+      if (i.fkAddressId != null) {
+        i.address = await getAdress(i.fkAddressId);
+      }
+      if (i.fkProductId != null) {
+        i.product = await getProduct(i.fkProductId);
+      }
+    });
+  }
+
   Future<void> fetchItemPasswords() async {
     Iterable<ItemPassword> _iter;
     _itemsPasswords.clear();
@@ -199,42 +225,6 @@ class ItemProvider with ChangeNotifier {
     _cves.addAll(_iter.toList());
   }
 
-  Future<void> _buildAllItems() async {
-    _allItems.forEach((i) async {
-      if (i.fkUsernameId != null) {
-        i.username = await getUsername(i.fkUsernameId);
-      }
-      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
-        if (_ips.isNotEmpty) {
-          i.itemPassword = _ips.first;
-          i.password = await getPassword(_ips.first.fkPasswordId);
-        }
-      });
-      if (i.fkPinId != null) {
-        i.pin = await getPin(i.fkPinId);
-      }
-      if (i.fkNoteId != null) {
-        i.note = await getNote(i.fkNoteId);
-      }
-      if (i.fkAddressId != null) {
-        i.address = await getAdress(i.fkAddressId);
-      }
-      if (i.fkProductId != null) {
-        i.product = await getProduct(i.fkProductId);
-      }
-    });
-  }
-
-  Future<void> fetchItemsWithOldPasswords() async {
-    Iterable<Item> _iter;
-    _itemsWithOldPasswords.clear();
-    await DBHelper.getItemsWithOldPasswords().then((data) {
-      _iter = data.map((e) => Item.fromMap(e));
-    });
-    _itemsWithOldPasswords.addAll(_iter.toList());
-    _itemsWithOldPasswords.sort((a, b) => b.date.compareTo(a.date));
-  }
-
   Future<void> fetchItemAndOldPasswords(int itemId) async {
     Iterable<Item> _iter;
     _itemAndOldPasswords.clear();
@@ -281,6 +271,41 @@ class ItemProvider with ChangeNotifier {
         i.address = await getAdress(i.fkAddressId);
       }
     });
+  }
+
+  Future<Item> getItem(int id) async {
+    List<Map<String, dynamic>> _i = await DBHelper.getItemById(id);
+    Item _item = Item.fromMap(_i.first);
+    await _buildItem(_item);
+    return _item;
+  }
+
+  Future<void> _buildItem(Item i) async {
+    if (i.fkUsernameId != null) {
+      i.username = await getUsername(i.fkUsernameId);
+    }
+    await getItemPasswordsByItemId(i.itemId).then((_ips) async {
+      if (_ips.isNotEmpty) {
+        await Future.forEach(_ips, (_ip) async {
+          i.passwords.add(await getPassword(_ip.fkPasswordId));
+        }).then((_) {
+          i.itemPassword = _ips.first;
+          i.password = i.passwords.first;
+        });
+      }
+    });
+    if (i.fkPinId != null) {
+      i.pin = await getPin(i.fkPinId);
+    }
+    if (i.fkNoteId != null) {
+      i.note = await getNote(i.fkNoteId);
+    }
+    if (i.fkAddressId != null) {
+      i.address = await getAdress(i.fkAddressId);
+    }
+    if (i.fkProductId != null) {
+      i.product = await getProduct(i.fkProductId);
+    }
   }
 
   Future<void> insertItem(Item i) async {
@@ -377,6 +402,7 @@ class ItemProvider with ChangeNotifier {
         i.fkPinId = await insertPin(i.pin);
       } else {
         i.fkPinId = i.pin.pinId;
+        await updatePin(i.pin);
       }
     } else {
       i.fkPinId = null;
@@ -387,6 +413,7 @@ class ItemProvider with ChangeNotifier {
         i.fkNoteId = await insertNote(i.note);
       } else {
         i.fkNoteId = i.note.noteId;
+        await updateNote(i.note);
       }
     } else {
       i.fkNoteId = null;
@@ -397,6 +424,7 @@ class ItemProvider with ChangeNotifier {
         i.fkAddressId = await insertAddress(i.address);
       } else {
         i.fkAddressId = i.address.addressId;
+        await updateAddress(i.address);
       }
     } else {
       i.fkAddressId = null;
@@ -453,9 +481,12 @@ class ItemProvider with ChangeNotifier {
     DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id')
         .then((itemId) async {
       if (i.password != null) {
-        i.itemPassword.fkItemId = itemId;
-        await insertItemPassword(i.itemPassword);
+        if (oldItem.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
+          i.itemPassword.fkItemId = itemId;
+          await insertItemPassword(i.itemPassword);
+        }
       }
+      oldItem = i;
     });
   }
 

@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cripto_provider.dart';
 import '../../models/item.dart';
-import '../../screens/item_edit_screen.dart';
 import '../../screens/item_view_screen.dart';
 
 class ItemUnlockedCard extends StatefulWidget {
@@ -37,17 +36,9 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemEditScreen(item: widget.item),
+        builder: (context) => ItemViewScreen(itemId: widget.item.itemId),
       ),
     ).then((_) => widget.onReturn());
-  }
-
-  Color _setAvatarLetterColor() {
-    if (widget.item.avatarLetterColor >= 0)
-      return Color(widget.item.avatarLetterColor);
-    Color _c = Color(widget.item.avatarColor);
-    double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
-    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
   void _toClipBoard() async {
@@ -60,6 +51,14 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         ),
       ),
     );
+  }
+
+  Color _setAvatarLetterColor() {
+    if (widget.item.avatarLetterColor >= 0)
+      return Color(widget.item.avatarLetterColor);
+    Color _c = Color(widget.item.avatarColor);
+    double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
+    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
   bool _expired() {
@@ -107,16 +106,23 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         break;
       four:
       case 4:
-        if (widget.item.address == null) continue five;
+        if (widget.item.note == null) continue five;
         _showValue = 4;
+        _subtitle = '';
+        return _cripto.decryptNote(widget.item.note);
+        break;
+      five:
+      case 5:
+        if (widget.item.address == null) continue six;
+        _showValue = 5;
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
         return _cripto.decryptAddress(widget.item.address);
         break;
-      five:
-      case 5:
+      six:
+      case 6:
         if (widget.item.product == null) continue cero;
-        _showValue = 5;
+        _showValue = 6;
         _subtitle = widget.item.product.productModel.isNotEmpty
             ? 'Model: ${widget.item.product.productModel}'
             : '';
@@ -142,13 +148,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         return Icon(Icons.account_box, color: _setAvatarLetterColor());
         break;
       case 4:
-        return Icon(Icons.http, color: _setAvatarLetterColor());
+        return Icon(Icons.note, color: _setAvatarLetterColor());
         break;
       case 5:
+        return Icon(Icons.http, color: _setAvatarLetterColor());
+        break;
+      case 6:
         return Icon(Icons.router, color: _setAvatarLetterColor());
         break;
       default:
-        _showValue = 0;
         return Text(
           widget.item.title.substring(0, 1).toUpperCase(),
           style: TextStyle(
@@ -180,13 +188,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         else
           _showValue++;
       });
-
-  void _showPassLongPressed() => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ItemViewScreen(item: widget.item),
-        ),
-      ).then((_) => widget.onReturn());
 
   @override
   void initState() {
@@ -271,7 +272,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                 height: 48,
                 width: 48,
                 child: InkWell(
-                  onLongPress: _showPassLongPressed,
                   child: FloatingActionButton(
                     backgroundColor: _setWarningColor(),
                     child: Icon(

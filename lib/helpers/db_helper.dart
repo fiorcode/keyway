@@ -153,6 +153,14 @@ class DBHelper {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> getItemById(int id) async {
+    return (await DBHelper.database()).query(
+      DBHelper.itemTable,
+      where: 'item_id = ?',
+      whereArgs: [id],
+    );
+  }
+
   static Future<List<Map<String, dynamic>>> getUsernameById(int id) async {
     return (await DBHelper.database()).query(
       DBHelper.usernameTable,

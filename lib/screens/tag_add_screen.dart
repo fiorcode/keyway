@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'package:keyway/models/tag.dart';
 import '../providers/item_provider.dart';
-import '../widgets/TextFields/tag_text_field.dart';
+import '../widgets/text_field/tag_text_field.dart';
 
 class TagAddScreen extends StatefulWidget {
   static const routeName = '/tag-add';

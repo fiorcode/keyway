@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/card/item_locked_card.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
@@ -6,11 +7,10 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/dashboard_screen.dart';
-import 'package:keyway/widgets/card/item_unlocked_card.dart';
+import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/card/alpha_locked_card.dart';
 import '../widgets/empty_items.dart';
-import '../widgets/TextFields/search_bar_text_field.dart';
+import '../widgets/text_field/search_bar_text_field.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -134,6 +134,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                 },
               ),
         actions: [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
+        actionsIconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
       body: FutureBuilder(
         future: _getItems,
@@ -156,7 +157,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                             itemCount: _item.items.length,
                             itemBuilder: (ctx, i) {
                               return _cripto.locked
-                                  ? AlphaLockedCard(item: _item.items[i])
+                                  ? ItemLockedCard(item: _item.items[i])
                                   : ItemUnlockedCard(
                                       item: _item.items[i],
                                       onReturn: _onReturn,

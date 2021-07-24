@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../helpers/db_helper.dart';
-import '../screens/danger_zone_screen.dart';
 import '../screens/tables_screen.dart';
+import '../screens/items_deleted_screen.dart';
+import '../screens/danger_zone_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class DataScreen extends StatefulWidget {
@@ -188,6 +189,14 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     goTo: () => _goTo(TablesScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.delete, color: _primary, size: 48),
+                    title: Text(
+                      'Deleted items',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    goTo: () => _goTo(ItemsDeletedScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.dangerous, color: Colors.white, size: 48),
