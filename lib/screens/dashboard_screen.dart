@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-import '../screens/data_screen.dart';
+import 'data_screen.dart';
+import 'backup_restore_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const routeName = '/dashboard';
+
+  void _goTo(BuildContext context, String route) =>
+      Navigator.of(context).pushNamed(route);
+
   @override
   Widget build(BuildContext context) {
     Color _primary = Theme.of(context).primaryColor;
@@ -29,7 +34,16 @@ class DashboardScreen extends StatelessWidget {
                 'Data',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
-              goTo: () => Navigator.of(context).pushNamed(DataScreen.routeName),
+              goTo: () => _goTo(context, DataScreen.routeName),
+            ),
+            DashboardCard(
+              icon: Icon(Icons.settings_backup_restore,
+                  color: _primary, size: 48),
+              title: Text(
+                'Backup\nRestore',
+                style: TextStyle(color: _primary, fontSize: 16),
+              ),
+              goTo: () => _goTo(context, BackupRestoreScreen.routeName),
             ),
             DashboardCard(
               icon:
@@ -41,9 +55,9 @@ class DashboardScreen extends StatelessWidget {
               goTo: () {},
             ),
             DashboardCard(
-              icon: Icon(Icons.help_outline, color: _primary, size: 64),
+              icon: Icon(Icons.privacy_tip, color: _primary, size: 64),
               title: Text(
-                'Help',
+                'Info',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
               goTo: () {},
@@ -56,19 +70,6 @@ class DashboardScreen extends StatelessWidget {
               ),
               goTo: () {},
             ),
-            // DashboardCard(
-            //   icon: Icon(
-            //     Icons.settings_backup_restore,
-            //     color: _primary,
-            //     size: 64,
-            //   ),
-            //   title: Text(
-            //     'Backup',
-            //     style: TextStyle(color: _primary, fontSize: 20),
-            //   ),
-            //   goTo: () =>
-            //       Navigator.of(context).pushNamed(BackupScreen.routeName),
-            // ),
           ],
         ),
       ),

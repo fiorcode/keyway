@@ -9,42 +9,41 @@ import '../models/note.dart';
 import '../models/address.dart';
 import '../models/product.dart';
 
-class PresetsWrap extends StatelessWidget {
-  const PresetsWrap({Key key, @required this.item, this.refreshScreen})
-      : super(key: key);
+class PresetsList extends StatelessWidget {
+  const PresetsList({this.item, this.updateScreen});
 
   final Item item;
-  final Function refreshScreen;
+  final Function updateScreen;
 
   void _usernameSwitch() {
     item.username = item.username != null ? null : Username();
-    refreshScreen();
+    updateScreen();
   }
 
   void _passwordSwitch() {
     item.password = item.password != null ? null : Password();
     item.itemPassword = item.itemPassword != null ? null : ItemPassword();
-    refreshScreen();
+    updateScreen();
   }
 
   void _pinSwitch() {
     item.pin = item.pin != null ? null : Pin();
-    refreshScreen();
+    updateScreen();
   }
 
   void _longTextSwitch() {
     item.note = item.note != null ? null : Note();
-    refreshScreen();
+    updateScreen();
   }
 
   void _addressSwitch() {
     item.address = item.address != null ? null : Address();
-    refreshScreen();
+    updateScreen();
   }
 
   void _productSwitch() {
     item.product = item.product != null ? null : Product();
-    refreshScreen();
+    updateScreen();
   }
 
   @override

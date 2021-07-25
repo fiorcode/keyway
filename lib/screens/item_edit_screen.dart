@@ -9,7 +9,7 @@ import '../models/username.dart';
 import '../helpers/error_helper.dart';
 import '../helpers/warning_helper.dart';
 import '../helpers/password_helper.dart';
-import '../widgets/presets_wrap.dart';
+import '../widgets/presets_list.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/text_field/password_text_field.dart';
 import '../widgets/text_field/pin_text_field.dart';
@@ -287,8 +287,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                             children: [
                               TitleTextField(
                                   _titleCtrler, _titleFocusNode, _updateScreen),
-                              PresetsWrap(
-                                  item: _i, refreshScreen: _updateScreen),
+                              PresetsList(
+                                  item: _i, updateScreen: _updateScreen),
                               if (_i.username != null)
                                 Padding(
                                   padding: const EdgeInsets.only(bottom: 8.0),

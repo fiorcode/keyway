@@ -32,12 +32,9 @@ class _AddressCardState extends State<AddressCard> {
     'ldap': 389,
     'smb': 445,
   };
-
   TextInputType _type = TextInputType.url;
   bool _inputMode = false;
   int _index;
-
-  //TODO: onChange functions
 
   void _inputSwitch() {
     FocusScope.of(context).unfocus();
@@ -46,7 +43,11 @@ class _AddressCardState extends State<AddressCard> {
         : _type = TextInputType.url);
   }
 
-  void _inputModeSwitch() => setState(() => _inputMode = !_inputMode);
+  void _inputModeSwitch() => setState(() {
+        _inputMode = !_inputMode;
+        widget.protocolCtrler.clear();
+        widget.portCtrler.clear();
+      });
 
   void _protocolSwitch() {
     setState(() {
@@ -59,10 +60,8 @@ class _AddressCardState extends State<AddressCard> {
   }
 
   void _loadPresets() {
-    widget.protocolCtrler.text = _protocols.keys.elementAt(_index);
-    widget.address.addressProtocol = widget.protocolCtrler.text.toLowerCase();
-    widget.portCtrler.text = _protocols.values.elementAt(_index).toString();
-    widget.address.addressPort = int.parse(widget.portCtrler.text);
+    widget.address.addressProtocol = _protocols.keys.elementAt(_index);
+    widget.address.addressPort = _protocols.values.elementAt(_index);
   }
 
   void _loadItemValues() {
@@ -121,7 +120,6 @@ class _AddressCardState extends State<AddressCard> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
               children: [
                 if (!_inputMode)
                   IconButton(
@@ -129,14 +127,6 @@ class _AddressCardState extends State<AddressCard> {
                     icon: Icon(Icons.change_circle_outlined,
                         color: Colors.grey, size: 32),
                   ),
-                Text(
-                  'Protocol',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.grey[600],
-                  ),
-                ),
                 _inputMode
                     ? Container(
                         width: 128,
@@ -148,25 +138,15 @@ class _AddressCardState extends State<AddressCard> {
                           onChanged: (_) {},
                         ),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ChoiceChip(
-                          backgroundColor: Colors.grey,
-                          selected: true,
-                          selectedColor: Colors.grey[200],
-                          onSelected: (_) {},
-                          label: Text(
-                            _protocols.keys.elementAt(_index).toUpperCase(),
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          elevation: 8.0,
+                    : Text(
+                        _protocols.keys.elementAt(_index).toUpperCase(),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                 Text(
-                  'Port',
+                  ' : ',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -184,21 +164,11 @@ class _AddressCardState extends State<AddressCard> {
                           onChanged: (_) {},
                         ),
                       )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: ChoiceChip(
-                          backgroundColor: Colors.grey,
-                          selected: true,
-                          selectedColor: Colors.grey[200],
-                          onSelected: (_) {},
-                          label: Text(
-                            _protocols.values.elementAt(_index).toString(),
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          elevation: 8.0,
+                    : Text(
+                        _protocols.values.elementAt(_index).toString(),
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                 IconButton(

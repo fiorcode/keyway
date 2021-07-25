@@ -21,6 +21,7 @@ import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
 import 'screens/tables_screen.dart';
+import 'screens/backup_restore_screen.dart';
 import 'screens/danger_zone_screen.dart';
 
 import 'screens/data_views/address_table.dart';
@@ -75,6 +76,7 @@ class MyApp extends StatelessWidget {
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
           TablesScreen.routeName: (ctx) => TablesScreen(),
+          BackupRestoreScreen.routeName: (ctx) => BackupRestoreScreen(),
           DangerZoneScreen.routeName: (ctx) => DangerZoneScreen(),
           ItemTableScreen.routeName: (ctx) => ItemTableScreen(),
           ItemPasswordTableScreen.routeName: (ctx) => ItemPasswordTableScreen(),
