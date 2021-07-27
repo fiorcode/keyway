@@ -27,12 +27,13 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   bool _loadingRandomPass = false;
   bool _equals = false;
 
-  void _checkPassword(String p) {
-    setState(() => _zxcvbnResult = PasswordHelper.evaluate(p));
+  void _checkPassword() {
+    _equals = _passCtrler.text == _confirmCtrler.text;
+    setState(() => _zxcvbnResult = PasswordHelper.evaluate(_passCtrler.text));
   }
 
-  void _checkConfirmPassword(String cp) {
-    setState(() => _equals = _passCtrler.text == cp);
+  void _checkConfirmPassword() {
+    setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
   }
 
   void _clear() {
@@ -144,7 +145,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                           ),
               ),
               obscureText: _obscurePass,
-              onChanged: (p) => _checkPassword(p),
+              onChanged: (_) => _checkPassword(),
             ),
             if (_loadingRandomPass) LinearProgressIndicator(),
             Padding(
@@ -178,7 +179,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
                     : null,
               ),
               obscureText: _obscureConfirm,
-              onChanged: (cp) => _checkConfirmPassword(cp),
+              onChanged: (_) => _checkConfirmPassword(),
               textInputAction: TextInputAction.next,
               onSubmitted: (_) => _setPassword(),
             ),
