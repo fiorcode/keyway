@@ -34,7 +34,7 @@ class DashboardScreen extends StatelessWidget {
                 'Data',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
-              goTo: () => _goTo(context, DataScreen.routeName),
+              onTap: () => _goTo(context, DataScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.settings_backup_restore,
@@ -43,7 +43,7 @@ class DashboardScreen extends StatelessWidget {
                 'Backup\nRestore',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(context, BackupRestoreScreen.routeName),
+              onTap: () => _goTo(context, BackupRestoreScreen.routeName),
             ),
             DashboardCard(
               icon:
@@ -52,7 +52,7 @@ class DashboardScreen extends StatelessWidget {
                 'Options',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
-              goTo: () {},
+              onTap: () {},
             ),
             DashboardCard(
               icon: Icon(Icons.privacy_tip, color: _primary, size: 64),
@@ -60,7 +60,7 @@ class DashboardScreen extends StatelessWidget {
                 'Info',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
-              goTo: () {},
+              onTap: () {},
             ),
             DashboardCard(
               icon: Icon(Icons.monetization_on, color: _primary, size: 64),
@@ -68,7 +68,7 @@ class DashboardScreen extends StatelessWidget {
                 'Donate',
                 style: TextStyle(color: _primary, fontSize: 20),
               ),
-              goTo: () {},
+              onTap: () {},
             ),
           ],
         ),

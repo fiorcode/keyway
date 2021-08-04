@@ -53,7 +53,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Item',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(ItemTableScreen.routeName),
+              onTap: () => _goTo(ItemTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.pivot_table_chart, color: _primary, size: 48),
@@ -61,7 +61,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'ItemPasswords',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(ItemPasswordTableScreen.routeName),
+              onTap: () => _goTo(ItemPasswordTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.password, color: _primary, size: 48),
@@ -69,7 +69,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Passwords',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(PasswordTableScreen.routeName),
+              onTap: () => _goTo(PasswordTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.account_box, color: _primary, size: 48),
@@ -77,7 +77,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Usernames',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(UsernameTableScreen.routeName),
+              onTap: () => _goTo(UsernameTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.pin, color: _primary, size: 48),
@@ -85,7 +85,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'PINs',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(PinTableScreen.routeName),
+              onTap: () => _goTo(PinTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.note_alt, color: _primary, size: 48),
@@ -93,7 +93,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Notes',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(NoteTableScreen.routeName),
+              onTap: () => _goTo(NoteTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.router, color: _primary, size: 48),
@@ -101,7 +101,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Addresses',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(AddressTableScreen.routeName),
+              onTap: () => _goTo(AddressTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.security, color: _primary, size: 48),
@@ -109,7 +109,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Products',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(ProductTableScreen.routeName),
+              onTap: () => _goTo(ProductTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.receipt, color: _primary, size: 48),
@@ -117,7 +117,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'CPEs',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(Cpe23uriTableScreen.routeName),
+              onTap: () => _goTo(Cpe23uriTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.pivot_table_chart, color: _primary, size: 48),
@@ -125,7 +125,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'CpeCves',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(Cpe23uriCveTableScreen.routeName),
+              onTap: () => _goTo(Cpe23uriCveTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.coronavirus, color: _primary, size: 48),
@@ -133,7 +133,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 'CVEs',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => _goTo(CveTableScreen.routeName),
+              onTap: () => _goTo(CveTableScreen.routeName),
             ),
             DashboardCard(
               icon: Icon(Icons.tag, color: _primary, size: 48),
@@ -141,7 +141,8 @@ class _TablesScreenState extends State<TablesScreen> {
                 'Tags',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              goTo: () => Navigator.of(context).pushNamed(TagsScreen.routeName),
+              onTap: () =>
+                  Navigator.of(context).pushNamed(TagsScreen.routeName),
             ),
           ],
         ),

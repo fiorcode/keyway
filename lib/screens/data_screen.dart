@@ -188,7 +188,7 @@ class _DataScreenState extends State<DataScreen> {
                       'Tables',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => _goTo(TablesScreen.routeName),
+                    onTap: () => _goTo(TablesScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.delete, color: _primary, size: 48),
@@ -196,7 +196,7 @@ class _DataScreenState extends State<DataScreen> {
                       'Deleted items',
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
-                    goTo: () => _goTo(ItemsDeletedScreen.routeName),
+                    onTap: () => _goTo(ItemsDeletedScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.dangerous, color: Colors.white, size: 48),
@@ -205,7 +205,7 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                     color: Colors.red,
-                    goTo: () => _goTo(DangerZoneScreen.routeName),
+                    onTap: () => _goTo(DangerZoneScreen.routeName),
                   ),
                 ],
               ),

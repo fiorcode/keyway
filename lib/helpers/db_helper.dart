@@ -57,6 +57,23 @@ class DBHelper {
     return File('$_dbPath/kw.db').lastModified();
   }
 
+  static Future<bool> createBackup(String path) async {
+    final _dbPath = await dbPath();
+    final _localDB = File('$_dbPath/kw.db');
+    Directory(path).create(recursive: true).then((_dir) {
+      _localDB.copySync('${_dir.path}/kw_backup.db');
+      return true;
+    });
+    return false;
+  }
+
+  static Future<bool> restoreBackup(String filePath) async {
+    File _backupFile = File(filePath);
+    final _dbPath = await dbPath();
+    _backupFile.copySync('$_dbPath/kw.db');
+    return true;
+  }
+
   static Future<int> insert(String table, Map<String, Object> data) async =>
       (await DBHelper.database()).insert(
         table,
