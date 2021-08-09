@@ -26,20 +26,20 @@ class DBHelper {
       path.join(dbPath, 'kw.db'),
       onCreate: (db, version) async {
         await db.execute('PRAGMA foreign_keys = ON');
-        await db.execute(createUserTable);
-        await db.execute(createItemTable);
-        await db.execute(createItemPasswordTable);
-        await db.execute(createPasswordTable);
-        await db.execute(createUsernameTable);
-        await db.execute(createPinTable);
-        await db.execute(createNoteTable);
-        await db.execute(createAddressTable);
-        await db.execute(createProductTable);
-        await db.execute(createCpe23uriTable);
-        await db.execute(createCpe23uriCveTable);
-        await db.execute(createCveTable);
-        await db.execute(createCveImpactV3Table);
-        await db.execute(createTagTable);
+        await db.execute(_createUserTable);
+        await db.execute(_createItemTable);
+        await db.execute(_createItemPasswordTable);
+        await db.execute(_createPasswordTable);
+        await db.execute(_createUsernameTable);
+        await db.execute(_createPinTable);
+        await db.execute(_createNoteTable);
+        await db.execute(_createAddressTable);
+        await db.execute(_createProductTable);
+        await db.execute(_createCpe23uriTable);
+        await db.execute(_createCpe23uriCveTable);
+        await db.execute(_createCveTable);
+        await db.execute(_createCveImpactV3Table);
+        await db.execute(_createTagTable);
       },
       version: 1,
     );
@@ -296,11 +296,11 @@ class DBHelper {
     }
   }
 
-  static const createUserTable = '''CREATE TABLE $userTable(
+  static const _createUserTable = '''CREATE TABLE $userTable(
     mk_enc TEXT,
     mk_iv TEXT)''';
 
-  static const createItemTable = '''CREATE TABLE $itemTable(
+  static const _createItemTable = '''CREATE TABLE $itemTable(
     item_id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT,
     date TEXT,
@@ -320,14 +320,14 @@ class DBHelper {
     FOREIGN KEY (fk_address_id) REFERENCES $addressTable (address_id),
     FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id))''';
 
-  static const createPasswordTable = '''CREATE TABLE $passwordTable(
+  static const _createPasswordTable = '''CREATE TABLE $passwordTable(
     password_id INTEGER PRIMARY KEY AUTOINCREMENT,
     password_enc TEXT,
     password_iv TEXT,
     password_strength TEXT,
     password_hash TEXT)''';
 
-  static const createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
+  static const _createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
     fk_item_id INTEGER,
     fk_password_id INTEGER,
     password_lapse INTEGER,
@@ -337,13 +337,13 @@ class DBHelper {
     FOREIGN KEY (fk_item_id) REFERENCES $itemTable (item_id),
     FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id))''';
 
-  static const createUsernameTable = '''CREATE TABLE $usernameTable(
+  static const _createUsernameTable = '''CREATE TABLE $usernameTable(
     username_id INTEGER PRIMARY KEY AUTOINCREMENT,
     username_enc TEXT,
     username_iv TEXT,
     username_hash TEXT)''';
 
-  static const createPinTable = '''CREATE TABLE $pinTable(
+  static const _createPinTable = '''CREATE TABLE $pinTable(
     pin_id INTEGER PRIMARY KEY AUTOINCREMENT,
     pin_enc TEXT,
     pin_iv TEXT,
@@ -351,19 +351,19 @@ class DBHelper {
     pin_lapse INTEGER,
     pin_status TEXT)''';
 
-  static const createNoteTable = '''CREATE TABLE $noteTable(
+  static const _createNoteTable = '''CREATE TABLE $noteTable(
     note_id INTEGER PRIMARY KEY AUTOINCREMENT,
     note_enc TEXT,
     note_iv TEXT)''';
 
-  static const createAddressTable = '''CREATE TABLE $addressTable(
+  static const _createAddressTable = '''CREATE TABLE $addressTable(
     address_id INTEGER PRIMARY KEY AUTOINCREMENT,
     address_enc TEXT,
     address_iv TEXT,
     address_protocol TEXT,
     address_port INTEGER)''';
 
-  static const createProductTable = '''CREATE TABLE $productTable(
+  static const _createProductTable = '''CREATE TABLE $productTable(
     product_id INTEGER PRIMARY KEY AUTOINCREMENT,
     product_type TEXT,
     product_trademark TEXT,
@@ -374,7 +374,7 @@ class DBHelper {
     fk_cpe23uri_id INTEGER,
     FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
-  static const createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
+  static const _createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
     cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
     value TEXT,
     deprecated INTEGER,
@@ -384,14 +384,14 @@ class DBHelper {
     ref_type TEXT,
     last_tracking TEXT)''';
 
-  static const createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
+  static const _createCpe23uriCveTable = '''CREATE TABLE $cpe23uriCveTable(
     fk_cpe23uri_id INTEGER,
     fk_cve_id INTEGER,
     PRIMARY KEY (fk_cpe23uri_id, fk_cve_id),
     FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id),
     FOREIGN KEY (fk_cve_id) REFERENCES $cveTable (cve_id))''';
 
-  static const createCveTable = '''CREATE TABLE $cveTable(
+  static const _createCveTable = '''CREATE TABLE $cveTable(
     cve_id TEXT PRIMARY KEY,
     assigner TEXT,
     references_url TEXT,
@@ -401,7 +401,7 @@ class DBHelper {
     fk_cve_impact_v3_id INTEGER,
     FOREIGN KEY (fk_cve_impact_v3_id) REFERENCES $cveImpactV3Table (cve_impact_v3_id))''';
 
-  static const createCveImpactV3Table = '''CREATE TABLE $cveImpactV3Table(
+  static const _createCveImpactV3Table = '''CREATE TABLE $cveImpactV3Table(
     cve_impact_v3_id INTEGER PRIMARY KEY AUTOINCREMENT,
     exploitability_score REAL,
     impact_score REAL,
@@ -416,7 +416,7 @@ class DBHelper {
     base_score REAL,
     base_severity REAL)''';
 
-  static const createTagTable = '''CREATE TABLE $tagTable(
+  static const _createTagTable = '''CREATE TABLE $tagTable(
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     tag_name TEXT)''';
 }
