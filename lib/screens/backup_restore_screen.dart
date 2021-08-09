@@ -1,11 +1,10 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../helpers/date_helper.dart';
 import '../helpers/db_helper.dart';
 import '../helpers/storage_helper.dart';
-import '../models/depot.dart';
 import '../screens/items_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
@@ -17,11 +16,10 @@ class BackupRestoreScreen extends StatefulWidget {
 }
 
 class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
-  Future<List<Depot>> _getBackupDepots;
-  Future<List<Depot>> _getRestoreDepots;
-  List<Depot> _backupDepots;
-  List<Depot> _restoreDepots;
-  File _devBackup;
+  Icon _icon;
+  File _fileToRestore;
+  FileStat _fileToRestoreStatus;
+
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
@@ -33,28 +31,44 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     return true;
   }
 
-  Future<List<Depot>> _getBackupDepotsAsync() async {
-    if (await _checkPermissions()) {
-      return await StorageHelper.getBackupDepots();
-    }
-    return <Depot>[];
-  }
-
-  Future<List<Depot>> _getRestoreDepotsAsync() async {
-    if (await _checkPermissions()) {
-      return await StorageHelper.getRestoreDepots();
-    }
-    return <Depot>[];
-  }
-
-  Future<void> _searchDeviceBackup() async {
-    if (_devBackup != null) {
-      setState(() => _devBackup = null);
-      return;
-    }
+  Future<void> _getDeviceBackup() async {
+    await _checkPermissions();
+    Color _primary = Theme.of(context).primaryColor;
+    _icon = Icon(Icons.phone_iphone, color: _primary, size: 32);
     setState(() => _working = true);
-    StorageHelper.getDeviceBackup().then((file) {
-      _devBackup = file;
+    StorageHelper.getDeviceBackup().then((file) async {
+      if (file != null) {
+        _fileToRestore = file;
+        _fileToRestoreStatus = await _fileToRestore.stat();
+      }
+      setState(() => _working = false);
+    });
+  }
+
+  Future<void> _getSdBackup() async {
+    await _checkPermissions();
+    Color _primary = Theme.of(context).primaryColor;
+    _icon = Icon(Icons.sd_card, color: _primary, size: 32);
+    setState(() => _working = true);
+    StorageHelper.getSdCardBackup().then((file) async {
+      if (file != null) {
+        _fileToRestore = file;
+        _fileToRestoreStatus = await _fileToRestore.stat();
+      }
+      setState(() => _working = false);
+    });
+  }
+
+  Future<void> _getDownloadsBackup() async {
+    await _checkPermissions();
+    Color _primary = Theme.of(context).primaryColor;
+    _icon = Icon(Icons.download, color: _primary, size: 32);
+    setState(() => _working = true);
+    StorageHelper.getSdCardBackup().then((file) async {
+      if (file != null) {
+        _fileToRestore = file;
+        _fileToRestoreStatus = await _fileToRestore.stat();
+      }
       setState(() => _working = false);
     });
   }
@@ -62,7 +76,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   Future<void> _createBackup(String path) async {
     String _path = path + '/keyway/backups';
     DBHelper.createBackup(_path).then((_) {
-      _getRestoreDepots = _getRestoreDepotsAsync();
       setState(() {});
     });
   }
@@ -76,13 +89,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     );
   }
 
-  void _goTo(BuildContext context, String route) =>
-      Navigator.of(context).pushNamed(route);
-
   @override
   void initState() {
-    _getBackupDepots = _getBackupDepotsAsync();
-    _getRestoreDepots = _getRestoreDepotsAsync();
+    _fileToRestore = null;
     super.initState();
   }
 
@@ -126,6 +135,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     child: Column(
                       children: [
                         GridView.count(
+                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           crossAxisCount: 3,
                           crossAxisSpacing: 8,
@@ -186,91 +196,16 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 8,
-                          childAspectRatio: 1.1,
-                          mainAxisSpacing: 8,
-                          padding: EdgeInsets.all(16.0),
-                          children: [
-                            DashboardCard(
-                              icon: Icon(Icons.phone_iphone,
-                                  color: _primary, size: 32),
-                              title: Text(
-                                'Device',
-                                style: TextStyle(color: _primary, fontSize: 12),
-                              ),
-                              onTap: _searchDeviceBackup,
-                            ),
-                            DashboardCard(
-                              icon: Icon(Icons.sd_card,
-                                  color: _primary, size: 32),
-                              title: Text(
-                                'SD Card',
-                                style: TextStyle(color: _primary, fontSize: 12),
-                              ),
-                              // goTo: () => _goTo(context, BackupRestoreScreen.routeName),
-                            ),
-                          ],
-                        ),
-                        if (_devBackup != null)
-                          Card(
-                            elevation: 4,
-                            margin: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.phone_iphone,
-                                  color: _primary,
-                                  size: 24,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            'File name: ',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Text(_devBackup.path.split('/').last),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Text('Path: '),
-                                          Expanded(
-                                              child: Text(_devBackup.path)),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.red,
-                                  size: 24,
-                                ),
-                              ],
-                            ),
-                          ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 16, right: 16, bottom: 16),
+                          padding: const EdgeInsets.all(16),
                           child: Row(
                             children: [
                               Image.asset('assets/error.png', height: 40),
                               Expanded(
                                 child: Text(
-                                  'Any of this actions will overwrite your actual database',
+                                  'Restore action will overwrite your actual database',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: Colors.red, fontSize: 14),
@@ -278,7 +213,163 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               ),
                             ],
                           ),
-                        )
+                        ),
+                        GridView.count(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 3,
+                          crossAxisSpacing: 8,
+                          childAspectRatio: 1.1,
+                          mainAxisSpacing: 8,
+                          padding:
+                              EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                          children: [
+                            DashboardCard(
+                              icon: Icon(Icons.system_update,
+                                  color: _primary, size: 32),
+                              title: Text(
+                                'Device',
+                                style: TextStyle(color: _primary, fontSize: 12),
+                              ),
+                              onTap: _getDeviceBackup,
+                            ),
+                            DashboardCard(
+                              icon: Icon(Icons.sim_card_download,
+                                  color: _primary, size: 32),
+                              title: Text(
+                                'SD Card',
+                                style: TextStyle(color: _primary, fontSize: 12),
+                              ),
+                              onTap: _getSdBackup,
+                            ),
+                            DashboardCard(
+                              icon: Icon(Icons.download,
+                                  color: _primary, size: 32),
+                              title: Text(
+                                'Downloads',
+                                style: TextStyle(color: _primary, fontSize: 12),
+                              ),
+                              onTap: _getDownloadsBackup,
+                            ),
+                          ],
+                        ),
+                        if (_fileToRestore != null)
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: _primary,
+                                width: 2.0,
+                              ),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: _icon,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'File name: ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(_fileToRestore.path.split('/').last),
+                                    ],
+                                  ),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Path: ',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Expanded(
+                                          child: Text(_fileToRestore.path)),
+                                    ],
+                                  ),
+                                  if (_fileToRestoreStatus != null)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Last modified: ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            DateHelper.shortDate(
+                                                _fileToRestoreStatus.modified),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (_fileToRestoreStatus != null)
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'Size: ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            _fileToRestoreStatus.size
+                                                    .toString() +
+                                                ' Bytes',
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  if (_fileToRestore != null)
+                                    Row(
+                                      children: [
+                                        Expanded(child: SizedBox()),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(bottom: 16),
+                                          child: Icon(
+                                            Icons.delete_forever,
+                                            color: Colors.red,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        if (_fileToRestore != null)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: ElevatedButton(
+                              style:
+                                  ElevatedButton.styleFrom(primary: Colors.red),
+                              onPressed: () =>
+                                  _restoreBackup(_fileToRestore.path),
+                              child: Text(
+                                'RESTORE',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
