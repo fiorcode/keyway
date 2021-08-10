@@ -6,6 +6,8 @@ import 'package:keyway/helpers/db_helper.dart';
 import '../models/depot.dart';
 
 class StorageHelper {
+  static Future<FileSystemEntity> deleteFile(File f) => f.delete();
+
   static Future<List<String>> _externalPaths() async =>
       await ExternalPath.getExternalStorageDirectories();
 
@@ -34,7 +36,7 @@ class StorageHelper {
   static Future<bool> backupToDevice() async {
     String _path = await devicePath();
     if (_path.isNotEmpty) {
-      return await DBHelper.createBackup(_path);
+      return DBHelper.createBackup(_path);
     } else {
       return false;
     }
@@ -63,6 +65,17 @@ class StorageHelper {
     String _path = await sdCardPath();
     if (_path.isEmpty) return null;
     _path = _path + '/keyway/backups/kw_backup.db';
+    if (FileSystemEntity.typeSync(_path) != FileSystemEntityType.notFound) {
+      return File(_path);
+    }
+    return null;
+  }
+
+  static Future<File> getDownloadFolderBackup() async {
+    String _path = await ExternalPath.getExternalStoragePublicDirectory(
+        ExternalPath.DIRECTORY_DOWNLOADS);
+    if (_path.isEmpty) return null;
+    _path = _path + '/kw_backup.db';
     if (FileSystemEntity.typeSync(_path) != FileSystemEntityType.notFound) {
       return File(_path);
     }
