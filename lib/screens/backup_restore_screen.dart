@@ -1,5 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../helpers/date_helper.dart';
@@ -19,7 +21,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   Icon _icon;
   File _fileToRestore;
   FileStat _fileToRestoreStatus;
-
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
@@ -31,6 +32,79 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     return true;
   }
 
+  Future<void> _backupToDevice() async {
+    StorageHelper.backupToDevice().then((succeed) {
+      if (succeed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              'DONE!',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'SOMETHING WENT WRONG',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<void> _backupToSdCard() async {
+    StorageHelper.backupToSdCard().then((succeed) {
+      if (succeed) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.green,
+            content: Text(
+              'DONE!',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'SOMETHING WENT WRONG',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    });
+  }
+
+  Future<void> _backupToMail() async {
+    try {
+      await _checkPermissions();
+      File _db = await StorageHelper.getDeviceBackup();
+      final Email _email = Email(
+        body: 'Keyway Backup',
+        subject: 'Keyway Backup',
+        recipients: ['lperezfiorentino@vialidad.gob.ar'],
+        attachmentPaths: [_db.path],
+        isHTML: false,
+      );
+      await FlutterEmailSender.send(_email);
+    } catch (e) {
+      ErrorHelper.errorDialog(context, e.toString());
+    }
+  }
+
   Future<void> _getDeviceBackup() async {
     await _checkPermissions();
     Color _primary = Theme.of(context).primaryColor;
@@ -40,6 +114,17 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       if (file != null) {
         _fileToRestore = file;
         _fileToRestoreStatus = await _fileToRestore.stat();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'FILE NOT FOUND',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
       }
       setState(() => _working = false);
     });
@@ -47,13 +132,24 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _getSdBackup() async {
     await _checkPermissions();
-    Color _primary = Theme.of(context).primaryColor;
-    _icon = Icon(Icons.sd_card, color: _primary, size: 32);
     setState(() => _working = true);
     StorageHelper.getSdCardBackup().then((file) async {
       if (file != null) {
+        Color _primary = Theme.of(context).primaryColor;
+        _icon = Icon(Icons.sd_card, color: _primary, size: 32);
         _fileToRestore = file;
         _fileToRestoreStatus = await _fileToRestore.stat();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'FILE NOT FOUND',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
       }
       setState(() => _working = false);
     });
@@ -61,22 +157,26 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _getDownloadsBackup() async {
     await _checkPermissions();
-    Color _primary = Theme.of(context).primaryColor;
-    _icon = Icon(Icons.download, color: _primary, size: 32);
     setState(() => _working = true);
-    StorageHelper.getSdCardBackup().then((file) async {
+    StorageHelper.getDownloadFolderBackup().then((file) async {
       if (file != null) {
+        Color _primary = Theme.of(context).primaryColor;
+        _icon = Icon(Icons.folder, color: _primary, size: 32);
         _fileToRestore = file;
         _fileToRestoreStatus = await _fileToRestore.stat();
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text(
+              'FILE NOT FOUND',
+              textAlign: TextAlign.center,
+            ),
+            duration: Duration(seconds: 1),
+          ),
+        );
       }
       setState(() => _working = false);
-    });
-  }
-
-  Future<void> _createBackup(String path) async {
-    String _path = path + '/keyway/backups';
-    DBHelper.createBackup(_path).then((_) {
-      setState(() {});
     });
   }
 
@@ -87,6 +187,17 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         ModalRoute.withName(ItemsListScreen.routeName),
       ),
     );
+  }
+
+  Future<void> _deleteBackup() async {
+    setState(() => _working = true);
+    StorageHelper.deleteFile(_fileToRestore).then((fse) {
+      setState(() {
+        _fileToRestore = null;
+        _fileToRestoreStatus = null;
+        _working = false;
+      });
+    });
   }
 
   @override
@@ -150,7 +261,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'Device',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              // goTo: () => _goTo(context, DataScreen.routeName),
+                              onTap: () => _backupToDevice(),
                             ),
                             DashboardCard(
                               icon: Icon(Icons.sd_card,
@@ -159,7 +270,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'SD Card',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              // goTo: () => _goTo(context, BackupRestoreScreen.routeName),
+                              onTap: () => _backupToSdCard(),
                             ),
                             DashboardCard(
                               icon:
@@ -168,7 +279,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'E-Mail',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              // goTo: () {},
+                              onTap: () => _backupToMail(),
                             ),
                           ],
                         ),
@@ -181,7 +292,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                       vertical: 2,
                       horizontal: 4,
                     ),
-                    color: Colors.red,
+                    color: _primary,
                     child: Text(
                       'restore from',
                       style: TextStyle(fontSize: 18, color: Colors.white),
@@ -190,7 +301,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.red,
+                        color: _primary,
                         width: 3.0,
                       ),
                       borderRadius: BorderRadius.circular(16),
@@ -198,22 +309,6 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Row(
-                            children: [
-                              Image.asset('assets/error.png', height: 40),
-                              Expanded(
-                                child: Text(
-                                  'Restore action will overwrite your actual database',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 14),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         GridView.count(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -221,8 +316,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                           crossAxisSpacing: 8,
                           childAspectRatio: 1.1,
                           mainAxisSpacing: 8,
-                          padding:
-                              EdgeInsets.only(left: 16, right: 16, bottom: 16),
+                          padding: EdgeInsets.all(16.0),
                           children: [
                             DashboardCard(
                               icon: Icon(Icons.system_update,
@@ -243,10 +337,10 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               onTap: _getSdBackup,
                             ),
                             DashboardCard(
-                              icon: Icon(Icons.download,
-                                  color: _primary, size: 32),
+                              icon:
+                                  Icon(Icons.folder, color: _primary, size: 32),
                               title: Text(
-                                'Downloads',
+                                'Download',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
                               onTap: _getDownloadsBackup,
@@ -254,14 +348,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                           ],
                         ),
                         if (_fileToRestore != null)
-                          Container(
+                          Card(
+                            elevation: 8.0,
+                            color: _back,
                             margin: EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: _primary,
-                                width: 2.0,
-                              ),
-                              borderRadius: BorderRadius.circular(16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.0),
+                              side: BorderSide(width: 3, color: Colors.grey),
                             ),
                             child: Padding(
                               padding:
@@ -338,22 +431,38 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                       ],
                                     ),
-                                  if (_fileToRestore != null)
-                                    Row(
-                                      children: [
-                                        Expanded(child: SizedBox()),
-                                        Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 16),
-                                          child: Icon(
-                                            Icons.delete_forever,
-                                            color: Colors.red,
-                                          ),
-                                        )
-                                      ],
+                                  TextButton.icon(
+                                    onPressed: _deleteBackup,
+                                    icon: Icon(
+                                      Icons.delete_forever,
+                                      color: Colors.red,
                                     ),
+                                    label: Text(
+                                      'DELETE FILE',
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
+                            ),
+                          ),
+                        if (_fileToRestore != null)
+                          Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: Row(
+                              children: [
+                                Image.asset('assets/error.png', height: 40),
+                                Expanded(
+                                  child: Text(
+                                    'Restore action will overwrite your actual database',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 14),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         if (_fileToRestore != null)
@@ -361,7 +470,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: ElevatedButton(
                               style:
-                                  ElevatedButton.styleFrom(primary: Colors.red),
+                                  ElevatedButton.styleFrom(primary: _primary),
                               onPressed: () =>
                                   _restoreBackup(_fileToRestore.path),
                               child: Text(
