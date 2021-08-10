@@ -20,6 +20,8 @@ class DBHelper {
   static const String cveImpactV3Table = "cve_impact_v3";
   static const String tagTable = "tag";
 
+  static const String _backupPath = "/keyway/backups";
+
   static Future<Database> database() async {
     final dbPath = await sql.getDatabasesPath();
     return sql.openDatabase(
@@ -58,13 +60,16 @@ class DBHelper {
   }
 
   static Future<bool> createBackup(String path) async {
-    final _dbPath = await dbPath();
-    final _localDB = File('$_dbPath/kw.db');
-    Directory(path).create(recursive: true).then((_dir) {
-      _localDB.copySync('${_dir.path}/kw_backup.db');
+    String _path = '$path$_backupPath';
+    Directory _dir = await Directory(_path).create(recursive: true);
+    if (_dir != null) {
+      final _dbPath = await dbPath();
+      final _localDB = File('$_dbPath/kw.db');
+      _localDB.copySync(_dir.path + '/kw_backup.db');
       return true;
-    });
-    return false;
+    } else {
+      return false;
+    }
   }
 
   static Future<bool> restoreBackup(String filePath) async {
