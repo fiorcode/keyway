@@ -118,7 +118,7 @@ class _ItemHistoryScreenState extends State<ItemHistoryScreen> {
                                         Padding(
                                           padding: const EdgeInsets.all(8.0),
                                           child: Text(
-                                            DateHelper.shortDate(
+                                            DateHelper.ddMMyyyy(
                                               _items.itemAndOldPasswords[i]
                                                   .itemPassword.passwordDate,
                                             ),
