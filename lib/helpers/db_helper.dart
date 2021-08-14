@@ -47,11 +47,11 @@ class DBHelper {
     );
   }
 
-  static Future<String> dbPath() async => await sql.getDatabasesPath();
+  static Future<String> dbPath() => sql.getDatabasesPath();
 
   static Future<int> dbSize() async {
     final _dbPath = await sql.getDatabasesPath();
-    return await File('$_dbPath/kw.db').length();
+    return File('$_dbPath/kw.db').length();
   }
 
   static Future<DateTime> dbLastModified() async {
@@ -293,12 +293,8 @@ class DBHelper {
   }
 
   static Future<bool> removeDB() async {
-    try {
-      sql.deleteDatabase(await sql.getDatabasesPath());
-      return await (await SharedPreferences.getInstance()).clear();
-    } catch (e) {
-      throw e;
-    }
+    await sql.deleteDatabase(await sql.getDatabasesPath());
+    return (await SharedPreferences.getInstance()).clear();
   }
 
   static const _createUserTable = '''CREATE TABLE $userTable(
