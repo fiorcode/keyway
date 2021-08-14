@@ -405,7 +405,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            DateHelper.shortDate(
+                                            DateHelper.ddMMyyHm(
                                                 _fileToRestoreStatus.modified),
                                           ),
                                         ),
