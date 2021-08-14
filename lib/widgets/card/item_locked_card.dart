@@ -70,13 +70,13 @@ class ItemLockedCard extends StatelessWidget {
         ),
         onTap: () => _onTap(context),
         trailing: Chip(
-          backgroundColor: Theme.of(context).primaryColor,
+          backgroundColor: Colors.grey,
           elevation: 4,
           visualDensity: VisualDensity.compact,
           label: Text(
-            item.date != null ? DateHelper.shortDate(item.date) : '',
+            item.date != null ? DateHelper.ddMMyyHm(item.date) : '',
             style: TextStyle(
-              fontSize: 10,
+              fontSize: 14,
               color: Colors.white,
               fontWeight: FontWeight.w800,
             ),
