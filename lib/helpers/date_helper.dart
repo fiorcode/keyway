@@ -1,12 +1,20 @@
 import 'package:intl/intl.dart';
 
 class DateHelper {
-  static DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+  static DateFormat _ddMMyyyy = DateFormat('dd/MM/yyyy');
+  static DateFormat _ddMMyyHm = DateFormat('dd/MM/yy k:mm');
 
-  static String shortDate(dynamic date) {
+  static String ddMMyyyy(dynamic date) {
     if (date is String)
-      return dateFormat.format(DateTime.parse(date));
-    else if (date is DateTime) return dateFormat.format(date);
+      return _ddMMyyyy.format(DateTime.parse(date));
+    else if (date is DateTime) return _ddMMyyyy.format(date);
+    return 'Unknown format';
+  }
+
+  static String ddMMyyHm(dynamic date) {
+    if (date is String)
+      return _ddMMyyHm.format(DateTime.parse(date));
+    else if (date is DateTime) return _ddMMyyHm.format(date);
     return 'Unknown format';
   }
 }
