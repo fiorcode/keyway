@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -14,13 +15,17 @@ class NistProvider with ChangeNotifier {
     String model = '*',
     int startIndex = 0,
   }) async {
-    final urlString =
+    String urlString =
         '$_baseUrl/cpes/1.0?cpeMatchString=cpe:2.3:$type:$trademark:$model&addOns=cves&resultsPerPage=100&startIndex=$startIndex';
-    final response = await http.get(Uri.parse(urlString));
-    if (response.statusCode == 200) {
-      return CpeBody.fromJson(jsonDecode(response.body));
-    } else {
-      throw Exception('Failed. Status code: ${response.statusCode}');
+    try {
+      final response = await http.get(Uri.parse(urlString));
+      if (response.statusCode == 200) {
+        return CpeBody.fromJson(jsonDecode(response.body));
+      } else {
+        throw Exception('Failed. Status code: ${response.statusCode}');
+      }
+    } on SocketException {
+      throw Exception('No Internet connection');
     }
   }
 
