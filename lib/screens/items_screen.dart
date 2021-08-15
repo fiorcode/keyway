@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/widgets/card/item_locked_card.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
@@ -7,6 +6,7 @@ import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/dashboard_screen.dart';
+import '../widgets/card/item_locked_card.dart';
 import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/empty_items.dart';
