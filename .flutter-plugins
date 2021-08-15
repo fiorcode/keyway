@@ -1,7 +1,9 @@
 # This is a generated file; do not edit or check into version control.
-connectivity=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity-3.0.3\\
-connectivity_for_web=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_for_web-0.4.0\\
-connectivity_macos=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_macos-0.2.0\\
+connectivity_plus=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_plus-1.0.6\\
+connectivity_plus_linux=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_plus_linux-1.0.3\\
+connectivity_plus_macos=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_plus_macos-1.0.2\\
+connectivity_plus_web=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_plus_web-1.0.2\\
+connectivity_plus_windows=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\connectivity_plus_windows-1.0.2\\
 external_path=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\external_path-1.0.1\\
 flutter_email_sender=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\flutter_email_sender-5.0.2\\
 path_provider=C:\\flutter\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider-2.0.1\\
