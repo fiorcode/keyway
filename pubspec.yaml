@@ -21,7 +21,7 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  connectivity: ^3.0.3
+  connectivity_plus: ^1.0.6
   encrypt: ^5.0.0
   external_path: ^1.0.1
   flutter:
