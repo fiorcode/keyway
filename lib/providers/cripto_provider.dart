@@ -185,8 +185,4 @@ class CriptoProvider with ChangeNotifier {
     _a.addressEnc = doCrypt(a, _a.addressIv);
     return _a;
   }
-
-  void dispose() {
-    super.dispose();
-  }
 }
