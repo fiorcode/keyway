@@ -10,6 +10,7 @@ import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/product_search_screen.dart';
+import 'screens/products_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
@@ -75,6 +76,8 @@ class MyApp extends StatelessWidget {
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
+          ProductsScreen.routeName: (ctx) => ProductsScreen(),
+          //Tables
           TablesScreen.routeName: (ctx) => TablesScreen(),
           BackupRestoreScreen.routeName: (ctx) => BackupRestoreScreen(),
           DangerZoneScreen.routeName: (ctx) => DangerZoneScreen(),
