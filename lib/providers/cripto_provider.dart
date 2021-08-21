@@ -74,7 +74,7 @@ class CriptoProvider with ChangeNotifier {
     _pref.setBool('isMasterKey', true);
 
     //SAVE MASTER KEY IN DATABASE
-    DBHelper.insert(
+    await DBHelper.insert(
       DBHelper.userTable,
       {'mk_enc': _mkCrypted.base16, 'mk_iv': _iv.base16},
     );
@@ -83,7 +83,7 @@ class CriptoProvider with ChangeNotifier {
     _mk = 'MASTER*KEY*CLEARED';
     _mkCrypted = null;
 
-    unlock(key);
+    await unlock(key);
 
     return true;
   }
