@@ -1,5 +1,7 @@
-import 'package:keyway/models/api/nist/cpe.dart';
-import 'package:keyway/models/cpe23uri.dart';
+import 'package:flutter/material.dart';
+
+import '../models/api/nist/cpe.dart';
+import '../models/cpe23uri.dart';
 
 class Product {
   int productId;
@@ -33,6 +35,22 @@ class Product {
         break;
       default:
         return 'All types';
+    }
+  }
+
+  IconData get icon {
+    switch (productType) {
+      case 'h':
+        return Icons.router;
+        break;
+      case 'o':
+        return Icons.android;
+        break;
+      case 'a':
+        return Icons.wysiwyg;
+        break;
+      default:
+        return Icons.router;
     }
   }
 
