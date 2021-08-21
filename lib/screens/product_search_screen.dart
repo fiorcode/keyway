@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/api/nist/cpe.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/error_helper.dart';
 import '../providers/nist_provider.dart';
 import '../models/product.dart';
 import '../models/api/nist/cpe_body.dart';
+import '../models/api/nist/cpe.dart';
 import '../widgets/card/cpe_selection_card.dart';
 
 class ProductSearchScreen extends StatefulWidget {
