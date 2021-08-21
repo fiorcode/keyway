@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../helpers/db_helper.dart';
@@ -663,7 +665,41 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  void dispose() {
-    super.dispose();
+  Future<void> mockData() {
+    List<String> _titles = [
+      'Facebook',
+      'Instagram',
+      'WiFiCasa',
+      'Spotify',
+      'Netflix',
+      'Steam',
+      'Discord',
+      'GitHub',
+      'Zoom',
+      'TeamViewer',
+    ];
+    Random _r = Random();
+    _titles.forEach((t) {
+      Color _avatarColor = Color.fromRGBO(
+        _r.nextInt(255),
+        _r.nextInt(255),
+        _r.nextInt(255),
+        1,
+      );
+      DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
+      insertItem(
+        Item(
+          title: t,
+          date: _date.toIso8601String(),
+          avatarColor: _avatarColor.value,
+          avatarLetterColor: _setAvatarLetterColor(_avatarColor).value,
+        ),
+      );
+    });
+  }
+
+  Color _setAvatarLetterColor(Color c) {
+    double _bgDelta = c.red * 0.299 + c.green * 0.587 + c.blue * 0.114;
+    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 }
