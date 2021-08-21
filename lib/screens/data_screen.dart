@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keyway/screens/products_screen.dart';
 
 import '../helpers/db_helper.dart';
 import '../screens/tables_screen.dart';
@@ -182,6 +183,14 @@ class _DataScreenState extends State<DataScreen> {
                 physics: ScrollPhysics(),
                 padding: EdgeInsets.all(16.0),
                 children: [
+                  DashboardCard(
+                    icon: Icon(Icons.router, color: _primary, size: 48),
+                    title: Text(
+                      'Products',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(ProductsScreen.routeName),
+                  ),
                   DashboardCard(
                     icon: Icon(Icons.table_view, color: _primary, size: 48),
                     title: Text(
