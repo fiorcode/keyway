@@ -138,6 +138,38 @@ class DBHelper {
         whereArgs: [data['item_id']],
       );
 
+  static Future<int> deleteProductItem(int productId) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        {'fk_product_id': null},
+        where: 'fk_product_id = ?',
+        whereArgs: [productId],
+      );
+
+  static Future<int> deleteAddressItem(int addressId) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        {'fk_address_id': null},
+        where: 'fk_address_id = ?',
+        whereArgs: [addressId],
+      );
+
+  static Future<int> deleteNoteItem(int noteId) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        {'fk_note_id': null},
+        where: 'fk_note_id = ?',
+        whereArgs: [noteId],
+      );
+
+  static Future<int> deletePinItem(int pinId) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        {'fk_pin_id': null},
+        where: 'fk_pin_id = ?',
+        whereArgs: [pinId],
+      );
+
   static Future<int> updateItemPassword(Map<String, Object> data) async =>
       (await DBHelper.database()).update(
         itemPasswordTable,
