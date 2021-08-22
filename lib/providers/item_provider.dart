@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:keyway/providers/cripto_provider.dart';
 
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
@@ -310,7 +311,7 @@ class ItemProvider with ChangeNotifier {
     }
   }
 
-  Future<void> insertItem(Item i) async {
+  Future<int> insertItem(Item i) async {
     i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
@@ -348,12 +349,12 @@ class ItemProvider with ChangeNotifier {
         i.fkProductId = await insertProduct(i.product);
       }
     }
-    DBHelper.insert(DBHelper.itemTable, i.toMap()).then((itemId) async {
-      if (i.password != null) {
-        i.itemPassword.fkItemId = itemId;
-        await insertItemPassword(i.itemPassword);
-      }
-    });
+    int _itemId = await DBHelper.insert(DBHelper.itemTable, i.toMap());
+    if (i.password != null) {
+      i.itemPassword.fkItemId = _itemId;
+      await insertItemPassword(i.itemPassword);
+    }
+    return _itemId;
   }
 
   Future<void> updateItem(Item oldItem, Item i) async {
@@ -525,8 +526,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updatePin(Pin p) async =>
       await DBHelper.update(DBHelper.pinTable, p.toMap(), 'pin_id');
 
-  Future<int> deletePin(Pin p) async =>
-      await DBHelper.delete(DBHelper.pinTable, p.toMap(), 'pin_id');
+  Future<int> deletePin(Pin p) async {
+    await DBHelper.deletePinItem(p.pinId);
+    return DBHelper.delete(DBHelper.pinTable, p.toMap(), 'pin_id');
+  }
 
   Future<int> insertNote(Note n) async =>
       await DBHelper.insert(DBHelper.noteTable, n.toMap());
@@ -534,8 +537,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateNote(Note n) async =>
       await DBHelper.update(DBHelper.noteTable, n.toMap(), 'note_id');
 
-  Future<int> deleteNote(Note n) async =>
-      await DBHelper.delete(DBHelper.noteTable, n.toMap(), 'note_id');
+  Future<int> deleteNote(Note n) async {
+    await DBHelper.deleteNoteItem(n.noteId);
+    return DBHelper.delete(DBHelper.noteTable, n.toMap(), 'note_id');
+  }
 
   Future<int> insertAddress(Address a) async =>
       await DBHelper.insert(DBHelper.addressTable, a.toMap());
@@ -543,8 +548,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateAddress(Address a) async =>
       await DBHelper.update(DBHelper.addressTable, a.toMap(), 'address_id');
 
-  Future<int> deleteAddress(Address a) async =>
-      await DBHelper.delete(DBHelper.addressTable, a.toMap(), 'address_id');
+  Future<int> deleteAddress(Address a) async {
+    await DBHelper.deleteAddressItem(a.addressId);
+    return DBHelper.delete(DBHelper.addressTable, a.toMap(), 'address_id');
+  }
 
   Future<int> insertProduct(Product p) async =>
       await DBHelper.insert(DBHelper.productTable, p.toMap());
@@ -552,8 +559,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateProduct(Product p) async =>
       await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
 
-  Future<int> deleteProduct(Product p) async =>
-      await DBHelper.delete(DBHelper.productTable, p.toMap(), 'product_id');
+  Future<int> deleteProduct(Product p) async {
+    await DBHelper.deleteProductItem(p.productId);
+    return DBHelper.delete(DBHelper.productTable, p.toMap(), 'product_id');
+  }
 
   Future<int> insertCpe23uri(Cpe23uri c) {
     return DBHelper.getByValue(DBHelper.cpe23uriTable, 'value', c.value).then(
@@ -665,7 +674,9 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  Future<void> mockData() {
+  Future<void> mockData() async {
+    CriptoProvider _cripto = CriptoProvider();
+    await _cripto.unlock('Qwe123!');
     List<String> _titles = [
       'Facebook',
       'Instagram',
@@ -679,22 +690,41 @@ class ItemProvider with ChangeNotifier {
       'TeamViewer',
     ];
     Random _r = Random();
-    _titles.forEach((t) {
+    await Future.forEach(_titles, (t) async {
+      DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
       Color _avatarColor = Color.fromRGBO(
         _r.nextInt(255),
         _r.nextInt(255),
         _r.nextInt(255),
         1,
       );
-      DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
-      insertItem(
-        Item(
-          title: t,
-          date: _date.toIso8601String(),
-          avatarColor: _avatarColor.value,
-          avatarLetterColor: _setAvatarLetterColor(_avatarColor).value,
-        ),
+      Password _p = _cripto.createPassword(t + '@password');
+      ItemPassword _ip = ItemPassword(
+        passwordLapse: _r.nextInt(319) + 1,
+        passwordDate: _date.toIso8601String(),
       );
+      Username _u = _cripto.createUsername(t + '@username');
+      Pin _pin = _cripto.createPin(_r.nextInt(9999).toString());
+      Note _n = _cripto.createNote(t + '@note');
+      Address _a = _cripto.createAddress(t + '.com');
+      Product _pr = Product(
+        productTrademark: t + '@trademark',
+        productModel: t + '@model',
+      );
+      Item _i = Item(
+        title: t,
+        date: _date.toIso8601String(),
+        avatarColor: _avatarColor.value,
+        avatarLetterColor: _setAvatarLetterColor(_avatarColor).value,
+        password: _p,
+        itemPassword: _ip,
+        username: _u,
+        pin: _pin,
+        note: _n,
+        address: _a,
+        product: _pr,
+      );
+      await insertItem(_i);
     });
   }
 
