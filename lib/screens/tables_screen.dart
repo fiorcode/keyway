@@ -96,7 +96,7 @@ class _TablesScreenState extends State<TablesScreen> {
               onTap: () => _goTo(NoteTableScreen.routeName),
             ),
             DashboardCard(
-              icon: Icon(Icons.router, color: _primary, size: 48),
+              icon: Icon(Icons.http, color: _primary, size: 48),
               title: Text(
                 'Addresses',
                 style: TextStyle(color: _primary, fontSize: 16),
@@ -104,7 +104,7 @@ class _TablesScreenState extends State<TablesScreen> {
               onTap: () => _goTo(AddressTableScreen.routeName),
             ),
             DashboardCard(
-              icon: Icon(Icons.security, color: _primary, size: 48),
+              icon: Icon(Icons.router, color: _primary, size: 48),
               title: Text(
                 'Products',
                 style: TextStyle(color: _primary, fontSize: 16),
