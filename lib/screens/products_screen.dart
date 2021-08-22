@@ -18,7 +18,11 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
-  Future<void> _deleteProduct(Product p) => _item.deleteProduct(p);
+  Future<void> _deleteProduct(Product p) async {
+    await _item.deleteProduct(p);
+    _getProducts = _getProductsAsync();
+    setState(() {});
+  }
 
   @override
   void initState() {
