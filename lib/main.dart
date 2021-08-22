@@ -5,10 +5,13 @@ import 'package:provider/provider.dart';
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
+import 'screens/addresses_screen.dart';
 import 'screens/item_deleted_view_screen.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
 import 'screens/item_history_screen.dart';
+import 'screens/notes_screen.dart';
+import 'screens/pins_screen.dart';
 import 'screens/product_search_screen.dart';
 import 'screens/products_screen.dart';
 import 'screens/restore_screen.dart';
@@ -76,6 +79,9 @@ class MyApp extends StatelessWidget {
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
+          PinsScreen.routeName: (ctx) => PinsScreen(),
+          NotesScreen.routeName: (ctx) => NotesScreen(),
+          AddressesScreen.routeName: (ctx) => AddressesScreen(),
           ProductsScreen.routeName: (ctx) => ProductsScreen(),
           //Tables
           TablesScreen.routeName: (ctx) => TablesScreen(),
