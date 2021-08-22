@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:keyway/screens/products_screen.dart';
+import 'package:keyway/screens/notes_screen.dart';
 
 import '../helpers/db_helper.dart';
-import '../screens/tables_screen.dart';
-import '../screens/items_deleted_screen.dart';
-import '../screens/danger_zone_screen.dart';
+import 'addresses_screen.dart';
+import 'products_screen.dart';
+import 'tables_screen.dart';
+import 'items_deleted_screen.dart';
+import 'danger_zone_screen.dart';
+import 'pins_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class DataScreen extends StatefulWidget {
@@ -183,6 +186,30 @@ class _DataScreenState extends State<DataScreen> {
                 physics: ScrollPhysics(),
                 padding: EdgeInsets.all(16.0),
                 children: [
+                  DashboardCard(
+                    icon: Icon(Icons.pin, color: _primary, size: 48),
+                    title: Text(
+                      'Pins',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(PinsScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.note, color: _primary, size: 48),
+                    title: Text(
+                      'Notes',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(NotesScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.http, color: _primary, size: 48),
+                    title: Text(
+                      'Addresses',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(AddressesScreen.routeName),
+                  ),
                   DashboardCard(
                     icon: Icon(Icons.router, color: _primary, size: 48),
                     title: Text(
