@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/loading_scaffold.dart';
 import 'package:provider/provider.dart';
 
-import '../helpers/error_helper.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
 import '../screens/item_add_screen.dart';
@@ -61,6 +61,38 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       .pushNamed(ItemAddScreen.routeName)
       .then((_) => _onReturn());
 
+  Widget _appBarTitle() {
+    if (_cripto.locked) {
+      return IconButton(
+        icon: Icon(
+          Icons.lock_outline,
+          color: _unlocking ? Colors.orange : Colors.red,
+        ),
+        // onPressed: _lockSwitch,
+        onPressed: () => _cripto.unlock('Qwe123!'),
+      );
+    } else {
+      if (_searching) {
+        _searchFN.requestFocus();
+        return SearchBarTextField(
+          _searchCtrler,
+          _onReturn,
+          _searchSwitch,
+          _clearSearch,
+          _searchFN,
+        );
+      } else {
+        return IconButton(
+          icon: Icon(Icons.lock_open_sharp, color: Colors.green),
+          onPressed: () {
+            _cripto.lock();
+            setState(() {});
+          },
+        );
+      }
+    }
+  }
+
   @override
   void didChangeDependencies() {
     _cripto = Provider.of<CriptoProvider>(context);
@@ -78,100 +110,69 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        centerTitle: true,
-        leading: IconButton(icon: Icon(Icons.menu), onPressed: _goToDashboard),
-        title: _cripto.locked
-            ? IconButton(
-                icon: Icon(
-                  Icons.lock_outline,
-                  color: _unlocking ? Colors.orange : Colors.red,
-                ),
-                // onPressed: _lockSwitch,
-                onPressed: () => _cripto.unlock('Qwe123!'),
-              )
-            : FutureBuilder(
-                future: _getItems,
-                builder: (ctx, snap) {
-                  switch (snap.connectionState) {
-                    case ConnectionState.done:
-                      if (_item.items.length > 10 || _searching) {
-                        if (_searching) {
-                          _searchFN.requestFocus();
-                          return SearchBarTextField(
-                            _searchCtrler,
-                            _onReturn,
-                            _searchSwitch,
-                            _clearSearch,
-                            _searchFN,
-                          );
-                        } else {
-                          return IconButton(
-                            icon: Icon(Icons.search),
-                            onPressed: _searchSwitch,
-                          );
-                        }
-                      }
-                      return IconButton(
-                        icon: Icon(Icons.lock_open_sharp, color: Colors.green),
-                        onPressed: () {
-                          _cripto.lock();
-                          setState(() {});
-                        },
-                      );
-                      break;
-                    default:
-                      return CircularProgressIndicator(
-                        backgroundColor: Colors.grey,
-                      );
-                  }
-                },
-              ),
-        actions: [IconButton(icon: Icon(Icons.add), onPressed: _goToAlpha)],
-        actionsIconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-      ),
-      body: FutureBuilder(
+    return FutureBuilder(
         future: _getItems,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
-            case ConnectionState.none:
-              return Center(child: Text('none'));
-            case (ConnectionState.waiting):
-              return Center(child: CircularProgressIndicator());
-            case (ConnectionState.done):
+            case ConnectionState.active:
+              return LoadingScaffold();
+              break;
+            case ConnectionState.done:
               if (snap.hasError)
-                return ErrorHelper.errorBody(snap.error);
-              else
-                return Stack(
-                  children: [
-                    _item.items.length <= 0
-                        ? EmptyItems()
-                        : ListView.builder(
-                            padding: EdgeInsets.all(12.0),
-                            itemCount: _item.items.length,
-                            itemBuilder: (ctx, i) {
-                              return _cripto.locked
-                                  ? ItemLockedCard(item: _item.items[i])
-                                  : ItemUnlockedCard(
-                                      item: _item.items[i],
-                                      onReturn: _onReturn,
-                                    );
-                            },
-                          ),
-                    if (_unlocking && _cripto.locked)
-                      UnlockContainer(_lockSwitch),
-                  ],
+                return Center(child: Image.asset("assets/error.png"));
+              else {
+                return Scaffold(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  appBar: AppBar(
+                    backgroundColor: Theme.of(context).backgroundColor,
+                    iconTheme:
+                        IconThemeData(color: Theme.of(context).primaryColor),
+                    centerTitle: true,
+                    leading: IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: _goToDashboard,
+                    ),
+                    title: _appBarTitle(),
+                    actions: [
+                      if (_item.items.length > 10)
+                        IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: _searchSwitch,
+                        ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: _goToAlpha,
+                      )
+                    ],
+                    actionsIconTheme:
+                        IconThemeData(color: Theme.of(context).primaryColor),
+                  ),
+                  body: Stack(
+                    children: [
+                      _item.items.length <= 0
+                          ? EmptyItems()
+                          : ListView.builder(
+                              padding: EdgeInsets.all(12.0),
+                              itemCount: _item.items.length,
+                              itemBuilder: (ctx, i) {
+                                return _cripto.locked
+                                    ? ItemLockedCard(item: _item.items[i])
+                                    : ItemUnlockedCard(
+                                        item: _item.items[i],
+                                        onReturn: _onReturn,
+                                      );
+                              },
+                            ),
+                      if (_unlocking && _cripto.locked)
+                        UnlockContainer(_lockSwitch),
+                    ],
+                  ),
                 );
+              }
               break;
             default:
-              return Center(child: Text('default'));
+              return LoadingScaffold();
           }
-        },
-      ),
-    );
+        });
   }
 }
