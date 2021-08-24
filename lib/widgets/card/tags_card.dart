@@ -74,7 +74,7 @@ class _TagsCardState extends State<TagsCard> {
   @override
   void initState() {
     _items = Provider.of<ItemProvider>(context, listen: false);
-    _widgetTags = widget.item.tags;
+    if (widget.item != null) _widgetTags = widget.item.tags;
     _getTags = _tagsList();
     super.initState();
   }
