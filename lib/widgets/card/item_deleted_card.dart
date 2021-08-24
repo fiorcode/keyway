@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../models/item.dart';
-import '../../screens/item_deleted_view_screen.dart';
+import '../../screens/item_view_screen.dart';
 
 class ItemDeletedCard extends StatelessWidget {
   const ItemDeletedCard({Key key, this.item, this.onReturn}) : super(key: key);
@@ -12,7 +12,7 @@ class ItemDeletedCard extends StatelessWidget {
   _onTap(BuildContext context) => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemDeletedViewScreen(item: item),
+          builder: (context) => ItemViewScreen(itemId: item.itemId),
         ),
       ).then((_) => onReturn());
 
