@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/screens/usernames_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
 import 'screens/addresses_screen.dart';
-import 'screens/item_deleted_view_screen.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
 import 'screens/item_history_screen.dart';
 import 'screens/notes_screen.dart';
+import 'screens/passwords_screen.dart';
 import 'screens/pins_screen.dart';
 import 'screens/product_search_screen.dart';
 import 'screens/products_screen.dart';
@@ -21,7 +22,6 @@ import 'screens/items_screen.dart';
 import 'screens/item_add_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
-import 'screens/items_deleted_screen.dart';
 import 'screens/tag_add_screen.dart';
 import 'screens/tags_screen.dart';
 import 'screens/tables_screen.dart';
@@ -72,13 +72,14 @@ class MyApp extends StatelessWidget {
           ItemAddScreen.routeName: (ctx) => ItemAddScreen(),
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
-          ItemDeletedViewScreen.routeName: (ctx) => ItemDeletedViewScreen(),
           DataScreen.routeName: (ctx) => DataScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
-          ItemsDeletedScreen.routeName: (ctx) => ItemsDeletedScreen(),
           TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
+          //Sub-items
+          PasswordsScreen.routeName: (ctx) => PasswordsScreen(),
+          UsernamesScreen.routeName: (ctx) => UsernamesScreen(),
           PinsScreen.routeName: (ctx) => PinsScreen(),
           NotesScreen.routeName: (ctx) => NotesScreen(),
           AddressesScreen.routeName: (ctx) => AddressesScreen(),
