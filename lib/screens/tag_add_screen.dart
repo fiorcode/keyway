@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/models/tag.dart';
+import '../models/tag.dart';
 import '../providers/item_provider.dart';
-import '../widgets/text_field/tag_text_field.dart';
 
 class TagAddScreen extends StatefulWidget {
   static const routeName = '/tag-add';
@@ -16,6 +15,17 @@ class _TagAddScreenState extends State<TagAddScreen> {
   ItemProvider _items;
   Future<List<Tag>> _getTags;
   List<Widget> _chips;
+  TextEditingController ctrler;
+  FocusNode focus;
+  bool _empty = true;
+
+  void _onChange() => setState(() => _empty = ctrler.text.isEmpty);
+
+  void _addTag(BuildContext ctx) {
+    Tag _tag = Tag(ctrler.text.toLowerCase());
+    _items.insertTag(_tag);
+    Navigator.of(context).pop(_tag);
+  }
 
   Future<List<Tag>> _tagsList() async => await _items.getTags();
 
@@ -44,6 +54,10 @@ class _TagAddScreenState extends State<TagAddScreen> {
   @override
   void initState() {
     _items = Provider.of<ItemProvider>(context, listen: false);
+    ctrler = TextEditingController();
+    focus = FocusNode();
+    focus.requestFocus();
+    _empty = ctrler.text.isEmpty;
     _getTags = _tagsList();
     super.initState();
   }
@@ -65,7 +79,31 @@ class _TagAddScreenState extends State<TagAddScreen> {
             children: [
               Padding(
                 padding: const EdgeInsets.all(32.0),
-                child: TagTextField(),
+                child: TextField(
+                  autocorrect: false,
+                  controller: ctrler,
+                  focusNode: focus,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(width: 3),
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).backgroundColor,
+                    labelText: 'New Tag',
+                    suffixIcon: _empty
+                        ? null
+                        : InkWell(
+                            child: Icon(Icons.add),
+                            onTap: () => _addTag(context),
+                          ),
+                  ),
+                  maxLength: 64,
+                  onChanged: (_) => _onChange(),
+                ),
               ),
               FutureBuilder(
                   future: _getTags,
