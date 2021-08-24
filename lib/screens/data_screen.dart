@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:keyway/screens/notes_screen.dart';
 
 import '../helpers/db_helper.dart';
 import 'addresses_screen.dart';
+import 'notes_screen.dart';
+import 'passwords_screen.dart';
 import 'products_screen.dart';
 import 'tables_screen.dart';
-import 'items_deleted_screen.dart';
 import 'danger_zone_screen.dart';
 import 'pins_screen.dart';
+import 'usernames_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class DataScreen extends StatefulWidget {
@@ -94,15 +95,6 @@ class _DataScreenState extends State<DataScreen> {
     );
   }
 
-  // Future<void> _deleteDB(BuildContext context) async {
-  //   if (await WarningHelper.deleteDB(context)) {
-  //     if (await DBHelper.removeDB()) {
-  //       Navigator.of(context)
-  //           .pushNamedAndRemoveUntil(SplashScreen.routeName, (route) => false);
-  //     }
-  //   }
-  // }
-
   void _goTo(String route) => Navigator.of(context).pushNamed(route);
 
   @override
@@ -187,6 +179,22 @@ class _DataScreenState extends State<DataScreen> {
                 padding: EdgeInsets.all(16.0),
                 children: [
                   DashboardCard(
+                    icon: Icon(Icons.password, color: _primary, size: 48),
+                    title: Text(
+                      'Passwords',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(PasswordsScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.account_box, color: _primary, size: 48),
+                    title: Text(
+                      'Usernames',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(UsernamesScreen.routeName),
+                  ),
+                  DashboardCard(
                     icon: Icon(Icons.pin, color: _primary, size: 48),
                     title: Text(
                       'Pins',
@@ -225,14 +233,6 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     onTap: () => _goTo(TablesScreen.routeName),
-                  ),
-                  DashboardCard(
-                    icon: Icon(Icons.delete, color: _primary, size: 48),
-                    title: Text(
-                      'Deleted items',
-                      style: TextStyle(color: _primary, fontSize: 16),
-                    ),
-                    onTap: () => _goTo(ItemsDeletedScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.dangerous, color: Colors.white, size: 48),
