@@ -52,7 +52,7 @@ class ItemProvider with ChangeNotifier {
   List<Cpe23uriCve> get cpe23uriCves => [..._cpe23uriCves];
   List<Cve> get cves => [..._cves];
 
-  Future<void> fetchItems(String title) async {
+  Future<List<Item>> fetchItems(String title) async {
     Iterable<Item> _iter;
     _items.clear();
     if (title.isEmpty) {
@@ -65,6 +65,19 @@ class ItemProvider with ChangeNotifier {
     }
     _items.addAll(_iter.toList());
     await _buildItems();
+    return _items;
+  }
+
+  Future<List<Item>> fetchItemsWithTags(List<Tag> tags) async {
+    Iterable<Item> _iter;
+    _items.clear();
+    await Future.forEach(tags, (t) async {
+      await DBHelper.getActiveItemsWithTag(t.tagName)
+          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
+    });
+    _items.addAll(_iter.toSet().toList());
+    await _buildItems();
+    return _items;
   }
 
   Future<void> _buildItems() async {
@@ -242,7 +255,7 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<void> fetchItemsDeleted() async {
+  Future<List<Item>> fetchItemsDeleted() async {
     Iterable<Item> _iter;
     _itemsDeleted.clear();
     await DBHelper.getDeletedItems().then((data) {
@@ -250,7 +263,8 @@ class ItemProvider with ChangeNotifier {
     });
     _itemsDeleted.addAll(_iter.toList());
     _itemsDeleted.sort((a, b) => b.date.compareTo(a.date));
-    _buildItemsDeleted();
+    await _buildItemsDeleted();
+    return _itemsDeleted;
   }
 
   Future<void> _buildItemsDeleted() async {
@@ -499,8 +513,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updatePassword(Password p) async =>
       await DBHelper.update(DBHelper.passwordTable, p.toMap(), 'password_id');
 
-  Future<int> deletePassword(Password p) async =>
-      await DBHelper.delete(DBHelper.passwordTable, p.toMap(), 'password_id');
+  Future<int> deletePassword(Password p) async {
+    await DBHelper.deletePasswordItems(p.passwordId);
+    return DBHelper.delete(DBHelper.passwordTable, p.toMap(), 'password_id');
+  }
 
   Future<void> insertItemPassword(ItemPassword ip) async =>
       await DBHelper.insert(DBHelper.itemPasswordTable, ip.toMap());
@@ -517,8 +533,10 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateUsername(Username u) async =>
       await DBHelper.update(DBHelper.usernameTable, u.toMap(), 'username_id');
 
-  Future<int> deleteUsername(Username u) async =>
-      await DBHelper.delete(DBHelper.usernameTable, u.toMap(), 'username_id');
+  Future<int> deleteUsername(Username u) async {
+    await DBHelper.deleteUsernameItem(u.usernameId);
+    return DBHelper.delete(DBHelper.usernameTable, u.toMap(), 'username_id');
+  }
 
   Future<int> insertPin(Pin p) async =>
       await DBHelper.insert(DBHelper.pinTable, p.toMap());
@@ -658,8 +676,15 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  Future<int> insertTag(Tag a) async =>
-      await DBHelper.insert(DBHelper.tagTable, a.toMap());
+  Future<Tag> insertTag(Tag t) async {
+    List<Map<String, dynamic>> _tags = await DBHelper.getTagByName(t.tagName);
+    if (_tags.isEmpty) {
+      await DBHelper.insert(DBHelper.tagTable, t.toMap());
+      return t;
+    } else {
+      return Tag.fromMap(_tags.first);
+    }
+  }
 
   Future<void> deleteTag(Tag t) async {
     await DBHelper.removeTag(t.tagName);
@@ -689,6 +714,20 @@ class ItemProvider with ChangeNotifier {
       'Zoom',
       'TeamViewer',
     ];
+    List<String> _tags = [
+      'social',
+      'social',
+      'hardware',
+      'streaming',
+      'streaming',
+      'games',
+      'games',
+      'coding',
+      'apps',
+      'apps'
+    ];
+    await Future.forEach(_tags, (t) async => insertTag(Tag(t)));
+    int _t = 0;
     Random _r = Random();
     await Future.forEach(_titles, (t) async {
       DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
@@ -724,6 +763,8 @@ class ItemProvider with ChangeNotifier {
         address: _a,
         product: _pr,
       );
+      _i.addRemoveTag(_tags[_t]);
+      _t += 1;
       await insertItem(_i);
     });
   }
