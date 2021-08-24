@@ -119,6 +119,12 @@ class DBHelper {
         FROM $itemTable
         WHERE title LIKE '%$title%' AND item_status = '' ''');
 
+  static Future<List<Map<String, dynamic>>> getActiveItemsWithTag(
+          String tagName) async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemTable
+        WHERE tags LIKE '%$tagName%' AND item_status = '' ''');
+
   static Future<List<Map<String, dynamic>>> getDeletedItems() async =>
       (await DBHelper.database()).rawQuery('''SELECT *
         FROM $itemTable
@@ -168,6 +174,21 @@ class DBHelper {
         {'fk_pin_id': null},
         where: 'fk_pin_id = ?',
         whereArgs: [pinId],
+      );
+
+  static Future<int> deleteUsernameItem(int usernameId) async =>
+      (await DBHelper.database()).update(
+        itemTable,
+        {'fk_username_id': null},
+        where: 'fk_username_id = ?',
+        whereArgs: [usernameId],
+      );
+
+  static Future<int> deletePasswordItems(int passwordId) async =>
+      (await DBHelper.database()).delete(
+        itemPasswordTable,
+        where: 'fk_password_id = ?',
+        whereArgs: [passwordId],
       );
 
   static Future<int> updateItemPassword(Map<String, Object> data) async =>
@@ -281,6 +302,13 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getTags() async =>
       (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
+
+  static Future<List<Map<String, dynamic>>> getTagByName(String n) async =>
+      (await DBHelper.database()).query(
+        tagTable,
+        where: 'tag_name = ?',
+        whereArgs: [n],
+      );
 
   static Future<List<Map<String, dynamic>>> getItemsWithOldPasswords() async {
     List<Map<String, dynamic>> _list =
