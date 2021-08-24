@@ -361,15 +361,30 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                               ],
                             ),
                           ),
-                        ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(primary: Colors.red),
-                          icon: Icon(Icons.delete, color: Colors.white),
-                          label: Text(
-                            'DELETE ITEM',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                          onPressed: _deleteItem,
-                        ),
+                        _i.deleted
+                            ? ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.white),
+                                icon: Icon(
+                                  Icons.restore_from_trash,
+                                  color: Colors.grey,
+                                ),
+                                label: Text(
+                                  'RESTORE',
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                onPressed: _deleteItem,
+                              )
+                            : ElevatedButton.icon(
+                                style: ElevatedButton.styleFrom(
+                                    primary: Colors.red),
+                                icon: Icon(Icons.delete, color: Colors.white),
+                                label: Text(
+                                  'DELETE ITEM',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                onPressed: _deleteItem,
+                              ),
                       ],
                     ),
                   ),
