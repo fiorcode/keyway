@@ -14,6 +14,7 @@ import 'screens/passwords_screen.dart';
 import 'screens/pins_screen.dart';
 import 'screens/product_search_screen.dart';
 import 'screens/products_screen.dart';
+import 'screens/products_without_cpe_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
@@ -77,6 +78,8 @@ class MyApp extends StatelessWidget {
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
+          ProductsWithoutCpeScreen.routeName: (ctx) =>
+              ProductsWithoutCpeScreen(),
           //Dashboard
           DataScreen.routeName: (ctx) => DataScreen(),
           BackupRestoreScreen.routeName: (ctx) => BackupRestoreScreen(),
