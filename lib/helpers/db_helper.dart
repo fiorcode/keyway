@@ -284,6 +284,11 @@ class DBHelper {
     );
   }
 
+  static Future<List<Map<String, dynamic>>> getProductsWithNoCpe() async =>
+      (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $productTable
+        WHERE fk_cpe23uri_id IS NULL''');
+
   static Future<List<Map<String, dynamic>>> getByValue(
       String table, String column, dynamic value) async {
     return (await DBHelper.database()).query(
