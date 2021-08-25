@@ -668,6 +668,14 @@ class ItemProvider with ChangeNotifier {
     return Product.fromMap(_d.first);
   }
 
+  Future<List<Product>> getProductsWithNoCpe() async {
+    Iterable<Product> _iter;
+    await DBHelper.getProductsWithNoCpe().then((data) {
+      _iter = data.map((i) => Product.fromMap(i));
+    });
+    return _iter.toList();
+  }
+
   Future<List<Username>> getUsers() async {
     Iterable<Username> _iter;
     await DBHelper.read(DBHelper.usernameTable).then((data) {
