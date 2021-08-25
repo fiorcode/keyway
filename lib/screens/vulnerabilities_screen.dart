@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/screens/products_without_cpe_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/nist_provider.dart';
@@ -22,6 +23,9 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
 
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
+  void _goTo(BuildContext context, String route) =>
+      Navigator.of(context).pushNamed(route);
+
   @override
   void initState() {
     _item = Provider.of<ItemProvider>(context, listen: false);
@@ -43,13 +47,16 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
       body: Column(
         children: [
           FutureBuilder(
-            future: _getCves,
+            future: Future.wait([_getProducts, _getCves]),
             builder: (ctx, snap) {
               switch (snap.connectionState) {
                 case ConnectionState.done:
                   if (snap.hasError)
                     return Center(child: Text('error'));
                   else {
+                    int _pwncpe = _item.products
+                        .where((p) => p.fkCpe23uriId != null)
+                        .length;
                     return Column(
                       children: [
                         Container(
@@ -73,7 +80,7 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
                           child: FittedBox(
                             fit: BoxFit.contain,
                             child: Text(
-                              'Vulnerabilities\n to check',
+                              'vulnerabilities\n to check',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 color: _item.cves.length > 0
@@ -81,6 +88,63 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
                                     : Colors.green,
                               ),
                             ),
+                          ),
+                        ),
+                        Container(
+                          height: 128,
+                          padding: EdgeInsets.all(8.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Expanded(
+                                      child: FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text(
+                                          _item.products.length.toString(),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text('products'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text(_pwncpe.toString()),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: FittedBox(
+                                        fit: BoxFit.fitWidth,
+                                        child: Text('with CPE'),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: TextButton(
+                                        onPressed: () => _goTo(
+                                          context,
+                                          ProductsWithoutCpeScreen.routeName,
+                                        ),
+                                        child: Text('Search missing CPE\'s'),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -92,47 +156,6 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
               }
             },
           ),
-          Container(
-            height: 64,
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.fitWidth,
-                        child: Text('10'),
-                      ),
-                      FittedBox(
-                        fit: BoxFit.fitWidth,
-                        child: Text('Products'),
-                      ),
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Text('9'),
-                        ),
-                      ),
-                      Expanded(
-                        child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Text('CPEs'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          )
         ],
       ),
     );
