@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/helpers/date_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/cripto_provider.dart';
@@ -62,23 +63,21 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   }
 
   bool _expired() {
-    DateTime _nowUTC = DateTime.now().toUtc();
-    bool _passExp = false;
-    bool _pinExp = false;
+    bool _exp = false;
     if (widget.item.itemPassword != null) {
-      DateTime _passDate =
-          DateTime.parse(widget.item.itemPassword.passwordDate);
-      int _daysOfPass = _nowUTC.difference(_passDate).inDays;
-      _passExp = widget.item.itemPassword.passwordLapse <= _daysOfPass;
-      if (widget.item.itemPassword.passwordLapse <= 0) _passExp = false;
+      _exp = DateHelper.expired(
+        widget.item.itemPassword.passwordDate,
+        widget.item.itemPassword.passwordLapse,
+      );
+      if (_exp) return true;
     }
     if (widget.item.pin != null) {
-      DateTime _pinDate = DateTime.parse(widget.item.pin.pinDate);
-      int _daysOfPin = _nowUTC.difference(_pinDate).inDays;
-      _pinExp = widget.item.pin.pinLapse <= _daysOfPin;
-      if (widget.item.pin.pinLapse <= 0) _pinExp = false;
+      _exp = DateHelper.expired(
+        widget.item.pin.pinDate,
+        widget.item.pin.pinLapse,
+      );
     }
-    return _passExp || _pinExp;
+    return _exp;
   }
 
   String _setTitleSubtitle() {
@@ -251,7 +250,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                   height: 48,
                   width: 48,
                   child: Icon(
-                    Icons.calendar_today,
+                    Icons.calendar_today_rounded,
                     color: Colors.red,
                     size: 24,
                   ),

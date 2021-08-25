@@ -64,24 +64,21 @@ class ItemProvider with ChangeNotifier {
           .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     }
     _items.addAll(_iter.toList());
-    await _buildItems();
-    return _items;
+    return _buildItems();
   }
 
-  Future<List<Item>> fetchItemsWithTags(List<Tag> tags) async {
+  Future<List<Item>> fetchItemsWithTag(Tag t) async {
     Iterable<Item> _iter;
     _items.clear();
-    await Future.forEach(tags, (t) async {
-      await DBHelper.getActiveItemsWithTag(t.tagName)
-          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
-    });
+    await DBHelper.getActiveItemsWithTag(t.tagName)
+        .then((data) => _iter = data.map((i) => Item.fromMap(i)));
     _items.addAll(_iter.toSet().toList());
     await _buildItems();
     return _items;
   }
 
-  Future<void> _buildItems() async {
-    _items.forEach((i) async {
+  Future<List<Item>> _buildItems() async {
+    await Future.forEach(_items, (i) async {
       if (i.fkUsernameId != null) {
         i.username = await getUsername(i.fkUsernameId);
       }
@@ -108,6 +105,7 @@ class ItemProvider with ChangeNotifier {
         i.product = await getProduct(i.fkProductId);
       }
     });
+    return _items;
   }
 
   Future<void> fetchAllItems(String title) async {
@@ -326,7 +324,9 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<int> insertItem(Item i) async {
-    i.date = DateTime.now().toIso8601String();
+    //TODO: uncomment this
+
+    // i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
       if (i.password.passwordId == null) {
@@ -716,19 +716,35 @@ class ItemProvider with ChangeNotifier {
     ];
     List<String> _tags = [
       'social',
-      'social',
-      'hardware',
-      'streaming',
-      'streaming',
-      'games',
-      'games',
-      'coding',
-      'apps',
-      'apps'
+      'hard',
+      'stream',
+      'game',
+      'code',
+      'app',
     ];
-    await Future.forEach(_tags, (t) async => insertTag(Tag(t)));
-    int _t = 0;
     Random _r = Random();
+    await Future.forEach(_tags, (t) async {
+      Color _c = Color.fromRGBO(
+        _r.nextInt(255),
+        _r.nextInt(255),
+        _r.nextInt(255),
+        1,
+      );
+      insertTag(Tag(tagName: t, tagColor: _c.value));
+    });
+    _tags = [
+      'social',
+      'social',
+      'hard',
+      'stream',
+      'stream',
+      'game',
+      'game',
+      'code',
+      'app',
+      'app'
+    ];
+    int _t = 0;
     await Future.forEach(_titles, (t) async {
       DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
       Color _avatarColor = Color.fromRGBO(
@@ -739,7 +755,7 @@ class ItemProvider with ChangeNotifier {
       );
       Password _p = _cripto.createPassword(t + '@password');
       ItemPassword _ip = ItemPassword(
-        passwordLapse: _r.nextInt(319) + 1,
+        passwordLapse: _r.nextInt(90) + 1,
         passwordDate: _date.toIso8601String(),
       );
       Username _u = _cripto.createUsername(t + '@username');

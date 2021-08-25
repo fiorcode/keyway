@@ -7,12 +7,11 @@ import 'data_views/item_password_table.dart';
 import 'data_views/note_table.dart';
 import 'data_views/password_table.dart';
 import 'data_views/pin_table.dart';
+import 'data_views/tag_table.dart';
 import 'data_views/username_table.dart';
 import 'data_views/product_table.dart';
 import 'data_views/cpe23uri_table.dart';
 import 'data_views/cpe23uri_cve_table.dart';
-
-import '../screens/tags_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class TablesScreen extends StatefulWidget {
@@ -142,7 +141,7 @@ class _TablesScreenState extends State<TablesScreen> {
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
               onTap: () =>
-                  Navigator.of(context).pushNamed(TagsScreen.routeName),
+                  Navigator.of(context).pushNamed(TagTableScreen.routeName),
             ),
           ],
         ),

@@ -17,4 +17,14 @@ class DateHelper {
     else if (date is DateTime) return _ddMMyyHm.format(date);
     return 'Unknown format';
   }
+
+  static bool expired(dynamic date, int dayLapse) {
+    DateTime _date;
+    if (date is String)
+      _date = DateTime.parse(date);
+    else if (date is DateTime) _date = date;
+    DateTime _nowUTC = DateTime.now().toUtc();
+    int _days = _nowUTC.difference(_date).inDays;
+    return dayLapse <= _days;
+  }
 }

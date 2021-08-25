@@ -3,16 +3,18 @@ import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
-import 'package:keyway/models/tag.dart';
+import '../models/tag.dart';
+import '../models/item.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/dashboard_screen.dart';
 import '../widgets/card/item_locked_card.dart';
 import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
-import '../widgets/empty_items.dart';
+// import '../widgets/empty_items.dart';
 import '../widgets/text_field/search_bar_text_field.dart';
-import '../widgets/item_filter_list.dart';
-import '../widgets/loading_scaffold.dart';
+import 'package:keyway/widgets/tags_filter_list.dart';
+// import '../widgets/item_filter_list.dart';
+// import '../widgets/loading_scaffold.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -24,8 +26,8 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider _cripto;
   ItemProvider _item;
-  Future<void> _getItems;
-  List<Tag> _tags = <Tag>[];
+  Future<List<Item>> _getItems;
+  Tag _tag;
 
   TextEditingController _searchCtrler = TextEditingController();
   FocusNode _searchFN = FocusNode();
@@ -45,38 +47,41 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     });
   }
 
-  void _deletedSwitch() {
-    _deleted = !_deleted;
-    _deleted
-        ? _getItems = _getItemsDeletedAsync()
-        : _getItems = _getItemsAsync();
-    setState(() {});
-  }
+  // void _deletedSwitch() {
+  //   _deleted = !_deleted;
+  //   _deleted
+  //       ? _getItems = _getItemsDeletedAsync()
+  //       : _getItems = _getItemsAsync();
+  //   setState(() {});
+  // }
 
-  void _oldPasswordSwitch() {
-    if (_deleted) _deleted = false;
-    _oldPassword = !_oldPassword;
-    _oldPassword
-        ? _getItems = _getItemsDeletedAsync()
-        : _getItems = _getItemsAsync();
-    setState(() {});
-  }
+  // void _oldPasswordSwitch() {
+  //   if (_deleted) _deleted = false;
+  //   _oldPassword = !_oldPassword;
+  //   _oldPassword
+  //       ? _getItems = _getItemsDeletedAsync()
+  //       : _getItems = _getItemsAsync();
+  //   setState(() {});
+  // }
 
-  void _tagsSwitch() {
-    if (_tags.isEmpty)
+  void _tagsSwitch(Tag tag) {
+    _tag = null;
+    if (tag.selected) _tag = tag;
+    if (_tag != null) {
+      _getItems = _getItemsWithTag(_tag);
+    } else {
       _getItems = _getItemsAsync();
-    else
-      _getItems = _getItemsWithTags();
+    }
     if (_deleted) _deleted = false;
     if (_oldPassword) _oldPassword = false;
     setState(() {});
   }
 
-  Future<void> _getItemsAsync() => _item.fetchItems(_searchCtrler.text);
+  Future<List<Item>> _getItemsAsync() => _item.fetchItems(_searchCtrler.text);
 
-  Future<void> _getItemsDeletedAsync() => _item.fetchItemsDeleted();
+  // Future<void> _getItemsDeletedAsync() => _item.fetchItemsDeleted();
 
-  Future<void> _getItemsWithTags() => _item.fetchItemsWithTags(_tags);
+  Future<void> _getItemsWithTag(Tag t) => _item.fetchItemsWithTag(t);
 
   void _onReturn() {
     _getItems = _getItemsAsync();
@@ -148,83 +153,95 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Widget build(BuildContext context) {
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
-    return FutureBuilder(
-        future: _getItems,
-        builder: (ctx, snap) {
-          switch (snap.connectionState) {
-            case ConnectionState.active:
-              return LoadingScaffold();
-              break;
-            case ConnectionState.done:
-              if (snap.hasError)
-                return Center(child: Image.asset("assets/error.png"));
-              else {
-                return Scaffold(
-                  backgroundColor: _back,
-                  appBar: AppBar(
-                    backgroundColor: _back,
-                    iconTheme: IconThemeData(color: _primary),
-                    centerTitle: true,
-                    leading: IconButton(
-                      icon: Icon(Icons.menu),
-                      onPressed: _goToDashboard,
-                    ),
-                    title: _appBarTitle(),
-                    actions: [
-                      if (_item.items.length > 10)
-                        IconButton(
-                          icon: Icon(Icons.search),
-                          onPressed: _searchSwitch,
-                        ),
-                      IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: _goToAlpha,
-                      )
-                    ],
-                    actionsIconTheme: IconThemeData(color: _primary),
-                  ),
-                  body: Stack(
-                    children: [
-                      snap.data.length <= 0
-                          ? EmptyItems()
-                          : SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  ItemFilterList(
-                                    _deleted,
-                                    _deletedSwitch,
-                                    _oldPassword,
-                                    _oldPasswordSwitch,
+    return Scaffold(
+      backgroundColor: _back,
+      appBar: AppBar(
+        backgroundColor: _back,
+        iconTheme: IconThemeData(color: _primary),
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.menu),
+          onPressed: _goToDashboard,
+        ),
+        title: _appBarTitle(),
+        actions: [
+          if (_item.items.length > 10)
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: _searchSwitch,
+            ),
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: _goToAlpha,
+          )
+        ],
+        actionsIconTheme: IconThemeData(color: _primary),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              TagsFilterList(_tag, _tagsSwitch),
+              // ItemFilterList(
+              //   _deleted,
+              //   _deletedSwitch,
+              //   _oldPassword,
+              //   _oldPasswordSwitch,
+              // ),
+              FutureBuilder(
+                  future: _getItems,
+                  builder: (ctx, snap) {
+                    switch (snap.connectionState) {
+                      case ConnectionState.waiting:
+                        return Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Expanded(
+                                child: Center(
+                                  child: Image.asset(
+                                    "assets/icon.png",
+                                    height: 256,
                                   ),
-                                  // TagsCard(),
-                                  ListView.builder(
-                                    padding: EdgeInsets.all(12.0),
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: snap.data.length,
-                                    itemBuilder: (ctx, i) {
-                                      return _cripto.locked
-                                          ? ItemLockedCard(item: snap.data[i])
-                                          : ItemUnlockedCard(
-                                              item: snap.data[i],
-                                              onReturn: _onReturn,
-                                            );
-                                    },
-                                  ),
-                                ],
+                                ),
                               ),
+                              LinearProgressIndicator(),
+                            ],
+                          ),
+                        );
+                        break;
+                      case ConnectionState.done:
+                        if (snap.hasError)
+                          return Center(
+                            child: Image.asset("assets/error.png"),
+                          );
+                        else {
+                          return Expanded(
+                            child: ListView.builder(
+                              padding: EdgeInsets.all(12.0),
+                              shrinkWrap: true,
+                              itemCount: snap.data.length,
+                              itemBuilder: (ctx, i) {
+                                return _cripto.locked
+                                    ? ItemLockedCard(item: snap.data[i])
+                                    : ItemUnlockedCard(
+                                        item: snap.data[i],
+                                        onReturn: _onReturn,
+                                      );
+                              },
                             ),
-                      if (_unlocking && _cripto.locked)
-                        UnlockContainer(_lockSwitch),
-                    ],
-                  ),
-                );
-              }
-              break;
-            default:
-              return LoadingScaffold();
-          }
-        });
+                          );
+                        }
+                        break;
+                      default:
+                        return LinearProgressIndicator();
+                    }
+                  }),
+            ],
+          ),
+          if (_unlocking && _cripto.locked) UnlockContainer(_lockSwitch),
+        ],
+      ),
+    );
   }
 }

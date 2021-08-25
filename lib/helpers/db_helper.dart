@@ -479,5 +479,6 @@ class DBHelper {
 
   static const _createTagTable = '''CREATE TABLE $tagTable(
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    tag_name TEXT)''';
+    tag_name TEXT,
+    tag_color INTEGER)''';
 }

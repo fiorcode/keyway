@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/product.dart';
+import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/models/product.dart';
 import 'package:keyway/widgets/loading_scaffold.dart';
-import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatefulWidget {
   static const routeName = '/products';

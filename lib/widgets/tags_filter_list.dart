@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/models/tag.dart';
 
 class TagsFilterList extends StatefulWidget {
-  const TagsFilterList(this.tags, this.tagsSwitch);
+  const TagsFilterList(this.tag, this.tagsSwitch);
 
-  final List<Tag> tags;
+  final Tag tag;
   final Function tagsSwitch;
 
   @override
@@ -13,75 +15,83 @@ class TagsFilterList extends StatefulWidget {
 }
 
 class _TagsFilterListState extends State<TagsFilterList> {
-  List<Widget> _chips;
+  ItemProvider _items;
+  Future<List<Tag>> _getTags;
+  List<Widget> _buttons;
 
-  List<Widget> _tags() {
-    _chips = <Widget>[];
-    widget.tags.forEach(
+  List<Widget> _tags(List<Tag> tags) {
+    _buttons = <Widget>[];
+    tags.forEach(
       (tag) {
-        _chips.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Chip(
-              backgroundColor: Colors.grey,
-              label: Text(
-                tag.tagName,
-                style: TextStyle(color: Colors.white),
+        if (widget.tag != null)
+          tag.selected = tag.tagName == widget.tag.tagName;
+        else
+          tag.selected = false;
+        _buttons.add(
+          TextButton.icon(
+            icon: Icon(
+              Icons.tag,
+              color: Color(tag.tagColor),
+              size: tag.selected ? 20 : 14,
+            ),
+            onPressed: () {
+              setState(() {
+                tag.selected = !tag.selected;
+              });
+              widget.tagsSwitch(tag);
+            },
+            label: Text(
+              tag.tagName,
+              style: TextStyle(
+                color: Color(tag.tagColor),
+                fontSize: tag.selected ? 20 : 14,
+                fontWeight: tag.selected ? FontWeight.bold : null,
               ),
-              elevation: 8.0,
             ),
           ),
         );
       },
     );
-    return _chips;
+    return _buttons;
+  }
+
+  Future<List<Tag>> _tagsList() async => await _items.getTags();
+
+  @override
+  void initState() {
+    _items = Provider.of<ItemProvider>(context, listen: false);
+    _getTags = _tagsList();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 32,
+      height: 48,
       width: double.infinity,
       margin: EdgeInsets.only(top: 8.0, left: 16.0),
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ChoiceChip(
-              backgroundColor: Colors.red[200],
-              selected: deleted,
-              selectedColor: Colors.red,
-              onSelected: (_) => deletedSwitch(),
-              label: Text(
-                'Deleted',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: deleted ? FontWeight.bold : null,
-                ),
-              ),
-              elevation: deleted ? 8.0 : 0.0,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: ChoiceChip(
-              backgroundColor: Colors.grey,
-              selected: oldPassword,
-              selectedColor: Colors.grey[200],
-              onSelected: (_) => oldPasswordSwitch(),
-              label: Text(
-                'With old passwords',
-                style: TextStyle(
-                  color: oldPassword ? Colors.grey : Colors.white,
-                  fontWeight: oldPassword ? FontWeight.bold : null,
-                ),
-              ),
-              elevation: oldPassword ? 8.0 : 0.0,
-            ),
-          ),
-        ],
+      child: FutureBuilder(
+        future: _getTags,
+        builder: (ctx, snap) {
+          switch (snap.connectionState) {
+            case ConnectionState.active:
+              return LinearProgressIndicator();
+              break;
+            case (ConnectionState.done):
+              if (snap.hasError) {
+                return Text(snap.error);
+              } else {
+                return ListView(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  children: _tags(snap.data),
+                );
+              }
+              break;
+            default:
+              return LinearProgressIndicator();
+          }
+        },
       ),
     );
   }

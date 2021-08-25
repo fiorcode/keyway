@@ -9,6 +9,7 @@ import 'products_screen.dart';
 import 'tables_screen.dart';
 import 'danger_zone_screen.dart';
 import 'pins_screen.dart';
+import 'tags_screen.dart';
 import 'usernames_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
@@ -225,6 +226,14 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     onTap: () => _goTo(ProductsScreen.routeName),
+                  ),
+                  DashboardCard(
+                    icon: Icon(Icons.tag, color: _primary, size: 48),
+                    title: Text(
+                      'Tags',
+                      style: TextStyle(color: _primary, fontSize: 16),
+                    ),
+                    onTap: () => _goTo(TagsScreen.routeName),
                   ),
                   DashboardCard(
                     icon: Icon(Icons.table_view, color: _primary, size: 48),

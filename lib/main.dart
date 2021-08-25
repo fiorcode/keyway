@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyway/screens/usernames_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
@@ -18,15 +17,17 @@ import 'screens/products_screen.dart';
 import 'screens/restore_screen.dart';
 import 'screens/splash_screen.dart';
 import 'screens/set_password_screen.dart';
+import 'screens/tags_screen.dart';
+import 'screens/usernames_screen.dart';
 import 'screens/items_screen.dart';
 import 'screens/item_add_screen.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/data_screen.dart';
 import 'screens/tag_add_screen.dart';
-import 'screens/tags_screen.dart';
 import 'screens/tables_screen.dart';
 import 'screens/backup_restore_screen.dart';
 import 'screens/danger_zone_screen.dart';
+import 'screens/vulnerabilities_screen.dart';
 
 import 'screens/data_views/address_table.dart';
 import 'screens/data_views/item_table.dart';
@@ -39,6 +40,7 @@ import 'screens/data_views/product_table.dart';
 import 'screens/data_views/cpe23uri_table.dart';
 import 'screens/data_views/cpe23uri_cve_table.dart';
 import 'screens/data_views/cve_table.dart';
+import 'screens/data_views/tag_table.dart';
 
 void main() => runApp(MyApp());
 
@@ -72,22 +74,24 @@ class MyApp extends StatelessWidget {
           ItemAddScreen.routeName: (ctx) => ItemAddScreen(),
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
-          DataScreen.routeName: (ctx) => DataScreen(),
           ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
-          TagsScreen.routeName: (ctx) => TagsScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
-          //Sub-items
+          //Dashboard
+          DataScreen.routeName: (ctx) => DataScreen(),
+          BackupRestoreScreen.routeName: (ctx) => BackupRestoreScreen(),
+          VulnerabilitiesScreen.routeName: (ctx) => VulnerabilitiesScreen(),
+          //Data
           PasswordsScreen.routeName: (ctx) => PasswordsScreen(),
           UsernamesScreen.routeName: (ctx) => UsernamesScreen(),
           PinsScreen.routeName: (ctx) => PinsScreen(),
           NotesScreen.routeName: (ctx) => NotesScreen(),
           AddressesScreen.routeName: (ctx) => AddressesScreen(),
           ProductsScreen.routeName: (ctx) => ProductsScreen(),
-          //Tables
+          TagsScreen.routeName: (ctx) => TagsScreen(),
           TablesScreen.routeName: (ctx) => TablesScreen(),
-          BackupRestoreScreen.routeName: (ctx) => BackupRestoreScreen(),
           DangerZoneScreen.routeName: (ctx) => DangerZoneScreen(),
+          //Tables
           ItemTableScreen.routeName: (ctx) => ItemTableScreen(),
           ItemPasswordTableScreen.routeName: (ctx) => ItemPasswordTableScreen(),
           PasswordTableScreen.routeName: (ctx) => PasswordTableScreen(),
@@ -99,6 +103,7 @@ class MyApp extends StatelessWidget {
           Cpe23uriTableScreen.routeName: (ctx) => Cpe23uriTableScreen(),
           Cpe23uriCveTableScreen.routeName: (ctx) => Cpe23uriCveTableScreen(),
           CveTableScreen.routeName: (ctx) => CveTableScreen(),
+          TagTableScreen.routeName: (ctx) => TagTableScreen(),
         },
       ),
     );

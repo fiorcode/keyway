@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../models/tag.dart';
-import '../providers/item_provider.dart';
-import '../widgets/empty_items.dart';
-import 'tag_add_screen.dart';
+import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/models/tag.dart';
+import 'package:keyway/widgets/loading_scaffold.dart';
 
 class TagsScreen extends StatefulWidget {
   static const routeName = '/tags';
@@ -14,60 +13,21 @@ class TagsScreen extends StatefulWidget {
 }
 
 class _TagsScreenState extends State<TagsScreen> {
-  ItemProvider _items;
+  ItemProvider _item;
   Future<List<Tag>> _getTags;
-  bool _deleting = false;
 
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
+  Future<List<Tag>> _getTagsAsync() => _item.getTags();
 
-  void _deleteTag(Tag tag) {
-    setState(() => _deleting = true);
-    _items.deleteTag(tag).then((_) {
-      _deleting = false;
-      _getTags = _tagsList();
-      setState(() {});
-    });
-  }
-
-  List<Widget> _tagsListTiles(List<Tag> tags) {
-    List<Widget> _tagsList = <Widget>[];
-    tags.forEach((_tag) {
-      _tagsList.add(
-        Card(
-          elevation: 4.0,
-          child: ListTile(
-            leading: Icon(Icons.tag),
-            title: Text(_tag.tagName),
-            trailing: _deleting
-                ? CircularProgressIndicator()
-                : IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteTag(_tag),
-                  ),
-          ),
-          shape: StadiumBorder(),
-        ),
-      );
-    });
-    return _tagsList;
-  }
-
-  void _goToAddTag() => Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => TagAddScreen(),
-        ),
-      ).then((_) => _onReturn());
-
-  void _onReturn() {
-    _getTags = _tagsList();
+  Future<void> _deleteTag(Tag t) async {
+    await _item.deleteTag(t);
+    _getTags = _getTagsAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
-    _getTags = _tagsList();
+    _item = Provider.of<ItemProvider>(context, listen: false);
+    _getTags = _getTagsAsync();
     super.initState();
   }
 
@@ -78,26 +38,46 @@ class _TagsScreenState extends State<TagsScreen> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
-        title: Icon(Icons.tag),
-        centerTitle: true,
-        actions: [IconButton(icon: Icon(Icons.add), onPressed: _goToAddTag)],
       ),
       body: FutureBuilder(
           future: _getTags,
           builder: (ctx, snap) {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
-                return Center(child: CircularProgressIndicator());
+                return LoadingScaffold();
                 break;
               case ConnectionState.done:
-                return (snap.data as List<Tag>).length > 0
-                    ? ListView(
-                        padding: EdgeInsets.all(16.0),
-                        children: _tagsListTiles(snap.data),
-                      )
-                    : EmptyItems();
+                return ListView.builder(
+                    padding: EdgeInsets.all(12.0),
+                    itemCount: snap.data.length,
+                    itemBuilder: (ctx, i) {
+                      return Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.tag,
+                            size: 32,
+                            color: Color(snap.data[i].tagColor),
+                          ),
+                          title: Text(
+                            snap.data[i].tagName,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Color(snap.data[i].tagColor),
+                            ),
+                          ),
+                          trailing: IconButton(
+                            onPressed: () => _deleteTag(snap.data[i]),
+                            icon: Icon(
+                              Icons.delete_forever,
+                              color: Colors.red,
+                              size: 32,
+                            ),
+                          ),
+                        ),
+                      );
+                    });
               default:
-                return Center(child: CircularProgressIndicator());
+                return Text('default');
             }
           }),
     );

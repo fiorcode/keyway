@@ -22,7 +22,7 @@ class _TagAddScreenState extends State<TagAddScreen> {
   void _onChange() => setState(() => _empty = ctrler.text.isEmpty);
 
   void _addTag(BuildContext ctx) {
-    Tag _tag = Tag(ctrler.text.toLowerCase());
+    Tag _tag = Tag(tagName: ctrler.text.toLowerCase());
     _items.insertTag(_tag);
     Navigator.of(context).pop(_tag);
   }

@@ -1,20 +1,27 @@
 class Tag {
   int id;
   String tagName;
-  bool selected = false;
+  int tagColor;
+  bool selected;
 
-  Tag(this.tagName);
+  Tag({
+    this.tagName,
+    this.tagColor = 4294967295,
+    this.selected = false,
+  });
 
   Tag.fromMap(Map<String, dynamic> map) {
-    id = map['tag_id'];
-    tagName = map['tag_name'];
+    this.id = map['tag_id'];
+    this.tagName = map['tag_name'];
+    this.tagColor = map['tag_color'];
   }
 
   Map<String, dynamic> toMap() {
     var map = <String, dynamic>{
-      'tag_name': tagName,
+      'tag_name': this.tagName,
+      'tag_color': this.tagColor,
     };
-    if (id != null) map['tag_id'] = id;
+    if (id != null) map['tag_id'] = this.id;
     return map;
   }
 }

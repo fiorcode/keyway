@@ -14,15 +14,15 @@ class ProductTableScreen extends StatefulWidget {
 
 class _ProductTableScreenState extends State<ProductTableScreen> {
   ItemProvider _item;
-  Future _getProducts;
+  Future<void> _getProducts;
 
-  Future<void> _getProductsAsync() async => await _item.fetchProducts();
+  Future<void> _getProductsAsync() => _item.fetchProducts();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     _getProducts = _getProductsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'data_screen.dart';
 import 'backup_restore_screen.dart';
+import 'vulnerabilities_screen.dart';
 import '../widgets/card/dashboard_card.dart';
 
 class DashboardScreen extends StatelessWidget {
@@ -44,6 +45,14 @@ class DashboardScreen extends StatelessWidget {
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
               onTap: () => _goTo(context, BackupRestoreScreen.routeName),
+            ),
+            DashboardCard(
+              icon: Icon(Icons.bug_report, color: _primary, size: 64),
+              title: Text(
+                'Vulnerabilities',
+                style: TextStyle(color: _primary, fontSize: 20),
+              ),
+              onTap: () => _goTo(context, VulnerabilitiesScreen.routeName),
             ),
             DashboardCard(
               icon:
