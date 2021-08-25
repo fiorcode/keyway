@@ -21,6 +21,8 @@ class NistProvider with ChangeNotifier {
       final response = await http.get(Uri.parse(urlString));
       if (response.statusCode == 200) {
         return CpeBody.fromJson(jsonDecode(response.body));
+      } else if (response.statusCode == 404) {
+        throw Exception('Failed. Status code: ${response.statusCode}');
       } else {
         throw Exception('Failed. Status code: ${response.statusCode}');
       }
