@@ -26,7 +26,8 @@ class ItemsListScreen extends StatefulWidget {
 class _ItemsListScreenState extends State<ItemsListScreen> {
   CriptoProvider _cripto;
   ItemProvider _item;
-  Future<List<Item>> _getItems;
+  Future<void> _getItems;
+  List<Item> _items = <Item>[];
   Tag _tag;
 
   TextEditingController _searchCtrler = TextEditingController();
@@ -34,8 +35,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   bool _unlocking = false;
   bool _searching = false;
-  bool _deleted = false;
-  bool _oldPassword = false;
+  // bool _deleted = false;
+  // bool _oldPassword = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -65,23 +66,25 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   // }
 
   void _tagsSwitch(Tag tag) {
-    _tag = null;
-    if (tag.selected) _tag = tag;
-    if (_tag != null) {
-      _getItems = _getItemsWithTag(_tag);
+    if (tag.selected) {
+      _tag = tag;
+      _items = _item.items
+          .where((i) => i.tags.contains('<' + _tag.tagName + '>'))
+          .toList();
+      setState(() {});
     } else {
-      _getItems = _getItemsAsync();
+      _tag = null;
+      _items = _item.items;
+      setState(() {});
     }
-    if (_deleted) _deleted = false;
-    if (_oldPassword) _oldPassword = false;
-    setState(() {});
   }
 
-  Future<List<Item>> _getItemsAsync() => _item.fetchItems(_searchCtrler.text);
+  Future<void> _getItemsAsync() async =>
+      _items = await _item.fetchItems(_searchCtrler.text);
 
   // Future<void> _getItemsDeletedAsync() => _item.fetchItemsDeleted();
 
-  Future<void> _getItemsWithTag(Tag t) => _item.fetchItemsWithTag(t);
+  // Future<void> _getItemsWithTag(Tag t) => _item.fetchItemsWithTag(t);
 
   void _onReturn() {
     _getItems = _getItemsAsync();
@@ -135,11 +138,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    _cripto = Provider.of<CriptoProvider>(context);
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     _getItems = _getItemsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -151,6 +153,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _cripto = Provider.of<CriptoProvider>(context);
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
     return Scaffold(
@@ -220,12 +223,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                             child: ListView.builder(
                               padding: EdgeInsets.all(12.0),
                               shrinkWrap: true,
-                              itemCount: snap.data.length,
+                              itemCount: _items.length,
                               itemBuilder: (ctx, i) {
                                 return _cripto.locked
-                                    ? ItemLockedCard(item: snap.data[i])
+                                    ? ItemLockedCard(item: _items[i])
                                     : ItemUnlockedCard(
-                                        item: snap.data[i],
+                                        item: _items[i],
                                         onReturn: _onReturn,
                                       );
                               },
