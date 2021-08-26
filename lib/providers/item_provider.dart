@@ -1,8 +1,7 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
-import 'package:keyway/providers/cripto_provider.dart';
 
+import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
 import '../models/item_password.dart';
@@ -67,15 +66,15 @@ class ItemProvider with ChangeNotifier {
     return _buildItems();
   }
 
-  Future<List<Item>> fetchItemsWithTag(Tag t) async {
-    Iterable<Item> _iter;
-    _items.clear();
-    await DBHelper.getActiveItemsWithTag(t.tagName)
-        .then((data) => _iter = data.map((i) => Item.fromMap(i)));
-    _items.addAll(_iter.toSet().toList());
-    await _buildItems();
-    return _items;
-  }
+  // Future<List<Item>> fetchItemsWithTag(Tag t) async {
+  //   Iterable<Item> _iter;
+  //   _items.clear();
+  //   await DBHelper.getActiveItemsWithTag(t.tagName)
+  //       .then((data) => _iter = data.map((i) => Item.fromMap(i)));
+  //   _items.addAll(_iter.toSet().toList());
+  //   await _buildItems();
+  //   return _items;
+  // }
 
   Future<List<Item>> _buildItems() async {
     await Future.forEach(_items, (i) async {
