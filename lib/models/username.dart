@@ -34,4 +34,12 @@ class Username {
         usernameIv: this.usernameIv,
         usernameHash: this.usernameHash,
       );
+
+  bool notEqual(Username u) {
+    if (u == null) return true;
+    if (this.usernameHash != u.usernameHash) return true;
+    if (this.usernameEnc != u.usernameEnc) return true;
+    if (this.usernameIv != u.usernameIv) return true;
+    return false;
+  }
 }
