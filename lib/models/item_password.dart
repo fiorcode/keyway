@@ -93,6 +93,16 @@ class ItemPassword {
     return _ip;
   }
 
+  bool notEqual(ItemPassword ip) {
+    if (ip == null) return true;
+    if (this.fkItemId != ip.fkItemId) return true;
+    if (this.fkPasswordId != ip.fkPasswordId) return true;
+    if (this.passwordDate != ip.passwordDate) return true;
+    if (this.passwordLapse != ip.passwordLapse) return true;
+    if (this.passwordStatus != ip.passwordStatus) return true;
+    return false;
+  }
+
   bool equal(ItemPassword ip) {
     if (this.fkItemId != ip.fkItemId) return false;
     if (this.fkPasswordId != ip.fkPasswordId) return false;
