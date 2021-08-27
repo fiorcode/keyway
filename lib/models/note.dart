@@ -29,4 +29,11 @@ class Note {
         noteEnc: this.noteEnc,
         noteIv: this.noteIv,
       );
+
+  bool notEqual(Note n) {
+    if (n == null) return true;
+    if (this.noteEnc != n.noteEnc) return true;
+    if (this.noteIv != n.noteIv) return true;
+    return false;
+  }
 }
