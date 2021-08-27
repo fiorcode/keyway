@@ -46,4 +46,13 @@ class Address {
         addressProtocol: this.addressProtocol,
         addressPort: this.addressPort,
       );
+
+  bool notEqual(Address a) {
+    if (a == null) return true;
+    if (this.addressEnc != a.addressEnc) return true;
+    if (this.addressIv != a.addressIv) return true;
+    if (this.addressProtocol != a.addressProtocol) return true;
+    if (this.addressPort != a.addressPort) return true;
+    return false;
+  }
 }
