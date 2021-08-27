@@ -99,4 +99,16 @@ class Product {
         productUpdate: this.productUpdate,
         fkCpe23uriId: this.fkCpe23uriId,
       );
+
+  bool notEqual(Product p) {
+    if (p == null) return true;
+    if (this.productType != p.productType) return true;
+    if (this.productTrademark != p.productTrademark) return true;
+    if (this.productModel != p.productModel) return true;
+    if (this.productVersion != p.productVersion) return true;
+    if (this.productUpdate != p.productUpdate) return true;
+    if (this.productStatus != p.productStatus) return true;
+    if (this.fkCpe23uriId != p.fkCpe23uriId) return true;
+    return false;
+  }
 }
