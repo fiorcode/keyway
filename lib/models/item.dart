@@ -62,7 +62,9 @@ class Item {
     this.fkProductId,
     this.username,
     this.password,
+    this.passwords,
     this.itemPassword,
+    this.itemPasswords,
     this.pin,
     this.note,
     this.address,
@@ -130,14 +132,63 @@ class Item {
       fkProductId: this.fkAddressId,
       username: this.username != null ? this.username.clone() : null,
       password: this.password != null ? this.password.clone() : null,
+      passwords: this.passwords,
       itemPassword:
           this.itemPassword != null ? this.itemPassword.clone() : null,
+      itemPasswords: this.itemPasswords,
       pin: this.pin != null ? this.pin.clone() : null,
       note: this.note != null ? this.note.clone() : null,
       address: this.address != null ? this.address.clone() : null,
       product: this.product != null ? this.product.clone() : null,
     );
     return _i;
+  }
+
+  bool changed(Item i) {
+    if (this.itemId != i.itemId) return true;
+    if (this.title != i.title) return true;
+    if (this.date != i.date) return true;
+    if (this.avatarColor != i.avatarColor) return true;
+    if (this.avatarLetterColor != i.avatarLetterColor) return true;
+    if (this.font != i.font) return true;
+    if (this.itemStatus != i.itemStatus) return true;
+    if (this.tags != i.tags) return true;
+    if (this.password != null) {
+      if (this.password.notEqual(i.password)) return true;
+    } else {
+      if (i.password != null) return true;
+    }
+    if (this.itemPassword != null) {
+      if (this.itemPassword.notEqual(i.itemPassword)) return true;
+    } else {
+      if (i.itemPassword != null) return true;
+    }
+    if (this.username != null) {
+      if (this.username.notEqual(i.username)) return true;
+    } else {
+      if (i.username != null) return true;
+    }
+    if (this.pin != null) {
+      if (this.pin.notEqual(i.pin)) return true;
+    } else {
+      if (i.pin != null) return true;
+    }
+    if (this.note != null) {
+      if (this.note.notEqual(i.note)) return true;
+    } else {
+      if (i.note != null) return true;
+    }
+    if (this.address != null) {
+      if (this.address.notEqual(i.address)) return true;
+    } else {
+      if (i.address != null) return true;
+    }
+    if (this.product != null) {
+      if (this.product.notEqual(i.product)) return true;
+    } else {
+      if (i.product != null) return true;
+    }
+    return false;
   }
 
   void addRemoveTag(String tag) {
