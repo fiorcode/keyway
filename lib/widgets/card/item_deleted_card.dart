@@ -12,7 +12,7 @@ class ItemDeletedCard extends StatelessWidget {
   _onTap(BuildContext context) => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => ItemViewScreen(itemId: item.itemId),
+          builder: (context) => ItemViewScreen(item: item),
         ),
       ).then((_) => onReturn());
 
