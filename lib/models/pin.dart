@@ -54,4 +54,14 @@ class Pin {
         pinLapse: this.pinLapse,
         pinStatus: this.pinStatus,
       );
+
+  bool notEqual(Pin p) {
+    if (p == null) return true;
+    if (this.pinEnc != p.pinEnc) return true;
+    if (this.pinIv != p.pinIv) return true;
+    if (this.pinDate != p.pinDate) return true;
+    if (this.pinLapse != p.pinLapse) return true;
+    if (this.pinStatus != p.pinStatus) return true;
+    return false;
+  }
 }
