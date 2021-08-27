@@ -37,7 +37,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemViewScreen(itemId: widget.item.itemId),
+        builder: (context) => ItemViewScreen(item: widget.item),
       ),
     ).then((_) => widget.onReturn());
   }
