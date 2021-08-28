@@ -148,10 +148,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   @override
   void dispose() {
     _titleCtrler.dispose();
+    _userCtrler.clear();
     _userCtrler.dispose();
+    _passCtrler.clear();
     _passCtrler.dispose();
+    _pinCtrler.clear();
     _pinCtrler.dispose();
+    _longCtrler.clear();
     _longCtrler.dispose();
+    _addressCtrler.clear();
     _addressCtrler.dispose();
     _trademarkCtrler.dispose();
     _modelCtrler.dispose();
