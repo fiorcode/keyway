@@ -22,12 +22,12 @@ class NistProvider with ChangeNotifier {
       if (response.statusCode == 200) {
         return CpeBody.fromJson(jsonDecode(response.body));
       } else if (response.statusCode == 404) {
-        throw Exception('Failed. Status code: ${response.statusCode}');
+        throw Exception('Not Found ❌');
       } else {
         throw Exception('Failed. Status code: ${response.statusCode}');
       }
     } on SocketException {
-      throw Exception('No Internet connection');
+      throw Exception('No Internet connection 😭');
     }
   }
 
