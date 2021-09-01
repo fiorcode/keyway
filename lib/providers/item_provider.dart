@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
 
 import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
@@ -77,12 +78,15 @@ class ItemProvider with ChangeNotifier {
   // }
 
   Future<List<Item>> _buildItems() async {
-    await Future.forEach(_items, (i) async {
+    await Future.forEach(_items, (Item i) async {
       if (i.fkUsernameId != null) {
         i.username = await getUsername(i.fkUsernameId);
       }
       await getItemPasswordsByItemId(i.itemId).then((_ips) async {
         if (_ips.isNotEmpty) {
+          i.itemPasswords = _ips;
+          i.itemPasswords.sort((ip1, ip2) =>
+              DateHelper.compare(ip2.passwordDate, ip1.passwordDate));
           await Future.forEach(_ips, (_ip) async {
             i.passwords.add(await getPassword(_ip.fkPasswordId));
           }).then((_) {
@@ -301,6 +305,7 @@ class ItemProvider with ChangeNotifier {
     await getItemPasswordsByItemId(i.itemId).then((_ips) async {
       if (_ips.isNotEmpty) {
         await Future.forEach(_ips, (_ip) async {
+          i.itemPasswords.add(_ip);
           i.passwords.add(await getPassword(_ip.fkPasswordId));
         }).then((_) {
           i.itemPassword = _ips.first;
@@ -753,7 +758,7 @@ class ItemProvider with ChangeNotifier {
     ];
     int _t = 0;
     await Future.forEach(_titles, (t) async {
-      DateTime _date = DateTime(2021, _r.nextInt(11) + 1, _r.nextInt(27) + 1);
+      DateTime _date = DateTime(2021, _r.nextInt(7) + 1, _r.nextInt(27) + 1);
       Color _avatarColor = Color.fromRGBO(
         _r.nextInt(255),
         _r.nextInt(255),
@@ -768,10 +773,10 @@ class ItemProvider with ChangeNotifier {
       Username _u = _cripto.createUsername(t + '@username');
       Pin _pin = _cripto.createPin(_r.nextInt(9999).toString());
       Note _n = _cripto.createNote(t + '@note');
-      Address _a = _cripto.createAddress(t + '.com');
+      Address _a = _cripto.createAddress('www.' + t + '.com');
       Product _pr = Product(
-        productTrademark: t + '@trademark',
-        productModel: t + '@model',
+        productTrademark: t + '-trademark',
+        productModel: t + '-model',
       );
       Item _i = Item(
         title: t,
