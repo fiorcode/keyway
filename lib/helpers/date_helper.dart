@@ -30,4 +30,13 @@ class DateHelper {
     int _days = _nowUTC.difference(_date).inDays;
     return dayLapse <= _days;
   }
+
+  static int compare(String date1, String date2) {
+    DateTime _d1 = DateTime.parse(date1);
+    DateTime _d2 = DateTime.parse(date2);
+    if (_d1.isAfter(_d2))
+      return 1;
+    else if (_d1.isBefore(_d2)) return -1;
+    return 0;
+  }
 }
