@@ -89,8 +89,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _userListSwitch();
   }
 
-  _loadFieldsAsync() {
-    _cripto = Provider.of<CriptoProvider>(context);
+  void _loadFieldsAsync() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _titleCtrler.text = _i.title;
     _userCtrler.text = _cripto.decryptUsername(_i.username);
     _passCtrler.text = _cripto.decryptPassword(_i.password);
@@ -219,6 +219,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   @override
   void initState() {
     _i = widget.item.clone();
+    _loadFieldsAsync();
     // _loadFields = _loadFieldsAsync();
     super.initState();
   }
@@ -249,7 +250,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   Widget build(BuildContext context) {
     _cripto = Provider.of<CriptoProvider>(context);
     _items = Provider.of<ItemProvider>(context, listen: false);
-    _loadFieldsAsync();
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
