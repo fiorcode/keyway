@@ -21,7 +21,13 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   CriptoProvider _cripto;
 
   int _showValue = 0;
-  String _subtitle = '';
+  String _title;
+  String _subtitle;
+  bool _exp = false;
+  IconData _icon;
+  Color _avatarColor;
+  Color _iconColor;
+  Color _warnColor;
 
   void _onTap() {
     if (_cripto.locked) {
@@ -43,7 +49,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   }
 
   void _toClipBoard() async {
-    Clipboard.setData(ClipboardData(text: _setTitleSubtitle())).then(
+    Clipboard.setData(ClipboardData(text: _title)).then(
       (_) => ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           backgroundColor: Colors.green,
@@ -54,124 +60,95 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     );
   }
 
-  Color _setAvatarLetterColor() {
-    if (widget.item.avatarLetterColor >= 0)
-      return Color(widget.item.avatarLetterColor);
-    Color _c = Color(widget.item.avatarColor);
-    double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
-    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
-  }
-
-  bool _expired() {
-    bool _exp = false;
-    if (widget.item.itemPassword != null) {
-      _exp = DateHelper.expired(
-        widget.item.itemPassword.passwordDate,
-        widget.item.itemPassword.passwordLapse,
-      );
-      if (_exp) return true;
-    }
-    if (widget.item.pin != null) {
-      _exp = DateHelper.expired(
-        widget.item.pin.pinDate,
-        widget.item.pin.pinLapse,
-      );
-    }
-    return _exp;
-  }
-
-  String _setTitleSubtitle() {
+  void _switchView() {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    if (_showValue > 6)
+      _showValue = 0;
+    else
+      _showValue++;
     switch (_showValue) {
       case 1:
         if (widget.item.password == null) continue two;
         _showValue = 1;
+        _icon = Icons.password;
+        _title = _cripto.decryptPassword(widget.item.password);
         _subtitle = '';
-        return _cripto.doDecrypt(
-            widget.item.password.passwordEnc, widget.item.password.passwordIv);
         break;
       two:
       case 2:
         if (widget.item.pin == null) continue three;
         _showValue = 2;
+        _icon = Icons.pin;
+        _title = _cripto.decryptPin(widget.item.pin);
         _subtitle = '';
-        return _cripto.decryptPin(widget.item.pin);
         break;
       three:
       case 3:
         if (widget.item.username == null) continue four;
         _showValue = 3;
+        _icon = Icons.account_box;
+        _title = _cripto.decryptUsername(widget.item.username);
         _subtitle = '';
-        return _cripto.decryptUsername(widget.item.username);
         break;
       four:
       case 4:
         if (widget.item.note == null) continue five;
         _showValue = 4;
+        _icon = Icons.note;
+        _title = _cripto.decryptNote(widget.item.note);
         _subtitle = '';
-        return _cripto.decryptNote(widget.item.note);
         break;
       five:
       case 5:
         if (widget.item.address == null) continue six;
         _showValue = 5;
+        _icon = Icons.http;
+        _title = _cripto.decryptAddress(widget.item.address);
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
-        return _cripto.decryptAddress(widget.item.address);
         break;
       six:
       case 6:
         if (widget.item.product == null) continue cero;
         _showValue = 6;
-        _subtitle = widget.item.product.productModel.isNotEmpty
-            ? 'Model: ${widget.item.product.productModel}'
-            : '';
-        return '${widget.item.product.productTrademark}';
+        _icon = Icons.router;
+        _title = '${widget.item.product.productTrademark}';
+        _subtitle = 'Model: ${widget.item.product.productModel}';
         break;
       cero:
       default:
         _showValue = 0;
+        _icon = null;
+        _title = widget.item.title;
         _subtitle = '';
-        return widget.item.title;
     }
+    setState(() {});
   }
 
-  Widget _setAvatarIcon() {
-    switch (_showValue) {
-      case 1:
-        return Icon(Icons.password, color: _setAvatarLetterColor());
-        break;
-      case 2:
-        return Icon(Icons.pin, color: _setAvatarLetterColor());
-        break;
-      case 3:
-        return Icon(Icons.account_box, color: _setAvatarLetterColor());
-        break;
-      case 4:
-        return Icon(Icons.note, color: _setAvatarLetterColor());
-        break;
-      case 5:
-        return Icon(Icons.http, color: _setAvatarLetterColor());
-        break;
-      case 6:
-        return Icon(Icons.router, color: _setAvatarLetterColor());
-        break;
-      default:
-        return Text(
-          widget.item.title.substring(0, 1).toUpperCase(),
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: _setAvatarLetterColor(),
-          ),
-        );
-    }
-  }
-
-  Color _setWarningColor() {
+  bool _expired() {
+    bool _expired = false;
     if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeated) return Colors.red[300];
+      _expired = DateHelper.expired(
+        widget.item.itemPassword.passwordDate,
+        widget.item.itemPassword.passwordLapse,
+      );
+      if (_expired) return true;
     }
-    return Colors.grey[100];
+    if (widget.item.pin != null) {
+      _expired = DateHelper.expired(
+        widget.item.pin.pinDate,
+        widget.item.pin.pinLapse,
+      );
+    }
+    return _expired;
+  }
+
+  Color _setAvatarColor() {
+    if (widget.item.avatarLetterColor >= 0)
+      return Color(widget.item.avatarLetterColor);
+    Color _c = Color(widget.item.avatarColor);
+    double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
+    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
   Color _setIconColor() {
@@ -181,16 +158,22 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     return Colors.grey;
   }
 
-  void _switchShowValue() => setState(() {
-        if (_showValue > 6)
-          _showValue = 0;
-        else
-          _showValue++;
-      });
+  Color _setWarningColor() {
+    if (widget.item.itemPassword != null) {
+      if (widget.item.itemPassword.repeated) return Colors.red[300];
+    }
+    return Colors.grey[100];
+  }
 
   @override
   void initState() {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    _title = widget.item.title;
+    _subtitle = '';
+    _exp = _expired();
+    _avatarColor = _setAvatarColor();
+    _iconColor = _setIconColor();
+    _warnColor = _setWarningColor();
     super.initState();
   }
 
@@ -198,7 +181,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   Widget build(BuildContext context) {
     return Card(
       clipBehavior: Clip.antiAlias,
-      shadowColor: _setWarningColor(),
+      shadowColor: _warnColor,
       elevation: 8,
       shape: StadiumBorder(),
       child: ListTile(
@@ -209,7 +192,16 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           backgroundColor: widget.item.avatarColor != null
               ? Color(widget.item.avatarColor)
               : Colors.grey,
-          child: _setAvatarIcon(),
+          child: _icon == null
+              ? Text(
+                  widget.item.title.substring(0, 1).toUpperCase(),
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: _avatarColor,
+                  ),
+                )
+              : Icon(_icon, color: _avatarColor),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,7 +210,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                _setTitleSubtitle(),
+                _title,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -245,7 +237,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_expired() && _showValue == 0)
+              if (_exp && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
@@ -260,8 +252,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                   height: 48,
                   width: 48,
                   child: FloatingActionButton(
-                    backgroundColor: _setWarningColor(),
-                    child: Icon(Icons.copy, color: _setIconColor(), size: 24),
+                    backgroundColor: _warnColor,
+                    child: Icon(Icons.copy, color: _iconColor, size: 24),
                     heroTag: null,
                     onPressed: _toClipBoard,
                   ),
@@ -272,14 +264,14 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                 width: 48,
                 child: InkWell(
                   child: FloatingActionButton(
-                    backgroundColor: _setWarningColor(),
+                    backgroundColor: _warnColor,
                     child: Icon(
                       Icons.remove_red_eye_outlined,
-                      color: _setIconColor(),
+                      color: _iconColor,
                       size: 24,
                     ),
                     heroTag: null,
-                    onPressed: _switchShowValue,
+                    onPressed: _switchView,
                   ),
                 ),
               ),
