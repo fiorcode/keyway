@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/models/item_password.dart';
+import 'package:keyway/models/password.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
@@ -47,8 +50,13 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
         ),
       ),
       body: ListView.builder(
-        itemCount: widget.item.passwords.length,
+        padding: EdgeInsets.all(16.0),
+        itemCount: widget.item.itemPasswords.length,
         itemBuilder: (ctx, i) {
+          ItemPassword _ip = widget.item.itemPasswords[i];
+          Password _p = widget.item.passwords
+              .where((p) => p.passwordId == _ip.fkPasswordId)
+              .first;
           return Container(
             width: double.infinity,
             height: 92,
@@ -70,14 +78,14 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
                   ),
                   color: Colors.black,
                   child: Text(
-                    'password',
+                    DateHelper.ddMMyyHm(_ip.passwordDate),
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
                 Expanded(
                   child: Center(
                     child: Text(
-                      _cripto.decryptPassword(widget.item.passwords[i]),
+                      _cripto.decryptPassword(_p),
                       style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.w300,
