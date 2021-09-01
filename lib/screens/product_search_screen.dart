@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/nist_provider.dart';
@@ -24,7 +23,7 @@ class ProductSearchScreen extends StatefulWidget {
 class _ProductSearchScreenState extends State<ProductSearchScreen> {
   NistProvider _nist;
   Future<CpeBody> _getCpesAsync;
-  TextEditingController _keywordCtrler;
+  TextEditingController _keywordCtrler = TextEditingController();
 
   bool _emptyTrademark;
   bool _emptyModel;
@@ -82,27 +81,24 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   }
 
   void _search({int startIndex = 0}) {
-    try {
-      if (_byKeyword) {
-        if (_keywordCtrler.text.isEmpty) return;
-        _getCpesAsync = _nist.getCpesByKeyword(
-          _keywordCtrler.text,
+    _nist = Provider.of<NistProvider>(context, listen: false);
+    if (_byKeyword) {
+      if (_keywordCtrler.text.isEmpty) return;
+      _getCpesAsync = _nist.getCpesByKeyword(
+        _keywordCtrler.text,
+        startIndex: startIndex,
+      );
+      // setState(() {});
+    } else {
+      if (_productNotEmpty()) {
+        _getCpesAsync = _nist.getCpesByCpeMatch(
+          type: widget.product.productType,
+          trademark: widget.product.productTrademark,
+          model: widget.product.productModel,
           startIndex: startIndex,
         );
-        setState(() {});
-      } else {
-        if (_productNotEmpty()) {
-          _getCpesAsync = _nist.getCpesByCpeMatch(
-            type: widget.product.productType,
-            trademark: widget.product.productTrademark,
-            model: widget.product.productModel,
-            startIndex: startIndex,
-          );
-          setState(() {});
-        }
+        // setState(() {});
       }
-    } catch (error) {
-      ErrorHelper.errorDialog(context, error);
     }
   }
 
@@ -136,8 +132,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
 
   @override
   void initState() {
-    _nist = Provider.of<NistProvider>(context, listen: false);
-    _keywordCtrler = TextEditingController();
     _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
     _emptyModel = widget.modelCtrler.text.isEmpty;
     _emptyKeyword = _keywordCtrler.text.isEmpty;
@@ -328,7 +322,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                     return Center(child: CircularProgressIndicator());
                   case (ConnectionState.done):
                     if (snap.hasError) {
-                      //ErrorHelper.errorDialog(context, snap.error);
                       return Text(snap.error.toString());
                     } else
                       return snap.data.result.cpes.length <= 0
