@@ -19,10 +19,10 @@ class _Cpe23uriCveTableScreenState extends State<Cpe23uriCveTableScreen> {
   Future<void> _getCpe23uriCvesAsync() async => await _item.fetchCpe23uriCves();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     _getCpe23uriCves = _getCpe23uriCvesAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
