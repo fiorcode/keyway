@@ -80,6 +80,11 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     });
   }
 
+  void _searchTap() {
+    _search();
+    setState(() {});
+  }
+
   void _search({int startIndex = 0}) {
     _nist = Provider.of<NistProvider>(context, listen: false);
     if (_byKeyword) {
@@ -88,7 +93,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
         _keywordCtrler.text,
         startIndex: startIndex,
       );
-      // setState(() {});
     } else {
       if (_productNotEmpty()) {
         _getCpesAsync = _nist.getCpesByCpeMatch(
@@ -97,7 +101,6 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
           model: widget.product.productModel,
           startIndex: startIndex,
         );
-        // setState(() {});
       }
     }
   }
@@ -306,7 +309,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                     TextButton.icon(
                       icon: Icon(Icons.search, color: Colors.grey, size: 32),
                       label: Text('Search', textAlign: TextAlign.center),
-                      onPressed: _search,
+                      onPressed: _searchTap,
                     ),
                   ],
                 ),
