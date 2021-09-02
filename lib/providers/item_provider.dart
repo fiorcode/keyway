@@ -67,16 +67,6 @@ class ItemProvider with ChangeNotifier {
     return _buildItems();
   }
 
-  // Future<List<Item>> fetchItemsWithTag(Tag t) async {
-  //   Iterable<Item> _iter;
-  //   _items.clear();
-  //   await DBHelper.getActiveItemsWithTag(t.tagName)
-  //       .then((data) => _iter = data.map((i) => Item.fromMap(i)));
-  //   _items.addAll(_iter.toSet().toList());
-  //   await _buildItems();
-  //   return _items;
-  // }
-
   Future<List<Item>> _buildItems() async {
     await Future.forEach(_items, (Item i) async {
       if (i.fkUsernameId != null) {
@@ -330,7 +320,7 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertItem(Item i) async {
     //TODO: uncomment this
 
-    // i.date = DateTime.now().toIso8601String();
+    i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
       if (i.password.passwordId == null) {
@@ -362,6 +352,13 @@ class ItemProvider with ChangeNotifier {
         await insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
           i.product.fkCpe23uriId = cpe23uriId;
           i.fkProductId = await insertProduct(i.product);
+          if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
+            Future.forEach(i.product.cpe23uri.vulnerabilities,
+                (String v) async {
+              await insertCve(Cve(cveId: v));
+              await insertCpe23UriCve(Cpe23uriCve(cpe23uriId, v));
+            });
+          }
         });
       } else {
         i.fkProductId = await insertProduct(i.product);
@@ -588,14 +585,20 @@ class ItemProvider with ChangeNotifier {
 
   Future<int> insertCpe23uri(Cpe23uri c) {
     return DBHelper.getByValue(DBHelper.cpe23uriTable, 'value', c.value).then(
-      (list) async {
+      (list) {
         if (list.isEmpty) {
-          return await DBHelper.insert(DBHelper.cpe23uriTable, c.toMap());
+          return DBHelper.insert(DBHelper.cpe23uriTable, c.toMap());
         } else
           return Cpe23uri.fromMap(list.first).cpe23uriId;
       },
     );
   }
+
+  Future<int> insertCpe23UriCve(Cpe23uriCve cc) async {
+    return DBHelper.insert(DBHelper.cpe23uriCveTable, cc.toMap());
+  }
+
+  Future<int> insertCve(Cve c) => DBHelper.insert(DBHelper.cveTable, c.toMap());
 
   Future<Password> passwordInDB(String hash) async {
     if (hash.isEmpty) return null;
