@@ -10,6 +10,8 @@ class Cpe23uri {
   String refType;
   String lastTracking;
 
+  List<String> vulnerabilities;
+
   Cpe23uri({
     this.cpe23uriId,
     this.value = '',
@@ -27,6 +29,7 @@ class Cpe23uri {
     this.title = cpe.titles.isEmpty ? '' : cpe.titles.first.title;
     this.ref = cpe.refs.isEmpty ? '' : cpe.refs.first.ref;
     this.refType = cpe.refs.isEmpty ? '' : cpe.refs.first.type;
+    this.vulnerabilities = cpe.vulnerabilities;
   }
 
   Cpe23uri.fromMap(Map<String, dynamic> map) {
