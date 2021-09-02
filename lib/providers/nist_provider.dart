@@ -15,6 +15,8 @@ class NistProvider with ChangeNotifier {
     String model = '*',
     int startIndex = 0,
   }) async {
+    trademark = trademark.replaceAll(' ', '_');
+    model = model.replaceAll(' ', '_');
     String urlString =
         '$_baseUrl/cpes/1.0?cpeMatchString=cpe:2.3:$type:$trademark:$model&addOns=cves&resultsPerPage=100&startIndex=$startIndex';
     try {
