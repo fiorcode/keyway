@@ -5,18 +5,18 @@ class DateHelper {
   static DateFormat _ddMMyyHm = DateFormat('dd/MM/yy k:mm');
 
   static String ddMMyyyy(dynamic date) {
-    if (date.isEmpty) return 'No date';
-    if (date is String)
+    if (date is String) {
+      if (date.isEmpty) return 'No date';
       return _ddMMyyyy.format(DateTime.parse(date));
-    else if (date is DateTime) return _ddMMyyyy.format(date);
+    } else if (date is DateTime) return _ddMMyyyy.format(date);
     return 'Unknown format';
   }
 
   static String ddMMyyHm(dynamic date) {
-    if (date.isEmpty) return 'No date';
-    if (date is String)
+    if (date is String) {
+      if (date.isEmpty) return 'No date';
       return _ddMMyyHm.format(DateTime.parse(date));
-    else if (date is DateTime) return _ddMMyyHm.format(date);
+    } else if (date is DateTime) return _ddMMyyHm.format(date);
     return 'Unknown format';
   }
 
