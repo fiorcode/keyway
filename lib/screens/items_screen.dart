@@ -10,11 +10,8 @@ import '../screens/dashboard_screen.dart';
 import '../widgets/card/item_locked_card.dart';
 import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
-// import '../widgets/empty_items.dart';
 import '../widgets/text_field/search_bar_text_field.dart';
 import 'package:keyway/widgets/tags_filter_list.dart';
-// import '../widgets/item_filter_list.dart';
-// import '../widgets/loading_scaffold.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -35,8 +32,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   bool _unlocking = false;
   bool _searching = false;
-  // bool _deleted = false;
-  // bool _oldPassword = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -47,23 +42,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       if (!_searching) _clearSearch();
     });
   }
-
-  // void _deletedSwitch() {
-  //   _deleted = !_deleted;
-  //   _deleted
-  //       ? _getItems = _getItemsDeletedAsync()
-  //       : _getItems = _getItemsAsync();
-  //   setState(() {});
-  // }
-
-  // void _oldPasswordSwitch() {
-  //   if (_deleted) _deleted = false;
-  //   _oldPassword = !_oldPassword;
-  //   _oldPassword
-  //       ? _getItems = _getItemsDeletedAsync()
-  //       : _getItems = _getItemsAsync();
-  //   setState(() {});
-  // }
 
   void _tagsSwitch(Tag tag) {
     if (tag.selected) {
@@ -82,11 +60,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _getItemsAsync() async =>
       _items = await _item.fetchItems(_searchCtrler.text);
 
-  // Future<void> _getItemsDeletedAsync() => _item.fetchItemsDeleted();
-
-  // Future<void> _getItemsWithTag(Tag t) => _item.fetchItemsWithTag(t);
-
   void _onReturn() {
+    _tag = null;
     _getItems = _getItemsAsync();
     setState(() {});
   }
@@ -112,8 +87,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Icons.lock_outline,
           color: _unlocking ? Colors.orange : Colors.red,
         ),
-        // onPressed: _lockSwitch,
-        onPressed: () => _cripto.unlock('Qwe123!'),
+        onPressed: _lockSwitch,
+        // onPressed: () => _cripto.unlock('Qwe123!'),
       );
     } else {
       if (_searching) {
@@ -185,12 +160,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Column(
             children: [
               TagsFilterList(_tag, _tagsSwitch),
-              // ItemFilterList(
-              //   _deleted,
-              //   _deletedSwitch,
-              //   _oldPassword,
-              //   _oldPasswordSwitch,
-              // ),
               FutureBuilder(
                   future: _getItems,
                   builder: (ctx, snap) {
@@ -221,6 +190,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         else {
                           return Expanded(
                             child: ListView.builder(
+                              key: UniqueKey(),
                               padding: EdgeInsets.all(12.0),
                               shrinkWrap: true,
                               itemCount: _items.length,
