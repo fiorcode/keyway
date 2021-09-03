@@ -80,8 +80,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     });
   }
 
-  void _searchTap() {
-    _search();
+  void _searchTap({int index = 0}) {
+    _search(startIndex: index);
     setState(() {});
   }
 
@@ -371,7 +371,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                                   ? Colors.white
                                                   : Colors.grey,
                                           onPressed: () =>
-                                              _search(startIndex: i * 100),
+                                              _searchTap(index: i * 100),
                                           heroTag: null,
                                           child: Text(
                                             (i + 1).toString(),
