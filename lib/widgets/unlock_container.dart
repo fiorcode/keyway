@@ -6,7 +6,9 @@ import 'package:keyway/providers/cripto_provider.dart';
 
 class UnlockContainer extends StatefulWidget {
   UnlockContainer(this.function);
+
   final Function function;
+
   @override
   _UnlockContainerState createState() => _UnlockContainerState();
 }
@@ -24,6 +26,23 @@ class _UnlockContainerState extends State<UnlockContainer> {
     setState(() => _obscure = !_obscure);
   }
 
+  Future<void> _unlock(BuildContext ctx) async {
+    CriptoProvider _cripto =
+        Provider.of<CriptoProvider>(context, listen: false);
+    await _cripto
+        .unlock(_ctrler.text)
+        .then((_) => widget.function())
+        .onError((error, _) {
+      ScaffoldMessenger.of(ctx).showSnackBar(
+        SnackBar(
+          content: Text('Wrong Password'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.red[300],
+        ),
+      );
+    });
+  }
+
   @override
   void dispose() {
     _ctrler.dispose();
@@ -32,7 +51,6 @@ class _UnlockContainerState extends State<UnlockContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final _cProv = Provider.of<CriptoProvider>(context);
     return Container(
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
@@ -66,20 +84,7 @@ class _UnlockContainerState extends State<UnlockContainer> {
                     ? null
                     : InkWell(
                         child: Icon(Icons.vpn_key),
-                        onTap: () {
-                          try {
-                            _cProv.unlock(_ctrler.text);
-                            widget.function();
-                          } catch (error) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('Wrong Password'),
-                                duration: Duration(seconds: 2),
-                                backgroundColor: Colors.red[300],
-                              ),
-                            );
-                          }
-                        },
+                        onTap: () => _unlock(context),
                       ),
               ),
               obscureText: _obscure,
