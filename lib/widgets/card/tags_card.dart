@@ -18,10 +18,11 @@ class TagsCard extends StatefulWidget {
 class _TagsCardState extends State<TagsCard> {
   ItemProvider _items;
   Future<List<Tag>> _getTags;
+  List<Tag> _tagList;
   List<Widget> _chips;
   String _widgetTags;
 
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
+  Future<List<Tag>> _tagsList() async => _tagList = await _items.getTags();
 
   List<Widget> _tags(List<Tag> tags, bool interact) {
     _chips = <Widget>[];
@@ -66,8 +67,10 @@ class _TagsCardState extends State<TagsCard> {
   }
 
   void _onReturn(Tag tag) {
-    if (tag != null) tagTapped(tag, true);
-    _getTags = _tagsList();
+    if (tag != null) {
+      tagTapped(tag, true);
+      _tagList.add(tag);
+    }
     setState(() {});
   }
 
@@ -106,7 +109,7 @@ class _TagsCardState extends State<TagsCard> {
                   builder: (ctx, snap) {
                     switch (snap.connectionState) {
                       case ConnectionState.done:
-                        return (snap.data as List<Tag>).length > 0
+                        return _tagList.length > 0
                             ? Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -117,7 +120,7 @@ class _TagsCardState extends State<TagsCard> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 4.0),
                                       scrollDirection: Axis.horizontal,
-                                      children: _tags(snap.data, true),
+                                      children: _tags(_tagList, true),
                                     ),
                                   ),
                                   IconButton(
