@@ -598,7 +598,14 @@ class ItemProvider with ChangeNotifier {
     return DBHelper.insert(DBHelper.cpe23uriCveTable, cc.toMap());
   }
 
-  Future<int> insertCve(Cve c) => DBHelper.insert(DBHelper.cveTable, c.toMap());
+  Future<String> insertCve(Cve c) async {
+    await DBHelper.getCveById(c.cveId).then((list) {
+      if (list.isNotEmpty)
+        return Cve.fromMap(list.first).cveId;
+      else
+        return DBHelper.insert(DBHelper.cveTable, c.toMap());
+    });
+  }
 
   Future<Password> passwordInDB(String hash) async {
     if (hash.isEmpty) return null;
