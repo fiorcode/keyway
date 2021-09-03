@@ -39,16 +39,23 @@ class CriptoProvider with ChangeNotifier {
       s.isNotEmpty ? sha256.convert(utf8.encode(s)).toString() : '';
 
   Future<void> unlock(String key) async {
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(doHash(key).substring(0, 32))));
-    e.Encrypted _mkCrypted = e.Encrypted.fromBase16(await _getMasterKey());
-    String _mk = _crypter.decrypt(
-      _mkCrypted,
-      iv: e.IV.fromBase16(await _getMasterKeyIV()),
-    );
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
-    _mk = 'MASTER*KEY*CLEARED';
-    _locked = false;
-    notifyListeners();
+    try {
+      _crypter =
+          e.Encrypter(e.AES(e.Key.fromUtf8(doHash(key).substring(0, 32))));
+      String _mk = await _getMasterKey();
+      String _mkIv = await _getMasterKeyIV();
+      e.Encrypted _mkCrypted = e.Encrypted.fromBase16(_mk);
+      _mk = _crypter.decrypt(
+        _mkCrypted,
+        iv: e.IV.fromBase16(_mkIv),
+      );
+      _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk)));
+      _mk = 'MASTER*KEY*CLEARED';
+      _locked = false;
+      notifyListeners();
+    } catch (error) {
+      throw error;
+    }
   }
 
   void lock() {
