@@ -228,6 +228,20 @@ class DBHelper {
     );
   }
 
+  // static Future<int> insertCve(Map<String, Object> data) async =>
+  //     (await DBHelper.database()).insert(
+  //       data,
+  //       conflictAlgorithm: sql.ConflictAlgorithm.fail,
+  //     );
+
+  static Future<List<Map<String, dynamic>>> getCveById(String id) async {
+    return (await DBHelper.database()).query(
+      cveTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
   static Future<List<Map<String, dynamic>>> getItemById(int id) async {
     return (await DBHelper.database()).query(
       DBHelper.itemTable,
