@@ -48,26 +48,26 @@ class _PasswordChangeReminderCardState
           children: [
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.itemPass.passwordLapse == -1,
+              selected: widget.itemPass.passwordLapse == 0,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.itemPass.passwordLapse = -1;
+                      widget.itemPass.passwordLapse = 0;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 'Never',
                 style: TextStyle(
-                  color: widget.itemPass.passwordLapse == -1
+                  color: widget.itemPass.passwordLapse == 0
                       ? Colors.grey
                       : Colors.white,
-                  fontWeight: widget.itemPass.passwordLapse == -1
+                  fontWeight: widget.itemPass.passwordLapse == 0
                       ? FontWeight.bold
                       : null,
                 ),
               ),
-              elevation: widget.itemPass.passwordLapse == -1 ? 8.0 : 0.0,
+              elevation: widget.itemPass.passwordLapse == 0 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
