@@ -14,12 +14,13 @@ class DBHelper {
   static const String noteTable = "note";
   static const String addressTable = "address";
   static const String productTable = "product";
+  static const String productCveTable = "product_cve";
   static const String cpe23uriTable = "cpe23uri";
   static const String cpe23uriCveTable = "cpe23uri_cve";
   static const String cveTable = "cve";
   static const String cveImpactV3Table = "cve_impact_v3";
   static const String tagTable = "tag";
-
+  static const String backupTable = "backup";
   static const String _backupPath = "/keyway/backups";
 
   static Future<Database> database() async {
@@ -37,11 +38,13 @@ class DBHelper {
         await db.execute(_createNoteTable);
         await db.execute(_createAddressTable);
         await db.execute(_createProductTable);
+        await db.execute(_createProductCveTable);
         await db.execute(_createCpe23uriTable);
         await db.execute(_createCpe23uriCveTable);
         await db.execute(_createCveTable);
         await db.execute(_createCveImpactV3Table);
         await db.execute(_createTagTable);
+        await db.execute(_createBackupTable);
       },
       version: 1,
     );
@@ -228,17 +231,11 @@ class DBHelper {
     );
   }
 
-  // static Future<int> insertCve(Map<String, Object> data) async =>
-  //     (await DBHelper.database()).insert(
-  //       data,
-  //       conflictAlgorithm: sql.ConflictAlgorithm.fail,
-  //     );
-
-  static Future<List<Map<String, dynamic>>> getCveById(String id) async {
+  static Future<List<Map<String, dynamic>>> getCveByName(String cve) async {
     return (await DBHelper.database()).query(
       cveTable,
-      where: 'id = ?',
-      whereArgs: [id],
+      where: 'cve = ?',
+      whereArgs: [cve],
     );
   }
 
@@ -454,6 +451,14 @@ class DBHelper {
     fk_cpe23uri_id INTEGER,
     FOREIGN KEY (fk_cpe23uri_id) REFERENCES $cpe23uriTable (cpe23uri_id))''';
 
+  static const _createProductCveTable = '''CREATE TABLE $productCveTable(
+    fk_product_id INTEGER,
+    fk_cve_id INTEGER,
+    patched INTEGER,
+    PRIMARY KEY (fk_product_id, fk_cve_id),
+    FOREIGN KEY (fk_product_id) REFERENCES $productTable (product_id),
+    FOREIGN KEY (fk_cve_id) REFERENCES $cveTable (cve_id))''';
+
   static const _createCpe23uriTable = '''CREATE TABLE $cpe23uriTable(
     cpe23uri_id INTEGER PRIMARY KEY AUTOINCREMENT,
     value TEXT,
@@ -472,7 +477,8 @@ class DBHelper {
     FOREIGN KEY (fk_cve_id) REFERENCES $cveTable (cve_id))''';
 
   static const _createCveTable = '''CREATE TABLE $cveTable(
-    cve_id TEXT PRIMARY KEY,
+    cve_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    cve TEXT,
     assigner TEXT,
     references_url TEXT,
     descriptions TEXT,
@@ -500,4 +506,10 @@ class DBHelper {
     tag_id INTEGER PRIMARY KEY AUTOINCREMENT,
     tag_name TEXT,
     tag_color INTEGER)''';
+
+  static const _createBackupTable = '''CREATE TABLE $backupTable(
+    backup_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    backup_date TEXT,
+    backup_type TEXT,
+    backup_path TEXT)''';
 }
