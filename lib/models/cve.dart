@@ -1,5 +1,6 @@
 class Cve {
-  String cveId;
+  int cveId;
+  String cve;
   String assigner;
   String referencesUrl;
   String descriptions;
@@ -9,6 +10,7 @@ class Cve {
 
   Cve({
     this.cveId,
+    this.cve = '',
     this.assigner = '',
     this.referencesUrl = '',
     this.descriptions = '',
@@ -19,6 +21,7 @@ class Cve {
 
   Cve.fromMap(Map<String, dynamic> map) {
     cveId = map['cve_id'];
+    cve = map['cve'];
     assigner = map['assigner'];
     referencesUrl = map['references_url'];
     descriptions = map['descriptions'];
@@ -29,6 +32,7 @@ class Cve {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = <String, dynamic>{
+      'cve': cve,
       'assigner': assigner,
       'references_url': referencesUrl,
       'descriptions': descriptions,
