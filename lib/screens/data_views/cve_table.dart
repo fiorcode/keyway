@@ -19,10 +19,10 @@ class _CveTableScreenState extends State<CveTableScreen> {
   Future<void> _getCvesAsync() async => await _item.fetchCves();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     _getCves = _getCvesAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -60,6 +60,17 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                   Text('id: '),
                                   Text(
                                     _item.cves[i].cveId.toString(),
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('cve: '),
+                                  Text(
+                                    _item.cves[i].cve,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
