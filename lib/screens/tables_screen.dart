@@ -7,7 +7,9 @@ import 'data_views/item_password_table.dart';
 import 'data_views/note_table.dart';
 import 'data_views/password_table.dart';
 import 'data_views/pin_table.dart';
+import 'data_views/product_cve_table.dart';
 import 'data_views/tag_table.dart';
+import 'data_views/user_table.dart';
 import 'data_views/username_table.dart';
 import 'data_views/product_table.dart';
 import 'data_views/cpe23uri_table.dart';
@@ -135,13 +137,28 @@ class _TablesScreenState extends State<TablesScreen> {
               onTap: () => _goTo(CveTableScreen.routeName),
             ),
             DashboardCard(
+              icon: Icon(Icons.bug_report, color: _primary, size: 48),
+              title: Text(
+                'ProductCVEs',
+                style: TextStyle(color: _primary, fontSize: 16),
+              ),
+              onTap: () => _goTo(ProductCveTableScreen.routeName),
+            ),
+            DashboardCard(
               icon: Icon(Icons.tag, color: _primary, size: 48),
               title: Text(
                 'Tags',
                 style: TextStyle(color: _primary, fontSize: 16),
               ),
-              onTap: () =>
-                  Navigator.of(context).pushNamed(TagTableScreen.routeName),
+              onTap: () => _goTo(TagTableScreen.routeName),
+            ),
+            DashboardCard(
+              icon: Icon(Icons.manage_accounts, color: _primary, size: 48),
+              title: Text(
+                'User',
+                style: TextStyle(color: _primary, fontSize: 16),
+              ),
+              onTap: () => _goTo(UserTableScreen.routeName),
             ),
           ],
         ),
