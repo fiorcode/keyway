@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/providers/item_provider.dart';
-import 'package:keyway/screens/products_without_cpe_screen.dart';
 import 'package:provider/provider.dart';
 
-import 'package:keyway/providers/nist_provider.dart';
+import 'package:keyway/providers/item_provider.dart';
+import 'package:keyway/screens/products_without_cpe_screen.dart';
+// import 'package:keyway/providers/nist_provider.dart';
 
 class VulnerabilitiesScreen extends StatefulWidget {
   static const routeName = '/vulnerabilites';
@@ -14,7 +14,7 @@ class VulnerabilitiesScreen extends StatefulWidget {
 
 class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
   ItemProvider _item;
-  NistProvider _nist;
+  // NistProvider _nist;
 
   Future<void> _getCves;
   Future<void> _getProducts;
@@ -29,7 +29,7 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
   @override
   void initState() {
     _item = Provider.of<ItemProvider>(context, listen: false);
-    _nist = Provider.of<NistProvider>(context, listen: false);
+    // _nist = Provider.of<NistProvider>(context, listen: false);
     _getCves = _getCvesAsync();
     _getProducts = _getProductsAsync();
     super.initState();
