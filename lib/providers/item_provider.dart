@@ -1,8 +1,10 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/models/product_cve.dart';
+import 'package:keyway/models/user.dart';
 
 import '../providers/cripto_provider.dart';
+import '../helpers/date_helper.dart';
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
 import '../models/item_password.dart';
@@ -19,11 +21,6 @@ import '../models/tag.dart';
 
 class ItemProvider with ChangeNotifier {
   List<Item> _items = [];
-  List<Item> _itemsWithOldPasswords = [];
-  List<Item> _itemAndOldPasswords = [];
-  List<Item> _itemsDeleted = [];
-
-  List<Item> _allItems = [];
   List<ItemPassword> _itemsPasswords = [];
   List<Password> _passwords = [];
   List<Username> _usernames = [];
@@ -31,16 +28,12 @@ class ItemProvider with ChangeNotifier {
   List<Note> _notes = [];
   List<Address> _addresses = [];
   List<Product> _products = [];
+  List<ProductCve> _productCves = [];
   List<Cpe23uri> _cpe23uris = [];
   List<Cpe23uriCve> _cpe23uriCves = [];
   List<Cve> _cves = [];
 
   List<Item> get items => [..._items];
-  List<Item> get itemsWithOldPasswords => [..._itemsWithOldPasswords];
-  List<Item> get itemAndOldPasswords => [..._itemAndOldPasswords];
-  List<Item> get itemsDeleted => [..._itemsDeleted];
-
-  List<Item> get allItems => [..._allItems];
   List<ItemPassword> get itemPasswords => [..._itemsPasswords];
   List<Password> get passwords => [..._passwords];
   List<Username> get usernames => [..._usernames];
@@ -48,6 +41,7 @@ class ItemProvider with ChangeNotifier {
   List<Note> get notes => [..._notes];
   List<Address> get addresses => [..._addresses];
   List<Product> get products => [..._products];
+  List<ProductCve> get productCves => [..._productCves];
   List<Cpe23uri> get cpe23uris => [..._cpe23uris];
   List<Cpe23uriCve> get cpe23uriCves => [..._cpe23uriCves];
   List<Cve> get cves => [..._cves];
@@ -77,7 +71,7 @@ class ItemProvider with ChangeNotifier {
           i.itemPasswords = _ips;
           i.itemPasswords.sort((ip1, ip2) =>
               DateHelper.compare(ip2.passwordDate, ip1.passwordDate));
-          await Future.forEach(_ips, (_ip) async {
+          await Future.forEach(_ips, (ItemPassword _ip) async {
             i.passwords.add(await getPassword(_ip.fkPasswordId));
           }).then((_) {
             i.itemPassword = _ips.first;
@@ -99,47 +93,6 @@ class ItemProvider with ChangeNotifier {
       }
     });
     return _items;
-  }
-
-  Future<void> fetchAllItems(String title) async {
-    Iterable<Item> _iter;
-    _allItems.clear();
-    if (title.isEmpty) {
-      await DBHelper.read(DBHelper.itemTable).then((data) {
-        _iter = data.map((i) => Item.fromMap(i));
-      });
-    } else {
-      await DBHelper.read(DBHelper.itemTable)
-          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
-    }
-    _allItems.addAll(_iter.toList());
-    await _buildAllItems();
-  }
-
-  Future<void> _buildAllItems() async {
-    _allItems.forEach((i) async {
-      if (i.fkUsernameId != null) {
-        i.username = await getUsername(i.fkUsernameId);
-      }
-      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
-        if (_ips.isNotEmpty) {
-          i.itemPassword = _ips.first;
-          i.password = await getPassword(_ips.first.fkPasswordId);
-        }
-      });
-      if (i.fkPinId != null) {
-        i.pin = await getPin(i.fkPinId);
-      }
-      if (i.fkNoteId != null) {
-        i.note = await getNote(i.fkNoteId);
-      }
-      if (i.fkAddressId != null) {
-        i.address = await getAdress(i.fkAddressId);
-      }
-      if (i.fkProductId != null) {
-        i.product = await getProduct(i.fkProductId);
-      }
-    });
   }
 
   Future<void> fetchItemPasswords() async {
@@ -205,6 +158,15 @@ class ItemProvider with ChangeNotifier {
     _products.addAll(_iter.toList());
   }
 
+  Future<void> fetchProductCves() async {
+    Iterable<ProductCve> _iter;
+    _productCves.clear();
+    await DBHelper.read(DBHelper.productCveTable).then((data) {
+      _iter = data.map((i) => ProductCve.fromMap(i));
+    });
+    _productCves.addAll(_iter.toList());
+  }
+
   Future<void> fetchCpe23uris() async {
     Iterable<Cpe23uri> _iter;
     _cpe23uris.clear();
@@ -232,55 +194,6 @@ class ItemProvider with ChangeNotifier {
     _cves.addAll(_iter.toList());
   }
 
-  Future<void> fetchItemAndOldPasswords(int itemId) async {
-    Iterable<Item> _iter;
-    _itemAndOldPasswords.clear();
-    await DBHelper.getItemAndOldPasswords(itemId).then((data) {
-      _iter = data.map((e) {
-        Item _i = Item.fromMap(e);
-        _i.itemPassword = ItemPassword.fromMap(e);
-        _i.password = Password.fromMap(e);
-        return _i;
-      });
-      _itemAndOldPasswords.addAll(_iter.toList());
-    });
-  }
-
-  Future<List<Item>> fetchItemsDeleted() async {
-    Iterable<Item> _iter;
-    _itemsDeleted.clear();
-    await DBHelper.getDeletedItems().then((data) {
-      _iter = data.map((e) => Item.fromMap(e));
-    });
-    _itemsDeleted.addAll(_iter.toList());
-    _itemsDeleted.sort((a, b) => b.date.compareTo(a.date));
-    await _buildItemsDeleted();
-    return _itemsDeleted;
-  }
-
-  Future<void> _buildItemsDeleted() async {
-    _itemsDeleted.forEach((i) async {
-      if (i.fkUsernameId != null) {
-        i.username = await getUsername(i.fkUsernameId);
-      }
-      await getItemPasswordsByItemId(i.itemId).then((_ips) async {
-        if (_ips.isNotEmpty) {
-          i.itemPassword = _ips.first;
-          i.password = await getPassword(_ips.first.fkPasswordId);
-        }
-      });
-      if (i.fkPinId != null) {
-        i.pin = await getPin(i.fkPinId);
-      }
-      if (i.fkNoteId != null) {
-        i.note = await getNote(i.fkNoteId);
-      }
-      if (i.fkAddressId != null) {
-        i.address = await getAdress(i.fkAddressId);
-      }
-    });
-  }
-
   Future<Item> getItem(int id) async {
     List<Map<String, dynamic>> _i = await DBHelper.getItemById(id);
     Item _item = Item.fromMap(_i.first);
@@ -296,7 +209,7 @@ class ItemProvider with ChangeNotifier {
       if (_ips.isNotEmpty) {
         await Future.forEach(_ips, (_ip) async {
           i.itemPasswords.add(_ip);
-          i.passwords.add(await getPassword(_ip.fkPasswordId));
+          i.passwords.add(await getPassword(_ip.fkCveId));
         }).then((_) {
           i.itemPassword = _ips.first;
           i.password = i.passwords.first;
@@ -320,7 +233,7 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertItem(Item i) async {
     //TODO: uncomment this
 
-    i.date = DateTime.now().toIso8601String();
+    // i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
       if (i.password.passwordId == null) {
@@ -353,10 +266,10 @@ class ItemProvider with ChangeNotifier {
           i.product.fkCpe23uriId = cpe23uriId;
           i.fkProductId = await insertProduct(i.product);
           if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
-            Future.forEach(i.product.cpe23uri.vulnerabilities,
+            await Future.forEach(i.product.cpe23uri.vulnerabilities,
                 (String v) async {
-              await insertCve(Cve(cveId: v));
-              await insertCpe23UriCve(Cpe23uriCve(cpe23uriId, v));
+              int cveId = await insertCve(Cve(cve: v));
+              await insertCpe23UriCve(Cpe23uriCve(cpe23uriId, cveId));
             });
           }
         });
@@ -458,6 +371,17 @@ class ItemProvider with ChangeNotifier {
               if (i.product.cpe23uri.cpe23uriId == null) {
                 i.product.fkCpe23uriId =
                     await insertCpe23uri(i.product.cpe23uri);
+                if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
+                  await Future.forEach(i.product.cpe23uri.vulnerabilities,
+                      (String v) async {
+                    int cveId = await insertCve(Cve(cve: v));
+                    await insertCpe23UriCve(
+                      Cpe23uriCve(i.product.fkCpe23uriId, cveId),
+                    );
+                    await insertProductCve(ProductCve(
+                        fkProductId: i.product.productId, fkCveId: cveId));
+                  });
+                }
               } else {
                 i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
               }
@@ -471,6 +395,17 @@ class ItemProvider with ChangeNotifier {
           if (i.product.cpe23uri != null) {
             if (i.product.cpe23uri.cpe23uriId == null) {
               i.product.fkCpe23uriId = await insertCpe23uri(i.product.cpe23uri);
+              if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
+                await Future.forEach(i.product.cpe23uri.vulnerabilities,
+                    (String v) async {
+                  int cveId = await insertCve(Cve(cve: v));
+                  await insertCpe23UriCve(
+                    Cpe23uriCve(i.product.fkCpe23uriId, cveId),
+                  );
+                  await insertProductCve(ProductCve(
+                      fkProductId: i.product.productId, fkCveId: cveId));
+                });
+              }
             } else {
               i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
             }
@@ -578,6 +513,9 @@ class ItemProvider with ChangeNotifier {
   Future<int> updateProduct(Product p) async =>
       await DBHelper.update(DBHelper.productTable, p.toMap(), 'product_id');
 
+  Future<int> insertProductCve(ProductCve pc) async =>
+      await DBHelper.insert(DBHelper.productCveTable, pc.toMap());
+
   Future<int> deleteProduct(Product p) async {
     await DBHelper.deleteProductItem(p.productId);
     return DBHelper.delete(DBHelper.productTable, p.toMap(), 'product_id');
@@ -598,8 +536,8 @@ class ItemProvider with ChangeNotifier {
     return DBHelper.insert(DBHelper.cpe23uriCveTable, cc.toMap());
   }
 
-  Future<String> insertCve(Cve c) async {
-    await DBHelper.getCveById(c.cveId).then((list) {
+  Future<int> insertCve(Cve c) async {
+    return DBHelper.getCveByName(c.cve).then((list) {
       if (list.isNotEmpty)
         return Cve.fromMap(list.first).cveId;
       else
@@ -631,13 +569,6 @@ class ItemProvider with ChangeNotifier {
 
   Future<void> refreshItemPasswordStatus(int passwordId) async =>
       await DBHelper.refreshItemPasswordStatus(passwordId);
-
-  Future<void> removeItems() async {
-    _items.clear();
-    _itemsWithOldPasswords.clear();
-    _itemAndOldPasswords.clear();
-    _itemsDeleted.clear();
-  }
 
   Future<Username> getUsername(int id) async {
     List<Map<String, dynamic>> _u = await DBHelper.getUsernameById(id);
@@ -721,6 +652,14 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
+  Future<List<User>> getUserData() async {
+    Iterable<User> _iter;
+    await DBHelper.read(DBHelper.userTable).then((data) {
+      _iter = data.map((e) => User.fromMap(e));
+    });
+    return _iter.toList();
+  }
+
   Future<void> mockData() async {
     CriptoProvider _cripto = CriptoProvider();
     await _cripto.unlock('Qwe123!');
@@ -777,7 +716,7 @@ class ItemProvider with ChangeNotifier {
       );
       Password _p = _cripto.createPassword(t + '@password');
       ItemPassword _ip = ItemPassword(
-        passwordLapse: _r.nextInt(90) + 1,
+        passwordLapse: _r.nextInt(320) + 1,
         passwordDate: _date.toIso8601String(),
       );
       Username _u = _cripto.createUsername(t + '@username');
@@ -785,8 +724,8 @@ class ItemProvider with ChangeNotifier {
       Note _n = _cripto.createNote(t + '@note');
       Address _a = _cripto.createAddress('www.' + t + '.com');
       Product _pr = Product(
-        productTrademark: t + '-trademark',
-        productModel: t + '-model',
+        productTrademark: t + '_trademark',
+        productModel: t + '_model',
       );
       Item _i = Item(
         title: t,
