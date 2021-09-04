@@ -6,9 +6,9 @@ import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
 import 'screens/addresses_screen.dart';
+import 'screens/data_views/product_cve_table.dart';
 import 'screens/item_edit_screen.dart';
 import 'screens/item_view_screen.dart';
-import 'screens/item_history_screen.dart';
 import 'screens/notes_screen.dart';
 import 'screens/passwords_screen.dart';
 import 'screens/pins_screen.dart';
@@ -42,6 +42,7 @@ import 'screens/data_views/cpe23uri_table.dart';
 import 'screens/data_views/cpe23uri_cve_table.dart';
 import 'screens/data_views/cve_table.dart';
 import 'screens/data_views/tag_table.dart';
+import 'screens/data_views/user_table.dart';
 
 void main() => runApp(MyApp());
 
@@ -75,7 +76,6 @@ class MyApp extends StatelessWidget {
           ItemAddScreen.routeName: (ctx) => ItemAddScreen(),
           ItemEditScreen.routeName: (ctx) => ItemEditScreen(),
           ItemViewScreen.routeName: (ctx) => ItemViewScreen(),
-          ItemHistoryScreen.routeName: (ctx) => ItemHistoryScreen(),
           TagAddScreen.routeName: (ctx) => TagAddScreen(),
           ProductSearchScreen.routeName: (ctx) => ProductSearchScreen(),
           ProductsWithoutCpeScreen.routeName: (ctx) =>
@@ -103,10 +103,12 @@ class MyApp extends StatelessWidget {
           NoteTableScreen.routeName: (ctx) => NoteTableScreen(),
           AddressTableScreen.routeName: (ctx) => AddressTableScreen(),
           ProductTableScreen.routeName: (ctx) => ProductTableScreen(),
+          ProductCveTableScreen.routeName: (ctx) => ProductCveTableScreen(),
           Cpe23uriTableScreen.routeName: (ctx) => Cpe23uriTableScreen(),
           Cpe23uriCveTableScreen.routeName: (ctx) => Cpe23uriCveTableScreen(),
           CveTableScreen.routeName: (ctx) => CveTableScreen(),
           TagTableScreen.routeName: (ctx) => TagTableScreen(),
+          UserTableScreen.routeName: (ctx) => UserTableScreen(),
         },
       ),
     );
