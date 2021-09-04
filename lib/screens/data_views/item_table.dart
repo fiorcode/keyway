@@ -16,7 +16,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
   ItemProvider _item;
   Future _getItems;
 
-  Future<void> _getItemsAsync() async => await _item.fetchAllItems('');
+  Future<void> _getItemsAsync() async => await _item.fetchItems('');
 
   @override
   void didChangeDependencies() {
@@ -47,10 +47,10 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
               if (snap.hasError)
                 return ErrorHelper.errorBody(snap.error);
               else
-                return _item.allItems.length <= 0
+                return _item.items.length <= 0
                     ? EmptyItems()
                     : ListView.separated(
-                        itemCount: _item.allItems.length,
+                        itemCount: _item.items.length,
                         itemBuilder: (ctx, i) => ListTile(
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
