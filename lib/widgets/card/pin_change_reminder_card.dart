@@ -44,23 +44,22 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
           children: [
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.pin.pinLapse == -1,
+              selected: widget.pin.pinLapse == 0,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.pin.pinLapse = -1;
+                      widget.pin.pinLapse = 0;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 'Never',
                 style: TextStyle(
-                  color: widget.pin.pinLapse == -1 ? Colors.grey : Colors.white,
-                  fontWeight:
-                      widget.pin.pinLapse == -1 ? FontWeight.bold : null,
+                  color: widget.pin.pinLapse == 0 ? Colors.grey : Colors.white,
+                  fontWeight: widget.pin.pinLapse == 0 ? FontWeight.bold : null,
                 ),
               ),
-              elevation: widget.pin.pinLapse == -1 ? 8.0 : 0.0,
+              elevation: widget.pin.pinLapse == 0 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
