@@ -735,11 +735,13 @@ class ItemProvider with ChangeNotifier {
       );
       Password _p = _cripto.createPassword(t + '@password');
       ItemPassword _ip = ItemPassword(
-        passwordLapse: _r.nextInt(320) + 1,
+        passwordLapse: _r.nextInt(360) + 1,
         passwordDate: _date.toIso8601String(),
       );
       Username _u = _cripto.createUsername(t + '@username');
       Pin _pin = _cripto.createPin(_r.nextInt(9999).toString());
+      _pin.pinDate = _date.toIso8601String();
+      _pin.pinLapse = _r.nextInt(360) + 1;
       Note _n = _cripto.createNote(t + '@note');
       Address _a = _cripto.createAddress('www.' + t + '.com');
       Product _pr = Product(
