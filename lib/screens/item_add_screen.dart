@@ -84,34 +84,26 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _userListSwitch();
   }
 
-  Future<void> _setPassword() async {
-    Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
-    if (_p != null) {
-      if (_i.itemPassword.repeatWarning) {
-        bool _warning = await WarningHelper.repeat(context, 'Password');
-        _warning = _warning == null ? false : _warning;
-        if (!_warning) return;
-      }
-      _i.password = _p;
-    } else {
-      _i.password = _cripto.createPassword(_passCtrler.text);
-      if (_i.password == null) _i.itemPassword = null;
-    }
-  }
-
-  Future<void> _setUsername() async {
-    Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
-    if (_u != null) {
-      _i.username = _u;
-    } else {
-      _i.username = _cripto.createUsername(_userCtrler.text);
-    }
-  }
-
   Future<void> _insertItem() async {
     try {
-      await _setPassword();
-      await _setUsername();
+      Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+      if (_p != null) {
+        if (_i.itemPassword.repeatWarning) {
+          bool _warning = await WarningHelper.repeat(context, 'Password');
+          _warning = _warning == null ? false : _warning;
+          if (!_warning) return;
+        }
+        _i.password = _p;
+      } else {
+        _i.password = _cripto.createPassword(_passCtrler.text);
+        if (_i.password == null) _i.itemPassword = null;
+      }
+      Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
+      if (_u != null) {
+        _i.username = _u;
+      } else {
+        _i.username = _cripto.createUsername(_userCtrler.text);
+      }
       _i.pin = _cripto.createPin(_pinCtrler.text);
       _i.note = _cripto.createNote(_longCtrler.text);
       _i.address = _cripto.createAddress(_addressCtrler.text);
