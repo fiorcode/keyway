@@ -209,18 +209,26 @@ class DBHelper {
         whereArgs: [data['fk_item_id'], data['fk_password_id']],
       );
 
-  static Future<void> refreshItemPasswordStatus(int passwordId) async =>
-      (await DBHelper.database()).rawQuery(
-        '''UPDATE $itemPasswordTable 
-        SET password_status = ? 
-        WHERE password_status = ? 
-        AND fk_password_id = ?''',
-        [
-          'REPEATED',
-          '',
-          '$passwordId',
-        ],
-      );
+  // static Future<void> setRepeated(int passwordId) async {
+  //   (await DBHelper.database()).rawQuery('''
+  //         UPDATE $itemPasswordTable
+  //         SET password_status = REPLACE(tags, '<$tag>', '')
+  //         WHERE tags LIKE '%<$tag>%'
+  //         ''');
+  // }
+
+  // static Future<void> refreshItemPasswordStatus(int passwordId) async =>
+  //     (await DBHelper.database()).rawQuery(
+  //       '''UPDATE $itemPasswordTable
+  //       SET password_status = ?
+  //       WHERE password_status = ?
+  //       AND fk_password_id = ?''',
+  //       [
+  //         'REPEATED',
+  //         '',
+  //         '$passwordId',
+  //       ],
+  //     );
 
   static Future<List<Map<String, dynamic>>> getById(
       String table, int id) async {
@@ -314,6 +322,13 @@ class DBHelper {
     return (await DBHelper.database()).rawQuery('''SELECT * 
         FROM $itemPasswordTable 
         WHERE fk_item_id = $itemId''');
+  }
+
+  static Future<List<Map<String, dynamic>>> getItemPasswordsByPasswordId(
+      int passwordId) async {
+    return (await DBHelper.database()).rawQuery('''SELECT * 
+        FROM $itemPasswordTable 
+        WHERE fk_password_id = $passwordId''');
   }
 
   static Future<List<Map<String, dynamic>>> getTags() async =>
