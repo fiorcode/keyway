@@ -1,3 +1,5 @@
+import 'package:keyway/helpers/date_helper.dart';
+
 class Pin {
   int pinId;
   String pinEnc;
@@ -17,6 +19,8 @@ class Pin {
   });
 
   bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
+  bool get expired =>
+      this.pinLapse == 0 ? false : DateHelper.expired(pinDate, pinLapse);
 
   Pin.fromMap(Map<String, dynamic> map) {
     pinId = map['pin_id'];
