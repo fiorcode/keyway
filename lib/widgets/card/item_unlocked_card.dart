@@ -153,14 +153,16 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
 
   Color _setIconColor() {
     if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeated) return Colors.grey[200];
+      if (widget.item.itemPassword.repeatWarning &&
+          widget.item.itemPassword.repeated) return Colors.grey[200];
     }
     return Colors.grey;
   }
 
   Color _setWarningColor() {
     if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeated) return Colors.red[300];
+      if (widget.item.itemPassword.repeatWarning &&
+          widget.item.itemPassword.repeated) return Colors.red[300];
     }
     return Colors.grey[100];
   }
@@ -243,6 +245,18 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                   width: 48,
                   child: Icon(
                     Icons.calendar_today_rounded,
+                    color: Colors.red,
+                    size: 24,
+                  ),
+                ),
+              if (widget.item.itemPassword.repeatWarning &&
+                  widget.item.itemPassword.repeated &&
+                  _showValue == 0)
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: Icon(
+                    Icons.warning,
                     color: Colors.red,
                     size: 24,
                   ),
