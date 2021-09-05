@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import 'package:keyway/helpers/date_helper.dart';
+
 class ItemPassword {
   int fkItemId;
   int fkPasswordId;
@@ -20,6 +22,9 @@ class ItemPassword {
   bool get repeated => this.passwordStatus.contains('<repeated>');
   bool get deleted => this.passwordStatus.contains('<deleted>');
   bool get old => this.passwordStatus.contains('<old>');
+  bool get expired => this.passwordLapse == 0
+      ? false
+      : DateHelper.expired(passwordDate, passwordLapse);
 
   void repeatWarningSwitch() {
     if (repeatWarning)
