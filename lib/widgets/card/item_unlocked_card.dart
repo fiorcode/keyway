@@ -128,17 +128,11 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   bool _expired() {
     bool _expired = false;
     if (widget.item.itemPassword != null) {
-      _expired = DateHelper.expired(
-        widget.item.itemPassword.passwordDate,
-        widget.item.itemPassword.passwordLapse,
-      );
+      _expired = widget.item.itemPassword.expired;
       if (_expired) return true;
     }
     if (widget.item.pin != null) {
-      _expired = DateHelper.expired(
-        widget.item.pin.pinDate,
-        widget.item.pin.pinLapse,
-      );
+      _expired = widget.item.pin.expired;
     }
     return _expired;
   }
