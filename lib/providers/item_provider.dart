@@ -241,6 +241,7 @@ class ItemProvider with ChangeNotifier {
       } else {
         i.itemPassword.fkPasswordId = i.password.passwordId;
         i.itemPassword.setRepeated();
+        await _setRepeated(i.password.passwordId);
       }
     }
     if (i.username != null) {
@@ -298,8 +299,11 @@ class ItemProvider with ChangeNotifier {
             i.itemPassword.passwordDate = DateTime.now().toIso8601String();
             i.itemPassword.fkPasswordId = i.password.passwordId;
             i.itemPassword.setRepeated();
+            await _setRepeated(i.password.passwordId);
             oldItem.itemPassword.setOld();
             await updateItemPassword(oldItem.itemPassword);
+          } else {
+            await updateItemPassword(i.itemPassword);
           }
         }
       } else {
@@ -314,6 +318,7 @@ class ItemProvider with ChangeNotifier {
         } else {
           i.itemPassword.fkPasswordId = i.password.passwordId;
           i.itemPassword.setRepeated();
+          await _setRepeated(i.password.passwordId);
         }
       }
     }
@@ -431,11 +436,10 @@ class ItemProvider with ChangeNotifier {
       }
     }
 
-    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id')
-        .then((itemId) async {
+    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id').then((_) async {
       if (i.password != null) {
         if (oldItem.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
-          i.itemPassword.fkItemId = itemId;
+          i.itemPassword.fkItemId = i.itemId;
           await insertItemPassword(i.itemPassword);
         }
       }
@@ -556,6 +560,21 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
+  Future<void> _setRepeated(int passwordId) async {
+    return DBHelper.getItemPasswordsByPasswordId(passwordId).then((data) {
+      List<ItemPassword> _ips = <ItemPassword>[];
+      _ips = data.map((e) => ItemPassword.fromMap(e)).toList();
+      if (_ips.isNotEmpty) {
+        Future.forEach(_ips, (ItemPassword ip) async {
+          if (!ip.repeated) {
+            ip.setRepeated();
+            await updateItemPassword(ip);
+          }
+        });
+      }
+    });
+  }
+
   Future<Username> usernameInDB(String hash) async {
     if (hash.isEmpty) return null;
     return DBHelper.getByValue(DBHelper.usernameTable, 'username_hash', hash)
@@ -567,8 +586,8 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<void> refreshItemPasswordStatus(int passwordId) async =>
-      await DBHelper.refreshItemPasswordStatus(passwordId);
+  // Future<void> refreshItemPasswordStatus(int passwordId) async =>
+  //     await DBHelper.refreshItemPasswordStatus(passwordId);
 
   Future<Username> getUsername(int id) async {
     List<Map<String, dynamic>> _u = await DBHelper.getUsernameById(id);
