@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/empty_items.dart';
+import 'package:keyway/widgets/loading_scaffold.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
@@ -143,90 +145,77 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     _cripto = Provider.of<CriptoProvider>(context);
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
-    return Scaffold(
-      backgroundColor: _back,
-      appBar: AppBar(
-        backgroundColor: _back,
-        iconTheme: IconThemeData(color: _primary),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: _goToDashboard,
-        ),
-        title: _appBarTitle(),
-        actions: [
-          if (_item.items.length > 10)
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: _searchSwitch,
-            ),
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: _goToAlpha,
-          )
-        ],
-        actionsIconTheme: IconThemeData(color: _primary),
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              TagsFilterList(_tag, _tagsSwitch),
-              FutureBuilder(
-                  future: _getItems,
-                  builder: (ctx, snap) {
-                    switch (snap.connectionState) {
-                      case ConnectionState.waiting:
-                        return Expanded(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
+    return FutureBuilder(
+        future: _getItems,
+        builder: (ctx, snap) {
+          switch (snap.connectionState) {
+            case ConnectionState.waiting:
+              return LoadingScaffold();
+              break;
+            case ConnectionState.done:
+              if (snap.hasError)
+                return Center(
+                  child: Image.asset("assets/error.png"),
+                );
+              else {
+                return Scaffold(
+                  backgroundColor: _back,
+                  appBar: AppBar(
+                    backgroundColor: _back,
+                    iconTheme: IconThemeData(color: _primary),
+                    centerTitle: true,
+                    leading: IconButton(
+                      icon: Icon(Icons.menu),
+                      onPressed: _goToDashboard,
+                    ),
+                    title: _appBarTitle(),
+                    actions: [
+                      if (_item.items.length > 10)
+                        IconButton(
+                          icon: Icon(Icons.search),
+                          onPressed: _searchSwitch,
+                        ),
+                      IconButton(
+                        icon: Icon(Icons.add),
+                        onPressed: _goToAlpha,
+                      )
+                    ],
+                    actionsIconTheme: IconThemeData(color: _primary),
+                  ),
+                  body: _item.items.length < 1
+                      ? EmptyItems()
+                      : Stack(children: [
+                          Column(
                             children: [
+                              if (_item.items.isNotEmpty)
+                                TagsFilterList(_tag, _tagsSwitch),
                               Expanded(
-                                child: Center(
-                                  child: Image.asset(
-                                    "assets/icon.png",
-                                    height: 256,
-                                  ),
+                                child: ListView.builder(
+                                  key: UniqueKey(),
+                                  padding: EdgeInsets.all(12.0),
+                                  shrinkWrap: true,
+                                  itemCount: _items.length,
+                                  itemBuilder: (ctx, i) {
+                                    return _cripto.locked
+                                        ? ItemLockedCard(item: _items[i])
+                                        : ItemUnlockedCard(
+                                            item: _items[i],
+                                            onReturn: _onReturn,
+                                          );
+                                  },
                                 ),
                               ),
-                              LinearProgressIndicator(),
                             ],
                           ),
-                        );
-                        break;
-                      case ConnectionState.done:
-                        if (snap.hasError)
-                          return Center(
-                            child: Image.asset("assets/error.png"),
-                          );
-                        else {
-                          return Expanded(
-                            child: ListView.builder(
-                              key: UniqueKey(),
-                              padding: EdgeInsets.all(12.0),
-                              shrinkWrap: true,
-                              itemCount: _items.length,
-                              itemBuilder: (ctx, i) {
-                                return _cripto.locked
-                                    ? ItemLockedCard(item: _items[i])
-                                    : ItemUnlockedCard(
-                                        item: _items[i],
-                                        onReturn: _onReturn,
-                                      );
-                              },
-                            ),
-                          );
-                        }
-                        break;
-                      default:
-                        return LinearProgressIndicator();
-                    }
-                  }),
-            ],
-          ),
-          if (_unlocking && _cripto.locked) UnlockContainer(_lockSwitch),
-        ],
-      ),
-    );
+                          if (_unlocking && _cripto.locked)
+                            UnlockContainer(_lockSwitch)
+                        ]),
+                );
+              }
+              break;
+            default:
+              return LoadingScaffold();
+          }
+        });
   }
 }
