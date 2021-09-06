@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/providers/item_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
-import 'package:keyway/screens/items_screen.dart';
-// import 'package:keyway/screens/set_password_screen.dart';
+import 'package:keyway/providers/item_provider.dart';
+import 'items_screen.dart';
+import 'set_password_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/splash';
@@ -21,11 +21,11 @@ class _SplashScreenState extends State<SplashScreen> {
     if (await _cripto.isMasterKey()) {
       Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } else {
-      if (await _cripto.initialSetup('Qwe123!')) {
-        await ItemProvider().mockData();
-        Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
-      }
-      // Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
+      // if (await _cripto.initialSetup('Qwe123!')) {
+      //   await ItemProvider().mockData();
+      //   Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
+      // }
+      Navigator.of(context).pushReplacementNamed(SetPasswordScreen.routeName);
     }
   }
 
