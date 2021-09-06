@@ -46,9 +46,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> unlock(String key) async {
     try {
-      var k = doHash(key).substring(0, 32);
       _crypter = e.Encrypter(
-        e.AES(e.Key.fromBase16(k), mode: e.AESMode.cbc),
+        e.AES(
+          e.Key.fromBase16(doHash(key).substring(0, 32)),
+          mode: e.AESMode.cbc,
+        ),
       );
       String _mk = await _getMasterKey();
       String _mkIv = await _getMasterKeyIV();
