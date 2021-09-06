@@ -66,33 +66,36 @@ class _TagsFilterListState extends State<TagsFilterList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 48,
-      width: double.infinity,
-      margin: EdgeInsets.only(top: 8.0, left: 16.0),
-      child: FutureBuilder(
-        future: _getTags,
-        builder: (ctx, snap) {
-          switch (snap.connectionState) {
-            case ConnectionState.active:
-              return LinearProgressIndicator();
-              break;
-            case (ConnectionState.done):
-              if (snap.hasError) {
-                return Text(snap.error);
-              } else {
-                return ListView(
+    return FutureBuilder(
+      future: _getTags,
+      builder: (ctx, snap) {
+        switch (snap.connectionState) {
+          case ConnectionState.active:
+            return LinearProgressIndicator();
+            break;
+          case (ConnectionState.done):
+            if (snap.hasError) {
+              return Text(snap.error);
+            } else {
+              List<Tag> _list = <Tag>[];
+              _list = snap.data;
+              if (_list.length < 1) return Container(height: 0);
+              return Container(
+                height: 48,
+                width: double.infinity,
+                margin: EdgeInsets.only(top: 8.0, left: 16.0),
+                child: ListView(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  children: _tags(snap.data),
-                );
-              }
-              break;
-            default:
-              return LinearProgressIndicator();
-          }
-        },
-      ),
+                  children: _tags(_list),
+                ),
+              );
+            }
+            break;
+          default:
+            return LinearProgressIndicator();
+        }
+      },
     );
   }
 }
