@@ -290,6 +290,7 @@ class ItemProvider with ChangeNotifier {
     if (oldItem.password != null) {
       if (i.password != null) {
         if (i.password.passwordId == null) {
+          i.itemPassword = ItemPassword();
           i.itemPassword.passwordDate = DateTime.now().toIso8601String();
           i.itemPassword.fkPasswordId = await insertPassword(i.password);
           oldItem.itemPassword.setOld();
@@ -335,9 +336,11 @@ class ItemProvider with ChangeNotifier {
 
     if (i.pin != null) {
       if (i.pin.pinId == null) {
+        i.pin.pinDate = DateTime.now().toIso8601String();
         i.fkPinId = await insertPin(i.pin);
       } else {
         i.fkPinId = i.pin.pinId;
+        i.pin.pinDate = DateTime.now().toIso8601String();
         await updatePin(i.pin);
       }
     } else {
