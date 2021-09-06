@@ -19,7 +19,6 @@ class PasswordHelper {
     ')',
     '*',
     '"',
-    "'",
     ':',
     ';',
     '!',
@@ -27,6 +26,14 @@ class PasswordHelper {
     ',',
     '_',
     '.',
+    '.',
+    '\$',
+    '^',
+    '{',
+    '}',
+    '|',
+    '<',
+    '>',
   ];
   static bool minLong(String s) => s.length > 5;
   static bool maxLong(String s) => s.length < 33;
@@ -34,8 +41,16 @@ class PasswordHelper {
   static bool hasUpp(String s) => s.contains(RegExp(r'[A-Z]'));
   static bool hasNum(String s) => s.contains(RegExp(r'[0-9]'));
   static bool hasSpec(String s) {
-    return s.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    return s.contains(RegExp(r'[@#%&+()*":;!?,_.$^{}|<>]'));
   }
+
+  static bool valid(String s) {
+    if (s.isEmpty) return true;
+    return validRegExp.hasMatch(s.substring(s.length - 1));
+  }
+
+  static RegExp get validRegExp =>
+      RegExp(r'[a-zA-Z0-9@#%&+()*":;!?,_.$^{}|<>]');
 
   static Future<List<Word>> getWordList() async {
     List<Word> _wordList = <Word>[];
@@ -48,7 +63,7 @@ class PasswordHelper {
   }
 
   static ZxcvbnResult evaluate(String s, {Password password}) {
-    if (s.isEmpty) return null;
+    if (s.isEmpty) return ZxcvbnResult();
     var _evaluation = Zxcvbn().evaluate(s);
     if (password != null)
       password.passwordStrength = _evaluation.score.toString();
