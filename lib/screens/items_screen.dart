@@ -43,6 +43,18 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     });
   }
 
+  void _search() {
+    if (_searchCtrler.text.isNotEmpty) {
+      _items = _item.items
+          .where((i) =>
+              i.title.toLowerCase().contains(_searchCtrler.text.toLowerCase()))
+          .toList();
+    } else {
+      _items = _item.items;
+    }
+    setState(() {});
+  }
+
   void _tagsSwitch(Tag tag) {
     if (tag.selected) {
       _tag = tag;
@@ -68,7 +80,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   void _clearSearch() {
     _searchCtrler.clear();
-    _getItems = _getItemsAsync();
+    _items = _item.items;
     setState(() {});
   }
 
@@ -95,7 +107,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
         _searchFN.requestFocus();
         return SearchBarTextField(
           _searchCtrler,
-          _onReturn,
+          _search,
           _searchSwitch,
           _clearSearch,
           _searchFN,
