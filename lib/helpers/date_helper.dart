@@ -24,7 +24,7 @@ class DateHelper {
     if (date.isEmpty) return true;
     DateTime _date;
     if (date is String)
-      _date = DateTime.parse(date);
+      _date = DateTime.parse(date).toUtc();
     else if (date is DateTime) _date = date;
     DateTime _nowUTC = DateTime.now().toUtc();
     int _days = _nowUTC.difference(_date).inDays;
