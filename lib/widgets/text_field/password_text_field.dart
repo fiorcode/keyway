@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+import 'package:keyway/helpers/password_helper.dart';
 
 class PasswordTextField extends StatefulWidget {
   PasswordTextField(this.ctrler, this.refreshScreen);
@@ -42,6 +45,9 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       autocorrect: false,
       controller: widget.ctrler,
       // focusNode: widget.focus,
+      inputFormatters: [
+        FilteringTextInputFormatter.allow(PasswordHelper.validRegExp),
+      ],
       decoration: InputDecoration(
         hintText: 'Password',
         prefixIcon: _empty
