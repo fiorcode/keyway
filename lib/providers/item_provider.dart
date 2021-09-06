@@ -233,7 +233,7 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertItem(Item i) async {
     //TODO: uncomment this
 
-    // i.date = DateTime.now().toIso8601String();
+    i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
       if (i.password.passwordId == null) {
