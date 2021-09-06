@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/widgets/picker/blue_color_picker.dart';
+import 'package:keyway/widgets/picker/green_color_picker.dart';
+import 'package:keyway/widgets/picker/red_color_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../models/tag.dart';
@@ -18,11 +21,17 @@ class _TagAddScreenState extends State<TagAddScreen> {
   TextEditingController ctrler;
   FocusNode focus;
   bool _empty = true;
+  Color _color = Colors.grey;
 
   void _onChange() => setState(() => _empty = ctrler.text.isEmpty);
 
+  void _setColor(int color) => setState(() => _color = Color(color));
+
   void _addTag(BuildContext ctx) {
-    Tag _tag = Tag(tagName: ctrler.text.toLowerCase());
+    Tag _tag = Tag(
+      tagName: ctrler.text.toLowerCase(),
+      tagColor: _color.value,
+    );
     _items.insertTag(_tag);
     Navigator.of(context).pop(_tag);
   }
@@ -78,6 +87,13 @@ class _TagAddScreenState extends State<TagAddScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  '# ' + ctrler.text,
+                  style: TextStyle(color: _color),
+                ),
+              ),
+              Padding(
                 padding: const EdgeInsets.all(32.0),
                 child: TextField(
                   autocorrect: false,
@@ -104,6 +120,13 @@ class _TagAddScreenState extends State<TagAddScreen> {
                   maxLength: 64,
                   onChanged: (_) => _onChange(),
                 ),
+              ),
+              Column(
+                children: [
+                  RedColorPicker(_color, _setColor),
+                  GreenColorPicker(_color, _setColor),
+                  BlueColorPicker(_color, _setColor),
+                ],
               ),
               FutureBuilder(
                   future: _getTags,
