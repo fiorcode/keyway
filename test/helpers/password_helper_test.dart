@@ -28,7 +28,7 @@ void main() {
     int i = 0;
     while (i < 1000) {
       i = i + 1;
-      test("Test de 1000 contraseñas comunes", () {
+      test("Test de contraseña comun", () {
         expectLater(PasswordHelper.dicePassword().then((p) => p.score > 2),
             completion(true));
       });
@@ -39,13 +39,25 @@ void main() {
     int i = 0;
     while (i < 1000) {
       i = i + 1;
-      test("Test de 1000 contraseñas seguras", () {
+      test("Test de contraseña segura", () {
         expectLater(
             PasswordHelper.secureDicePassword()
                 .then((p) => int.parse(p.passwordStrength) > 2),
             completion(true));
       });
     }
+  });
+
+  test("Test contraseña segura", () {
+    expectLater(
+        PasswordHelper.secureDicePassword()
+            .then((p) => int.parse(p.passwordStrength) > 2),
+        completion(true));
+  });
+
+  test("Test de contraseña comun", () {
+    expectLater(PasswordHelper.dicePassword().then((p) => p.score > 2),
+        completion(true));
   });
 
   // int j = 0;
