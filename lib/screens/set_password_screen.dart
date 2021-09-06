@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import 'restore_screen.dart';
@@ -29,7 +30,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   void _checkPassword() {
     _equals = _passCtrler.text == _confirmCtrler.text;
-    setState(() => _zxcvbnResult = PasswordHelper.evaluate(_passCtrler.text));
+    _zxcvbnResult = PasswordHelper.evaluate(_passCtrler.text);
+    setState(() {});
   }
 
   void _checkConfirmPassword() {
@@ -122,6 +124,9 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               autocorrect: false,
               enableInteractiveSelection: false,
               controller: _passCtrler,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(PasswordHelper.validRegExp),
+              ],
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 filled: true,
