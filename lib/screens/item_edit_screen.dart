@@ -196,7 +196,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      if (_i.product.isEmpty) _i.product = null;
+      if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
+        _i.product = null;
+      }
 
       _items.updateItem(widget.item, _i).then(
             (_) => Navigator.of(context).pop(_i),
