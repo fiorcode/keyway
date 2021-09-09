@@ -22,7 +22,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   int _showValue = 0;
   String _title;
   String _subtitle;
-  bool _exp = false;
+  bool _expire = false;
+  bool _repeat = false;
   IconData _icon;
   Color _avatarColor;
   Color _iconColor;
@@ -136,6 +137,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     return _expired;
   }
 
+  bool _repeated() {
+    if (widget.item.itemPassword != null) {
+      if (widget.item.itemPassword.repeatWarning) {
+        return widget.item.itemPassword.repeated;
+      }
+    }
+    return false;
+  }
+
   Color _setAvatarColor() {
     if (widget.item.avatarLetterColor >= 0)
       return Color(widget.item.avatarLetterColor);
@@ -165,7 +175,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _title = widget.item.title;
     _subtitle = '';
-    _exp = _expired();
+    _expire = _expired();
+    _repeat = _repeated();
     _avatarColor = _setAvatarColor();
     _iconColor = _setIconColor();
     _warnColor = _setWarningColor();
@@ -232,7 +243,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_exp && _showValue == 0)
+              if (_expire && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
@@ -242,9 +253,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                     size: 24,
                   ),
                 ),
-              if (widget.item.itemPassword.repeatWarning &&
-                  widget.item.itemPassword.repeated &&
-                  _showValue == 0)
+              if (_repeat && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
