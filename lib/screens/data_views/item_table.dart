@@ -16,7 +16,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
   ItemProvider _item;
   Future _getItems;
 
-  Future<void> _getItemsAsync() async => await _item.fetchItems('');
+  Future<void> _getItemsAsync() async => await _item.fetchItems();
 
   @override
   void didChangeDependencies() {
