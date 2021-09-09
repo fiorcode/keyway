@@ -46,18 +46,11 @@ class ItemProvider with ChangeNotifier {
   List<Cpe23uriCve> get cpe23uriCves => [..._cpe23uriCves];
   List<Cve> get cves => [..._cves];
 
-  Future<List<Item>> fetchItems(String title) async {
-    Iterable<Item> _iter;
-    _items.clear();
-    if (title.isEmpty) {
-      await DBHelper.getActiveItems().then((data) {
-        _iter = data.map((i) => Item.fromMap(i));
-      });
-    } else {
-      await DBHelper.getActiveItemsByTitle(title)
-          .then((data) => _iter = data.map((i) => Item.fromMap(i)));
-    }
-    _items.addAll(_iter.toList());
+  Future<List<Item>> fetchItems() async {
+    await DBHelper.read(DBHelper.itemTable).then((data) {
+      Iterable<Item> _iter = data.map((i) => Item.fromMap(i));
+      _items = _iter.toList();
+    });
     return _buildItems();
   }
 
@@ -230,10 +223,13 @@ class ItemProvider with ChangeNotifier {
     }
   }
 
-  Future<int> insertItem(Item i) async {
-    //TODO: uncomment this
+  //TODO: change this in production
+  Future<int> insertItem(Item i, {String date}) async {
+    if (date != null)
+      i.date = date;
+    else
+      i.date = DateTime.now().toIso8601String();
 
-    i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword.passwordDate = i.date;
       if (i.password.passwordId == null) {
@@ -737,13 +733,9 @@ class ItemProvider with ChangeNotifier {
         1,
       );
       Password _p = _cripto.createPassword(t + '@password');
-      ItemPassword _ip = ItemPassword(
-        passwordLapse: _r.nextInt(360) + 1,
-        passwordDate: _date.toIso8601String(),
-      );
+      ItemPassword _ip = ItemPassword(passwordLapse: _r.nextInt(360) + 1);
       Username _u = _cripto.createUsername(t + '@username');
       Pin _pin = _cripto.createPin(_r.nextInt(9999).toString());
-      _pin.pinDate = _date.toIso8601String();
       _pin.pinLapse = _r.nextInt(360) + 1;
       Note _n = _cripto.createNote(t + '@note');
       Address _a = _cripto.createAddress('www.' + t + '.com');
@@ -766,7 +758,7 @@ class ItemProvider with ChangeNotifier {
       );
       _i.addRemoveTag(_tags[_t]);
       _t += 1;
-      await insertItem(_i);
+      await insertItem(_i, date: _date.toIso8601String());
     });
   }
 
