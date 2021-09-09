@@ -1,36 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="main.dart" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/lib/main.dart">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+  <component name="ChangeListManager">
+    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Flutter_for_Android.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Flutter_for_Android.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/keyway_android.iml" beforeDir="false" afterPath="$PROJECT_DIR$/android/keyway_android.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/item_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/item_table.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/items_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/items_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/splash_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ToolWindowManager">
-    <editor active="true" />
-    <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-    </layout>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[Pixel_XL_API_30]" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectView">
-    <navigator currentView="ProjectPane" proportions="" version="1">
-    </navigator>
-    <panes>
-      <pane id="ProjectPane">
-        <option name="show-excluded-files" value="false" />
-      </pane>
-    </panes>
+  <component name="ProjectId" id="1xrfkRvJjWNn9jEnhswB15iFgDb" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="ToolWindowEmulator.ShowToolbar" value="false" />
+    <property name="com.android.tools.idea.emulator.zoom.toolbar.visible" value="false" />
     <property name="dart.analysis.tool.window.force.activate" value="true" />
+    <property name="dart.analysis.tool.window.visible" value="false" />
+    <property name="io.flutter.reload.alreadyRun" value="true" />
+    <property name="last_opened_file_path" value="$USER_HOME$/OneDrive/Dart/keyway" />
+    <property name="project.structure.last.edited" value="Project" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.0" />
+    <property name="settings.editor.selected.configurable" value="emulator" />
     <property name="show.migrate.to.gradle.popup" value="false" />
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="" />
+      <created>1631118270451</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1631118270451</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="552" y="161" key="#Plugins" timestamp="1631118571605">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="552" y="161" key="#Plugins/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118571605" />
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1631118450630">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
+    <state x="337" y="179" width="1200" height="800" key="AVDManager" timestamp="1631191761818">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="337" y="179" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631191761818" />
+    <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1631121695302">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631121695302" />
+    <state width="670" height="266" key="GridCell.Tab.0.bottom" timestamp="1631119605818">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="670" height="266" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
+    <state width="670" height="266" key="GridCell.Tab.0.center" timestamp="1631119605818">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="670" height="266" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
+    <state width="670" height="266" key="GridCell.Tab.0.left" timestamp="1631119605818">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="670" height="266" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
+    <state width="670" height="266" key="GridCell.Tab.0.right" timestamp="1631119605818">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="670" height="266" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
+    <state x="461" y="165" key="SettingsEditor" timestamp="1631119414979">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119414979" />
   </component>
 </project>
