@@ -71,8 +71,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     }
   }
 
-  Future<void> _getItemsAsync() async =>
-      _items = await _item.fetchItems(_searchCtrler.text);
+  Future<void> _getItemsAsync() async => _items = await _item.fetchItems();
 
   void _onReturn() {
     _tag = null;
@@ -101,8 +100,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Icons.lock_outline,
           color: _unlocking ? Colors.orange : Colors.red,
         ),
-        // onPressed: _lockSwitch,
-        onPressed: () => _cripto.unlock('Qwe123!'),
+        onPressed: _lockSwitch,
       );
     } else {
       if (_searching) {
@@ -117,10 +115,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       } else {
         return IconButton(
           icon: Icon(Icons.lock_open_sharp, color: Colors.green),
-          onPressed: () {
-            _cripto.lock();
-            setState(() {});
-          },
+          onPressed: () => _cripto.lock(),
         );
       }
     }
