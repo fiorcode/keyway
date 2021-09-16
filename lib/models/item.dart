@@ -94,6 +94,15 @@ class Item {
     this.fkProductId = map['fk_product_id'];
     this.itemPasswords = <ItemPassword>[];
     this.passwords = <Password>[];
+    this.itemPassword =
+        map['fk_password_id'] != null ? ItemPassword.fromMap(map) : null;
+    this.password = map['password_id'] != null ? Password.fromMap(map) : null;
+    this.username =
+        map['fk_username_id'] != null ? Username.fromMap(map) : null;
+    this.pin = map['fk_pin_id'] != null ? Pin.fromMap(map) : null;
+    this.note = map['fk_note_id'] != null ? Note.fromMap(map) : null;
+    this.address = map['fk_address_id'] != null ? Address.fromMap(map) : null;
+    this.product = map['fk_product_id'] != null ? Product.fromMap(map) : null;
   }
 
   Map<String, dynamic> toMap() {
