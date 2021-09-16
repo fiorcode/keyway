@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/helpers/db_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/db_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/models/item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/item.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,10 +60,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="337" y="179" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631381878860" />
-    <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1631382287294">
+    <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1631653087057">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631382287294" />
+    <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631653087057" />
     <state width="670" height="266" key="GridCell.Tab.0.bottom" timestamp="1631119605818">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
