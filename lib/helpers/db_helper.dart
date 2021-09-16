@@ -109,6 +109,17 @@ class DBHelper {
         whereArgs: [data[idName]],
       );
 
+  static Future<List<Map<String, dynamic>>> getItems() async =>
+      (await DBHelper.database()).rawQuery('''SELECT * FROM item
+      LEFT JOIN item_password ON item.item_id=item_password.fk_item_id
+      LEFT JOIN password ON item_password.fk_password_id=password_id
+      LEFT JOIN username ON item.fk_username_id=username.username_id
+      LEFT JOIN pin ON item.fk_pin_id=pin.pin_id
+      LEFT JOIN note ON item.fk_note_id=note.note_id
+      LEFT JOIN address ON item.fk_address_id=address.address_id
+      LEFT JOIN product ON item.fk_product_id=product.product_id
+      WHERE password_status LIKE '%<active>%' OR password_status IS NULL''');
+
   static Future<List<Map<String, dynamic>>> getActiveItems() async =>
       (await DBHelper.database()).query(
         itemTable,
