@@ -24,22 +24,20 @@ class ItemViewScreen extends StatefulWidget {
 
 class _ItemViewScreenState extends State<ItemViewScreen> {
   CriptoProvider _cripto;
+  ItemProvider _items;
   Item _i;
   bool _loading = false;
+  Future<void> _getPasswords;
 
   Future<void> _onReturn(Item iUpdated) async {
     if (iUpdated != null) setState(() => _i = iUpdated);
     //if (changed) await _getItem();
   }
 
-  // Future<void> _getItem() async {
-  //   setState(() => _loading = true);
-  //   ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
-  //   _items.getItem(widget.item.itemId).then((i) {
-  //     _i = i;
-  //     setState(() => _loading = false);
-  //   });
-  // }
+  Future<void> _getPasswordsAsync() async {
+    _items = Provider.of<ItemProvider>(context, listen: false);
+    _getPasswords = _items.loadPasswords(_i);
+  }
 
   void _goToEditItem() {
     Navigator.push(
@@ -47,7 +45,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
       MaterialPageRoute(
         builder: (context) => ItemEditScreen(item: _i),
       ),
-    ).then((changed) => _onReturn(changed));
+    ).then((item) => _onReturn(item));
   }
 
   void _goToPasswordHistory() => Navigator.push(
@@ -72,6 +70,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   @override
   void initState() {
     _i = widget.item;
+    _getPasswords = _getPasswordsAsync();
     super.initState();
   }
 
@@ -150,21 +149,42 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                             ),
                           ),
                         ),
-                        if (_i.passwords.length > 1)
-                          Expanded(
-                            child: Center(
-                              child: TextButton(
-                                onPressed: _goToPasswordHistory,
-                                child: Text(
-                                  'OLD PASSWORDS',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
+                        FutureBuilder(
+                          future: _getPasswords,
+                          builder: (ctx, snap) {
+                            switch (snap.connectionState) {
+                              case ConnectionState.waiting:
+                                return LinearProgressIndicator();
+                                break;
+                              case ConnectionState.done:
+                                if (snap.hasError)
+                                  return Text(snap.error);
+                                else {
+                                  if (_i.itemPasswords.isNotEmpty) {
+                                    return Expanded(
+                                      child: Center(
+                                        child: TextButton(
+                                          onPressed: _goToPasswordHistory,
+                                          child: Text(
+                                            'OLD PASSWORDS',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return SizedBox(height: 0);
+                                  }
+                                }
+                                break;
+                              default:
+                                return LinearProgressIndicator();
+                            }
+                          },
+                        ),
                       ],
                     ),
                   ),
