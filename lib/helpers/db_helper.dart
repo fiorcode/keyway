@@ -342,6 +342,16 @@ class DBHelper {
         WHERE fk_password_id = $passwordId''');
   }
 
+  static Future<List<Map<String, dynamic>>> getPasswordsByItemId(
+      int itemId) async {
+    return (await DBHelper.database())
+        .rawQuery('''SELECT * FROM $itemPasswordTable 
+        LEFT JOIN $passwordTable ON $itemPasswordTable.fk_password_id=password_id 
+        WHERE $itemPasswordTable.fk_item_id=$itemId 
+        ORDER BY password_date DESC 
+        LIMIT -1 OFFSET 1''');
+  }
+
   static Future<List<Map<String, dynamic>>> getTags() async =>
       (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
 
