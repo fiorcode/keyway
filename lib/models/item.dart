@@ -200,6 +200,14 @@ class Item {
     return false;
   }
 
+  void loadPasswords(List<Map<String, dynamic>> listMap) {
+    if (listMap.isEmpty) return;
+    listMap.forEach((ip) {
+      this.itemPasswords.add(ItemPassword.fromMap(ip));
+      this.passwords.add(Password.fromMap(ip));
+    });
+  }
+
   void addRemoveTag(String tag) {
     if (this.tags.contains('<$tag>')) {
       this.tags = this.tags.replaceAll('<$tag>', '');
