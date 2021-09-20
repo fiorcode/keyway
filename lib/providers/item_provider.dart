@@ -371,6 +371,12 @@ class ItemProvider with ChangeNotifier {
   // Future<void> deleteItemPassword(ItemPassword ip) async =>
   //     await DBHelper.deleteItemPassword(ip.toMap());
 
+  Future<void> loadPasswords(Item i) async {
+    List<Map<String, dynamic>> _list =
+        await DBHelper.getPasswordsByItemId(i.itemId);
+    i.loadPasswords(_list);
+  }
+
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
 
