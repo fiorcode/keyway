@@ -61,6 +61,7 @@ class Pin {
 
   bool notEqual(Pin p) {
     if (p == null) return true;
+    if (this.pinId != p.pinId) return true;
     if (this.pinEnc != p.pinEnc) return true;
     if (this.pinIv != p.pinIv) return true;
     if (this.pinDate != p.pinDate) return true;
