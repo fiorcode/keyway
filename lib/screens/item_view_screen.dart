@@ -112,86 +112,54 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                     _cripto.decryptUsername(_i.username),
                   ),
                 if (_i.password != null)
-                  Container(
-                    width: double.infinity,
-                    height: 92,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 3.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      children: [
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            vertical: 2,
-                            horizontal: 4,
-                          ),
-                          color: Colors.black,
-                          child: Text(
-                            'password',
-                            style: TextStyle(fontSize: 18, color: Colors.white),
-                          ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              _cripto.decryptPassword(_i.password),
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w300,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                        FutureBuilder(
-                          future: _getPasswords,
-                          builder: (ctx, snap) {
-                            switch (snap.connectionState) {
-                              case ConnectionState.waiting:
-                                return LinearProgressIndicator();
-                                break;
-                              case ConnectionState.done:
-                                if (snap.hasError)
-                                  return Text(snap.error);
-                                else {
-                                  if (_i.itemPasswords.isNotEmpty) {
-                                    return Expanded(
-                                      child: Center(
-                                        child: TextButton(
-                                          onPressed: _goToPasswordHistory,
-                                          child: Text(
-                                            'OLD PASSWORDS',
-                                            style: TextStyle(
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return SizedBox(height: 0);
-                                  }
-                                }
-                                break;
-                              default:
-                                return LinearProgressIndicator();
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                  ItemViewContainer(
+                    'password',
+                    _cripto.decryptPassword(_i.password),
+                    date: _i.itemPassword.passwordDate,
+                    lapse: _i.itemPassword.passwordLapse,
                   ),
+                FutureBuilder(
+                  future: _getPasswords,
+                  builder: (ctx, snap) {
+                    switch (snap.connectionState) {
+                      case ConnectionState.waiting:
+                        return LinearProgressIndicator();
+                        break;
+                      case ConnectionState.done:
+                        if (snap.hasError)
+                          return Text(snap.error);
+                        else {
+                          if (_i.itemPasswords.isNotEmpty) {
+                            return Expanded(
+                              child: Center(
+                                child: TextButton(
+                                  onPressed: _goToPasswordHistory,
+                                  child: Text(
+                                    'OLD PASSWORDS',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          } else {
+                            return SizedBox(height: 0);
+                          }
+                        }
+                        break;
+                      default:
+                        return LinearProgressIndicator();
+                    }
+                  },
+                ),
                 if (_i.pin != null)
                   ItemViewContainer(
                     'pin',
                     _cripto.decryptPin(_i.pin),
+                    date: _i.pin.pinDate,
+                    lapse: _i.pin.pinLapse,
                   ),
                 if (_i.note != null)
                   ItemViewContainer(
