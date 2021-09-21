@@ -236,13 +236,15 @@ class ItemProvider with ChangeNotifier {
     }
 
     if (i.pin != null) {
-      if (i.pin.pinId == null) {
+      if (oldItem.pin != null) {
+        if (i.pin.notEqual(oldItem.pin)) {
+          i.pin.pinId = oldItem.pin.pinId;
+          i.pin.pinDate = DateTime.now().toIso8601String();
+          await updatePin(i.pin);
+        }
+      } else {
         i.pin.pinDate = DateTime.now().toIso8601String();
         i.fkPinId = await insertPin(i.pin);
-      } else {
-        i.fkPinId = i.pin.pinId;
-        i.pin.pinDate = DateTime.now().toIso8601String();
-        await updatePin(i.pin);
       }
     } else {
       i.fkPinId = null;
