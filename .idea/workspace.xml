@@ -1,13 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/db_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/db_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" afterDir="false" />
-    </list>
+    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
