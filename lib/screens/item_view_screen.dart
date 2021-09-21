@@ -115,8 +115,8 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                   ItemViewContainer(
                     'password',
                     _cripto.decryptPassword(_i.password),
-                    date: _i.itemPassword.passwordDate,
-                    lapse: _i.itemPassword.passwordLapse,
+                    left: _i.itemPassword.passwordDate,
+                    right: _i.itemPassword.passwordLapse,
                   ),
                 FutureBuilder(
                   future: _getPasswords,
@@ -158,8 +158,8 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                   ItemViewContainer(
                     'pin',
                     _cripto.decryptPin(_i.pin),
-                    date: _i.pin.pinDate,
-                    lapse: _i.pin.pinLapse,
+                    left: _i.pin.pinDate,
+                    right: _i.pin.pinLapse,
                   ),
                 if (_i.note != null)
                   ItemViewContainer(
@@ -167,76 +167,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                     _cripto.decryptNote(_i.note),
                   ),
                 if (_i.address != null)
-                  Container(
-                    width: double.infinity,
-                    height: 92,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 3.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                      color: Colors.white,
-                    ),
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 4,
-                              ),
-                              color: Colors.black,
-                              child: Text(
-                                _i.address.addressProtocol,
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 4,
-                              ),
-                              color: Colors.black,
-                              child: Text(
-                                'address',
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2,
-                                horizontal: 4,
-                              ),
-                              color: Colors.black,
-                              child: Text(
-                                _i.address.addressPort.toString(),
-                                style: TextStyle(
-                                    fontSize: 18, color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: Text(
-                              _cripto.decryptAddress(_i.address),
-                              style: TextStyle(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w300,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                  ItemViewContainer(
+                    'address',
+                    _cripto.decryptAddress(_i.address),
+                    left: _i.address.addressProtocol,
+                    right: _i.address.addressPort,
                   ),
                 if (_i.product != null)
                   Container(
