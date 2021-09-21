@@ -21,7 +21,8 @@ class DateHelper {
   }
 
   static bool expired(dynamic date, int dayLapse) {
-    if (date.isEmpty) return true;
+    if (date.isEmpty) return false;
+    if (dayLapse == 0) return false;
     DateTime _date;
     if (date is String)
       _date = DateTime.parse(date).toUtc();
