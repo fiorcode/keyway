@@ -356,12 +356,33 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertPassword(Password p) async =>
       await DBHelper.insert(DBHelper.passwordTable, p.toMap());
 
-  Future<void> updatePassword(Password oldPass, Password newPass) async {
-    if (oldPass != null) {
-      if (newPass != null) {
-        if (oldPass.notEqual(newPass)) {}
-      } else {}
-    } else {}
+  Future<int> updatePassword(Item oldItem, Item newItem) async {
+    //logical
+    if (oldItem.password != null) {
+      if (newItem.password != null) {
+        if (oldItem.password.notEqual(newItem.password)) {
+          if (newItem.password.passwordId == null) {
+            return insertPassword(newItem.password);
+          } else {
+            return newItem.password.passwordId;
+          }
+        } else {
+          return newItem.password.passwordId;
+        }
+      } else {
+        return null;
+      }
+    } else {
+      if (newItem != null) {
+        if (newItem.password.passwordId == null) {
+          return insertPassword(newItem.password);
+        } else {
+          return newItem.password.passwordId;
+        }
+      } else {
+        return null;
+      }
+    }
   }
 
   Future<int> deletePassword(Password p) async {
