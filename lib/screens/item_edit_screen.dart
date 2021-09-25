@@ -108,7 +108,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   }
 
   Future<void> _setPassword() async {
-    Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+    Password _p =
+        await _items.passwordInDB(CriptoProvider.doHash(_passCtrler.text));
     if (_p != null) {
       if (_i.itemPassword.repeatWarning) {
         bool _warning = await WarningHelper.repeat(context, 'Password');
@@ -123,7 +124,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   }
 
   Future<void> _setUsername() async {
-    Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
+    Username _u =
+        await _items.usernameInDB(CriptoProvider.doHash(_userCtrler.text));
     if (_u != null) {
       _i.username = _u;
     } else {
@@ -136,7 +138,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       _items = Provider.of<ItemProvider>(context, listen: false);
       if (widget.item.password != null) {
         if (_passCtrler.text.isNotEmpty) {
-          _i.password.passwordHash = _cripto.doHash(_passCtrler.text);
+          _i.password.passwordHash = CriptoProvider.doHash(_passCtrler.text);
           if (widget.item.password.passwordHash != _i.password.passwordHash) {
             await _setPassword();
           }
