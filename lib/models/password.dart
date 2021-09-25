@@ -5,12 +5,15 @@ class Password {
   String passwordStrength;
   String passwordHash;
 
+  String passwordDec;
+
   Password({
     this.passwordId,
     this.passwordEnc = '',
     this.passwordIv = '',
     this.passwordStrength = '',
     this.passwordHash = '',
+    this.passwordDec = '***clear***',
   });
 
   Password.fromMap(Map<String, dynamic> map) {
@@ -47,4 +50,6 @@ class Password {
     if (this.passwordEnc != p.passwordEnc) return true;
     return false;
   }
+
+  void clearPasswordDec() => this.passwordDec = '***clear***';
 }
