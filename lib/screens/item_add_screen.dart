@@ -86,7 +86,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   Future<void> _insertItem() async {
     try {
-      Password _p = await _items.passwordInDB(_cripto.doHash(_passCtrler.text));
+      Password _p =
+          await _items.passwordInDB(CriptoProvider.doHash(_passCtrler.text));
       if (_p != null) {
         if (_i.itemPassword.repeatWarning) {
           bool _warning = await WarningHelper.repeat(context, 'Password');
@@ -98,7 +99,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _i.password = _cripto.createPassword(_passCtrler.text);
         if (_i.password == null) _i.itemPassword = null;
       }
-      Username _u = await _items.usernameInDB(_cripto.doHash(_userCtrler.text));
+      Username _u =
+          await _items.usernameInDB(CriptoProvider.doHash(_userCtrler.text));
       if (_u != null) {
         _i.username = _u;
       } else {
