@@ -443,12 +443,9 @@ class DBHelper {
   static const _createItemPasswordTable = '''CREATE TABLE $itemPasswordTable(
     fk_item_id INTEGER,
     fk_password_id INTEGER,
-    password_lapse INTEGER,
-    password_status TEXT,
     password_date TEXT,
-    PRIMARY KEY (fk_item_id, fk_password_id),
-    FOREIGN KEY (fk_item_id) REFERENCES $itemTable (item_id),
-    FOREIGN KEY (fk_password_id) REFERENCES $passwordTable (password_id))''';
+    password_lapse INTEGER,
+    password_status TEXT)''';
 
   static const _createUsernameTable = '''CREATE TABLE $usernameTable(
     username_id INTEGER PRIMARY KEY AUTOINCREMENT,
