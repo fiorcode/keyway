@@ -107,10 +107,15 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                               Row(
                                 children: [
                                   Text('password_date: '),
-                                  Text(
-                                    _item.itemPasswords[i].passwordDate,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                                  Expanded(
+                                    child: FittedBox(
+                                      fit: BoxFit.fitWidth,
+                                      child: Text(
+                                        _item.itemPasswords[i].passwordDate,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ],
