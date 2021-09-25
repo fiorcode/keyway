@@ -3,10 +3,13 @@ class Note {
   String noteEnc;
   String noteIv;
 
+  String noteDec;
+
   Note({
     this.noteId,
     this.noteEnc = '',
     this.noteIv = '',
+    this.noteDec = '***clear***',
   });
 
   Note.fromMap(Map<String, dynamic> map) {
@@ -36,4 +39,6 @@ class Note {
     if (this.noteIv != n.noteIv) return true;
     return false;
   }
+
+  void clearNoteDec() => this.noteDec = '***clear***';
 }
