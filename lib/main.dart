@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
@@ -44,7 +45,10 @@ import 'screens/data_views/cve_table.dart';
 import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  FlutterCryptography.enable();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
