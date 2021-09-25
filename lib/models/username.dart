@@ -4,11 +4,14 @@ class Username {
   String usernameIv;
   String usernameHash;
 
+  String usernameDec;
+
   Username({
     this.usernameId,
     this.usernameEnc = '',
     this.usernameIv = '',
     this.usernameHash = '',
+    this.usernameDec = '***clear***',
   });
 
   Username.fromMap(Map<String, dynamic> map) {
@@ -42,4 +45,6 @@ class Username {
     if (this.usernameIv != u.usernameIv) return true;
     return false;
   }
+
+  void clearUsernameDec() => this.usernameDec = '***clear***';
 }
