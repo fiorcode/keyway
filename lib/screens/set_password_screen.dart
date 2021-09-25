@@ -69,7 +69,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
 
   void _setPassword() async {
     try {
-      if (await _cripto.initialSetup(_passCtrler.text)) {
+      if (await CriptoProvider.initialSetup(_passCtrler.text)) {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
     } catch (error) {
