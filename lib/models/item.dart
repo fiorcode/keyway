@@ -215,4 +215,12 @@ class Item {
       this.tags += '<$tag>';
     }
   }
+
+  void clearDecriptedValues() {
+    if (this.password != null) this.password.clearPasswordDec();
+    if (this.username != null) this.username.clearUsernameDec();
+    if (this.pin != null) this.pin.clearPinDec();
+    if (this.note != null) this.note.clearNoteDec();
+    if (this.address != null) this.address.clearAddressDec();
+  }
 }
