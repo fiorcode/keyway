@@ -7,7 +7,9 @@ class Pin {
   String pinDate;
   int pinLapse;
   String pinStatus;
+
   DateTime dateTime;
+  String pinDec;
 
   Pin({
     this.pinId,
@@ -16,6 +18,7 @@ class Pin {
     this.pinDate,
     this.pinLapse = 320,
     this.pinStatus = '<active>',
+    this.pinDec = '***clear***',
   });
 
   bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
@@ -69,4 +72,6 @@ class Pin {
     if (this.pinStatus != p.pinStatus) return true;
     return false;
   }
+
+  void clearPinDec() => this.pinDec = '***clear***';
 }
