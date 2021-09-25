@@ -5,20 +5,23 @@ class Address {
   String addressProtocol;
   int addressPort;
 
+  String addressDec;
+
   Address.factory() {
     this.addressEnc = '';
     this.addressIv = '';
     this.addressProtocol = 'https';
     this.addressPort = 443;
+    this.addressDec = '***clear***';
   }
 
-  Address({
-    this.addressId,
-    this.addressEnc = '',
-    this.addressIv = '',
-    this.addressProtocol = 'https',
-    this.addressPort = 443,
-  });
+  Address(
+      {this.addressId,
+      this.addressEnc = '',
+      this.addressIv = '',
+      this.addressProtocol = 'https',
+      this.addressPort = 443,
+      this.addressDec = '***clear***'});
 
   Address.fromMap(Map<String, dynamic> map) {
     addressId = map['address_id'];
@@ -55,4 +58,6 @@ class Address {
     if (this.addressPort != a.addressPort) return true;
     return false;
   }
+
+  void clearAddressDec() => this.addressDec = '***clear***';
 }
