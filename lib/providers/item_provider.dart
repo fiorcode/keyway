@@ -640,13 +640,13 @@ class ItemProvider with ChangeNotifier {
         _r.nextInt(255),
         1,
       );
-      Password _p = _cripto.createPassword(t + '@password');
+      Password _p = await _cripto.createPassword(t + '@password');
       ItemPassword _ip = ItemPassword(passwordLapse: _r.nextInt(360) + 1);
-      Username _u = _cripto.createUsername(t + '@username');
-      Pin _pin = _cripto.createPin(_r.nextInt(9999).toString());
+      Username _u = await _cripto.createUsername(t + '@username');
+      Pin _pin = await _cripto.createPin(_r.nextInt(9999).toString());
       _pin.pinLapse = _r.nextInt(360) + 1;
-      Note _n = _cripto.createNote(t + '@note');
-      Address _a = _cripto.createAddress('www.' + t + '.com');
+      Note _n = await _cripto.createNote(t + '@note');
+      Address _a = await _cripto.createAddress('www.' + t + '.com');
       Product _pr = Product(
         productTrademark: t + '_trademark',
         productModel: t + '_model',
