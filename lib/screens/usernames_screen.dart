@@ -14,28 +14,31 @@ class UsernamesScreen extends StatefulWidget {
 }
 
 class _UsernamesScreenState extends State<UsernamesScreen> {
-  ItemProvider _item;
   Future<void> _getUsernames;
+  List<Username> _usernames;
 
-  Future<void> _getUsernamesAsync() => _item.fetchUsernames();
+  Future<void> _getUsernamesAsync() async {
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    _usernames = await _ip.fetchUsernames();
+    CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(_usernames, (u) => _cp.decryptUsername(u));
+  }
 
   Future<void> _deleteUsername(Username u) async {
-    await _item.deleteUsername(u);
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    await _ip.deleteUsername(u);
     _getUsernames = _getUsernamesAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _getUsernamesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -52,16 +55,14 @@ class _UsernamesScreenState extends State<UsernamesScreen> {
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: _item.usernames.length,
+                    itemCount: _usernames.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.account_box, size: 38),
-                          title:
-                              Text(_cripto.decryptUsername(_item.usernames[i])),
+                          title: Text(_usernames[i].usernameDec),
                           trailing: IconButton(
-                            onPressed: () =>
-                                _deleteUsername(_item.usernames[i]),
+                            onPressed: () => _deleteUsername(_usernames[i]),
                             icon: Icon(
                               Icons.delete_forever,
                               color: Colors.red,
