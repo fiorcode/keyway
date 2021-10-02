@@ -60,7 +60,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     );
   }
 
-  void _switchView() {
+  void _switchView() async {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     if (_showValue > 6)
       _showValue = 0;
@@ -71,7 +71,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.password == null) continue two;
         _showValue = 1;
         _icon = Icons.password;
-        _title = _cripto.decryptPassword(widget.item.password);
+        _title = await _cripto.decryptPassword(widget.item.password);
         _subtitle = '';
         break;
       two:
@@ -79,7 +79,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.pin == null) continue three;
         _showValue = 2;
         _icon = Icons.pin;
-        _title = _cripto.decryptPin(widget.item.pin);
+        _title = await _cripto.decryptPin(widget.item.pin);
         _subtitle = '';
         break;
       three:
@@ -87,7 +87,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.username == null) continue four;
         _showValue = 3;
         _icon = Icons.account_box;
-        _title = _cripto.decryptUsername(widget.item.username);
+        _title = await _cripto.decryptUsername(widget.item.username);
         _subtitle = '';
         break;
       four:
@@ -95,7 +95,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.note == null) continue five;
         _showValue = 4;
         _icon = Icons.note;
-        _title = _cripto.decryptNote(widget.item.note);
+        _title = await _cripto.decryptNote(widget.item.note);
         _subtitle = '';
         break;
       five:
@@ -103,7 +103,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.address == null) continue six;
         _showValue = 5;
         _icon = Icons.http;
-        _title = _cripto.decryptAddress(widget.item.address);
+        _title = await _cripto.decryptAddress(widget.item.address);
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
         break;
