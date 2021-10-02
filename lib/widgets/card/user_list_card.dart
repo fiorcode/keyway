@@ -18,22 +18,24 @@ class UserListCard extends StatefulWidget {
 }
 
 class _UserListCardState extends State<UserListCard> {
-  ItemProvider _items;
   Future<List<Username>> _getUsernames;
+  List<Username> _usernames;
 
-  Future<List<Username>> _usernamesList() async => await _items.getUsers();
+  Future<void> _usernamesList() async {
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    _usernames = await _ip.getUsers();
+    CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(_usernames, (u) async => await _cp.decryptUsername(u));
+  }
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
     _getUsernames = _usernamesList();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     return FutureBuilder(
       future: _getUsernames,
       builder: (ctx, snap) {
@@ -70,7 +72,7 @@ class _UserListCardState extends State<UserListCard> {
                                 vertical: 4.0,
                               ),
                               children: [
-                                ...snap.data.map(
+                                ..._usernames.map(
                                   (e) => Padding(
                                     padding: const EdgeInsets.all(4.0),
                                     child: Container(
@@ -88,12 +90,10 @@ class _UserListCardState extends State<UserListCard> {
                                         ),
                                       ),
                                       child: TextButton(
-                                        onPressed: () => widget.selectUsername(
-                                            _cripto.doDecrypt(
-                                                e.usernameEnc, e.usernameIv)),
+                                        onPressed: () => widget
+                                            .selectUsername(e.usernameDec),
                                         child: Text(
-                                          _cripto.doDecrypt(
-                                              e.usernameEnc, e.usernameIv),
+                                          e.usernameDec,
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),
