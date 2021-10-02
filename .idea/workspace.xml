@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="" />
+    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/addresses_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/addresses_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/item_edit_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_edit_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/item_old_passwords_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_old_passwords_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/notes_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/notes_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/passwords_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/passwords_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/pins_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/pins_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/usernames_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/usernames_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/widgets/card/user_list_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/user_list_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,10 +71,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1632578428832">
+    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1633197831954">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1632578428832" />
+    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1633197831954" />
     <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1631653087057">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
