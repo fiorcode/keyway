@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/models/item_password.dart';
 import 'package:keyway/models/password.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +21,19 @@ class ItemOldPasswordsScreen extends StatefulWidget {
 
 class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
   CriptoProvider _cripto;
+  Future<void> _decryptPasswords;
+
+  Future<void> _decryptPasswordsAsync() async {
+    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(widget.item.passwords, (p) async {
+      await _cripto.decryptPassword(p);
+    });
+  }
 
   @override
   void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    _decryptPasswords = _decryptPasswordsAsync();
+    // _cripto = Provider.of<CriptoProvider>(context, listen: false);
     super.initState();
   }
 
@@ -49,54 +59,72 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        padding: EdgeInsets.all(16.0),
-        itemCount: widget.item.itemPasswords.length,
-        itemBuilder: (ctx, i) {
-          ItemPassword _ip = widget.item.itemPasswords[i];
-          Password _p = widget.item.passwords
-              .where((p) => p.passwordId == _ip.fkPasswordId)
-              .first;
-          return Container(
-            width: double.infinity,
-            height: 92,
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.black,
-                width: 3.0,
-              ),
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-            ),
-            margin: EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 2,
-                    horizontal: 4,
-                  ),
-                  color: Colors.black,
-                  child: Text(
-                    DateHelper.ddMMyyHm(_ip.passwordDate),
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                Expanded(
-                  child: Center(
-                    child: Text(
-                      _cripto.decryptPassword(_p),
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w300,
-                        color: Theme.of(context).primaryColor,
+      body: FutureBuilder(
+        future: _decryptPasswords,
+        builder: (ctx, snap) {
+          switch (snap.connectionState) {
+            case ConnectionState.waiting:
+              return Center(child: CircularProgressIndicator());
+              break;
+            case ConnectionState.done:
+              if (snap.hasError) {
+                return ErrorBody(snap.error);
+              } else {
+                return ListView.builder(
+                  padding: EdgeInsets.all(16.0),
+                  itemCount: widget.item.itemPasswords.length,
+                  itemBuilder: (ctx, i) {
+                    ItemPassword _ip = widget.item.itemPasswords[i];
+                    Password _p = widget.item.passwords
+                        .where((p) => p.passwordId == _ip.fkPasswordId)
+                        .first;
+                    return Container(
+                      width: double.infinity,
+                      height: 92,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.black,
+                          width: 3.0,
+                        ),
+                        borderRadius: BorderRadius.circular(8),
+                        color: Colors.white,
                       ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      child: Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              vertical: 2,
+                              horizontal: 4,
+                            ),
+                            color: Colors.black,
+                            child: Text(
+                              DateHelper.ddMMyyHm(_ip.passwordDate),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ),
+                          Expanded(
+                            child: Center(
+                              child: Text(
+                                _p.passwordDec,
+                                style: TextStyle(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w300,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
+              break;
+            default:
+              return Center(child: CircularProgressIndicator());
+          }
         },
       ),
     );
