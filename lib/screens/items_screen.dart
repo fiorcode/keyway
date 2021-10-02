@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/loading_scaffold.dart';
 import 'package:provider/provider.dart';
@@ -89,6 +90,18 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       .pushNamed(DashboardScreen.routeName)
       .then((_) => _onReturn());
 
+  void _generatePassword() async {
+    Item _i = Item(
+      title: (await PasswordHelper.secureDicePassword()).passwordDec,
+      itemStatus: '<password>',
+      avatarColor: Colors.white.value,
+      avatarLetterColor: Colors.black.value,
+    );
+    await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
+    _getItems = _getItemsAsync();
+    setState(() {});
+  }
+
   void _goToAlpha() => Navigator.of(context)
       .pushNamed(ItemAddScreen.routeName)
       .then((_) => _onReturn());
@@ -172,9 +185,14 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                           onPressed: _searchSwitch,
                         ),
                       IconButton(
-                        icon: Icon(Icons.add),
-                        onPressed: _goToAlpha,
-                      )
+                        icon: Icon(Icons.flash_on),
+                        onPressed: _generatePassword,
+                      ),
+                      if (!_cripto.locked)
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: _goToAlpha,
+                        )
                     ],
                     actionsIconTheme: IconThemeData(color: _primary),
                   ),
