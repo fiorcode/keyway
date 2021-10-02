@@ -89,15 +89,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     _userListSwitch();
   }
 
-  void _loadFieldsAsync() {
+  Future<void> _loadFieldsAsync() async {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _titleCtrler.text = _i.title;
-    _userCtrler.text = _cripto.decryptUsername(_i.username);
-    _passCtrler.text = _cripto.decryptPassword(_i.password);
-    _pinCtrler.text = _cripto.decryptPin(_i.pin);
-    _longCtrler.text = _cripto.decryptNote(_i.note);
+    _userCtrler.text = await _cripto.decryptUsername(_i.username);
+    _passCtrler.text = await _cripto.decryptPassword(_i.password);
+    _pinCtrler.text = await _cripto.decryptPin(_i.pin);
+    _longCtrler.text = await _cripto.decryptNote(_i.note);
     if (_i.address != null) {
-      _addressCtrler.text = _cripto.decryptAddress(_i.address);
+      _addressCtrler.text = await _cripto.decryptAddress(_i.address);
       _protocolCtrler.text = _i.address.addressProtocol;
       _portCtrler.text = _i.address.addressPort.toString();
     }
@@ -118,7 +118,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       }
       _i.password = _p;
     } else {
-      _i.password = _cripto.createPassword(_passCtrler.text);
+      _i.password = await _cripto.createPassword(_passCtrler.text);
       if (_i.password == null) _i.itemPassword = null;
     }
   }
@@ -129,7 +129,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     if (_u != null) {
       _i.username = _u;
     } else {
-      _i.username = _cripto.createUsername(_userCtrler.text);
+      _i.username = await _cripto.createUsername(_userCtrler.text);
     }
   }
 
@@ -157,44 +157,44 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
 
       if (widget.item.pin != null) {
         if (_pinCtrler.text.isNotEmpty) {
-          if (_cripto.decryptPin(widget.item.pin) != _pinCtrler.text) {
-            _i.pin = _cripto.createPin(_pinCtrler.text);
+          if (await _cripto.decryptPin(widget.item.pin) != _pinCtrler.text) {
+            _i.pin = await _cripto.createPin(_pinCtrler.text);
           }
         } else {
           _i.pin = null;
         }
       } else {
         if (_i.pin != null) {
-          _i.pin = _cripto.createPin(_pinCtrler.text);
+          _i.pin = await _cripto.createPin(_pinCtrler.text);
         }
       }
 
       if (widget.item.note != null) {
         if (_longCtrler.text.isNotEmpty) {
-          if (_cripto.decryptNote(widget.item.note) != _longCtrler.text) {
-            _i.note = _cripto.createNote(_longCtrler.text);
+          if (await _cripto.decryptNote(widget.item.note) != _longCtrler.text) {
+            _i.note = await _cripto.createNote(_longCtrler.text);
           }
         } else {
           _i.note = null;
         }
       } else {
         if (_i.note != null) {
-          _i.note = _cripto.createNote(_longCtrler.text);
+          _i.note = await _cripto.createNote(_longCtrler.text);
         }
       }
 
       if (widget.item.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          if (_cripto.decryptAddress(widget.item.address) !=
+          if (await _cripto.decryptAddress(widget.item.address) !=
               _addressCtrler.text) {
-            _i.address = _cripto.createAddress(_addressCtrler.text);
+            _i.address = await _cripto.createAddress(_addressCtrler.text);
           }
         } else {
           _i.address = null;
         }
       } else {
         if (_i.address != null) {
-          _i.address = _cripto.createAddress(_addressCtrler.text);
+          _i.address = await _cripto.createAddress(_addressCtrler.text);
         }
       }
 
