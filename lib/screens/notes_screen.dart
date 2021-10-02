@@ -16,26 +16,30 @@ class NotesScreen extends StatefulWidget {
 class _NotesScreenState extends State<NotesScreen> {
   ItemProvider _item;
   Future<void> _getNotes;
+  List<Note> _notes;
 
-  Future<void> _getNotesAsync() => _item.fetchNotes();
+  Future<void> _getNotesAsync() async {
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    _notes = await _ip.fetchNotes();
+    CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(_notes, (n) async => await _cp.decryptNote(n));
+  }
 
   Future<void> _deleteNote(Note n) async {
-    await _item.deleteNote(n);
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    await _ip.deleteNote(n);
     _getNotes = _getNotesAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getNotes = _getNotesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -57,7 +61,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.http, size: 38),
-                          title: Text(_cripto.decryptNote(_item.notes[i])),
+                          title: Text(_item.notes[i].noteDec),
                           trailing: IconButton(
                             onPressed: () => _deleteNote(_item.notes[i]),
                             icon: Icon(
