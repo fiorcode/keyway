@@ -118,7 +118,10 @@ class DBHelper {
       LEFT JOIN note ON item.fk_note_id=note.note_id
       LEFT JOIN address ON item.fk_address_id=address.address_id
       LEFT JOIN product ON item.fk_product_id=product.product_id
-      WHERE password_status LIKE '%<active>%' OR password_status IS NULL''');
+      WHERE item_status NOT LIKE '%<deleted>%'  
+      AND (password_status LIKE '%<active>%' 
+      OR password_status IS NULL) 
+      ORDER BY date DESC''');
 
   static Future<List<Map<String, dynamic>>> getActiveItems() async =>
       (await DBHelper.database()).query(
