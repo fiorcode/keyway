@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:crypto/crypto.dart';
-import 'package:encrypt/encrypt.dart' as e;
+// import 'package:encrypt/encrypt.dart' as e;
 import 'package:zxcvbn/zxcvbn.dart';
 
 import 'package:keyway/helpers/db_helper.dart';
@@ -21,7 +21,7 @@ import 'package:keyway/models/password.dart';
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
   // SharedPreferences _pref;
-  e.Encrypter _crypter;
+  // e.Encrypter _crypter;
   AesCbc _aesCbc;
   SecretKey _secretKey;
 
@@ -51,14 +51,21 @@ class CriptoProvider with ChangeNotifier {
       s.isNotEmpty ? sha256.convert(utf8.encode(s)).toString() : '';
 
   void lock() {
-    _crypter = e.Encrypter(e.AES(e.Key.fromUtf8('PASS*CLEARED')));
+    _secretKey = SecretKey('PASS*CLEARED'.codeUnits);
     _locked = true;
     notifyListeners();
   }
 
+  // void lock() {
+  //   _crypter = e.Encrypter(e.AES(e.Key.fromUtf8('PASS*CLEARED')));
+  //   _locked = true;
+  //   notifyListeners();
+  // }
+
   Future<void> unlock(String key) async {
     try {
-      _secretKey = await _aesCbc.newSecretKeyFromBytes(key.codeUnits);
+      _secretKey = await _aesCbc
+          .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
       SecretBox _sb = await _getSecret();
       _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
       _locked = false;
@@ -172,127 +179,262 @@ class CriptoProvider with ChangeNotifier {
     });
   }
 
-  String doCrypt(String value, String iv) {
+  Future<String> doCrypt(String value, String iv) async {
     if (value.isEmpty || value == null) return '';
-    return _crypter.encrypt(value, iv: e.IV.fromBase64(iv)).base64;
+    SecretBox _sb = await _aesCbc.encrypt(value.codeUnits,
+        secretKey: _secretKey, nonce: iv.codeUnits);
+    return String.fromCharCodes(_sb.cipherText);
   }
 
-  String doDecrypt(String value, String iv) {
+  // String doCrypt(String value, String iv) {
+  //   if (value.isEmpty || value == null) return '';
+  //   return _crypter.encrypt(value, iv: e.IV.fromBase64(iv)).base64;
+  // }
+
+  Future<String> doDecrypt(String value, String iv) async {
     if (value.isEmpty || value == null) return '';
-    return _crypter.decrypt64(value, iv: e.IV.fromBase64(iv));
+    return String.fromCharCodes(
+      (await _aesCbc.decrypt(
+        SecretBox(value.codeUnits, nonce: iv.codeUnits, mac: Mac.empty),
+        secretKey: _secretKey,
+      )),
+    );
   }
 
-  String decryptPassword(Password p) {
+  // String doDecrypt(String value, String iv) {
+  //   if (value.isEmpty || value == null) return '';
+  //   return _crypter.decrypt64(value, iv: e.IV.fromBase64(iv));
+  // }
+
+  Future<String> decryptPassword(Password p) async {
     if (p == null) return '';
     if (p.passwordIv.isEmpty) return '';
     if (p.passwordEnc.isEmpty) return '';
-    return _crypter.decrypt64(p.passwordEnc, iv: e.IV.fromBase64(p.passwordIv));
+    SecretBox _sb = SecretBox(
+      p.passwordEnc.codeUnits,
+      nonce: p.passwordIv.codeUnits,
+      mac: Mac.empty,
+    );
+    p.passwordDec = String.fromCharCodes((await _aesCbc.decrypt(
+      _sb,
+      secretKey: _secretKey,
+    )));
+    return p.passwordDec;
   }
 
-  String decryptUsername(Username u) {
+  // String decryptPassword(Password p) {
+  //   if (p == null) return '';
+  //   if (p.passwordIv.isEmpty) return '';
+  //   if (p.passwordEnc.isEmpty) return '';
+  //   return _crypter.decrypt64(p.passwordEnc, iv: e.IV.fromBase64(p.passwordIv));
+  // }
+
+  Future<String> decryptUsername(Username u) async {
     if (u == null) return '';
     if (u.usernameIv.isEmpty) return '';
     if (u.usernameEnc.isEmpty) return '';
-    return _crypter.decrypt64(u.usernameEnc, iv: e.IV.fromBase64(u.usernameIv));
+    SecretBox _sb = SecretBox(
+      u.usernameEnc.codeUnits,
+      nonce: u.usernameIv.codeUnits,
+      mac: Mac.empty,
+    );
+    u.usernameDec = String.fromCharCodes((await _aesCbc.decrypt(
+      _sb,
+      secretKey: _secretKey,
+    )));
+    return u.usernameDec;
   }
 
-  String decryptPin(Pin p) {
+  // String decryptUsername(Username u) {
+  //   if (u == null) return '';
+  //   if (u.usernameIv.isEmpty) return '';
+  //   if (u.usernameEnc.isEmpty) return '';
+  //   return _crypter.decrypt64(u.usernameEnc, iv: e.IV.fromBase64(u.usernameIv));
+  // }
+
+  Future<String> decryptPin(Pin p) async {
     if (p == null) return '';
     if (p.pinIv.isEmpty) return '';
     if (p.pinEnc.isEmpty) return '';
-    return _crypter.decrypt64(p.pinEnc, iv: e.IV.fromBase64(p.pinIv));
+    SecretBox _sb = SecretBox(
+      p.pinEnc.codeUnits,
+      nonce: p.pinIv.codeUnits,
+      mac: Mac.empty,
+    );
+    p.pinDec = String.fromCharCodes((await _aesCbc.decrypt(
+      _sb,
+      secretKey: _secretKey,
+    )));
+    return p.pinDec;
   }
 
-  String decryptNote(Note n) {
+  // String decryptPin(Pin p) {
+  //   if (p == null) return '';
+  //   if (p.pinIv.isEmpty) return '';
+  //   if (p.pinEnc.isEmpty) return '';
+  //   return _crypter.decrypt64(p.pinEnc, iv: e.IV.fromBase64(p.pinIv));
+  // }
+
+  Future<String> decryptNote(Note n) async {
     if (n == null) return '';
     if (n.noteIv.isEmpty) return '';
     if (n.noteEnc.isEmpty) return '';
-    return _crypter.decrypt64(n.noteEnc, iv: e.IV.fromBase64(n.noteIv));
+    SecretBox _sb = SecretBox(
+      n.noteEnc.codeUnits,
+      nonce: n.noteIv.codeUnits,
+      mac: Mac.empty,
+    );
+    n.noteDec = String.fromCharCodes((await _aesCbc.decrypt(
+      _sb,
+      secretKey: _secretKey,
+    )));
+    return n.noteDec;
   }
 
-  String decryptAddress(Address a) {
+  // String decryptNote(Note n) {
+  //   if (n == null) return '';
+  //   if (n.noteIv.isEmpty) return '';
+  //   if (n.noteEnc.isEmpty) return '';
+  //   return _crypter.decrypt64(n.noteEnc, iv: e.IV.fromBase64(n.noteIv));
+  // }
+
+  Future<String> decryptAddress(Address a) async {
     if (a == null) return '';
     if (a.addressIv.isEmpty) return '';
     if (a.addressEnc.isEmpty) return '';
-    return _crypter.decrypt64(a.addressEnc, iv: e.IV.fromBase64(a.addressIv));
+    SecretBox _sb = SecretBox(
+      a.addressEnc.codeUnits,
+      nonce: a.addressIv.codeUnits,
+      mac: Mac.empty,
+    );
+    a.addressDec = String.fromCharCodes((await _aesCbc.decrypt(
+      _sb,
+      secretKey: _secretKey,
+    )));
+    return a.addressDec;
   }
 
-  Password createPassword(String p) {
+  // String decryptAddress(Address a) {
+  //   if (a == null) return '';
+  //   if (a.addressIv.isEmpty) return '';
+  //   if (a.addressEnc.isEmpty) return '';
+  //   return _crypter.decrypt64(a.addressEnc, iv: e.IV.fromBase64(a.addressIv));
+  // }
+
+  Future<Password> createPassword(String p) async {
     if (p.isEmpty) return null;
     Password _p = Password(
-      passwordIv: e.IV.fromSecureRandom(16).base64,
+      passwordIv: String.fromCharCodes(_aesCbc.newNonce()),
       passwordHash: doHash(p),
     );
-    _p.passwordEnc = doCrypt(p, _p.passwordIv);
+    SecretBox _sb = await _aesCbc.encrypt(
+      p.codeUnits,
+      secretKey: _secretKey,
+      nonce: _p.passwordIv.codeUnits,
+    );
+    _p.passwordEnc = String.fromCharCodes(_sb.cipherText);
     _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
     return _p;
   }
 
-  Username createUsername(String u) {
+  // Password createPassword(String p) {
+  //   if (p.isEmpty) return null;
+  //   Password _p = Password(
+  //     passwordIv: e.IV.fromSecureRandom(16).base64,
+  //     passwordHash: doHash(p),
+  //   );
+  //   _p.passwordEnc = doCrypt(p, _p.passwordIv);
+  //   _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
+  //   return _p;
+  // }
+
+  Future<Username> createUsername(String u) async {
     if (u.isEmpty) return null;
     Username _u = Username(
-      usernameIv: e.IV.fromSecureRandom(16).base64,
+      usernameIv: String.fromCharCodes(_aesCbc.newNonce()),
       usernameHash: doHash(u),
     );
-    _u.usernameEnc = doCrypt(u, _u.usernameIv);
+    SecretBox _sb = await _aesCbc.encrypt(
+      u.codeUnits,
+      secretKey: _secretKey,
+      nonce: _u.usernameIv.codeUnits,
+    );
+    _u.usernameEnc = String.fromCharCodes(_sb.cipherText);
     return _u;
   }
 
-  Pin createPin(String p) {
+  // Username createUsername(String u) {
+  //   if (u.isEmpty) return null;
+  //   Username _u = Username(
+  //     usernameIv: e.IV.fromSecureRandom(16).base64,
+  //     usernameHash: doHash(u),
+  //   );
+  //   _u.usernameEnc = doCrypt(u, _u.usernameIv);
+  //   return _u;
+  // }
+
+  Future<Pin> createPin(String p) async {
     if (p.isEmpty) return null;
-    Pin _p = Pin(pinIv: e.IV.fromSecureRandom(16).base64);
-    _p.pinEnc = doCrypt(p, _p.pinIv);
+    Pin _p = Pin(pinIv: String.fromCharCodes(_aesCbc.newNonce()));
+    SecretBox _sb = await _aesCbc.encrypt(
+      p.codeUnits,
+      secretKey: _secretKey,
+      nonce: _p.pinIv.codeUnits,
+    );
+    _p.pinEnc = String.fromCharCodes(_sb.cipherText);
     return _p;
   }
 
-  Note createNote(String l) {
-    if (l.isEmpty) return null;
-    Note _n = Note(noteIv: e.IV.fromSecureRandom(16).base64);
-    _n.noteEnc = doCrypt(l, _n.noteIv);
+  // Pin createPin(String p) {
+  //   if (p.isEmpty) return null;
+  //   Pin _p = Pin(pinIv: e.IV.fromSecureRandom(16).base64);
+  //   _p.pinEnc = doCrypt(p, _p.pinIv);
+  //   return _p;
+  // }
+
+  Future<Note> createNote(String n) async {
+    if (n.isEmpty) return null;
+    Note _n = Note(noteIv: String.fromCharCodes(_aesCbc.newNonce()));
+    SecretBox _sb = await _aesCbc.encrypt(
+      n.codeUnits,
+      secretKey: _secretKey,
+      nonce: _n.noteIv.codeUnits,
+    );
+    _n.noteEnc = String.fromCharCodes(_sb.cipherText);
     return _n;
   }
 
-  Address createAddress(String a) {
+  // Note createNote(String l) {
+  //   if (l.isEmpty) return null;
+  //   Note _n = Note(noteIv: e.IV.fromSecureRandom(16).base64);
+  //   _n.noteEnc = doCrypt(l, _n.noteIv);
+  //   return _n;
+  // }
+
+  Future<Address> createAddress(String a) async {
     if (a.isEmpty) return null;
-    Address _a = Address(addressIv: e.IV.fromSecureRandom(16).base64);
-    _a.addressEnc = doCrypt(a, _a.addressIv);
+    Address _a = Address(addressIv: String.fromCharCodes(_aesCbc.newNonce()));
+    SecretBox _sb = await _aesCbc.encrypt(
+      a.codeUnits,
+      secretKey: _secretKey,
+      nonce: _a.addressIv.codeUnits,
+    );
+    _a.addressEnc = String.fromCharCodes(_sb.cipherText);
     return _a;
   }
 
-  // Future<void> decryptItemIsolated(Item i) async {
-  //   return await compute<String,String>()
+  // Address createAddress(String a) {
+  //   if (a.isEmpty) return null;
+  //   Address _a = Address(addressIv: e.IV.fromSecureRandom(16).base64);
+  //   _a.addressEnc = doCrypt(a, _a.addressIv);
+  //   return _a;
   // }
 
-  static void decryptItem(Item i, e.Encrypter enc) {
-    if (i.password != null) {
-      i.password.passwordDec = enc.decrypt64(
-        i.password.passwordEnc,
-        iv: e.IV.fromBase64(i.password.passwordIv),
-      );
-    }
-    if (i.username != null) {
-      i.username.usernameDec = enc.decrypt64(
-        i.username.usernameEnc,
-        iv: e.IV.fromBase64(i.username.usernameIv),
-      );
-    }
-    if (i.pin != null) {
-      i.pin.pinDec = enc.decrypt64(
-        i.pin.pinEnc,
-        iv: e.IV.fromBase64(i.pin.pinIv),
-      );
-    }
-    if (i.address != null) {
-      i.address.addressDec = enc.decrypt64(
-        i.address.addressEnc,
-        iv: e.IV.fromBase64(i.address.addressIv),
-      );
-    }
-    if (i.note != null) {
-      i.note.noteDec = enc.decrypt64(
-        i.note.noteDec,
-        iv: e.IV.fromBase64(i.note.noteIv),
-      );
-    }
+  Future<void> decryptItem(Item i) async {
+    if (i.password != null) await this.decryptPassword(i.password);
+    if (i.username != null) await this.decryptUsername(i.username);
+    if (i.pin != null) await this.decryptPin(i.pin);
+    if (i.address != null) await this.decryptAddress(i.address);
+    if (i.note != null) await this.decryptNote(i.note);
   }
 }
