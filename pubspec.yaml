@@ -21,13 +21,11 @@ environment:
   sdk: ">=2.7.0 <3.0.0"
 
 dependencies:
-  connectivity_plus: ^1.0.6
-  cryptography: ^2.0.2
-  cryptography_flutter: ^2.0.1
-  encrypt: ^5.0.0
-  external_path: ^1.0.1
   flutter:
     sdk: flutter
+  connectivity_plus: ^1.0.6
+  cryptography: ^2.0.2
+  external_path: ^1.0.1
   flutter_email_sender: ^5.0.2
   google_fonts: ^2.0.0
   http: ^0.13.3
