@@ -96,7 +96,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         }
         _i.password = _p;
       } else {
-        _i.password = _cripto.createPassword(_passCtrler.text);
+        _i.password = await _cripto.createPassword(_passCtrler.text);
         if (_i.password == null) _i.itemPassword = null;
       }
       Username _u =
@@ -104,11 +104,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
       if (_u != null) {
         _i.username = _u;
       } else {
-        _i.username = _cripto.createUsername(_userCtrler.text);
+        _i.username = await _cripto.createUsername(_userCtrler.text);
       }
-      _i.pin = _cripto.createPin(_pinCtrler.text);
-      _i.note = _cripto.createNote(_longCtrler.text);
-      _i.address = _cripto.createAddress(_addressCtrler.text);
+      _i.pin = await _cripto.createPin(_pinCtrler.text);
+      _i.note = await _cripto.createNote(_longCtrler.text);
+      _i.address = await _cripto.createAddress(_addressCtrler.text);
       if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
         _i.product = null;
       }
