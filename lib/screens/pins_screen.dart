@@ -14,28 +14,31 @@ class PinsScreen extends StatefulWidget {
 }
 
 class _PinsScreenState extends State<PinsScreen> {
-  ItemProvider _item;
   Future<void> _getPins;
+  List<Pin> _pins;
 
-  Future<void> _getNotesAsync() => _item.fetchPins();
+  Future<void> _getNotesAsync() async {
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    _pins = await _ip.fetchPins();
+    CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(_pins, (p) => _cp.decryptPin(p));
+  }
 
   Future<void> _deletePin(Pin p) async {
-    await _item.deletePin(p);
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    await _ip.deletePin(p);
     _getPins = _getNotesAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getPins = _getNotesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -52,14 +55,14 @@ class _PinsScreenState extends State<PinsScreen> {
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: _item.pins.length,
+                    itemCount: _pins.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.pin, size: 38),
-                          title: Text(_cripto.decryptPin(_item.pins[i])),
+                          title: Text(_pins[i].pinDec),
                           trailing: IconButton(
-                            onPressed: () => _deletePin(_item.pins[i]),
+                            onPressed: () => _deletePin(_pins[i]),
                             icon: Icon(
                               Icons.delete_forever,
                               color: Colors.red,
