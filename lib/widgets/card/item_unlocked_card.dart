@@ -43,9 +43,12 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemViewScreen(item: widget.item),
+        builder: (context) => ItemViewScreen(
+          item: widget.item,
+          onReturn: widget.onReturn,
+        ),
       ),
-    ).then((_) => widget.onReturn());
+    );
   }
 
   void _toClipBoard() async {
@@ -274,23 +277,36 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                     onPressed: _toClipBoard,
                   ),
                 ),
-              SizedBox(width: 4),
-              SizedBox(
-                height: 48,
-                width: 48,
-                child: InkWell(
+              if (widget.item.itemStatus.contains('<password>'))
+                SizedBox(
+                  height: 48,
+                  width: 48,
                   child: FloatingActionButton(
                     backgroundColor: _warnColor,
-                    child: Icon(
-                      Icons.remove_red_eye_outlined,
-                      color: _iconColor,
-                      size: 24,
-                    ),
+                    child: Icon(Icons.copy, color: _iconColor, size: 24),
                     heroTag: null,
-                    onPressed: _switchView,
+                    onPressed: _toClipBoard,
                   ),
                 ),
-              ),
+              if (!widget.item.itemStatus.contains('<password>'))
+                SizedBox(width: 4),
+              if (!widget.item.itemStatus.contains('<password>'))
+                SizedBox(
+                  height: 48,
+                  width: 48,
+                  child: InkWell(
+                    child: FloatingActionButton(
+                      backgroundColor: _warnColor,
+                      child: Icon(
+                        Icons.remove_red_eye_outlined,
+                        color: _iconColor,
+                        size: 24,
+                      ),
+                      heroTag: null,
+                      onPressed: _switchView,
+                    ),
+                  ),
+                ),
             ],
           ),
         ),
