@@ -15,9 +15,10 @@ import '../widgets/loading_scaffold.dart';
 class ItemViewScreen extends StatefulWidget {
   static const routeName = '/item-view';
 
-  ItemViewScreen({this.item});
+  ItemViewScreen({this.item, this.onReturn});
 
   final Item item;
+  final Function onReturn;
 
   @override
   _ItemViewScreenState createState() => _ItemViewScreenState();
@@ -29,15 +30,9 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   Item _i;
   Future<void> _loadItem;
 
-  Future<void> _onReturn(Item iUpdated) async {
-    if (iUpdated != null) setState(() => _i = iUpdated);
-    //if (changed) await _getItem();
+  Future<void> _onReturn(Item i) async {
+    if (i != null) setState(() => _i = i);
   }
-
-  // Future<void> _getPasswordsAsync() async {
-  //   _items = Provider.of<ItemProvider>(context, listen: false);
-  //   _getPasswords = _items.loadPasswords(_i);
-  // }
 
   Future<void> _loadItemAsync() async {
     _items = Provider.of<ItemProvider>(context, listen: false);
@@ -72,6 +67,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
             (_) => Navigator.of(context).pop(),
           );
     }
+    widget.onReturn();
   }
 
   @override
