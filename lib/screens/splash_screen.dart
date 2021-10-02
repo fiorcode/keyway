@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'items_screen.dart';
-import 'set_password_screen.dart';
+// import 'set_password_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   static const routeName = '/splash';
@@ -22,6 +22,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } else {
       if (await CriptoProvider.initialSetup('Qwe123!')) {
+        await _cripto.unlock('Qwe123!');
         await ItemProvider().mockData();
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
