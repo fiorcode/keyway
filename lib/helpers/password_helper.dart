@@ -97,7 +97,7 @@ class PasswordHelper {
     String _conect2 = _conectors.elementAt(_rdm.nextInt(_conectors.length));
     String _pass = _word1 + _conect + _word2 + _conect2;
     return Password(
-        passwordEnc: _pass, passwordStrength: evaluate(_pass).score.toString());
+        passwordDec: _pass, passwordStrength: evaluate(_pass).score.toString());
   }
 }
 
