@@ -20,8 +20,6 @@ import 'package:keyway/models/password.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
-  // SharedPreferences _pref;
-  // e.Encrypter _crypter;
   AesCbc _aesCbc;
   SecretKey _secretKey;
 
@@ -56,12 +54,6 @@ class CriptoProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // void lock() {
-  //   _crypter = e.Encrypter(e.AES(e.Key.fromUtf8('PASS*CLEARED')));
-  //   _locked = true;
-  //   notifyListeners();
-  // }
-
   Future<void> unlock(String key) async {
     try {
       _secretKey = await _aesCbc
@@ -74,64 +66,6 @@ class CriptoProvider with ChangeNotifier {
       throw error;
     }
   }
-
-  // Future<void> unlock(String key) async {
-  //   try {
-  //     _crypter = e.Encrypter(
-  //       e.AES(
-  //         e.Key.fromBase16(doHash(key).substring(0, 32)),
-  //         mode: e.AESMode.cbc,
-  //       ),
-  //     );
-  //     String _mk = await _getMasterKey();
-  //     String _mkIv = await _getMasterKeyIV();
-  //     e.Encrypted _mkCrypted = e.Encrypted.fromBase64(_mk);
-  //     e.IV _iv = e.IV.fromBase64(_mkIv);
-  //     _mk = _crypter.decrypt(_mkCrypted, iv: _iv);
-  //     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk), mode: e.AESMode.cbc));
-  //     _mk = 'MASTER*KEY*CLEARED';
-  //     _locked = false;
-  //     notifyListeners();
-  //   } catch (error) {
-  //     throw error;
-  //   }
-  // }
-
-  // Future<bool> initialSetup(String key) async {
-  //   //CREATES A ENCRYPTER WITH THE USERS KEY
-  //   _crypter = e.Encrypter(
-  //     e.AES(
-  //       e.Key.fromBase16(doHash(key).substring(0, 32)),
-  //       mode: e.AESMode.cbc,
-  //     ),
-  //   );
-
-  //   //GENERATES A RANDOM STRING TO BE USED AS MASTER KEY
-  //   List<int> _v = List<int>.generate(32, (i) => Random.secure().nextInt(256));
-  //   String _mk = base64Url.encode(_v).substring(0, 32);
-
-  //   //ENCRYPT AND SAVE MASTER KEY
-  //   e.IV _iv = e.IV.fromSecureRandom(16);
-  //   e.Encrypted _mkCrypted = _crypter.encrypt(_mk, iv: _iv);
-  //   _pref = await SharedPreferences.getInstance();
-  //   _pref.setString('masterKey', _mkCrypted.base64);
-  //   _pref.setString('masterKeyIV', _iv.base64);
-  //   _pref.setBool('isMasterKey', true);
-
-  //   //SAVE MASTER KEY IN DATABASE
-  //   await DBHelper.insert(
-  //     DBHelper.userTable,
-  //     {'mk_enc': _mkCrypted.base64, 'mk_iv': _iv.base64},
-  //   );
-
-  //   _v.clear();
-  //   _mk = 'MASTER*KEY*CLEARED';
-  //   _mkCrypted = null;
-
-  //   await unlock(key);
-
-  //   return true;
-  // }
 
   static Future<bool> initialSetup(String key) async {
     //  CREATES A ENCRYPTER WITH THE USERS KEY
@@ -179,31 +113,21 @@ class CriptoProvider with ChangeNotifier {
     });
   }
 
-  Future<String> doCrypt(String value, String iv) async {
-    if (value.isEmpty || value == null) return '';
-    SecretBox _sb = await _aesCbc.encrypt(value.codeUnits,
-        secretKey: _secretKey, nonce: iv.codeUnits);
-    return String.fromCharCodes(_sb.cipherText);
-  }
-
-  // String doCrypt(String value, String iv) {
+  // Future<String> doCrypt(String value, String iv) async {
   //   if (value.isEmpty || value == null) return '';
-  //   return _crypter.encrypt(value, iv: e.IV.fromBase64(iv)).base64;
+  //   SecretBox _sb = await _aesCbc.encrypt(value.codeUnits,
+  //       secretKey: _secretKey, nonce: iv.codeUnits);
+  //   return String.fromCharCodes(_sb.cipherText);
   // }
 
-  Future<String> doDecrypt(String value, String iv) async {
-    if (value.isEmpty || value == null) return '';
-    return String.fromCharCodes(
-      (await _aesCbc.decrypt(
-        SecretBox(value.codeUnits, nonce: iv.codeUnits, mac: Mac.empty),
-        secretKey: _secretKey,
-      )),
-    );
-  }
-
-  // String doDecrypt(String value, String iv) {
+  // Future<String> doDecrypt(String value, String iv) async {
   //   if (value.isEmpty || value == null) return '';
-  //   return _crypter.decrypt64(value, iv: e.IV.fromBase64(iv));
+  //   return String.fromCharCodes(
+  //     (await _aesCbc.decrypt(
+  //       SecretBox(value.codeUnits, nonce: iv.codeUnits, mac: Mac.empty),
+  //       secretKey: _secretKey,
+  //     )),
+  //   );
   // }
 
   Future<String> decryptPassword(Password p) async {
@@ -222,13 +146,6 @@ class CriptoProvider with ChangeNotifier {
     return p.passwordDec;
   }
 
-  // String decryptPassword(Password p) {
-  //   if (p == null) return '';
-  //   if (p.passwordIv.isEmpty) return '';
-  //   if (p.passwordEnc.isEmpty) return '';
-  //   return _crypter.decrypt64(p.passwordEnc, iv: e.IV.fromBase64(p.passwordIv));
-  // }
-
   Future<String> decryptUsername(Username u) async {
     if (u == null) return '';
     if (u.usernameIv.isEmpty) return '';
@@ -244,13 +161,6 @@ class CriptoProvider with ChangeNotifier {
     )));
     return u.usernameDec;
   }
-
-  // String decryptUsername(Username u) {
-  //   if (u == null) return '';
-  //   if (u.usernameIv.isEmpty) return '';
-  //   if (u.usernameEnc.isEmpty) return '';
-  //   return _crypter.decrypt64(u.usernameEnc, iv: e.IV.fromBase64(u.usernameIv));
-  // }
 
   Future<String> decryptPin(Pin p) async {
     if (p == null) return '';
@@ -268,13 +178,6 @@ class CriptoProvider with ChangeNotifier {
     return p.pinDec;
   }
 
-  // String decryptPin(Pin p) {
-  //   if (p == null) return '';
-  //   if (p.pinIv.isEmpty) return '';
-  //   if (p.pinEnc.isEmpty) return '';
-  //   return _crypter.decrypt64(p.pinEnc, iv: e.IV.fromBase64(p.pinIv));
-  // }
-
   Future<String> decryptNote(Note n) async {
     if (n == null) return '';
     if (n.noteIv.isEmpty) return '';
@@ -290,13 +193,6 @@ class CriptoProvider with ChangeNotifier {
     )));
     return n.noteDec;
   }
-
-  // String decryptNote(Note n) {
-  //   if (n == null) return '';
-  //   if (n.noteIv.isEmpty) return '';
-  //   if (n.noteEnc.isEmpty) return '';
-  //   return _crypter.decrypt64(n.noteEnc, iv: e.IV.fromBase64(n.noteIv));
-  // }
 
   Future<String> decryptAddress(Address a) async {
     if (a == null) return '';
@@ -314,13 +210,6 @@ class CriptoProvider with ChangeNotifier {
     return a.addressDec;
   }
 
-  // String decryptAddress(Address a) {
-  //   if (a == null) return '';
-  //   if (a.addressIv.isEmpty) return '';
-  //   if (a.addressEnc.isEmpty) return '';
-  //   return _crypter.decrypt64(a.addressEnc, iv: e.IV.fromBase64(a.addressIv));
-  // }
-
   Future<Password> createPassword(String p) async {
     if (p.isEmpty) return null;
     Password _p = Password(
@@ -337,17 +226,6 @@ class CriptoProvider with ChangeNotifier {
     return _p;
   }
 
-  // Password createPassword(String p) {
-  //   if (p.isEmpty) return null;
-  //   Password _p = Password(
-  //     passwordIv: e.IV.fromSecureRandom(16).base64,
-  //     passwordHash: doHash(p),
-  //   );
-  //   _p.passwordEnc = doCrypt(p, _p.passwordIv);
-  //   _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
-  //   return _p;
-  // }
-
   Future<Username> createUsername(String u) async {
     if (u.isEmpty) return null;
     Username _u = Username(
@@ -363,16 +241,6 @@ class CriptoProvider with ChangeNotifier {
     return _u;
   }
 
-  // Username createUsername(String u) {
-  //   if (u.isEmpty) return null;
-  //   Username _u = Username(
-  //     usernameIv: e.IV.fromSecureRandom(16).base64,
-  //     usernameHash: doHash(u),
-  //   );
-  //   _u.usernameEnc = doCrypt(u, _u.usernameIv);
-  //   return _u;
-  // }
-
   Future<Pin> createPin(String p) async {
     if (p.isEmpty) return null;
     Pin _p = Pin(pinIv: String.fromCharCodes(_aesCbc.newNonce()));
@@ -384,13 +252,6 @@ class CriptoProvider with ChangeNotifier {
     _p.pinEnc = String.fromCharCodes(_sb.cipherText);
     return _p;
   }
-
-  // Pin createPin(String p) {
-  //   if (p.isEmpty) return null;
-  //   Pin _p = Pin(pinIv: e.IV.fromSecureRandom(16).base64);
-  //   _p.pinEnc = doCrypt(p, _p.pinIv);
-  //   return _p;
-  // }
 
   Future<Note> createNote(String n) async {
     if (n.isEmpty) return null;
@@ -404,13 +265,6 @@ class CriptoProvider with ChangeNotifier {
     return _n;
   }
 
-  // Note createNote(String l) {
-  //   if (l.isEmpty) return null;
-  //   Note _n = Note(noteIv: e.IV.fromSecureRandom(16).base64);
-  //   _n.noteEnc = doCrypt(l, _n.noteIv);
-  //   return _n;
-  // }
-
   Future<Address> createAddress(String a) async {
     if (a.isEmpty) return null;
     Address _a = Address(addressIv: String.fromCharCodes(_aesCbc.newNonce()));
@@ -422,13 +276,6 @@ class CriptoProvider with ChangeNotifier {
     _a.addressEnc = String.fromCharCodes(_sb.cipherText);
     return _a;
   }
-
-  // Address createAddress(String a) {
-  //   if (a.isEmpty) return null;
-  //   Address _a = Address(addressIv: e.IV.fromSecureRandom(16).base64);
-  //   _a.addressEnc = doCrypt(a, _a.addressIv);
-  //   return _a;
-  // }
 
   Future<void> decryptItem(Item i) async {
     if (i.password != null) await this.decryptPassword(i.password);
