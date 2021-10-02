@@ -17,7 +17,7 @@ class SetPasswordScreen extends StatefulWidget {
 }
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
-  CriptoProvider _cripto;
+  // CriptoProvider _cripto;
   ZxcvbnResult _zxcvbnResult;
 
   final _passCtrler = TextEditingController();
@@ -70,6 +70,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   void _setPassword() async {
     try {
       if (await CriptoProvider.initialSetup(_passCtrler.text)) {
+        Provider.of<CriptoProvider>(context, listen: false)
+            .unlock(_passCtrler.text);
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
     } catch (error) {
@@ -86,11 +88,11 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     super.initState();
   }
 
-  @override
-  void didChangeDependencies() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    super.didChangeDependencies();
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   _cripto = Provider.of<CriptoProvider>(context, listen: false);
+  //   super.didChangeDependencies();
+  // }
 
   @override
   void dispose() {
