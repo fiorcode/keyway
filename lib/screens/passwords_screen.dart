@@ -14,28 +14,31 @@ class PasswordsScreen extends StatefulWidget {
 }
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
-  ItemProvider _item;
   Future<void> _getPasswords;
+  List<Password> _passwords;
 
-  Future<void> _getPasswordsAsync() => _item.fetchPasswords();
+  Future<void> _getPasswordsAsync() async {
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    _passwords = await _ip.fetchPasswords();
+    CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
+    Future.forEach(_passwords, (p) => _cp.decryptPassword(p));
+  }
 
   Future<void> _deletePassword(Password p) async {
-    await _item.deletePassword(p);
+    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
+    await _ip.deletePassword(p);
     _getPasswords = _getPasswordsAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getPasswords = _getPasswordsAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -52,16 +55,14 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: _item.passwords.length,
+                    itemCount: _passwords.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.password, size: 38),
-                          title:
-                              Text(_cripto.decryptPassword(_item.passwords[i])),
+                          title: Text(_passwords[i].passwordDec),
                           trailing: IconButton(
-                            onPressed: () =>
-                                _deletePassword(_item.passwords[i]),
+                            onPressed: () => _deletePassword(_passwords[i]),
                             icon: Icon(
                               Icons.delete_forever,
                               color: Colors.red,
