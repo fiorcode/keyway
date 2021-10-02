@@ -20,11 +20,13 @@ import 'package:keyway/models/password.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
-  SharedPreferences _pref;
+  // SharedPreferences _pref;
   e.Encrypter _crypter;
   AesCbc _aesCbc;
+  SecretKey _secretKey;
 
   CriptoProvider() {
+    _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
     lock();
   }
 
@@ -39,6 +41,12 @@ class CriptoProvider with ChangeNotifier {
   Future<bool> isMasterKey() async =>
       (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
+  Future<SecretBox> _getSecret() async {
+    String _mk = await _getMasterKey();
+    String _mkIv = await _getMasterKeyIV();
+    return SecretBox(_mk.codeUnits, nonce: _mkIv.codeUnits, mac: Mac.empty);
+  }
+
   static String doHash(String s) =>
       s.isNotEmpty ? sha256.convert(utf8.encode(s)).toString() : '';
 
@@ -50,25 +58,37 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> unlock(String key) async {
     try {
-      _crypter = e.Encrypter(
-        e.AES(
-          e.Key.fromBase16(doHash(key).substring(0, 32)),
-          mode: e.AESMode.cbc,
-        ),
-      );
-      String _mk = await _getMasterKey();
-      String _mkIv = await _getMasterKeyIV();
-      e.Encrypted _mkCrypted = e.Encrypted.fromBase64(_mk);
-      e.IV _iv = e.IV.fromBase64(_mkIv);
-      _mk = _crypter.decrypt(_mkCrypted, iv: _iv);
-      _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk), mode: e.AESMode.cbc));
-      _mk = 'MASTER*KEY*CLEARED';
+      _secretKey = await _aesCbc.newSecretKeyFromBytes(key.codeUnits);
+      SecretBox _sb = await _getSecret();
+      _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
       _locked = false;
       notifyListeners();
     } catch (error) {
       throw error;
     }
   }
+
+  // Future<void> unlock(String key) async {
+  //   try {
+  //     _crypter = e.Encrypter(
+  //       e.AES(
+  //         e.Key.fromBase16(doHash(key).substring(0, 32)),
+  //         mode: e.AESMode.cbc,
+  //       ),
+  //     );
+  //     String _mk = await _getMasterKey();
+  //     String _mkIv = await _getMasterKeyIV();
+  //     e.Encrypted _mkCrypted = e.Encrypted.fromBase64(_mk);
+  //     e.IV _iv = e.IV.fromBase64(_mkIv);
+  //     _mk = _crypter.decrypt(_mkCrypted, iv: _iv);
+  //     _crypter = e.Encrypter(e.AES(e.Key.fromUtf8(_mk), mode: e.AESMode.cbc));
+  //     _mk = 'MASTER*KEY*CLEARED';
+  //     _locked = false;
+  //     notifyListeners();
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   // Future<bool> initialSetup(String key) async {
   //   //CREATES A ENCRYPTER WITH THE USERS KEY
@@ -107,54 +127,36 @@ class CriptoProvider with ChangeNotifier {
   // }
 
   static Future<bool> initialSetup(String key) async {
-    final message = key.codeUnits;
-
-    print('text: ${String.fromCharCodes(message)}');
-
-    // AES-CBC with 256 bit keys and HMAC-SHA256 authentication.
-    // final _algo = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
-    // final _secret = await _algo.newSecretKey();
-    // _algo.newNonce();
-
-    // Encrypt
-    // final secretBox = await _algo.encrypt(message, secretKey: _secret);
-
-    // print('cipherText: ${String.fromCharCodes(secretBox.cipherText)}');
-
-    // // Decrypt
-    // final clearText = await _algo.decrypt(secretBox, secretKey: _secret);
-
-    // print('clearText: ${String.fromCharCodes(clearText)}');
-
-    //CREATES A ENCRYPTER WITH THE USERS KEY
+    //  CREATES A ENCRYPTER WITH THE USERS KEY
     final _algo = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
-    final _secret = await _algo
-        .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
-    final _nonce = _algo.newNonce();
+    final _secret = await _algo.newSecretKeyFromBytes(
+      doHash(key).substring(0, 32).codeUnits,
+    );
+    _algo.newNonce();
 
-    //   //GENERATES A RANDOM STRING TO BE USED AS MASTER KEY
-    //   List<int> _v = List<int>.generate(32, (i) => Random.secure().nextInt(256));
-    //   String _mk = base64Url.encode(_v).substring(0, 32);
+    //  GENERATES A RANDOM STRING TO BE USED AS MASTER KEY
+    List<int> _v = List<int>.generate(32, (i) => Random.secure().nextInt(256));
+    String _mk = base64Url.encode(_v).substring(0, 32);
 
-    //   //ENCRYPT AND SAVE MASTER KEY
-    //   e.IV _iv = e.IV.fromSecureRandom(16);
-    //   e.Encrypted _mkCrypted = _crypter.encrypt(_mk, iv: _iv);
-    //   _pref = await SharedPreferences.getInstance();
-    //   _pref.setString('masterKey', _mkCrypted.base64);
-    //   _pref.setString('masterKeyIV', _iv.base64);
-    //   _pref.setBool('isMasterKey', true);
+    //  ENCRYPT AND SAVE MASTER KEY
+    SecretBox _sb = await _algo.encrypt(_mk.codeUnits, secretKey: _secret);
+    SharedPreferences _pref = await SharedPreferences.getInstance();
+    _pref.setString('masterKey', String.fromCharCodes(_sb.cipherText));
+    _pref.setString('masterKeyIV', String.fromCharCodes(_sb.nonce));
+    _pref.setBool('isMasterKey', true);
 
-    //   //SAVE MASTER KEY IN DATABASE
-    //   await DBHelper.insert(
-    //     DBHelper.userTable,
-    //     {'mk_enc': _mkCrypted.base64, 'mk_iv': _iv.base64},
-    //   );
+    //  SAVE MASTER KEY IN DATABASE
+    await DBHelper.insert(
+      DBHelper.userTable,
+      {
+        'mk_enc': String.fromCharCodes(_sb.cipherText),
+        'mk_iv': String.fromCharCodes(_sb.nonce),
+      },
+    );
 
-    //   _v.clear();
-    //   _mk = 'MASTER*KEY*CLEARED';
-    //   _mkCrypted = null;
-
-    //   await unlock(key);
+    _v.clear();
+    _mk = 'MASTER*KEY*CLEARED';
+    _sb = null;
 
     return true;
   }
