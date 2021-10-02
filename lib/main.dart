@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:cryptography_flutter/cryptography_flutter.dart';
+// import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
@@ -46,7 +46,7 @@ import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
 void main() {
-  FlutterCryptography.enable();
+  // FlutterCryptography.enable();
   runApp(MyApp());
 }
 
