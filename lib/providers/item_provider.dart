@@ -353,6 +353,10 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
+  Future<void> deleteCleartextItem(Item i) async {
+    await DBHelper.delete(DBHelper.itemTable, i.toMap(), 'item_id');
+  }
+
   Future<int> insertPassword(Password p) async =>
       await DBHelper.insert(DBHelper.passwordTable, p.toMap());
 
