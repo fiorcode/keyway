@@ -32,6 +32,7 @@ class Item {
   Product product;
 
   bool get deleted => this.itemStatus.contains('<deleted>');
+  bool get cleartext => this.itemStatus.contains('<cleartext>');
 
   Item.factory() {
     this.title = '';
@@ -72,11 +73,20 @@ class Item {
   });
 
   void setDeleted() {
-    if (!deleted) this.itemStatus += '<deleted>';
+    if (!this.deleted) this.itemStatus += '<deleted>';
   }
 
-  void unSetDeleted() =>
-      this.itemStatus = this.itemStatus.replaceAll('<deleted>', '');
+  void unSetDeleted() {
+    this.itemStatus = this.itemStatus.replaceAll('<deleted>', '');
+  }
+
+  void setCleartext() {
+    if (!this.cleartext) this.itemStatus += '<cleartext>';
+  }
+
+  void unSetCleartext() {
+    this.itemStatus = this.itemStatus.replaceAll('<cleartext>', '');
+  }
 
   Item.fromMap(Map<String, dynamic> map) {
     this.itemId = map['item_id'];
