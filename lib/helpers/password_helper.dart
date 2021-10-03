@@ -11,29 +11,23 @@ class PasswordHelper {
   static List<String> _conectors = [
     '@',
     '#',
-    '%',
+    '\$',
+    '_',
     '&',
     '-',
     '+',
     '(',
     ')',
+    '/',
     '*',
     '"',
+    "'",
     ':',
     ';',
     '!',
     '?',
     ',',
-    '_',
     '.',
-    '.',
-    '\$',
-    '^',
-    '{',
-    '}',
-    '|',
-    '<',
-    '>',
   ];
   static bool minLong(String s) => s.length > 5;
   static bool maxLong(String s) => s.length < 33;
@@ -54,11 +48,8 @@ class PasswordHelper {
 
   static Future<List<Word>> getWordList() async {
     List<Word> _wordList = <Word>[];
-    final _list =
-        jsonDecode(await rootBundle.loadString('assets/word_list_en.json'));
-    _list.forEach((w) {
-      _wordList.add(Word.fromJson(w));
-    });
+    String _jsonList = await rootBundle.loadString('assets/word_list_en.json');
+    jsonDecode(_jsonList).forEach((w) => _wordList.add(Word.fromJson(w)));
     return _wordList;
   }
 
