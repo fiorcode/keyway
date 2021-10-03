@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/date_helper.dart';
 import 'package:keyway/helpers/password_helper.dart';
+import 'package:keyway/widgets/card/item_cleartext_card.dart';
 import 'package:keyway/widgets/empty_items.dart';
 import 'package:keyway/widgets/loading_scaffold.dart';
 import 'package:provider/provider.dart';
@@ -35,6 +37,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   bool _unlocking = false;
   bool _searching = false;
+  bool _working = false;
 
   _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
@@ -90,16 +93,27 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       .pushNamed(DashboardScreen.routeName)
       .then((_) => _onReturn());
 
-  void _generatePassword() async {
+  Future<void> _generatePassword() async {
+    setState(() => _working = true);
     Item _i = Item(
-      title: (await PasswordHelper.secureDicePassword()).passwordDec,
-      itemStatus: '<password>',
+      title: (await PasswordHelper.dicePassword()).password,
+      itemStatus: '<cleartext>',
       avatarColor: Colors.white.value,
       avatarLetterColor: Colors.black.value,
     );
     await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
-    _getItems = _getItemsAsync();
-    setState(() {});
+    _items.add(_i);
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    setState(() => _working = false);
+  }
+
+  Future<void> _deleteCleartextItem(Item i) async {
+    setState(() => _working = true);
+    await Provider.of<ItemProvider>(context, listen: false)
+        .deleteCleartextItem(i);
+    _items.remove(i);
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    setState(() => _working = false);
   }
 
   void _goToAlpha() => Navigator.of(context)
@@ -152,6 +166,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   @override
   Widget build(BuildContext context) {
     _cripto = Provider.of<CriptoProvider>(context);
+    //  AUTO UNLOCK
+    // Provider.of<CriptoProvider>(context, listen: false).unlock('Qwe123!');
+
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
     return FutureBuilder(
@@ -179,14 +196,14 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     ),
                     title: _appBarTitle(),
                     actions: [
-                      if (_item.items.length > 10)
+                      if (_items.length > 10)
                         IconButton(
                           icon: Icon(Icons.search),
                           onPressed: _searchSwitch,
                         ),
                       IconButton(
                         icon: Icon(Icons.flash_on),
-                        onPressed: _generatePassword,
+                        onPressed: () => _generatePassword(),
                       ),
                       if (!_cripto.locked)
                         IconButton(
@@ -201,7 +218,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                       : Stack(children: [
                           Column(
                             children: [
-                              if (_item.items.isNotEmpty)
+                              if (_working) LinearProgressIndicator(),
+                              if (_items.isNotEmpty)
                                 TagsFilterList(_tag, _tagsSwitch),
                               Expanded(
                                 child: ListView.builder(
@@ -210,12 +228,19 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                                   shrinkWrap: true,
                                   itemCount: _items.length,
                                   itemBuilder: (ctx, i) {
-                                    return _cripto.locked
-                                        ? ItemLockedCard(item: _items[i])
-                                        : ItemUnlockedCard(
-                                            item: _items[i],
-                                            onReturn: _onReturn,
-                                          );
+                                    if (_cripto.locked) {
+                                      return ItemLockedCard(item: _items[i]);
+                                    } else if (_items[i].cleartext) {
+                                      return ItemCleartextCard(
+                                        item: _items[i],
+                                        deleteItem: _deleteCleartextItem,
+                                      );
+                                    } else {
+                                      return ItemUnlockedCard(
+                                        item: _items[i],
+                                        onReturn: _onReturn,
+                                      );
+                                    }
                                   },
                                 ),
                               ),
