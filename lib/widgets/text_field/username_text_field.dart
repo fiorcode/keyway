@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 
 class UsernameTextField extends StatelessWidget {
-  const UsernameTextField(this.ctrler, this.refreshScreen, this.focus);
+  const UsernameTextField(
+    this.ctrler,
+    // this.refreshScreen,
+    this.focus,
+  );
 
   final TextEditingController ctrler;
-  final Function refreshScreen;
+  // final Function refreshScreen;
   final FocusNode focus;
 
   @override
@@ -19,7 +23,7 @@ class UsernameTextField extends StatelessWidget {
       ),
       maxLength: 128,
       textAlign: TextAlign.center,
-      onChanged: (_) => refreshScreen(),
+      onChanged: (_) {},
     );
   }
 }
