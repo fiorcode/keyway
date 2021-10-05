@@ -1,50 +1,25 @@
 import 'package:flutter/material.dart';
 
 import '../models/item.dart';
-import '../models/username.dart';
-import '../models/password.dart';
-import '../models/item_password.dart';
-import '../models/pin.dart';
-import '../models/note.dart';
-import '../models/address.dart';
-import '../models/product.dart';
 
 class PresetsList extends StatelessWidget {
-  const PresetsList({this.item, this.updateScreen});
+  const PresetsList({
+    this.item,
+    this.usernameSwitch,
+    this.passwordSwitch,
+    this.pinSwitch,
+    this.noteSwitch,
+    this.addressSwitch,
+    this.productSwitch,
+  });
 
   final Item item;
-  final Function updateScreen;
-
-  void _usernameSwitch() {
-    item.username = item.username != null ? null : Username();
-    updateScreen();
-  }
-
-  void _passwordSwitch() {
-    item.password = item.password != null ? null : Password();
-    item.itemPassword = item.itemPassword != null ? null : ItemPassword();
-    updateScreen();
-  }
-
-  void _pinSwitch() {
-    item.pin = item.pin != null ? null : Pin();
-    updateScreen();
-  }
-
-  void _longTextSwitch() {
-    item.note = item.note != null ? null : Note();
-    updateScreen();
-  }
-
-  void _addressSwitch() {
-    item.address = item.address != null ? null : Address();
-    updateScreen();
-  }
-
-  void _productSwitch() {
-    item.product = item.product != null ? null : Product();
-    updateScreen();
-  }
+  final Function usernameSwitch;
+  final Function passwordSwitch;
+  final Function pinSwitch;
+  final Function noteSwitch;
+  final Function addressSwitch;
+  final Function productSwitch;
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +42,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.username != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _usernameSwitch,
+                onPressed: usernameSwitch,
               ),
             ),
             Padding(
@@ -82,7 +57,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.password != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _passwordSwitch,
+                onPressed: passwordSwitch,
               ),
             ),
             Padding(
@@ -96,7 +71,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.pin != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _pinSwitch,
+                onPressed: pinSwitch,
               ),
             ),
             Padding(
@@ -110,7 +85,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.note != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _longTextSwitch,
+                onPressed: noteSwitch,
               ),
             ),
             Padding(
@@ -125,7 +100,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.address != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _addressSwitch,
+                onPressed: addressSwitch,
               ),
             ),
             Padding(
@@ -140,7 +115,7 @@ class PresetsList extends StatelessWidget {
                 ),
                 elevation: item.product != null ? 8 : 0,
                 heroTag: null,
-                onPressed: _productSwitch,
+                onPressed: productSwitch,
               ),
             ),
           ],
