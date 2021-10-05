@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:keyway/helpers/date_helper.dart';
-import 'package:keyway/providers/item_provider.dart';
-import 'package:provider/provider.dart';
 
-import '../../providers/cripto_provider.dart';
+import '../../helpers/date_helper.dart';
 import '../../models/item.dart';
 
 class ItemCleartextCard extends StatefulWidget {
@@ -21,8 +18,6 @@ class ItemCleartextCard extends StatefulWidget {
 class _ItemCleartextCardState extends State<ItemCleartextCard> {
   String _title;
   String _subtitle;
-  Color _iconColor;
-  Color _warnColor;
 
   bool _settings = false;
 
