@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/address.dart';
+import 'package:keyway/models/item_password.dart';
+import 'package:keyway/models/note.dart';
+import 'package:keyway/models/pin.dart';
+import 'package:keyway/models/product.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/cripto_provider.dart';
@@ -33,20 +38,18 @@ class ItemAddScreen extends StatefulWidget {
 }
 
 class _ItemAddScreenState extends State<ItemAddScreen> {
-  CriptoProvider _cripto;
-  ItemProvider _items;
   Item _i;
 
-  final _titleCtrler = TextEditingController();
-  final _userCtrler = TextEditingController();
-  final _passCtrler = TextEditingController();
-  final _pinCtrler = TextEditingController();
-  final _longCtrler = TextEditingController();
-  final _addressCtrler = TextEditingController();
-  final _protocolCtrler = TextEditingController();
-  final _portCtrler = TextEditingController();
-  final _trademarkCtrler = TextEditingController();
-  final _modelCtrler = TextEditingController();
+  TextEditingController _titleCtrler;
+  TextEditingController _userCtrler;
+  TextEditingController _passCtrler;
+  TextEditingController _pinCtrler;
+  TextEditingController _noteCtrler;
+  TextEditingController _addressCtrler;
+  TextEditingController _protocolCtrler;
+  TextEditingController _portCtrler;
+  TextEditingController _trademarkCtrler;
+  TextEditingController _modelCtrler;
 
   FocusNode _titleFocusNode;
   FocusNode _userFocusNode;
@@ -55,12 +58,101 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   bool _unlocking = false;
   bool _loadingRandomPass = false;
 
+  void _usernameSwitch() {
+    setState(() {
+      if (_i.username != null) {
+        _userCtrler.clear();
+        _userCtrler = null;
+        _i.username = null;
+      } else {
+        _userCtrler = TextEditingController();
+        _i.username = Username();
+      }
+    });
+  }
+
+  void _passwordSwitch() {
+    setState(() {
+      if (_i.password != null) {
+        _passCtrler.clear();
+        _passCtrler = null;
+        _i.password = null;
+        _i.itemPassword = null;
+      } else {
+        _passCtrler = TextEditingController();
+        _i.password = Password();
+        _i.itemPassword = ItemPassword();
+      }
+    });
+  }
+
+  void _pinSwitch() {
+    setState(() {
+      if (_i.pin != null) {
+        _pinCtrler.clear();
+        _pinCtrler = null;
+        _i.pin = null;
+      } else {
+        _pinCtrler = TextEditingController();
+        _i.pin = Pin();
+      }
+    });
+  }
+
+  void _noteSwitch() {
+    setState(() {
+      if (_i.note != null) {
+        _noteCtrler.clear();
+        _noteCtrler = null;
+        _i.note = null;
+      } else {
+        _noteCtrler = TextEditingController();
+        _i.note = Note();
+      }
+    });
+  }
+
+  void _addressSwitch() {
+    setState(() {
+      if (_i.address != null) {
+        _addressCtrler.clear();
+        _addressCtrler = null;
+        _protocolCtrler.clear();
+        _protocolCtrler = null;
+        _portCtrler.clear();
+        _portCtrler = null;
+        _i.address = null;
+      } else {
+        _addressCtrler = TextEditingController();
+        _protocolCtrler = TextEditingController();
+        _portCtrler = TextEditingController();
+        _i.address = Address();
+      }
+    });
+  }
+
+  void _productSwitch() {
+    setState(() {
+      if (_i.product != null) {
+        _trademarkCtrler.clear();
+        _trademarkCtrler = null;
+        _modelCtrler.clear();
+        _modelCtrler = null;
+        _i.product = null;
+      } else {
+        _trademarkCtrler = TextEditingController();
+        _modelCtrler = TextEditingController();
+        _i.product = Product();
+      }
+    });
+  }
+
   void _updateScreen() => setState(() {
         _i.title = _titleCtrler.text;
         if (_i.username == null) _userCtrler.clear();
         if (_i.password == null) _passCtrler.clear();
         if (_i.pin == null) _pinCtrler.clear();
-        if (_i.note == null) _longCtrler.clear();
+        if (_i.note == null) _noteCtrler.clear();
         if (_i.address == null) {
           _addressCtrler.clear();
           _protocolCtrler.clear();
@@ -85,6 +177,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   Future<void> _insertItem() async {
+    CriptoProvider _cripto =
+        Provider.of<CriptoProvider>(context, listen: false);
+    ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
     try {
       Password _p =
           await _items.passwordInDB(CriptoProvider.doHash(_passCtrler.text));
@@ -107,7 +202,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _i.username = await _cripto.createUsername(_userCtrler.text);
       }
       _i.pin = await _cripto.createPin(_pinCtrler.text);
-      _i.note = await _cripto.createNote(_longCtrler.text);
+      _i.note = await _cripto.createNote(_noteCtrler.text);
       _i.address = await _cripto.createAddress(_addressCtrler.text);
       if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
         _i.product = null;
@@ -130,39 +225,37 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   @override
   void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _items = Provider.of<ItemProvider>(context, listen: false);
     _i = Item.factory();
+    _titleCtrler = TextEditingController();
+    _userCtrler = TextEditingController();
+    _passCtrler = TextEditingController();
     _titleFocusNode = FocusNode();
-    _userFocusNode = FocusNode();
     _titleFocusNode.requestFocus();
+    _userFocusNode = FocusNode();
     super.initState();
   }
 
   @override
   void dispose() {
-    _titleCtrler.dispose();
-    _userCtrler.clear();
-    _userCtrler.dispose();
-    _passCtrler.clear();
-    _passCtrler.dispose();
-    _pinCtrler.clear();
-    _pinCtrler.dispose();
-    _longCtrler.clear();
-    _longCtrler.dispose();
-    _addressCtrler.clear();
-    _addressCtrler.dispose();
-    _trademarkCtrler.dispose();
-    _modelCtrler.dispose();
-    _protocolCtrler.dispose();
-    _portCtrler.dispose();
-    _titleFocusNode.dispose();
-    _userFocusNode.dispose();
+    if (_titleCtrler != null) _titleCtrler.dispose();
+    if (_userCtrler != null) _userCtrler.dispose();
+    if (_passCtrler != null) _passCtrler.dispose();
+    if (_pinCtrler != null) _pinCtrler.dispose();
+    if (_noteCtrler != null) _noteCtrler.dispose();
+    if (_addressCtrler != null) _addressCtrler.dispose();
+    if (_trademarkCtrler != null) _trademarkCtrler.dispose();
+    if (_modelCtrler != null) _modelCtrler.dispose();
+    if (_protocolCtrler != null) _protocolCtrler.dispose();
+    if (_portCtrler != null) _portCtrler.dispose();
+    if (_titleFocusNode != null) _titleFocusNode.dispose();
+    if (_userFocusNode != null) _userFocusNode.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    CriptoProvider _cripto =
+        Provider.of<CriptoProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -340,7 +433,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           padding: const EdgeInsets.all(8),
                           child: Container(
                             height: 192.0,
-                            child: LongTextTextField(_longCtrler),
+                            child: LongTextTextField(_noteCtrler),
                           ),
                         ),
                       ),
