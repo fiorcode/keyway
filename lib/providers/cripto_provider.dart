@@ -284,4 +284,67 @@ class CriptoProvider with ChangeNotifier {
     if (i.address != null) await this.decryptAddress(i.address);
     if (i.note != null) await this.decryptNote(i.note);
   }
+
+  Future<Item> computeDecryptItem(Item i) async {
+    ItemSecret _is = ItemSecret(i, _secretKey);
+    Item _i = await compute<ItemSecret, Item>(_decryptItem, _is);
+    return _i;
+  }
+
+  static Future<Item> _decryptItem(ItemSecret i) async {
+    AesCbc _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
+    if (i.item.password != null) {
+      SecretBox _sbPassword = SecretBox(
+        i.item.password.passwordEnc.codeUnits,
+        nonce: i.item.password.passwordIv.codeUnits,
+        mac: Mac.empty,
+      );
+      i.item.password.passwordDec = String.fromCharCodes(
+          await _aesCbc.decrypt(_sbPassword, secretKey: i.secretKey));
+    }
+    if (i.item.username != null) {
+      SecretBox _sbUsername = SecretBox(
+        i.item.username.usernameEnc.codeUnits,
+        nonce: i.item.username.usernameIv.codeUnits,
+        mac: Mac.empty,
+      );
+      i.item.username.usernameDec = String.fromCharCodes(
+          await _aesCbc.decrypt(_sbUsername, secretKey: i.secretKey));
+    }
+    if (i.item.pin != null) {
+      SecretBox _sbPin = SecretBox(
+        i.item.pin.pinEnc.codeUnits,
+        nonce: i.item.pin.pinIv.codeUnits,
+        mac: Mac.empty,
+      );
+      i.item.pin.pinDec = String.fromCharCodes(
+          await _aesCbc.decrypt(_sbPin, secretKey: i.secretKey));
+    }
+    if (i.item.address != null) {
+      SecretBox _sbAddress = SecretBox(
+        i.item.address.addressEnc.codeUnits,
+        nonce: i.item.address.addressIv.codeUnits,
+        mac: Mac.empty,
+      );
+      i.item.address.addressDec = String.fromCharCodes(
+          await _aesCbc.decrypt(_sbAddress, secretKey: i.secretKey));
+    }
+    if (i.item.note != null) {
+      SecretBox _sbNote = SecretBox(
+        i.item.note.noteEnc.codeUnits,
+        nonce: i.item.note.noteIv.codeUnits,
+        mac: Mac.empty,
+      );
+      i.item.note.noteDec = String.fromCharCodes(
+          await _aesCbc.decrypt(_sbNote, secretKey: i.secretKey));
+    }
+    return i.item;
+  }
+}
+
+class ItemSecret {
+  ItemSecret(this.item, this.secretKey);
+
+  final Item item;
+  final SecretKey secretKey;
 }
