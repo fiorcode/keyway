@@ -38,7 +38,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     await _items.loadPasswords(_i);
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    await _cripto.decryptItem(_i);
+    _i = await _cripto.computeDecryptItem(_i);
   }
 
   void _goToEditItem() {
