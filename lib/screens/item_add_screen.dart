@@ -147,22 +147,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     });
   }
 
-  void _updateScreen() => setState(() {
-        _i.title = _titleCtrler.text;
-        if (_i.username == null) _userCtrler.clear();
-        if (_i.password == null) _passCtrler.clear();
-        if (_i.pin == null) _pinCtrler.clear();
-        if (_i.note == null) _noteCtrler.clear();
-        if (_i.address == null) {
-          _addressCtrler.clear();
-          _protocolCtrler.clear();
-          _portCtrler.clear();
-        }
-        if (_i.product == null) {
-          _trademarkCtrler.clear();
-          _modelCtrler.clear();
-        }
-      });
+  void _updateView() => setState(() => _i.title = _titleCtrler.text);
 
   void _userListSwitch() => setState(() {
         if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
@@ -262,7 +247,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         backgroundColor: Theme.of(context).backgroundColor,
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
-        title: TitleTextField(_titleCtrler, _titleFocusNode, _updateScreen),
+        title: TitleTextField(_titleCtrler, _titleFocusNode, _updateView),
         actions: [
           _titleCtrler.text.isNotEmpty && !_cripto.locked
               ? IconButton(icon: Icon(Icons.save), onPressed: _insertItem)
@@ -277,7 +262,15 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  PresetsList(item: _i, updateScreen: _updateScreen),
+                  PresetsList(
+                    item: _i,
+                    usernameSwitch: _usernameSwitch,
+                    passwordSwitch: _passwordSwitch,
+                    pinSwitch: _pinSwitch,
+                    noteSwitch: _noteSwitch,
+                    addressSwitch: _addressSwitch,
+                    productSwitch: _productSwitch,
+                  ),
                   if (_i.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
@@ -291,7 +284,6 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               Expanded(
                                 child: UsernameTextField(
                                   _userCtrler,
-                                  _updateScreen,
                                   _userFocusNode,
                                 ),
                               ),
@@ -319,7 +311,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   Expanded(
                                     child: PasswordTextField(
                                       _passCtrler,
-                                      _updateScreen,
+                                      _updateView,
                                       // _passFocusNode,
                                     ),
                                   ),
@@ -384,7 +376,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              PinTextField(_pinCtrler, _updateScreen),
+                              PinTextField(_pinCtrler, _updateView),
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
