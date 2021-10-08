@@ -38,6 +38,7 @@ class Password {
   Password clone() => Password(
         passwordId: this.passwordId,
         passwordEnc: this.passwordEnc,
+        passwordDec: this.passwordDec,
         passwordIv: this.passwordIv,
         passwordStrength: this.passwordStrength,
         passwordHash: this.passwordHash,
