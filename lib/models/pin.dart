@@ -56,6 +56,7 @@ class Pin {
   Pin clone() => Pin(
         pinId: this.pinId,
         pinEnc: this.pinEnc,
+        pinDec: this.pinDec,
         pinIv: this.pinIv,
         pinDate: this.pinDate,
         pinLapse: this.pinLapse,
