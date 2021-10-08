@@ -2,22 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class PinTextField extends StatefulWidget {
-  PinTextField(this.ctrler, this.refreshScreen);
+  PinTextField(this.ctrler);
 
   final TextEditingController ctrler;
-  final Function refreshScreen;
 
   @override
   _PinTextFieldState createState() => _PinTextFieldState();
 }
 
 class _PinTextFieldState extends State<PinTextField> {
-  bool _empty = true;
+  bool _empty;
   bool _obscure = false;
 
   void _onChanged() {
     setState(() => _empty = widget.ctrler.text.isEmpty);
-    widget.refreshScreen();
   }
 
   void _obscureSwitch() => setState(() => _obscure = !_obscure);
@@ -25,7 +23,6 @@ class _PinTextFieldState extends State<PinTextField> {
   void _clear() => setState(() {
         widget.ctrler.clear();
         _empty = true;
-        widget.refreshScreen();
       });
 
   @override
@@ -42,14 +39,6 @@ class _PinTextFieldState extends State<PinTextField> {
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
         border: InputBorder.none,
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 1),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 3),
-        // ),
-        // filled: true,
-        // fillColor: Theme.of(context).backgroundColor,
         hintText: 'PIN',
         prefixIcon: _empty
             ? null
