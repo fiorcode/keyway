@@ -376,7 +376,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           padding: const EdgeInsets.all(8),
                           child: Column(
                             children: [
-                              PinTextField(_pinCtrler, _updateView),
+                              PinTextField(_pinCtrler),
                               if (_pinCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
