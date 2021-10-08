@@ -3,8 +3,6 @@ import 'dart:io';
 import 'package:external_path/external_path.dart';
 import 'package:keyway/helpers/db_helper.dart';
 
-import '../models/depot.dart';
-
 class StorageHelper {
   static Future<FileSystemEntity> deleteFile(File f) => f.delete();
 
@@ -80,31 +78,5 @@ class StorageHelper {
       return File(_path);
     }
     return null;
-  }
-
-  static Future<List<Depot>> getBackupDepots() async {
-    List<String> _paths = await _externalPaths();
-    List<Depot> _depots = <Depot>[];
-    if (_paths.isNotEmpty) {
-      _paths.forEach((path) {
-        _depots.add(Depot.factory(path));
-        print(path);
-      });
-    }
-    return _depots;
-  }
-
-  static Future<List<Depot>> getRestoreDepots() async {
-    List<String> _paths = await _externalPaths();
-    List<Depot> _depots = <Depot>[];
-    if (_paths.isNotEmpty) {
-      _paths.forEach((path) {
-        String _path = path + '/keyway/backups/kw_backup.db';
-        if (FileSystemEntity.typeSync(_path) != FileSystemEntityType.notFound) {
-          _depots.add(Depot.factory(_path));
-        }
-      });
-    }
-    return _depots;
   }
 }
