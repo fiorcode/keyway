@@ -34,6 +34,7 @@ class Username {
   Username clone() => Username(
         usernameId: this.usernameId,
         usernameEnc: this.usernameEnc,
+        usernameDec: this.usernameDec,
         usernameIv: this.usernameIv,
         usernameHash: this.usernameHash,
       );
