@@ -30,6 +30,7 @@ class Note {
   Note clone() => Note(
         noteId: this.noteId,
         noteEnc: this.noteEnc,
+        noteDec: this.noteDec,
         noteIv: this.noteIv,
       );
 
