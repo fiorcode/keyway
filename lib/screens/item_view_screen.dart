@@ -30,7 +30,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   Item _i;
   Future<void> _loadItem;
 
-  Future<void> _onReturn(Item i) async {
+  void _onReturn(Item i) {
     if (i != null) setState(() => _i = i);
   }
 
@@ -74,7 +74,6 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   void initState() {
     _i = widget.item;
     _loadItem = _loadItemAsync();
-    // _getPasswords = _getPasswordsAsync();
     super.initState();
   }
 
