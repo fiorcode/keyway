@@ -45,6 +45,7 @@ class Address {
   Address clone() => Address(
         addressId: this.addressId,
         addressEnc: this.addressEnc,
+        addressDec: this.addressDec,
         addressIv: this.addressIv,
         addressProtocol: this.addressProtocol,
         addressPort: this.addressPort,
