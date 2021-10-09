@@ -113,23 +113,6 @@ class CriptoProvider with ChangeNotifier {
     });
   }
 
-  // Future<String> doCrypt(String value, String iv) async {
-  //   if (value.isEmpty || value == null) return '';
-  //   SecretBox _sb = await _aesCbc.encrypt(value.codeUnits,
-  //       secretKey: _secretKey, nonce: iv.codeUnits);
-  //   return String.fromCharCodes(_sb.cipherText);
-  // }
-
-  // Future<String> doDecrypt(String value, String iv) async {
-  //   if (value.isEmpty || value == null) return '';
-  //   return String.fromCharCodes(
-  //     (await _aesCbc.decrypt(
-  //       SecretBox(value.codeUnits, nonce: iv.codeUnits, mac: Mac.empty),
-  //       secretKey: _secretKey,
-  //     )),
-  //   );
-  // }
-
   Future<String> decryptPassword(Password p) async {
     if (p == null) return '';
     if (p.passwordIv.isEmpty) return '';
@@ -283,6 +266,12 @@ class CriptoProvider with ChangeNotifier {
     if (i.pin != null) await this.decryptPin(i.pin);
     if (i.address != null) await this.decryptAddress(i.address);
     if (i.note != null) await this.decryptNote(i.note);
+  }
+
+  Future<void> decryptItemPasswords(Item i) async {
+    Future.forEach(i.passwords, (p) async {
+      await this.decryptPassword(p);
+    });
   }
 
   Future<Item> computeDecryptItem(Item i) async {
