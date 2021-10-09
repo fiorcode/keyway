@@ -25,8 +25,6 @@ class ItemViewScreen extends StatefulWidget {
 }
 
 class _ItemViewScreenState extends State<ItemViewScreen> {
-  CriptoProvider _cripto;
-  ItemProvider _items;
   Item _i;
   Future<void> _loadItem;
 
@@ -35,10 +33,10 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   }
 
   Future<void> _loadItemAsync() async {
-    _items = Provider.of<ItemProvider>(context, listen: false);
+    ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
     await _items.loadPasswords(_i);
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    _i = await _cripto.computeDecryptItem(_i);
+    CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
+    _i = await _c.computeDecryptItem(_i);
   }
 
   void _goToEditItem() {
@@ -129,21 +127,18 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                               right: _i.itemPassword.passwordLapse,
                             ),
                           if (_i.itemPasswords.isNotEmpty)
-                            Expanded(
-                              child: Center(
-                                child: TextButton(
-                                  onPressed: _goToPasswordHistory,
-                                  child: Text(
-                                    'OLD PASSWORDS',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            Center(
+                              child: TextButton(
+                                onPressed: _goToPasswordHistory,
+                                child: Text(
+                                  'OLD PASSWORDS',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
                             ),
-                          // if (_i.itemPasswords.isEmpty) SizedBox(height: 0),
                           if (_i.pin != null)
                             ItemViewContainer(
                               'pin',
