@@ -20,20 +20,16 @@ class ItemOldPasswordsScreen extends StatefulWidget {
 }
 
 class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
-  CriptoProvider _cripto;
   Future<void> _decryptPasswords;
 
   Future<void> _decryptPasswordsAsync() async {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(widget.item.passwords, (p) async {
-      await _cripto.decryptPassword(p);
-    });
+    CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
+    return _c.decryptItemPasswords(widget.item);
   }
 
   @override
   void initState() {
     _decryptPasswords = _decryptPasswordsAsync();
-    // _cripto = Provider.of<CriptoProvider>(context, listen: false);
     super.initState();
   }
 
