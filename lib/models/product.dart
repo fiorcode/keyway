@@ -17,6 +17,13 @@ class Product {
 
   void setCpe23uri(Cpe cpe) => this.cpe23uri = Cpe23uri.fromCpe(cpe);
 
+  String get trademark =>
+      this.productTrademark[0].toUpperCase() +
+      this.productTrademark.substring(1);
+
+  String get model =>
+      this.productModel[0].toUpperCase() + this.productModel.substring(1);
+
   bool get isEmpty =>
       this.productTrademark.isEmpty &&
       this.productModel.isEmpty &&
