@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/date_helper.dart';
-import 'package:keyway/helpers/password_helper.dart';
-import 'package:keyway/widgets/card/item_cleartext_card.dart';
-import 'package:keyway/widgets/empty_items.dart';
-import 'package:keyway/widgets/loading_scaffold.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/cripto_provider.dart';
-import '../providers/item_provider.dart';
+import '../helpers/date_helper.dart';
+import '../helpers/password_helper.dart';
 import '../models/tag.dart';
 import '../models/item.dart';
+import '../providers/cripto_provider.dart';
+import '../providers/item_provider.dart';
 import '../screens/item_add_screen.dart';
+import '../screens/item_view_screen.dart';
+import '../widgets/card/item_cleartext_card.dart';
+import '../widgets/empty_items.dart';
+import '../widgets/loading_scaffold.dart';
 import '../screens/dashboard_screen.dart';
 import '../widgets/card/item_locked_card.dart';
 import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
 import '../widgets/text_field/search_bar_text_field.dart';
-import 'package:keyway/widgets/tags_filter_list.dart';
+import '../widgets/tags_filter_list.dart';
 
 class ItemsListScreen extends StatefulWidget {
   static const routeName = '/items';
@@ -26,8 +27,6 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  CriptoProvider _cripto;
-  ItemProvider _item;
   Future<void> _getItems;
   List<Item> _items = <Item>[];
   Tag _tag;
@@ -50,6 +49,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   }
 
   void _search() {
+    ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
     if (_searchCtrler.text.isNotEmpty) {
       _items = _item.items
           .where((i) =>
@@ -62,6 +62,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   }
 
   void _tagsSwitch(Tag tag) {
+    ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
     if (tag.selected) {
       _tag = tag;
       _items = _item.items
@@ -75,7 +76,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     }
   }
 
-  Future<void> _getItemsAsync() async => _items = await _item.fetchItems();
+  Future<void> _getItemsAsync() async => _items =
+      await Provider.of<ItemProvider>(context, listen: false).fetchItems();
 
   void _onReturn() {
     _tag = null;
@@ -85,12 +87,35 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   void _clearSearch() {
     _searchCtrler.clear();
-    _items = _item.items;
+    _items = Provider.of<ItemProvider>(context, listen: false).items;
     setState(() {});
   }
 
   void _goToDashboard() => Navigator.of(context)
       .pushNamed(DashboardScreen.routeName)
+      .then((_) => _onReturn());
+
+  void _goToItemView(Item i) {
+    if (Provider.of<CriptoProvider>(context, listen: false).locked) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Please unlock'),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ItemViewScreen(item: i, onReturn: _onReturn),
+      ),
+    );
+  }
+
+  void _goToAlpha() => Navigator.of(context)
+      .pushNamed(ItemAddScreen.routeName)
       .then((_) => _onReturn());
 
   Future<void> _generatePassword() async {
@@ -116,11 +141,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() => _working = false);
   }
 
-  void _goToAlpha() => Navigator.of(context)
-      .pushNamed(ItemAddScreen.routeName)
-      .then((_) => _onReturn());
-
   Widget _appBarTitle() {
+    CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
     if (_cripto.locked) {
       return IconButton(
         icon: Icon(
@@ -151,7 +173,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getItems = _getItemsAsync();
     super.initState();
   }
@@ -165,10 +186,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _cripto = Provider.of<CriptoProvider>(context);
-    //  AUTO UNLOCK
-    // Provider.of<CriptoProvider>(context, listen: false).unlock('Qwe123!');
-
+    CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
     return FutureBuilder(
@@ -213,7 +231,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     ],
                     actionsIconTheme: IconThemeData(color: _primary),
                   ),
-                  body: _item.items.length < 1
+                  body: _items.length < 1
                       ? EmptyItems()
                       : Stack(children: [
                           Column(
@@ -238,7 +256,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                                     } else {
                                       return ItemUnlockedCard(
                                         item: _items[i],
-                                        onReturn: _onReturn,
+                                        onTap: () => _goToItemView(_items[i]),
                                       );
                                     }
                                   },
