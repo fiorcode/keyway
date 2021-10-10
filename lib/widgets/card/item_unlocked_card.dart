@@ -4,21 +4,18 @@ import 'package:provider/provider.dart';
 
 import '../../providers/cripto_provider.dart';
 import '../../models/item.dart';
-import '../../screens/item_view_screen.dart';
 
 class ItemUnlockedCard extends StatefulWidget {
-  const ItemUnlockedCard({Key key, this.item, this.onReturn}) : super(key: key);
+  const ItemUnlockedCard({Key key, this.item, this.onTap}) : super(key: key);
 
   final Item item;
-  final Function onReturn;
+  final Function onTap;
 
   @override
   _ItemUnlockedCardState createState() => _ItemUnlockedCardState();
 }
 
 class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
-  CriptoProvider _cripto;
-
   int _showValue = 0;
   String _title;
   String _subtitle;
@@ -29,27 +26,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   Color _iconColor;
   Color _warnColor;
 
-  void _onTap() {
-    if (_cripto.locked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Please unlock'),
-          duration: Duration(seconds: 1),
-        ),
-      );
-      return;
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemViewScreen(
-          item: widget.item,
-          onReturn: widget.onReturn,
-        ),
-      ),
-    );
-  }
+  void _onTap() => widget.onTap();
 
   void _toClipBoard() async {
     Clipboard.setData(ClipboardData(text: _title)).then(
@@ -64,7 +41,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   }
 
   void _switchView() async {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
+    CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
     if (_showValue > 6)
       _showValue = 0;
     else
@@ -74,7 +51,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.password == null) continue two;
         _showValue = 1;
         _icon = Icons.password;
-        _title = await _cripto.decryptPassword(widget.item.password);
+        _title = await _c.decryptPassword(widget.item.password);
         _subtitle = '';
         break;
       two:
@@ -82,7 +59,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.pin == null) continue three;
         _showValue = 2;
         _icon = Icons.pin;
-        _title = await _cripto.decryptPin(widget.item.pin);
+        _title = await _c.decryptPin(widget.item.pin);
         _subtitle = '';
         break;
       three:
@@ -90,7 +67,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.username == null) continue four;
         _showValue = 3;
         _icon = Icons.account_box;
-        _title = await _cripto.decryptUsername(widget.item.username);
+        _title = await _c.decryptUsername(widget.item.username);
         _subtitle = '';
         break;
       four:
@@ -98,7 +75,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.note == null) continue five;
         _showValue = 4;
         _icon = Icons.note;
-        _title = await _cripto.decryptNote(widget.item.note);
+        _title = await _c.decryptNote(widget.item.note);
         _subtitle = '';
         break;
       five:
@@ -106,7 +83,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item.address == null) continue six;
         _showValue = 5;
         _icon = Icons.http;
-        _title = await _cripto.decryptAddress(widget.item.address);
+        _title = await _c.decryptAddress(widget.item.address);
         _subtitle =
             'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
         break;
@@ -175,7 +152,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
 
   @override
   void initState() {
-    _cripto = Provider.of<CriptoProvider>(context, listen: false);
     _title = widget.item.title;
     _subtitle = '';
     _expire = _expired();
