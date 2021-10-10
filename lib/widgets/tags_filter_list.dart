@@ -15,7 +15,6 @@ class TagsFilterList extends StatefulWidget {
 }
 
 class _TagsFilterListState extends State<TagsFilterList> {
-  ItemProvider _items;
   Future<List<Tag>> _getTags;
   List<Widget> _buttons;
 
@@ -55,11 +54,12 @@ class _TagsFilterListState extends State<TagsFilterList> {
     return _buttons;
   }
 
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
+  Future<List<Tag>> _tagsList() async {
+    return Provider.of<ItemProvider>(context, listen: false).getTags();
+  }
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
     _getTags = _tagsList();
     super.initState();
   }
