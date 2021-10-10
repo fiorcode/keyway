@@ -5,6 +5,7 @@ class DateHelper {
   static DateFormat _ddMMyyHm = DateFormat('dd/MM/yy k:mm');
 
   static String ddMMyyyy(dynamic date) {
+    if (date == null) return 'null date';
     if (date is String) {
       if (date.isEmpty) return 'No date';
       return _ddMMyyyy.format(DateTime.parse(date));
@@ -13,6 +14,7 @@ class DateHelper {
   }
 
   static String ddMMyyHm(dynamic date) {
+    if (date == null) return 'null date';
     if (date is String) {
       if (date.isEmpty) return 'No date';
       return _ddMMyyHm.format(DateTime.parse(date));
@@ -21,6 +23,7 @@ class DateHelper {
   }
 
   static bool expired(dynamic date, int dayLapse) {
+    if (date == null) return true;
     if (date.isEmpty) return false;
     if (dayLapse == 0) return false;
     DateTime _date;
