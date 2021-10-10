@@ -78,6 +78,8 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color _back = Theme.of(context).backgroundColor;
+    Color _primary = Theme.of(context).primaryColor;
     return FutureBuilder(
         future: _loadItem,
         builder: (ctx, snap) {
@@ -90,11 +92,10 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                 return ErrorBody(snap.error);
               else {
                 return Scaffold(
-                  backgroundColor: Theme.of(context).backgroundColor,
+                  backgroundColor: _back,
                   appBar: AppBar(
-                    backgroundColor: Theme.of(context).backgroundColor,
-                    iconTheme:
-                        IconThemeData(color: Theme.of(context).primaryColor),
+                    backgroundColor: _back,
+                    iconTheme: IconThemeData(color: _primary),
                     centerTitle: true,
                     title: Text(
                       _i.title,
@@ -106,10 +107,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                     ),
                     actions: [
                       IconButton(
-                          icon: Icon(Icons.edit), onPressed: _goToEditItem)
+                        icon: Icon(Icons.edit),
+                        onPressed: _goToEditItem,
+                      )
                     ],
-                    actionsIconTheme:
-                        IconThemeData(color: Theme.of(context).primaryColor),
+                    actionsIconTheme: IconThemeData(color: _primary),
                   ),
                   body: SingleChildScrollView(
                     child: Padding(
@@ -119,7 +121,9 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                         children: [
                           if (_i.username != null)
                             ItemViewContainer(
-                                'username', _i.username.usernameDec),
+                              'username',
+                              _i.username.usernameDec,
+                            ),
                           if (_i.password != null)
                             ItemViewContainer(
                               'password',
@@ -144,8 +148,9 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                             ItemViewContainer(
                               'pin',
                               _i.pin.pinDec,
-                              left:
-                                  _i.pin.pinDate == null ? '' : _i.pin.pinDate,
+                              left: _i.pin.pinDate == null
+                                  ? 'null'
+                                  : _i.pin.pinDate,
                               right: _i.pin.pinLapse,
                             ),
                           if (_i.note != null)
@@ -181,7 +186,9 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                     child: Text(
                                       'product',
                                       style: TextStyle(
-                                          fontSize: 18, color: Colors.white),
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
                                   if (_i.product.productTrademark.isNotEmpty)
@@ -201,15 +208,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i.product.productTrademark[0]
-                                                  .toUpperCase() +
-                                              _i.product.productTrademark
-                                                  .substring(1),
+                                          _i.product.trademark,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: _primary,
                                           ),
                                         ),
                                       ),
@@ -231,15 +234,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i.product.productModel[0]
-                                                  .toUpperCase() +
-                                              _i.product.productModel
-                                                  .substring(1),
+                                          _i.product.model,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: _primary,
                                           ),
                                         ),
                                       ),
@@ -250,7 +249,8 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                           _i.deleted
                               ? ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.white),
+                                    primary: Colors.white,
+                                  ),
                                   icon: Icon(
                                     Icons.restore_from_trash,
                                     color: Colors.grey,
@@ -265,9 +265,12 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                   width: double.infinity,
                                   child: ElevatedButton.icon(
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.red),
-                                    icon:
-                                        Icon(Icons.delete, color: Colors.white),
+                                      primary: Colors.red,
+                                    ),
+                                    icon: Icon(
+                                      Icons.delete,
+                                      color: Colors.white,
+                                    ),
                                     label: Text(
                                       'DELETE ITEM',
                                       style: TextStyle(color: Colors.white),
