@@ -187,9 +187,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   }
 
   Future<void> _setPassword() async {
-    String _hash = CriptoProvider.doHash(_passCtrler.text);
-    Password _p = await Provider.of<ItemProvider>(context, listen: false)
-        .passwordInDB(_hash);
+    ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
+    String _h = CriptoProvider.doHash(_passCtrler.text);
+    Password _p = await _items.passwordInDB(_h);
     if (_p != null) {
       if (_i.itemPassword.repeatWarning) {
         bool _warning = await WarningHelper.repeat(context, 'Password');
