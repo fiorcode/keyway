@@ -200,12 +200,13 @@ class ItemProvider with ChangeNotifier {
       i.fkUsernameId = null;
     }
 
-    if (i.pin != null) {
-      if (old.pin != null) {
-        if (i.pin.notEqual(old.pin)) {
+    if (old.pin != null) {
+      if (i.pin != null) {
+        if (old.pin.pinEnc != i.pin.pinEnc) {
           i.pin.pinId = old.pin.pinId;
-          await updatePin(i.pin);
+          i.pin.pinDate = DateTime.now().toIso8601String();
         }
+        await updatePin(i.pin);
       } else {
         i.pin.pinDate = DateTime.now().toIso8601String();
         i.fkPinId = await insertPin(i.pin);
@@ -306,14 +307,14 @@ class ItemProvider with ChangeNotifier {
       }
     }
 
-    DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id').then((_) async {
+    return DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id')
+        .then((_) async {
       if (i.password != null) {
         if (old.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
           i.itemPassword.fkItemId = i.itemId;
           await insertItemPassword(i.itemPassword);
         }
       }
-      old = i;
     });
   }
 
