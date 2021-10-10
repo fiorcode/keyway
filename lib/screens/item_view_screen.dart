@@ -30,6 +30,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
 
   void _onReturn(Item i) {
     if (i != null) setState(() => _i = i);
+    widget.onReturn();
   }
 
   Future<void> _loadItemAsync() async {
@@ -143,7 +144,8 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                             ItemViewContainer(
                               'pin',
                               _i.pin.pinDec,
-                              left: _i.pin.pinDate,
+                              left:
+                                  _i.pin.pinDate == null ? '' : _i.pin.pinDate,
                               right: _i.pin.pinLapse,
                             ),
                           if (_i.note != null)
