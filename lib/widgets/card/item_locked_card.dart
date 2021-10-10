@@ -13,8 +13,8 @@ class ItemLockedCard extends StatelessWidget {
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105)
-        ? Colors.white.withAlpha(96)
-        : Colors.black.withAlpha(96);
+        ? Colors.white.withAlpha(192)
+        : Colors.black.withAlpha(192);
   }
 
   _onTap(BuildContext context) {
@@ -44,43 +44,55 @@ class ItemLockedCard extends StatelessWidget {
         leading: CircleAvatar(
           radius: 24,
           backgroundColor: item.avatarColor != null
-              ? Color(item.avatarColor).withAlpha(96)
+              ? Color(item.avatarColor).withAlpha(192)
               : Colors.grey,
-          child: Text(
-            item.title != null ?? item.title.isNotEmpty
-                ? item.title.substring(0, 1).toUpperCase()
-                : '',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: _setAvatarLetterColor(),
-            ),
-          ),
+          child: item.cleartext
+              ? Icon(Icons.flash_on)
+              : Text(
+                  item.title != null ?? item.title.isNotEmpty
+                      ? item.title.substring(0, 1).toUpperCase()
+                      : '',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: _setAvatarLetterColor(),
+                  ),
+                ),
         ),
-        title: Text(
-          item.title != null ? item.title : '',
-          overflow: TextOverflow.ellipsis,
-          maxLines: 1,
-          textAlign: TextAlign.start,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w300,
-            color: Colors.black,
-          ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              item.title != null ? item.title : '',
+              overflow: TextOverflow.ellipsis,
+              maxLines: 1,
+              textAlign: TextAlign.start,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w300,
+                color: Colors.black,
+              ),
+            ),
+            Text(item.date != null ? DateHelper.ddMMyyHm(item.date) : ''),
+          ],
         ),
         onTap: () => _onTap(context),
-        trailing: Chip(
-          backgroundColor: Colors.grey,
-          elevation: 4,
-          visualDensity: VisualDensity.compact,
-          label: Text(
-            item.date != null ? DateHelper.ddMMyyHm(item.date) : '',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
+        // trailing: Chip(
+        //   backgroundColor: Colors.grey,
+        //   elevation: 4,
+        //   visualDensity: VisualDensity.compact,
+        //   label: Text(
+        //     item.date != null ? DateHelper.ddMMyyHm(item.date) : '',
+        //     style: TextStyle(
+        //       fontSize: 14,
+        //       color: Colors.white,
+        //       fontWeight: FontWeight.w800,
+        //     ),
+        //   ),
+        // ),
+        trailing: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12),
+          child: Icon(Icons.lock, color: Colors.red),
         ),
       ),
     );
