@@ -62,6 +62,7 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
             height: 48,
             width: 48,
             child: FloatingActionButton(
+              heroTag: null,
               backgroundColor: Colors.grey[100],
               child: Icon(
                 Icons.settings,
