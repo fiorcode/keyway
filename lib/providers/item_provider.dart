@@ -187,43 +187,8 @@ class ItemProvider with ChangeNotifier {
     return _itemId;
   }
 
-  Future<void> updateItem(Item oldItem, Item i) async {
-    if (oldItem.password != null) {
-      if (i.password != null) {
-        if (i.password.passwordId == null) {
-          i.itemPassword = ItemPassword();
-          i.itemPassword.passwordDate = DateTime.now().toIso8601String();
-          i.itemPassword.fkPasswordId = await insertPassword(i.password);
-          oldItem.itemPassword.setOld();
-          await updateItemPassword(oldItem.itemPassword);
-        } else {
-          if (oldItem.password.passwordId != i.password.passwordId) {
-            i.itemPassword.passwordDate = DateTime.now().toIso8601String();
-            i.itemPassword.fkPasswordId = i.password.passwordId;
-            i.itemPassword.setRepeated();
-            await _setRepeated(i.password.passwordId);
-            oldItem.itemPassword.setOld();
-            await updateItemPassword(oldItem.itemPassword);
-          } else {
-            await updateItemPassword(i.itemPassword);
-          }
-        }
-      } else {
-        oldItem.itemPassword.setDeleted();
-        await updateItemPassword(oldItem.itemPassword);
-      }
-    } else {
-      if (i.password != null) {
-        i.itemPassword.passwordDate = DateTime.now().toIso8601String();
-        if (i.password.passwordId == null) {
-          i.itemPassword.fkPasswordId = await insertPassword(i.password);
-        } else {
-          i.itemPassword.fkPasswordId = i.password.passwordId;
-          i.itemPassword.setRepeated();
-          await _setRepeated(i.password.passwordId);
-        }
-      }
-    }
+  Future<void> updateItem(Item old, Item i) async {
+    await _updatePassword(old, i);
 
     if (i.username != null) {
       if (i.username.usernameId == null) {
@@ -236,10 +201,9 @@ class ItemProvider with ChangeNotifier {
     }
 
     if (i.pin != null) {
-      if (oldItem.pin != null) {
-        if (i.pin.notEqual(oldItem.pin)) {
-          i.pin.pinId = oldItem.pin.pinId;
-          i.pin.pinDate = DateTime.now().toIso8601String();
+      if (old.pin != null) {
+        if (i.pin.notEqual(old.pin)) {
+          i.pin.pinId = old.pin.pinId;
           await updatePin(i.pin);
         }
       } else {
@@ -272,13 +236,13 @@ class ItemProvider with ChangeNotifier {
       i.fkAddressId = null;
     }
 
-    if (oldItem.product != null) {
+    if (old.product != null) {
       if (i.product != null) {
         //PRODUCT (SAME OR MODIFIED)
-        if (oldItem.product.cpe23uri != null) {
+        if (old.product.cpe23uri != null) {
           if (i.product.cpe23uri != null) {
             //CPE (SAME OR MODIFIED)
-            if (!oldItem.product.cpe23uri.equal(i.product.cpe23uri)) {
+            if (!old.product.cpe23uri.equal(i.product.cpe23uri)) {
               if (i.product.cpe23uri.cpe23uriId == null) {
                 i.product.fkCpe23uriId =
                     await insertCpe23uri(i.product.cpe23uri);
@@ -326,7 +290,7 @@ class ItemProvider with ChangeNotifier {
       } else {
         //PRODUCT DELETED
         i.fkProductId = null;
-        await deleteProduct(oldItem.product);
+        await deleteProduct(old.product);
       }
     } else {
       if (i.product != null) {
@@ -344,13 +308,52 @@ class ItemProvider with ChangeNotifier {
 
     DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id').then((_) async {
       if (i.password != null) {
-        if (oldItem.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
+        if (old.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
           i.itemPassword.fkItemId = i.itemId;
           await insertItemPassword(i.itemPassword);
         }
       }
-      oldItem = i;
+      old = i;
     });
+  }
+
+  Future<void> _updatePassword(Item old, Item i) async {
+    if (old.password != null) {
+      if (i.password != null) {
+        if (i.password.passwordId == null) {
+          i.itemPassword = ItemPassword();
+          i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+          i.itemPassword.fkPasswordId = await insertPassword(i.password);
+          old.itemPassword.setOld();
+          await updateItemPassword(old.itemPassword);
+        } else {
+          if (old.password.passwordId != i.password.passwordId) {
+            i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+            i.itemPassword.fkPasswordId = i.password.passwordId;
+            i.itemPassword.setRepeated();
+            await _setRepeated(i.password.passwordId);
+            old.itemPassword.setOld();
+            await updateItemPassword(old.itemPassword);
+          } else {
+            await updateItemPassword(i.itemPassword);
+          }
+        }
+      } else {
+        old.itemPassword.setDeleted();
+        await updateItemPassword(old.itemPassword);
+      }
+    } else {
+      if (i.password != null) {
+        i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+        if (i.password.passwordId == null) {
+          i.itemPassword.fkPasswordId = await insertPassword(i.password);
+        } else {
+          i.itemPassword.fkPasswordId = i.password.passwordId;
+          i.itemPassword.setRepeated();
+          await _setRepeated(i.password.passwordId);
+        }
+      }
+    }
   }
 
   Future<void> deleteCleartextItem(Item i) async {
@@ -496,9 +499,6 @@ class ItemProvider with ChangeNotifier {
     else
       return Username.fromMap(_list.first);
   }
-
-  // Future<void> refreshItemPasswordStatus(int passwordId) async =>
-  //     await DBHelper.refreshItemPasswordStatus(passwordId);
 
   Future<Username> getUsername(int id) async {
     List<Map<String, dynamic>> _u = await DBHelper.getUsernameById(id);
