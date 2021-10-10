@@ -8,7 +8,6 @@ class Pin {
   int pinLapse;
   String pinStatus;
 
-  DateTime dateTime;
   String pinDec;
 
   Pin({
