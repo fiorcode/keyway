@@ -91,9 +91,11 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() {});
   }
 
-  void _goToDashboard() => Navigator.of(context)
-      .pushNamed(DashboardScreen.routeName)
-      .then((_) => _onReturn());
+  void _goToDashboard() {
+    Navigator.of(context)
+        .pushNamed(DashboardScreen.routeName)
+        .then((_) => _onReturn());
+  }
 
   void _goToItemView(Item i) {
     if (Provider.of<CriptoProvider>(context, listen: false).locked) {
@@ -114,9 +116,11 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     );
   }
 
-  void _goToAlpha() => Navigator.of(context)
-      .pushNamed(ItemAddScreen.routeName)
-      .then((_) => _onReturn());
+  void _goToAlpha() {
+    Navigator.of(context)
+        .pushNamed(ItemAddScreen.routeName)
+        .then((_) => _onReturn());
+  }
 
   Future<void> _generatePassword() async {
     setState(() => _working = true);
@@ -126,13 +130,25 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
       avatarColor: Colors.white.value,
       avatarLetterColor: Colors.black.value,
     );
-    await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
+    _i.itemId =
+        await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
     _items.add(_i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
   }
 
-  Future<void> _deleteCleartextItem(Item i) async {
+  Future<void> _buildRandomItem(Item old, Item i) async {
+    setState(() => _working = true);
+    ItemProvider _i = Provider.of<ItemProvider>(context, listen: false);
+    i.itemId = await _i.insertItem(i);
+    await _i.deleteItem(old);
+    _items.remove(old);
+    _items.add(i);
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    setState(() => _working = false);
+  }
+
+  Future<void> _deleteRandomItem(Item i) async {
     setState(() => _working = true);
     await Provider.of<ItemProvider>(context, listen: false)
         .deleteCleartextItem(i);
@@ -251,7 +267,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                                     } else if (_items[i].cleartext) {
                                       return ItemCleartextCard(
                                         item: _items[i],
-                                        deleteItem: _deleteCleartextItem,
+                                        deleteItem: _deleteRandomItem,
+                                        buildItem: _buildRandomItem,
                                       );
                                     } else {
                                       return ItemUnlockedCard(
