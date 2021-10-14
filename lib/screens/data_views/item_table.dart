@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/models/item.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/item_provider.dart';
@@ -13,16 +14,17 @@ class ItemTableScreen extends StatefulWidget {
 }
 
 class _ItemTableScreenState extends State<ItemTableScreen> {
-  ItemProvider _item;
   Future _getItems;
+  List<Item> _items;
 
-  Future<void> _getItemsAsync() async => await _item.fetchItems();
+  Future<void> _getItemsAsync() async => _items =
+      await Provider.of<ItemProvider>(context, listen: false).fetchItems();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
+    _items = <Item>[];
     _getItems = _getItemsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
@@ -47,10 +49,10 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
               if (snap.hasError)
                 return ErrorHelper.errorBody(snap.error);
               else
-                return _item.items.length <= 0
+                return _items.length <= 0
                     ? EmptyItems()
                     : ListView.separated(
-                        itemCount: _item.items.length,
+                        itemCount: _items.length,
                         itemBuilder: (ctx, i) => ListTile(
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,7 +61,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('id: '),
                                   Text(
-                                    _item.items[i].itemId.toString(),
+                                    _items[i].itemId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -70,7 +72,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('title: '),
                                   Text(
-                                    _item.items[i].title,
+                                    _items[i].title,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -81,7 +83,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('date: '),
                                   Text(
-                                    _item.items[i].date,
+                                    _items[i].date,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -92,7 +94,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('avatar_color: '),
                                   Text(
-                                    _item.items[i].avatarColor.toString(),
+                                    _items[i].avatarColor.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -103,7 +105,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('avatar_letter_color: '),
                                   Text(
-                                    _item.items[i].avatarLetterColor.toString(),
+                                    _items[i].avatarLetterColor.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -114,7 +116,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('font: '),
                                   Text(
-                                    _item.items[i].font,
+                                    _items[i].font,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -125,7 +127,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('item_status: '),
                                   Text(
-                                    _item.items[i].itemStatus,
+                                    _items[i].itemStatus,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -136,7 +138,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('tags: '),
                                   Text(
-                                    _item.items[i].tags,
+                                    _items[i].tags,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -147,7 +149,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('fk_username_id: '),
                                   Text(
-                                    _item.items[i].fkUsernameId.toString(),
+                                    _items[i].fkUsernameId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -158,7 +160,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('fk_pin_id: '),
                                   Text(
-                                    _item.items[i].fkPinId.toString(),
+                                    _items[i].fkPinId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -169,7 +171,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('fk_note_id: '),
                                   Text(
-                                    _item.items[i].fkNoteId.toString(),
+                                    _items[i].fkNoteId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -180,7 +182,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('fk_address_id: '),
                                   Text(
-                                    _item.items[i].fkAddressId.toString(),
+                                    _items[i].fkAddressId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -191,7 +193,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('fk_product_id: '),
                                   Text(
-                                    _item.items[i].fkProductId.toString(),
+                                    _items[i].fkProductId.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),

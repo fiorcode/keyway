@@ -88,6 +88,12 @@ class Item {
     this.itemStatus = this.itemStatus.replaceAll('<cleartext>', '');
   }
 
+  bool hasOldPasswords() {
+    if (this.itemPasswords == null) return false;
+    if (this.itemPasswords.isEmpty) return false;
+    return true;
+  }
+
   Item.fromMap(Map<String, dynamic> map) {
     this.itemId = map['item_id'];
     this.title = map['title'];

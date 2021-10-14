@@ -208,75 +208,75 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
     try {
       ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
       CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-      if (widget.item.password != null) {
-        if (_passCtrler.text.isNotEmpty) {
-          _i.password.passwordHash = CriptoProvider.doHash(_passCtrler.text);
+      if (_i.password != null) {
+        _i.password.passwordHash = CriptoProvider.doHash(_passCtrler.text);
+        if (widget.item.password != null) {
           if (widget.item.password.passwordHash != _i.password.passwordHash) {
-            await _setPassword();
+            if (_i.password.passwordHash.isNotEmpty) {
+              await _setPassword();
+            } else {
+              _i.password = null;
+            }
           }
         } else {
-          _i.password = null;
+          if (_i.password.passwordHash.isNotEmpty) {
+            await _setPassword();
+          } else {
+            _i.password = null;
+          }
         }
-      } else {
-        if (_passCtrler.text.isNotEmpty) {
-          await _setPassword();
+      }
+
+      if (_i.username != null) {
+        String _hash = CriptoProvider.doHash(_userCtrler.text);
+        Username _u = await _items.usernameInDB(_hash);
+        if (_u != null) {
+          _i.username = _u;
         } else {
-          _i.password = null;
+          _i.username = await _c.createUsername(_userCtrler.text);
         }
       }
 
-      String _hash = CriptoProvider.doHash(_userCtrler.text);
-      Username _u = await _items.usernameInDB(_hash);
-      if (_u != null) {
-        _i.username = _u;
-      } else {
-        _i.username = await _c.createUsername(_userCtrler.text);
-      }
-
-      if (widget.item.pin != null) {
+      if (_i.pin != null) {
         if (_pinCtrler.text.isNotEmpty) {
-          if (widget.item.pin.pinDec != _pinCtrler.text) {
-            _i.pin = await _c.createPin(_pinCtrler.text);
+          if (widget.item.pin != null) {
+            if (widget.item.pin.pinDec != _pinCtrler.text) {
+              _i.pin = await _c.createPin(_pinCtrler.text);
+            }
           }
         } else {
           _i.pin = null;
         }
-      } else {
-        if (_i.pin != null) {
-          _i.pin = await _c.createPin(_pinCtrler.text);
-        }
       }
 
-      if (widget.item.note != null) {
+      if (_i.note != null) {
         if (_noteCtrler.text.isNotEmpty) {
-          if (widget.item.note.noteDec != _noteCtrler.text) {
-            _i.note = await _c.createNote(_noteCtrler.text);
+          if (widget.item.note != null) {
+            if (widget.item.note.noteDec != _noteCtrler.text) {
+              _i.note = await _c.createNote(_noteCtrler.text);
+            }
           }
         } else {
           _i.note = null;
         }
-      } else {
-        if (_i.note != null) {
-          _i.note = await _c.createNote(_noteCtrler.text);
-        }
       }
 
-      if (widget.item.address != null) {
+      if (_i.address != null) {
         if (_addressCtrler.text.isNotEmpty) {
-          if (widget.item.address.addressDec != _addressCtrler.text) {
-            _i.address = await _c.createAddress(_addressCtrler.text);
+          if (widget.item.address != null) {
+            if (widget.item.address.addressDec != _addressCtrler.text) {
+              _i.address = await _c.createAddress(_addressCtrler.text);
+            }
           }
         } else {
           _i.address = null;
         }
-      } else {
-        if (_i.address != null) {
-          _i.address = await _c.createAddress(_addressCtrler.text);
-        }
       }
 
-      if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
-        _i.product = null;
+      if (_i.product != null) {
+        if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
+          _i.product = null;
+        }
       }
 
       await _items.updateItem(widget.item, _i);
@@ -316,22 +316,15 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   @override
   Widget build(BuildContext context) {
     CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
+    Color _back = Theme.of(context).backgroundColor;
+    Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: _back,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        backgroundColor: _back,
+        iconTheme: IconThemeData(color: _primary),
         centerTitle: true,
-        title: _cripto.locked
-            ? IconButton(
-                icon: Icon(
-                  Icons.lock_outline,
-                  color: _unlocking ? Colors.orange : Colors.red,
-                ),
-                // onPressed: _cripto.locked ? _lockSwitch : null,
-                onPressed: () => _cripto.unlock('Qwe123!'),
-              )
-            : null,
+        title: TitleTextField(_titleCtrler, _titleFocusNode, _updatePreview),
         actions: [
           if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
             IconButton(icon: Icon(Icons.save), onPressed: _updateItem),
@@ -345,7 +338,6 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  TitleTextField(_titleCtrler, _titleFocusNode, _updatePreview),
                   PresetsList(
                     item: _i,
                     usernameSwitch: _usernameSwitch,

@@ -131,7 +131,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                               left: _i.itemPassword.passwordDate,
                               right: _i.itemPassword.passwordLapse,
                             ),
-                          if (_i.itemPasswords.isNotEmpty)
+                          if (_i.hasOldPasswords())
                             Center(
                               child: TextButton(
                                 onPressed: _goToPasswordHistory,

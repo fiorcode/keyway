@@ -239,19 +239,19 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
+    CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
+    Color _back = Theme.of(context).backgroundColor;
+    Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: _back,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        backgroundColor: _back,
+        iconTheme: IconThemeData(color: _primary),
         centerTitle: true,
         title: TitleTextField(_titleCtrler, _titleFocusNode, _updateView),
         actions: [
-          _titleCtrler.text.isNotEmpty && !_cripto.locked
-              ? IconButton(icon: Icon(Icons.save), onPressed: _insertItem)
-              : SizedBox(width: 48),
+          if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
+            IconButton(icon: Icon(Icons.save), onPressed: _insertItem),
         ],
       ),
       body: Stack(

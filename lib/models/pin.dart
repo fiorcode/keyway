@@ -24,6 +24,13 @@ class Pin {
   bool get expired =>
       this.pinLapse == 0 ? false : DateHelper.expired(pinDate, pinLapse);
 
+  void repeatWarningSwitch() {
+    if (repeatWarning)
+      this.pinStatus += '<no-warning>';
+    else
+      this.pinStatus = this.pinStatus.replaceAll('<no-warning>', '');
+  }
+
   Pin.fromMap(Map<String, dynamic> map) {
     pinId = map['pin_id'];
     pinEnc = map['pin_enc'];
@@ -43,13 +50,6 @@ class Pin {
     };
     if (pinId != null) map['pin_id'] = pinId;
     return map;
-  }
-
-  void repeatWarningSwitch() {
-    if (repeatWarning)
-      this.pinStatus += '<no-warning>';
-    else
-      this.pinStatus = this.pinStatus.replaceAll('<no-warning>', '');
   }
 
   Pin clone() => Pin(

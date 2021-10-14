@@ -310,12 +310,21 @@ class ItemProvider with ChangeNotifier {
     return DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id')
         .then((_) async {
       if (i.password != null) {
-        if (old.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
+        if (old.itemPassword != null) {
+          if (old.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
+            i.itemPassword.fkItemId = i.itemId;
+            await insertItemPassword(i.itemPassword);
+          }
+        } else {
           i.itemPassword.fkItemId = i.itemId;
           await insertItemPassword(i.itemPassword);
         }
       }
     });
+  }
+
+  Future<int> deleteItem(Item i) async {
+    return DBHelper.delete(DBHelper.itemTable, i.toMap(), 'item_id');
   }
 
   Future<void> _updatePassword(Item old, Item i) async {
@@ -345,7 +354,9 @@ class ItemProvider with ChangeNotifier {
       }
     } else {
       if (i.password != null) {
-        i.itemPassword.passwordDate = DateTime.now().toIso8601String();
+        i.itemPassword = ItemPassword(
+          passwordDate: DateTime.now().toIso8601String(),
+        );
         if (i.password.passwordId == null) {
           i.itemPassword.fkPasswordId = await insertPassword(i.password);
         } else {
@@ -356,6 +367,8 @@ class ItemProvider with ChangeNotifier {
       }
     }
   }
+
+  // Future<void> buildRandomItem(Item i) async {}
 
   Future<void> deleteCleartextItem(Item i) async {
     await DBHelper.delete(DBHelper.itemTable, i.toMap(), 'item_id');
