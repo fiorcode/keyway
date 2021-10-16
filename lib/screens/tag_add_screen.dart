@@ -90,7 +90,10 @@ class _TagAddScreenState extends State<TagAddScreen> {
                 padding: EdgeInsets.all(16),
                 child: Text(
                   '# ' + ctrler.text,
-                  style: TextStyle(color: _color),
+                  style: TextStyle(
+                    color: _color,
+                    fontSize: 32,
+                  ),
                 ),
               ),
               Padding(
