@@ -62,34 +62,23 @@ class ItemLockedCard extends StatelessWidget {
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              item.title != null ? item.title : '',
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.w300,
-                color: Colors.black,
+            FittedBox(
+              fit: BoxFit.fitWidth,
+              child: Text(
+                item.title,
+                maxLines: 1,
+                softWrap: true,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w300,
+                  color: Colors.black,
+                ),
               ),
             ),
             Text(item.date != null ? DateHelper.ddMMyyHm(item.date) : ''),
           ],
         ),
         onTap: () => _onTap(context),
-        // trailing: Chip(
-        //   backgroundColor: Colors.grey,
-        //   elevation: 4,
-        //   visualDensity: VisualDensity.compact,
-        //   label: Text(
-        //     item.date != null ? DateHelper.ddMMyyHm(item.date) : '',
-        //     style: TextStyle(
-        //       fontSize: 14,
-        //       color: Colors.white,
-        //       fontWeight: FontWeight.w800,
-        //     ),
-        //   ),
-        // ),
         trailing: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Icon(Icons.lock, color: Colors.red),
