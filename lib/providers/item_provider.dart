@@ -200,42 +200,78 @@ class ItemProvider with ChangeNotifier {
       i.fkUsernameId = null;
     }
 
-    if (old.pin != null) {
-      if (i.pin != null) {
-        if (old.pin.pinEnc != i.pin.pinEnc) {
+    if (i.pin != null) {
+      if (old.pin != null) {
+        if (i.pin.notEqual(old.pin)) {
           i.pin.pinId = old.pin.pinId;
-          i.pin.pinDate = DateTime.now().toIso8601String();
+          i.fkPinId = i.pin.pinId;
+          await updatePin(i.pin);
         }
-        await updatePin(i.pin);
       } else {
-        i.pin.pinDate = DateTime.now().toIso8601String();
         i.fkPinId = await insertPin(i.pin);
       }
     } else {
+      if (old.pin != null) {
+        if (old.pin.pinId != null) await deletePin(old.pin);
+      }
       i.fkPinId = null;
     }
 
     if (i.note != null) {
-      if (i.note.noteId == null) {
-        i.fkNoteId = await insertNote(i.note);
+      if (old.note != null) {
+        if (i.note.notEqual(old.note)) {
+          i.note.noteId = old.note.noteId;
+          i.fkNoteId = i.note.noteId;
+          await updateNote(i.note);
+        }
       } else {
-        i.fkNoteId = i.note.noteId;
-        await updateNote(i.note);
+        i.fkNoteId = await insertNote(i.note);
       }
     } else {
+      if (old.note != null) {
+        if (old.note.noteId != null) await deleteNote(old.note);
+      }
       i.fkNoteId = null;
     }
 
+    // if (i.note != null) {
+    //   if (i.note.noteId == null) {
+    //     i.fkNoteId = await insertNote(i.note);
+    //   } else {
+    //     i.fkNoteId = i.note.noteId;
+    //     await updateNote(i.note);
+    //   }
+    // } else {
+    //   i.fkNoteId = null;
+    // }
+
     if (i.address != null) {
-      if (i.address.addressId == null) {
-        i.fkAddressId = await insertAddress(i.address);
+      if (old.address != null) {
+        if (i.address.notEqual(old.address)) {
+          i.address.addressId = old.address.addressId;
+          i.fkAddressId = i.address.addressId;
+          await updateAddress(i.address);
+        }
       } else {
-        i.fkAddressId = i.address.addressId;
-        await updateAddress(i.address);
+        i.fkAddressId = await insertAddress(i.address);
       }
     } else {
+      if (old.address != null) {
+        if (old.address.addressId != null) await deleteAddress(old.address);
+      }
       i.fkAddressId = null;
     }
+
+    // if (i.address != null) {
+    //   if (i.address.addressId == null) {
+    //     i.fkAddressId = await insertAddress(i.address);
+    //   } else {
+    //     i.fkAddressId = i.address.addressId;
+    //     await updateAddress(i.address);
+    //   }
+    // } else {
+    //   i.fkAddressId = null;
+    // }
 
     if (old.product != null) {
       if (i.product != null) {
@@ -408,11 +444,15 @@ class ItemProvider with ChangeNotifier {
     return DBHelper.delete(DBHelper.usernameTable, u.toMap(), 'username_id');
   }
 
-  Future<int> insertPin(Pin p) async =>
-      await DBHelper.insert(DBHelper.pinTable, p.toMap());
+  Future<int> insertPin(Pin p) async {
+    p.pinDate = DateTime.now().toIso8601String();
+    return await DBHelper.insert(DBHelper.pinTable, p.toMap());
+  }
 
-  Future<int> updatePin(Pin p) async =>
-      await DBHelper.update(DBHelper.pinTable, p.toMap(), 'pin_id');
+  Future<int> updatePin(Pin p) async {
+    p.pinDate = DateTime.now().toIso8601String();
+    return await DBHelper.update(DBHelper.pinTable, p.toMap(), 'pin_id');
+  }
 
   Future<int> deletePin(Pin p) async {
     await DBHelper.deletePinItem(p.pinId);
