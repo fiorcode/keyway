@@ -48,7 +48,7 @@ class PasswordHelper {
 
   static Future<List<Word>> getWordList() async {
     List<Word> _wordList = <Word>[];
-    String _jsonList = await rootBundle.loadString('assets/word_list_en.json');
+    String _jsonList = await rootBundle.loadString('assets/word_list_ar.json');
     jsonDecode(_jsonList).forEach((w) => _wordList.add(Word.fromJson(w)));
     return _wordList;
   }
