@@ -3,15 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/password_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/password_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/items_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/items_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/tag_add_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/tag_add_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_locked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_locked_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +45,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
+    <state x="845" y="383" width="600" height="487" key="#Notifications" timestamp="1634406862693">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="845" y="383" width="600" height="487" key="#Notifications/0.0.1920.1040@0.0.1920.1040" timestamp="1634406862693" />
     <state x="552" y="161" key="#Plugins" timestamp="1631118571605">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -61,11 +57,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1634300836138">
+    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1634408387648">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1632578428832" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1634300836138" />
+    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1634408387648" />
     <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1633970076782">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
