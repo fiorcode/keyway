@@ -162,12 +162,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   Future<void> _insertItem() async {
-    CriptoProvider _cripto =
-        Provider.of<CriptoProvider>(context, listen: false);
+    CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
     ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
     try {
-      Password _p =
-          await _items.passwordInDB(CriptoProvider.doHash(_passCtrler.text));
+      String _hash = CriptoProvider.doHash(_passCtrler.text);
+      Password _p = await _items.passwordInDB(_hash);
       if (_p != null) {
         if (_i.itemPassword.repeatWarning) {
           bool _warning = await WarningHelper.repeat(context, 'Password');
@@ -176,21 +175,24 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         }
         _i.password = _p;
       } else {
-        _i.password = await _cripto.createPassword(_passCtrler.text);
+        _i.password = await _c.createPassword(_passCtrler.text);
         if (_i.password == null) _i.itemPassword = null;
       }
-      Username _u =
-          await _items.usernameInDB(CriptoProvider.doHash(_userCtrler.text));
+      _hash = CriptoProvider.doHash(_userCtrler.text);
+      Username _u = await _items.usernameInDB(_hash);
       if (_u != null) {
         _i.username = _u;
       } else {
-        _i.username = await _cripto.createUsername(_userCtrler.text);
+        _i.username = await _c.createUsername(_userCtrler.text);
       }
-      _i.pin = await _cripto.createPin(_pinCtrler.text);
-      _i.note = await _cripto.createNote(_noteCtrler.text);
-      _i.address = await _cripto.createAddress(_addressCtrler.text);
-      if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
-        _i.product = null;
+      if (_i.pin != null) _i.pin = await _c.createPin(_pinCtrler.text);
+      if (_i.note != null) _i.note = await _c.createNote(_noteCtrler.text);
+      if (_i.address != null)
+        _i.address = await _c.createAddress(_addressCtrler.text);
+      if (_i.product != null) {
+        if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
+          _i.product = null;
+        }
       }
       _items.insertItem(_i).then((_) => Navigator.of(context).pop());
     } catch (error) {
@@ -250,8 +252,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         centerTitle: true,
         title: TitleTextField(_titleCtrler, _titleFocusNode, _updateView),
         actions: [
-          if (_titleCtrler.text.isNotEmpty && !_cripto.locked)
-            IconButton(icon: Icon(Icons.save), onPressed: _insertItem),
+          _titleCtrler.text.isNotEmpty && !_cripto.locked
+              ? IconButton(icon: Icon(Icons.save), onPressed: _insertItem)
+              : SizedBox(width: 48),
         ],
       ),
       body: Stack(
