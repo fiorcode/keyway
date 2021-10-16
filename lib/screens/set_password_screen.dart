@@ -112,7 +112,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                'NOW \nCREATE ONE \nTO \nPROTECT YOUR DATA',
+                // 'NOW \nCREATE ONE \nTO \nPROTECT YOUR DATA',
+                'CREÁ UNA \nCONTRASEÑA \nPARA \nPROTEGER TUS DATOS',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 32,
@@ -132,7 +133,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 filled: true,
-                labelText: 'Master password',
+                // labelText: 'Master password',
+                labelText: 'Contraseña maestra',
                 prefixIcon: _passCtrler.text.isNotEmpty
                     ? InkWell(
                         child: Icon(Icons.visibility),
@@ -166,7 +168,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 filled: true,
-                labelText: 'Confirm master password',
+                // labelText: 'Confirm master password',
+                labelText: 'Confirme contraseña maestra',
                 prefixIcon: _confirmCtrler.text.isNotEmpty
                     ? InkWell(
                         child: Icon(Icons.visibility),
