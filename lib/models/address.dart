@@ -5,7 +5,7 @@ class Address {
   String? addressProtocol;
   int? addressPort;
 
-  String? addressDec;
+  String addressDec = '';
 
   Address.factory() {
     this.addressEnc = '';

@@ -8,7 +8,7 @@ class Pin {
   int? pinLapse;
   String? pinStatus;
 
-  String? pinDec;
+  String pinDec = '';
 
   Pin({
     this.pinId,

@@ -63,7 +63,7 @@ class _AddressesScreenState extends State<AddressesScreen> {
                       return Card(
                         child: ListTile(
                           leading: Text(_item.addresses[i].addressProtocol!),
-                          title: Text(_item.addresses[i].addressDec!),
+                          title: Text(_item.addresses[i].addressDec),
                           subtitle:
                               Text(_item.addresses[i].addressPort.toString()),
                           trailing: IconButton(

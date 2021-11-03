@@ -59,7 +59,7 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.password, size: 38),
-                          title: Text(_passwords[i].passwordDec!),
+                          title: Text(_passwords[i].passwordDec),
                           trailing: IconButton(
                             onPressed: () => _deletePassword(_passwords[i]),
                             icon: Icon(

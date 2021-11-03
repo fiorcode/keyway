@@ -59,7 +59,7 @@ class _UsernamesScreenState extends State<UsernamesScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.account_box, size: 38),
-                          title: Text(_usernames[i].usernameDec!),
+                          title: Text(_usernames[i].usernameDec),
                           trailing: IconButton(
                             onPressed: () => _deleteUsername(_usernames[i]),
                             icon: Icon(

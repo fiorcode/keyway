@@ -5,7 +5,7 @@ class Password {
   String? passwordStrength;
   String? passwordHash;
 
-  String? passwordDec;
+  String passwordDec = '';
 
   Password({
     this.passwordId,

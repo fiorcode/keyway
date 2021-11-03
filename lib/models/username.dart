@@ -4,7 +4,7 @@ class Username {
   String? usernameIv;
   String? usernameHash;
 
-  String? usernameDec;
+  String usernameDec = '';
 
   Username({
     this.usernameId,

@@ -95,7 +95,7 @@ class _UserListCardState extends State<UserListCard> {
                                         onPressed: () => widget
                                             .selectUsername(e.usernameDec),
                                         child: Text(
-                                          e.usernameDec!,
+                                          e.usernameDec,
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),

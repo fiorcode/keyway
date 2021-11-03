@@ -59,7 +59,7 @@ class _PinsScreenState extends State<PinsScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.pin, size: 38),
-                          title: Text(_pins[i].pinDec!),
+                          title: Text(_pins[i].pinDec),
                           trailing: IconButton(
                             onPressed: () => _deletePin(_pins[i]),
                             icon: Icon(

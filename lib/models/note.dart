@@ -3,7 +3,7 @@ class Note {
   String? noteEnc;
   String? noteIv;
 
-  String? noteDec;
+  String noteDec = '';
 
   Note({
     this.noteId,

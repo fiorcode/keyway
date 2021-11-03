@@ -246,10 +246,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     ],
                     actionsIconTheme: IconThemeData(color: _primary),
                   ),
-                  body: _items.length < 1
-                      ? EmptyItems()
-                      : Stack(children: [
-                          Column(
+                  body: Stack(children: [
+                    _items.length < 1
+                        ? EmptyItems()
+                        : Column(
                             children: [
                               if (_working) LinearProgressIndicator(),
                               if (_items.isNotEmpty)
@@ -280,9 +280,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                               ),
                             ],
                           ),
-                          if (_unlocking && _cripto.locked)
-                            UnlockContainer(_lockSwitch)
-                        ]),
+                    if (_unlocking && _cripto.locked)
+                      UnlockContainer(_lockSwitch)
+                  ]),
                 );
               }
             default:

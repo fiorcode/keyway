@@ -1,111 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/date_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/date_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/db_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/db_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/password_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/password_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/storage_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/storage_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/warning_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/warning_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/address.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/address.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/api/nist/cpe.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/api/nist/cpe.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/api/nist/cpe_body.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/api/nist/cpe_body.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/api/nist/cpe_ref.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/api/nist/cpe_ref.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/api/nist/cpe_result.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/api/nist/cpe_result.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/api/nist/cpe_title.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/api/nist/cpe_title.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/backup.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/backup.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/cpe23uri.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/cpe23uri.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/cpe23uri_cve.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/cpe23uri_cve.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/cve.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/cve.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/cve_impact_v3.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/cve_impact_v3.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/item_password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/item_password.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/note.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/note.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/password.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/password.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/pin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/pin.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/product.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/product.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/product_cve.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/product_cve.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/tag.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/tag.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/user.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/user.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/username.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/username.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/word.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/word.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/providers/item_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/item_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/providers/nist_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/nist_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/addresses_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/addresses_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/backup_restore_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/backup_restore_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/address_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/address_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/cpe23uri_cve_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/cpe23uri_cve_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/cpe23uri_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/cpe23uri_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/cve_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/cve_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/item_password_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/item_password_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/item_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/item_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/note_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/note_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/password_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/password_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/pin_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/pin_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/product_cve_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/product_cve_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/product_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/product_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/tag_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/tag_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/user_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/user_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/data_views/username_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/data_views/username_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_add_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_edit_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_edit_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_old_passwords_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_old_passwords_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/item_view_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/items_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/items_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/notes_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/notes_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/passwords_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/passwords_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/pins_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/pins_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/product_search_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/product_search_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/products_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/products_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/products_without_cpe_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/products_without_cpe_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/restore_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/restore_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/splash_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/splash_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/tag_add_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/tag_add_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/tags_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/tags_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/usernames_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/usernames_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/vulnerabilities_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/vulnerabilities_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/address_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/address_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/cpe_selection_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/cpe_selection_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/dashboard_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/dashboard_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_cleartext_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_cleartext_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_deleted_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_deleted_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_locked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_locked_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_preview_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_preview_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/password_change_reminder_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/password_change_reminder_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/password_input_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/password_input_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/pin_change_reminder_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/pin_change_reminder_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/product_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/product_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/strength_level_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/strength_level_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/tags_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/tags_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/user_list_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/user_list_card.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/check_board.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/check_board.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/item_view_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/item_view_container.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/blue_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/blue_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/color_alpha_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/color_alpha_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/green_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/green_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/letter_blue_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/letter_blue_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/letter_color_alpha_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/letter_color_alpha_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/letter_green_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/letter_green_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/letter_red_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/letter_red_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/picker/red_color_picker.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/picker/red_color_picker.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/presets_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/presets_list.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/tags_filter_list.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/tags_filter_list.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/long_text_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/long_text_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/password_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/password_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/pin_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/pin_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/search_bar_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/search_bar_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/title_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/title_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/text_field/username_text_field.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/text_field/username_text_field.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/unlock_container.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/unlock_container.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/test/helpers/password_helper_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/test/helpers/password_helper_test.dart" afterDir="false" />
-    </list>
+    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -158,11 +54,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1635963254629">
+    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1635973011330">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1632578428832" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1635963254629" />
+    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1635973011330" />
     <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1633970076782">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

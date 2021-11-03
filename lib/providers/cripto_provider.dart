@@ -22,7 +22,7 @@ import 'package:keyway/models/password.dart';
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
   late AesCbc _aesCbc;
-  SecretKey? _secretKey;
+  SecretKey _secretKey = SecretKey(''.codeUnits);
 
   CriptoProvider() {
     _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
@@ -31,18 +31,29 @@ class CriptoProvider with ChangeNotifier {
 
   bool get locked => _locked;
 
-  Future<String?> _getMasterKey() async =>
-      (await SharedPreferences.getInstance()).getString('masterKey');
+  Future<String> _getMasterKey() async {
+    String? mk = (await SharedPreferences.getInstance()).getString('masterKey');
+    if (mk != null)
+      return mk;
+    else
+      return '';
+  }
 
-  Future<String?> _getMasterKeyIV() async =>
-      (await SharedPreferences.getInstance()).getString('masterKeyIV');
+  Future<String> _getMasterKeyIV() async {
+    String? mkIv =
+        (await SharedPreferences.getInstance()).getString('masterKeyIV');
+    if (mkIv != null)
+      return mkIv;
+    else
+      return '';
+  }
 
   Future<bool> isMasterKey() async =>
       (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
   Future<SecretBox> _getSecret() async {
-    String _mk = await (_getMasterKey() as FutureOr<String>);
-    String _mkIv = await (_getMasterKeyIV() as FutureOr<String>);
+    String _mk = await (_getMasterKey());
+    String _mkIv = await (_getMasterKeyIV());
     return SecretBox(_mk.codeUnits, nonce: _mkIv.codeUnits, mac: Mac.empty);
   }
 
@@ -60,8 +71,7 @@ class CriptoProvider with ChangeNotifier {
       _secretKey = await _aesCbc
           .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
       SecretBox _sb = await _getSecret();
-      _secretKey =
-          SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey!));
+      _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
       _locked = false;
       notifyListeners();
     } catch (error) {
@@ -115,7 +125,7 @@ class CriptoProvider with ChangeNotifier {
     });
   }
 
-  Future<String?> decryptPassword(Password? p) async {
+  Future<String> decryptPassword(Password? p) async {
     if (p == null) return '';
     if (p.passwordIv!.isEmpty) return '';
     if (p.passwordEnc!.isEmpty) return '';
@@ -126,12 +136,12 @@ class CriptoProvider with ChangeNotifier {
     );
     p.passwordDec = String.fromCharCodes((await _aesCbc.decrypt(
       _sb,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
     )));
     return p.passwordDec;
   }
 
-  Future<String?> decryptUsername(Username? u) async {
+  Future<String> decryptUsername(Username? u) async {
     if (u == null) return '';
     if (u.usernameIv!.isEmpty) return '';
     if (u.usernameEnc!.isEmpty) return '';
@@ -142,12 +152,12 @@ class CriptoProvider with ChangeNotifier {
     );
     u.usernameDec = String.fromCharCodes((await _aesCbc.decrypt(
       _sb,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
     )));
     return u.usernameDec;
   }
 
-  Future<String?> decryptPin(Pin? p) async {
+  Future<String> decryptPin(Pin? p) async {
     if (p == null) return '';
     if (p.pinIv!.isEmpty) return '';
     if (p.pinEnc!.isEmpty) return '';
@@ -158,12 +168,12 @@ class CriptoProvider with ChangeNotifier {
     );
     p.pinDec = String.fromCharCodes((await _aesCbc.decrypt(
       _sb,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
     )));
     return p.pinDec;
   }
 
-  Future<String?> decryptNote(Note? n) async {
+  Future<String> decryptNote(Note? n) async {
     if (n == null) return '';
     if (n.noteIv!.isEmpty) return '';
     if (n.noteEnc!.isEmpty) return '';
@@ -174,12 +184,12 @@ class CriptoProvider with ChangeNotifier {
     );
     n.noteDec = String.fromCharCodes((await _aesCbc.decrypt(
       _sb,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
     )));
     return n.noteDec;
   }
 
-  Future<String?> decryptAddress(Address? a) async {
+  Future<String> decryptAddress(Address? a) async {
     if (a == null) return '';
     if (a.addressIv!.isEmpty) return '';
     if (a.addressEnc!.isEmpty) return '';
@@ -190,7 +200,7 @@ class CriptoProvider with ChangeNotifier {
     );
     a.addressDec = String.fromCharCodes((await _aesCbc.decrypt(
       _sb,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
     )));
     return a.addressDec;
   }
@@ -203,7 +213,7 @@ class CriptoProvider with ChangeNotifier {
     );
     SecretBox _sb = await _aesCbc.encrypt(
       p.codeUnits,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
       nonce: _p.passwordIv!.codeUnits,
     );
     _p.passwordEnc = String.fromCharCodes(_sb.cipherText);
@@ -219,7 +229,7 @@ class CriptoProvider with ChangeNotifier {
     );
     SecretBox _sb = await _aesCbc.encrypt(
       u.codeUnits,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
       nonce: _u.usernameIv!.codeUnits,
     );
     _u.usernameEnc = String.fromCharCodes(_sb.cipherText);
@@ -231,7 +241,7 @@ class CriptoProvider with ChangeNotifier {
     Pin _p = Pin(pinIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
       p.codeUnits,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
       nonce: _p.pinIv!.codeUnits,
     );
     _p.pinEnc = String.fromCharCodes(_sb.cipherText);
@@ -243,7 +253,7 @@ class CriptoProvider with ChangeNotifier {
     Note _n = Note(noteIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
       n.codeUnits,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
       nonce: _n.noteIv!.codeUnits,
     );
     _n.noteEnc = String.fromCharCodes(_sb.cipherText);
@@ -255,7 +265,7 @@ class CriptoProvider with ChangeNotifier {
     Address _a = Address(addressIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
       a.codeUnits,
-      secretKey: _secretKey!,
+      secretKey: _secretKey,
       nonce: _a.addressIv!.codeUnits,
     );
     _a.addressEnc = String.fromCharCodes(_sb.cipherText);

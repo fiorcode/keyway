@@ -101,7 +101,7 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
                           Expanded(
                             child: Center(
                               child: Text(
-                                _p.passwordDec!,
+                                _p.passwordDec,
                                 style: TextStyle(
                                   fontSize: 22,
                                   fontWeight: FontWeight.w300,

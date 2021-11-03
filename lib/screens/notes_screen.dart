@@ -60,7 +60,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.http, size: 38),
-                          title: Text(_item.notes[i].noteDec!),
+                          title: Text(_item.notes[i].noteDec),
                           trailing: IconButton(
                             onPressed: () => _deleteNote(_item.notes[i]),
                             icon: Icon(
