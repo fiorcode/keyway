@@ -14,15 +14,15 @@ class NotesScreen extends StatefulWidget {
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  ItemProvider _item;
-  Future<void> _getNotes;
-  List<Note> _notes;
+  late ItemProvider _item;
+  Future<void>? _getNotes;
+  late List<Note> _notes;
 
   Future<void> _getNotesAsync() async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _notes = await _ip.fetchNotes();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_notes, (n) async => await _cp.decryptNote(n));
+    Future.forEach(_notes, (dynamic n) async => await _cp.decryptNote(n));
   }
 
   Future<void> _deleteNote(Note n) async {
@@ -52,7 +52,6 @@ class _NotesScreenState extends State<NotesScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
@@ -61,7 +60,7 @@ class _NotesScreenState extends State<NotesScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.http, size: 38),
-                          title: Text(_item.notes[i].noteDec),
+                          title: Text(_item.notes[i].noteDec!),
                           trailing: IconButton(
                             onPressed: () => _deleteNote(_item.notes[i]),
                             icon: Icon(

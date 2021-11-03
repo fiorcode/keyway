@@ -13,8 +13,8 @@ class ProductTableScreen extends StatefulWidget {
 }
 
 class _ProductTableScreenState extends State<ProductTableScreen> {
-  ItemProvider _item;
-  Future<void> _getProducts;
+  late ItemProvider _item;
+  Future<void>? _getProducts;
 
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
@@ -70,7 +70,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('type: '),
                                   Text(
-                                    _item.products[i].productType,
+                                    _item.products[i].productType!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -81,7 +81,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('trademark: '),
                                   Text(
-                                    _item.products[i].productTrademark,
+                                    _item.products[i].productTrademark!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -92,7 +92,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('model: '),
                                   Text(
-                                    _item.products[i].productModel,
+                                    _item.products[i].productModel!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -103,7 +103,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('version: '),
                                   Text(
-                                    _item.products[i].productVersion,
+                                    _item.products[i].productVersion!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -114,7 +114,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('update: '),
                                   Text(
-                                    _item.products[i].productUpdate,
+                                    _item.products[i].productUpdate!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -125,7 +125,7 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                                 children: [
                                   Text('status: '),
                                   Text(
-                                    _item.products[i].productStatus,
+                                    _item.products[i].productStatus!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -149,7 +149,6 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

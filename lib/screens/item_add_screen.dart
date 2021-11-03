@@ -38,21 +38,21 @@ class ItemAddScreen extends StatefulWidget {
 }
 
 class _ItemAddScreenState extends State<ItemAddScreen> {
-  Item _i;
+  Item? _i;
 
-  TextEditingController _titleCtrler;
-  TextEditingController _userCtrler;
-  TextEditingController _passCtrler;
-  TextEditingController _pinCtrler;
-  TextEditingController _noteCtrler;
-  TextEditingController _addressCtrler;
-  TextEditingController _protocolCtrler;
-  TextEditingController _portCtrler;
-  TextEditingController _trademarkCtrler;
-  TextEditingController _modelCtrler;
+  TextEditingController? _titleCtrler;
+  TextEditingController? _userCtrler;
+  TextEditingController? _passCtrler;
+  TextEditingController? _pinCtrler;
+  TextEditingController? _noteCtrler;
+  TextEditingController? _addressCtrler;
+  TextEditingController? _protocolCtrler;
+  TextEditingController? _portCtrler;
+  TextEditingController? _trademarkCtrler;
+  TextEditingController? _modelCtrler;
 
-  FocusNode _titleFocusNode;
-  FocusNode _userFocusNode;
+  FocusNode? _titleFocusNode;
+  FocusNode? _userFocusNode;
 
   bool _viewUsersList = false;
   bool _unlocking = false;
@@ -60,104 +60,104 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
 
   void _usernameSwitch() {
     setState(() {
-      if (_i.username != null) {
-        _userCtrler.clear();
+      if (_i!.username != null) {
+        _userCtrler!.clear();
         _userCtrler = null;
-        _i.username = null;
+        _i!.username = null;
       } else {
         _userCtrler = TextEditingController();
-        _i.username = Username();
+        _i!.username = Username();
       }
     });
   }
 
   void _passwordSwitch() {
     setState(() {
-      if (_i.password != null) {
-        _passCtrler.clear();
+      if (_i!.password != null) {
+        _passCtrler!.clear();
         _passCtrler = null;
-        _i.password = null;
-        _i.itemPassword = null;
+        _i!.password = null;
+        _i!.itemPassword = null;
       } else {
         _passCtrler = TextEditingController();
-        _i.password = Password();
-        _i.itemPassword = ItemPassword();
+        _i!.password = Password();
+        _i!.itemPassword = ItemPassword();
       }
     });
   }
 
   void _pinSwitch() {
     setState(() {
-      if (_i.pin != null) {
-        _pinCtrler.clear();
+      if (_i!.pin != null) {
+        _pinCtrler!.clear();
         _pinCtrler = null;
-        _i.pin = null;
+        _i!.pin = null;
       } else {
         _pinCtrler = TextEditingController();
-        _i.pin = Pin();
+        _i!.pin = Pin();
       }
     });
   }
 
   void _noteSwitch() {
     setState(() {
-      if (_i.note != null) {
-        _noteCtrler.clear();
+      if (_i!.note != null) {
+        _noteCtrler!.clear();
         _noteCtrler = null;
-        _i.note = null;
+        _i!.note = null;
       } else {
         _noteCtrler = TextEditingController();
-        _i.note = Note();
+        _i!.note = Note();
       }
     });
   }
 
   void _addressSwitch() {
     setState(() {
-      if (_i.address != null) {
-        _addressCtrler.clear();
+      if (_i!.address != null) {
+        _addressCtrler!.clear();
         _addressCtrler = null;
-        _protocolCtrler.clear();
+        _protocolCtrler!.clear();
         _protocolCtrler = null;
-        _portCtrler.clear();
+        _portCtrler!.clear();
         _portCtrler = null;
-        _i.address = null;
+        _i!.address = null;
       } else {
         _addressCtrler = TextEditingController();
         _protocolCtrler = TextEditingController();
         _portCtrler = TextEditingController();
-        _i.address = Address();
+        _i!.address = Address();
       }
     });
   }
 
   void _productSwitch() {
     setState(() {
-      if (_i.product != null) {
-        _trademarkCtrler.clear();
+      if (_i!.product != null) {
+        _trademarkCtrler!.clear();
         _trademarkCtrler = null;
-        _modelCtrler.clear();
+        _modelCtrler!.clear();
         _modelCtrler = null;
-        _i.product = null;
+        _i!.product = null;
       } else {
         _trademarkCtrler = TextEditingController();
         _modelCtrler = TextEditingController();
-        _i.product = Product();
+        _i!.product = Product();
       }
     });
   }
 
-  void _updateView() => setState(() => _i.title = _titleCtrler.text);
+  void _updateView() => setState(() => _i!.title = _titleCtrler!.text);
 
   void _userListSwitch() => setState(() {
-        if (_userFocusNode.hasFocus) _userFocusNode.unfocus();
+        if (_userFocusNode!.hasFocus) _userFocusNode!.unfocus();
         _viewUsersList = !_viewUsersList;
       });
 
   void _lockSwitch() => setState(() => _unlocking = !_unlocking);
 
   void _selectUsername(String username) {
-    _userCtrler.text = username;
+    _userCtrler!.text = username;
     _userListSwitch();
   }
 
@@ -165,36 +165,36 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
     ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
     try {
-      String _hash = CriptoProvider.doHash(_passCtrler.text);
-      Password _p = await _items.passwordInDB(_hash);
+      String _hash = CriptoProvider.doHash(_passCtrler!.text);
+      Password? _p = await _items.passwordInDB(_hash);
       if (_p != null) {
-        if (_i.itemPassword.repeatWarning) {
-          bool _warning = await WarningHelper.repeat(context, 'Password');
+        if (_i!.itemPassword!.repeatWarning) {
+          bool? _warning = await WarningHelper.repeat(context, 'Password');
           _warning = _warning == null ? false : _warning;
           if (!_warning) return;
         }
-        _i.password = _p;
+        _i!.password = _p;
       } else {
-        _i.password = await _c.createPassword(_passCtrler.text);
-        if (_i.password == null) _i.itemPassword = null;
+        _i!.password = await _c.createPassword(_passCtrler!.text);
+        if (_i!.password == null) _i!.itemPassword = null;
       }
-      _hash = CriptoProvider.doHash(_userCtrler.text);
-      Username _u = await _items.usernameInDB(_hash);
+      _hash = CriptoProvider.doHash(_userCtrler!.text);
+      Username? _u = await _items.usernameInDB(_hash);
       if (_u != null) {
-        _i.username = _u;
+        _i!.username = _u;
       } else {
-        _i.username = await _c.createUsername(_userCtrler.text);
+        _i!.username = await _c.createUsername(_userCtrler!.text);
       }
-      if (_i.pin != null) _i.pin = await _c.createPin(_pinCtrler.text);
-      if (_i.note != null) _i.note = await _c.createNote(_noteCtrler.text);
-      if (_i.address != null)
-        _i.address = await _c.createAddress(_addressCtrler.text);
-      if (_i.product != null) {
-        if (_trademarkCtrler.text.isEmpty && _modelCtrler.text.isEmpty) {
-          _i.product = null;
+      if (_i!.pin != null) _i!.pin = await _c.createPin(_pinCtrler!.text);
+      if (_i!.note != null) _i!.note = await _c.createNote(_noteCtrler!.text);
+      if (_i!.address != null)
+        _i!.address = await _c.createAddress(_addressCtrler!.text);
+      if (_i!.product != null) {
+        if (_trademarkCtrler!.text.isEmpty && _modelCtrler!.text.isEmpty) {
+          _i!.product = null;
         }
       }
-      _items.insertItem(_i).then((_) => Navigator.of(context).pop());
+      _items.insertItem(_i!).then((_) => Navigator.of(context).pop());
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
     }
@@ -204,7 +204,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((p) {
       setState(() {
-        _passCtrler.text = p.password;
+        _passCtrler!.text = p.password!;
         _loadingRandomPass = false;
       });
     });
@@ -217,25 +217,25 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
     _userCtrler = TextEditingController();
     _passCtrler = TextEditingController();
     _titleFocusNode = FocusNode();
-    _titleFocusNode.requestFocus();
+    _titleFocusNode!.requestFocus();
     _userFocusNode = FocusNode();
     super.initState();
   }
 
   @override
   void dispose() {
-    if (_titleCtrler != null) _titleCtrler.dispose();
-    if (_userCtrler != null) _userCtrler.dispose();
-    if (_passCtrler != null) _passCtrler.dispose();
-    if (_pinCtrler != null) _pinCtrler.dispose();
-    if (_noteCtrler != null) _noteCtrler.dispose();
-    if (_addressCtrler != null) _addressCtrler.dispose();
-    if (_trademarkCtrler != null) _trademarkCtrler.dispose();
-    if (_modelCtrler != null) _modelCtrler.dispose();
-    if (_protocolCtrler != null) _protocolCtrler.dispose();
-    if (_portCtrler != null) _portCtrler.dispose();
-    if (_titleFocusNode != null) _titleFocusNode.dispose();
-    if (_userFocusNode != null) _userFocusNode.dispose();
+    if (_titleCtrler != null) _titleCtrler!.dispose();
+    if (_userCtrler != null) _userCtrler!.dispose();
+    if (_passCtrler != null) _passCtrler!.dispose();
+    if (_pinCtrler != null) _pinCtrler!.dispose();
+    if (_noteCtrler != null) _noteCtrler!.dispose();
+    if (_addressCtrler != null) _addressCtrler!.dispose();
+    if (_trademarkCtrler != null) _trademarkCtrler!.dispose();
+    if (_modelCtrler != null) _modelCtrler!.dispose();
+    if (_protocolCtrler != null) _protocolCtrler!.dispose();
+    if (_portCtrler != null) _portCtrler!.dispose();
+    if (_titleFocusNode != null) _titleFocusNode!.dispose();
+    if (_userFocusNode != null) _userFocusNode!.dispose();
     super.dispose();
   }
 
@@ -252,7 +252,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         centerTitle: true,
         title: TitleTextField(_titleCtrler, _titleFocusNode, _updateView),
         actions: [
-          _titleCtrler.text.isNotEmpty && !_cripto.locked
+          _titleCtrler!.text.isNotEmpty && !_cripto.locked
               ? IconButton(icon: Icon(Icons.save), onPressed: _insertItem)
               : SizedBox(width: 48),
         ],
@@ -274,7 +274,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     addressSwitch: _addressSwitch,
                     productSwitch: _productSwitch,
                   ),
-                  if (_i.username != null)
+                  if (_i!.username != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -299,7 +299,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_i.password != null)
+                  if (_i!.password != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -326,21 +326,21 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                         ),
                                 ],
                               ),
-                              if (_passCtrler.text.isNotEmpty)
+                              if (_passCtrler!.text.isNotEmpty)
                                 StrengthLevelCard(
                                   PasswordHelper.evaluate(
-                                    _passCtrler.text,
-                                    password: _i.password,
+                                    _passCtrler!.text,
+                                    password: _i!.password,
                                   ),
                                 ),
-                              if (_passCtrler.text.isNotEmpty)
+                              if (_passCtrler!.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: PasswordChangeReminderCard(
-                                    itemPass: _i.itemPassword,
+                                    itemPass: _i!.itemPassword,
                                   ),
                                 ),
-                              if (_passCtrler.text.isNotEmpty)
+                              if (_passCtrler!.text.isNotEmpty)
                                 Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
@@ -357,9 +357,9 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _i.itemPassword.repeatWarning,
+                                      value: _i!.itemPassword!.repeatWarning,
                                       onChanged: (_) => setState(() {
-                                        _i.itemPassword.repeatWarningSwitch();
+                                        _i!.itemPassword!.repeatWarningSwitch();
                                       }),
                                     ),
                                   ],
@@ -369,7 +369,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_i.pin != null)
+                  if (_i!.pin != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -380,12 +380,12 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                           child: Column(
                             children: [
                               PinTextField(_pinCtrler),
-                              if (_pinCtrler.text.isNotEmpty)
+                              if (_pinCtrler!.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.only(top: 16),
-                                  child: PinChangeReminderCard(pin: _i.pin),
+                                  child: PinChangeReminderCard(pin: _i!.pin),
                                 ),
-                              if (_pinCtrler.text.isNotEmpty)
+                              if (_pinCtrler!.text.isNotEmpty)
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -404,10 +404,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                     ),
                                     Switch(
                                       activeColor: Colors.green,
-                                      value: _i.pin.repeatWarning,
+                                      value: _i!.pin!.repeatWarning,
                                       onChanged: (_) {
                                         setState(() {
-                                          _i.pin.repeatWarningSwitch();
+                                          _i!.pin!.repeatWarningSwitch();
                                         });
                                       },
                                     ),
@@ -418,7 +418,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_i.note != null)
+                  if (_i!.note != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: Card(
@@ -433,21 +433,21 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                         ),
                       ),
                     ),
-                  if (_i.address != null)
+                  if (_i!.address != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: AddressCard(
-                        _i.address,
+                        _i!.address,
                         _addressCtrler,
                         _protocolCtrler,
                         _portCtrler,
                       ),
                     ),
-                  if (_i.product != null)
+                  if (_i!.product != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: ProductCard(
-                        _i.product,
+                        _i!.product,
                         _trademarkCtrler,
                         _modelCtrler,
                       ),

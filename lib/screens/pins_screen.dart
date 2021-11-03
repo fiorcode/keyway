@@ -14,14 +14,14 @@ class PinsScreen extends StatefulWidget {
 }
 
 class _PinsScreenState extends State<PinsScreen> {
-  Future<void> _getPins;
-  List<Pin> _pins;
+  Future<void>? _getPins;
+  late List<Pin> _pins;
 
   Future<void> _getNotesAsync() async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _pins = await _ip.fetchPins();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_pins, (p) => _cp.decryptPin(p));
+    Future.forEach(_pins, (dynamic p) => _cp.decryptPin(p));
   }
 
   Future<void> _deletePin(Pin p) async {
@@ -51,7 +51,6 @@ class _PinsScreenState extends State<PinsScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
@@ -60,7 +59,7 @@ class _PinsScreenState extends State<PinsScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.pin, size: 38),
-                          title: Text(_pins[i].pinDec),
+                          title: Text(_pins[i].pinDec!),
                           trailing: IconButton(
                             onPressed: () => _deletePin(_pins[i]),
                             icon: Icon(

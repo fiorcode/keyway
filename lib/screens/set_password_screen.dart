@@ -18,7 +18,7 @@ class SetPasswordScreen extends StatefulWidget {
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
   // CriptoProvider _cripto;
-  ZxcvbnResult _zxcvbnResult;
+  ZxcvbnResult? _zxcvbnResult;
 
   final _passCtrler = TextEditingController();
   final _confirmCtrler = TextEditingController();
@@ -62,7 +62,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     setState(() => _loadingRandomPass = true);
     PasswordHelper.dicePassword().then((result) {
       _zxcvbnResult = result;
-      _passCtrler.text = result.password;
+      _passCtrler.text = result.password!;
       setState(() => _loadingRandomPass = false);
     });
   }

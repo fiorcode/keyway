@@ -7,9 +7,9 @@ class UsernameTextField extends StatelessWidget {
     this.focus,
   );
 
-  final TextEditingController ctrler;
+  final TextEditingController? ctrler;
   // final Function refreshScreen;
-  final FocusNode focus;
+  final FocusNode? focus;
 
   @override
   Widget build(BuildContext context) {

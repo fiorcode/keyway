@@ -13,8 +13,8 @@ class Cpe23uriCveTableScreen extends StatefulWidget {
 }
 
 class _Cpe23uriCveTableScreenState extends State<Cpe23uriCveTableScreen> {
-  ItemProvider _item;
-  Future<void> _getCpe23uriCves;
+  late ItemProvider _item;
+  Future<void>? _getCpe23uriCves;
 
   Future<void> _getCpe23uriCvesAsync() async => await _item.fetchCpe23uriCves();
 
@@ -84,7 +84,6 @@ class _Cpe23uriCveTableScreenState extends State<Cpe23uriCveTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

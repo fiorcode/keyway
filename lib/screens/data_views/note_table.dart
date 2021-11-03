@@ -13,8 +13,8 @@ class NoteTableScreen extends StatefulWidget {
 }
 
 class _NoteTableScreenState extends State<NoteTableScreen> {
-  ItemProvider _item;
-  Future _getNotes;
+  late ItemProvider _item;
+  Future? _getNotes;
 
   Future<void> _getNotesAsync() async => await _item.fetchNotes();
 
@@ -71,7 +71,7 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                                   Text('note_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.notes[i].noteEnc,
+                                      _item.notes[i].noteEnc!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                                   Text('note_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.notes[i].noteIv,
+                                      _item.notes[i].noteIv!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -100,7 +100,6 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

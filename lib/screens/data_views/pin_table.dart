@@ -13,8 +13,8 @@ class PinTableScreen extends StatefulWidget {
 }
 
 class _PinTableScreenState extends State<PinTableScreen> {
-  ItemProvider _item;
-  Future _getPins;
+  late ItemProvider _item;
+  Future? _getPins;
 
   Future<void> _getPinsAsync() async => await _item.fetchPins();
 
@@ -71,7 +71,7 @@ class _PinTableScreenState extends State<PinTableScreen> {
                                   Text('pin_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.pins[i].pinEnc,
+                                      _item.pins[i].pinEnc!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _PinTableScreenState extends State<PinTableScreen> {
                                   Text('pin_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.pins[i].pinIv,
+                                      _item.pins[i].pinIv!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -99,7 +99,7 @@ class _PinTableScreenState extends State<PinTableScreen> {
                                   Text('pin_date: '),
                                   Expanded(
                                     child: Text(
-                                      _item.pins[i].pinDate,
+                                      _item.pins[i].pinDate!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -127,7 +127,7 @@ class _PinTableScreenState extends State<PinTableScreen> {
                                   Text('pin_status: '),
                                   Expanded(
                                     child: Text(
-                                      _item.pins[i].pinStatus,
+                                      _item.pins[i].pinStatus!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -142,7 +142,6 @@ class _PinTableScreenState extends State<PinTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

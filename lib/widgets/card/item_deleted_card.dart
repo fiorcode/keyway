@@ -4,27 +4,27 @@ import '../../models/item.dart';
 import '../../screens/item_view_screen.dart';
 
 class ItemDeletedCard extends StatelessWidget {
-  const ItemDeletedCard({Key key, this.item, this.onReturn}) : super(key: key);
+  const ItemDeletedCard({Key? key, this.item, this.onReturn}) : super(key: key);
 
-  final Item item;
-  final Function onReturn;
+  final Item? item;
+  final Function? onReturn;
 
   _onTap(BuildContext context) => Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => ItemViewScreen(item: item),
         ),
-      ).then((_) => onReturn());
+      ).then((_) => onReturn!());
 
   Color _setAvatarLetterColor() {
-    if (item.avatarLetterColor >= 0) return Color(item.avatarLetterColor);
-    Color _c = Color(item.avatarColor);
+    if (item!.avatarLetterColor! >= 0) return Color(item!.avatarLetterColor!);
+    Color _c = Color(item!.avatarColor!);
     double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
   Text _setTitle() => Text(
-        item.title,
+        item!.title!,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: TextStyle(
@@ -45,12 +45,11 @@ class ItemDeletedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor:
-              item.avatarColor != null ? Color(item.avatarColor) : Colors.grey,
+          backgroundColor: item!.avatarColor != null
+              ? Color(item!.avatarColor!)
+              : Colors.grey,
           child: Text(
-            item.title != null ?? item.title.isNotEmpty
-                ? item.title.substring(0, 1).toUpperCase()
-                : '',
+            item!.title!.substring(0, 1).toUpperCase(),
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,

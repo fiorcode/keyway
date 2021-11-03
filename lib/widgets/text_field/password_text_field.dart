@@ -6,7 +6,7 @@ import 'package:keyway/helpers/password_helper.dart';
 class PasswordTextField extends StatefulWidget {
   PasswordTextField(this.ctrler, this.updateView);
 
-  final TextEditingController ctrler;
+  final TextEditingController? ctrler;
   final Function updateView;
   // final FocusNode focus;
 
@@ -19,7 +19,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   bool _obscure = false;
 
   void _onChanged() {
-    setState(() => _empty = widget.ctrler.text.isEmpty);
+    setState(() => _empty = widget.ctrler!.text.isEmpty);
     widget.updateView();
   }
 
@@ -28,14 +28,14 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   }
 
   void _clear() {
-    widget.ctrler.clear();
+    widget.ctrler!.clear();
     _empty = true;
     widget.updateView();
   }
 
   @override
   void initState() {
-    _empty = widget.ctrler.text.isEmpty;
+    _empty = widget.ctrler!.text.isEmpty;
     super.initState();
   }
 

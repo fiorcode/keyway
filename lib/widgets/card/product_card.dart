@@ -10,52 +10,52 @@ class ProductCard extends StatefulWidget {
     this.modelCtrler,
   );
 
-  final Product product;
-  final TextEditingController trademarkCtrler;
-  final TextEditingController modelCtrler;
+  final Product? product;
+  final TextEditingController? trademarkCtrler;
+  final TextEditingController? modelCtrler;
 
   @override
   _ProductCardState createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool _emptyTrademark;
-  bool _emptyModel;
+  late bool _emptyTrademark;
+  late bool _emptyModel;
 
   void _onChangedTrademark(String value) {
     setState(() {
-      _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
-      widget.product.productTrademark = value;
+      _emptyTrademark = widget.trademarkCtrler!.text.isEmpty;
+      widget.product!.productTrademark = value;
     });
   }
 
   void _clearTrademark() {
     setState(() {
-      widget.trademarkCtrler.clear();
-      widget.product.productTrademark = '';
+      widget.trademarkCtrler!.clear();
+      widget.product!.productTrademark = '';
       _emptyTrademark = true;
     });
   }
 
   void _onChangedModel(String value) {
     setState(() {
-      _emptyModel = widget.modelCtrler.text.isEmpty;
-      widget.product.productModel = value;
+      _emptyModel = widget.modelCtrler!.text.isEmpty;
+      widget.product!.productModel = value;
     });
   }
 
   void _clearModel() {
     setState(() {
-      widget.modelCtrler.clear();
-      widget.product.productModel = '';
+      widget.modelCtrler!.clear();
+      widget.product!.productModel = '';
       _emptyModel = true;
     });
   }
 
   @override
   void initState() {
-    _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
-    _emptyModel = widget.modelCtrler.text.isEmpty;
+    _emptyTrademark = widget.trademarkCtrler!.text.isEmpty;
+    _emptyModel = widget.modelCtrler!.text.isEmpty;
     super.initState();
   }
 
@@ -75,63 +75,63 @@ class _ProductCardState extends State<ProductCard> {
               children: [
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'h',
+                  selected: widget.product!.productType == 'h',
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'h')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product!.productType = 'h')
+                      : setState(() => widget.product!.productType = ''),
                   label: Text(
                     'Hardware',
                     style: TextStyle(
-                      color: widget.product.productType == 'h'
+                      color: widget.product!.productType == 'h'
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product.productType == 'h'
+                      fontWeight: widget.product!.productType == 'h'
                           ? FontWeight.bold
                           : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'h' ? 8.0 : 0.0,
+                  elevation: widget.product!.productType == 'h' ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'o',
+                  selected: widget.product!.productType == 'o',
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'o')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product!.productType = 'o')
+                      : setState(() => widget.product!.productType = ''),
                   label: Text(
                     'OS/Firmware',
                     style: TextStyle(
-                      color: widget.product.productType == 'o'
+                      color: widget.product!.productType == 'o'
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product.productType == 'o'
+                      fontWeight: widget.product!.productType == 'o'
                           ? FontWeight.bold
                           : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'o' ? 8.0 : 0.0,
+                  elevation: widget.product!.productType == 'o' ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'a',
+                  selected: widget.product!.productType == 'a',
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'a')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product!.productType = 'a')
+                      : setState(() => widget.product!.productType = ''),
                   label: Text(
                     'App/Program',
                     style: TextStyle(
-                      color: widget.product.productType == 'a'
+                      color: widget.product!.productType == 'a'
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product.productType == 'a'
+                      fontWeight: widget.product!.productType == 'a'
                           ? FontWeight.bold
                           : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'a' ? 8.0 : 0.0,
+                  elevation: widget.product!.productType == 'a' ? 8.0 : 0.0,
                 ),
               ],
             ),

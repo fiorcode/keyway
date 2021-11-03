@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -18,9 +19,9 @@ class BackupRestoreScreen extends StatefulWidget {
 }
 
 class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
-  Icon _icon;
-  File _fileToRestore;
-  FileStat _fileToRestoreStatus;
+  Icon? _icon;
+  File? _fileToRestore;
+  FileStat? _fileToRestoreStatus;
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
@@ -91,7 +92,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   Future<void> _backupToMail() async {
     try {
       await _checkPermissions();
-      File _db = await StorageHelper.getDeviceBackup();
+      File _db = await (StorageHelper.getDeviceBackup() as FutureOr<File>);
       final Email _email = Email(
         body: 'Keyway Backup',
         subject: 'Keyway Backup',
@@ -113,7 +114,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     StorageHelper.getDeviceBackup().then((file) async {
       if (file != null) {
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -138,7 +139,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.sd_card, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -163,7 +164,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.folder, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -191,7 +192,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _deleteBackup() async {
     setState(() => _working = true);
-    StorageHelper.deleteFile(_fileToRestore).then((fse) {
+    StorageHelper.deleteFile(_fileToRestore!).then((fse) {
       setState(() {
         _fileToRestore = null;
         _fileToRestoreStatus = null;
@@ -374,7 +375,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(_fileToRestore.path.split('/').last),
+                                      Text(
+                                          _fileToRestore!.path.split('/').last),
                                     ],
                                   ),
                                   Row(
@@ -389,7 +391,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                       ),
                                       Expanded(
-                                          child: Text(_fileToRestore.path)),
+                                          child: Text(_fileToRestore!.path)),
                                     ],
                                   ),
                                   if (_fileToRestoreStatus != null)
@@ -406,7 +408,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         Expanded(
                                           child: Text(
                                             DateHelper.ddMMyyHm(
-                                                _fileToRestoreStatus.modified),
+                                                _fileToRestoreStatus!.modified),
                                           ),
                                         ),
                                       ],
@@ -424,7 +426,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            _fileToRestoreStatus.size
+                                            _fileToRestoreStatus!.size
                                                     .toString() +
                                                 ' Bytes',
                                           ),
@@ -472,7 +474,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               style:
                                   ElevatedButton.styleFrom(primary: _primary),
                               onPressed: () =>
-                                  _restoreBackup(_fileToRestore.path),
+                                  _restoreBackup(_fileToRestore!.path),
                               child: Text(
                                 'RESTORE',
                                 style: TextStyle(color: Colors.white),

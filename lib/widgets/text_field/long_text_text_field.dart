@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class LongTextTextField extends StatefulWidget {
   LongTextTextField(this.ctrler);
 
-  final TextEditingController ctrler;
+  final TextEditingController? ctrler;
 
   @override
   _LongTextTextFieldState createState() => _LongTextTextFieldState();

@@ -14,8 +14,8 @@ class TagTableScreen extends StatefulWidget {
 }
 
 class _TagTableScreenState extends State<TagTableScreen> {
-  ItemProvider _item;
-  Future<List<Tag>> _getTags;
+  late ItemProvider _item;
+  Future<List<Tag>>? _getTags;
 
   Future<List<Tag>> _getTagsAsync() => _item.getTags();
 
@@ -45,13 +45,15 @@ class _TagTableScreenState extends State<TagTableScreen> {
             case (ConnectionState.waiting):
               return Center(child: CircularProgressIndicator());
             case (ConnectionState.done):
-              if (snap.hasError)
+              if (snap.hasError) {
                 return ErrorHelper.errorBody(snap.error);
-              else
-                return snap.data.length <= 0
+              } else {
+                List<Tag> tags = <Tag>[];
+                tags = snap.data as List<Tag>;
+                return tags.length <= 0
                     ? EmptyItems()
                     : ListView.separated(
-                        itemCount: snap.data.length,
+                        itemCount: tags.length,
                         itemBuilder: (ctx, i) => ListTile(
                           title: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,7 +62,7 @@ class _TagTableScreenState extends State<TagTableScreen> {
                                 children: [
                                   Text('tag_id: '),
                                   Text(
-                                    snap.data[i].id.toString(),
+                                    tags[i].id.toString(),
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -72,7 +74,7 @@ class _TagTableScreenState extends State<TagTableScreen> {
                                   Text('tag_name: '),
                                   Expanded(
                                     child: Text(
-                                      snap.data[i].tagName,
+                                      tags[i].tagName!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -86,7 +88,7 @@ class _TagTableScreenState extends State<TagTableScreen> {
                                   Text('tag_color: '),
                                   Expanded(
                                     child: Text(
-                                      snap.data[i].tagColor.toString(),
+                                      tags[i].tagColor.toString(),
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -101,7 +103,7 @@ class _TagTableScreenState extends State<TagTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
+              }
             default:
               return Center(child: Text('default'));
           }

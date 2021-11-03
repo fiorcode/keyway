@@ -6,9 +6,9 @@ class ItemViewContainer extends StatelessWidget {
       {this.left = '', this.right = 0});
 
   final String title;
-  final String content;
-  final String left;
-  final int right;
+  final String? content;
+  final String? left;
+  final int? right;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,12 @@ class ItemViewContainer extends StatelessWidget {
             height: 24,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: left.isNotEmpty
+              mainAxisAlignment: left!.isNotEmpty
                   ? MainAxisAlignment.spaceBetween
                   : MainAxisAlignment.center,
               children: [
                 Expanded(
-                  child: left.isNotEmpty
+                  child: left!.isNotEmpty
                       ? Container(
                           padding: EdgeInsets.all(2),
                           color: Colors.black,
@@ -46,7 +46,7 @@ class ItemViewContainer extends StatelessWidget {
                             clipBehavior: Clip.hardEdge,
                             child: Text(
                               this.title == 'address'
-                                  ? this.left
+                                  ? this.left!
                                   : DateHelper.ddMMyyyy(left),
                               maxLines: 1,
                               textAlign: TextAlign.center,
@@ -113,7 +113,7 @@ class ItemViewContainer extends StatelessWidget {
           Expanded(
             child: Center(
               child: Text(
-                this.content,
+                this.content!,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w300,

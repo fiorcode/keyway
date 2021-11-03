@@ -13,8 +13,8 @@ class AddressTableScreen extends StatefulWidget {
 }
 
 class _AddressTableScreenState extends State<AddressTableScreen> {
-  ItemProvider _item;
-  Future _getAddresses;
+  late ItemProvider _item;
+  Future? _getAddresses;
 
   Future<void> _getAddressesAsync() async => await _item.fetchAddresses();
 
@@ -71,7 +71,7 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
                                   Text('address_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.addresses[i].addressEnc,
+                                      _item.addresses[i].addressEnc!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
                                   Text('address_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.addresses[i].addressIv,
+                                      _item.addresses[i].addressIv!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -99,7 +99,7 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
                                   Text('address_protocol: '),
                                   Expanded(
                                     child: Text(
-                                      _item.addresses[i].addressProtocol,
+                                      _item.addresses[i].addressProtocol!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -127,7 +127,6 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

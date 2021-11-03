@@ -6,10 +6,10 @@ import '../../providers/cripto_provider.dart';
 import '../../models/item.dart';
 
 class ItemUnlockedCard extends StatefulWidget {
-  const ItemUnlockedCard({Key key, this.item, this.onTap}) : super(key: key);
+  const ItemUnlockedCard({Key? key, this.item, this.onTap}) : super(key: key);
 
-  final Item item;
-  final Function onTap;
+  final Item? item;
+  final Function? onTap;
 
   @override
   _ItemUnlockedCardState createState() => _ItemUnlockedCardState();
@@ -17,16 +17,16 @@ class ItemUnlockedCard extends StatefulWidget {
 
 class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   int _showValue = 0;
-  String _title;
-  String _subtitle;
+  String? _title;
+  late String _subtitle;
   bool _expire = false;
   bool _repeat = false;
-  IconData _icon;
-  Color _avatarColor;
-  Color _iconColor;
-  Color _warnColor;
+  IconData? _icon;
+  Color? _avatarColor;
+  Color? _iconColor;
+  Color? _warnColor;
 
-  void _onTap() => widget.onTap();
+  void _onTap() => widget.onTap!();
 
   void _toClipBoard() async {
     Clipboard.setData(ClipboardData(text: _title)).then(
@@ -48,58 +48,58 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
       _showValue++;
     switch (_showValue) {
       case 1:
-        if (widget.item.password == null) continue two;
+        if (widget.item!.password == null) continue two;
         _showValue = 1;
         _icon = Icons.password;
-        _title = await _c.decryptPassword(widget.item.password);
+        _title = await _c.decryptPassword(widget.item!.password);
         _subtitle = '';
         break;
       two:
       case 2:
-        if (widget.item.pin == null) continue three;
+        if (widget.item!.pin == null) continue three;
         _showValue = 2;
         _icon = Icons.pin;
-        _title = await _c.decryptPin(widget.item.pin);
+        _title = await _c.decryptPin(widget.item!.pin);
         _subtitle = '';
         break;
       three:
       case 3:
-        if (widget.item.username == null) continue four;
+        if (widget.item!.username == null) continue four;
         _showValue = 3;
         _icon = Icons.account_box;
-        _title = await _c.decryptUsername(widget.item.username);
+        _title = await _c.decryptUsername(widget.item!.username);
         _subtitle = '';
         break;
       four:
       case 4:
-        if (widget.item.note == null) continue five;
+        if (widget.item!.note == null) continue five;
         _showValue = 4;
         _icon = Icons.note;
-        _title = await _c.decryptNote(widget.item.note);
+        _title = await _c.decryptNote(widget.item!.note);
         _subtitle = '';
         break;
       five:
       case 5:
-        if (widget.item.address == null) continue six;
+        if (widget.item!.address == null) continue six;
         _showValue = 5;
         _icon = Icons.http;
-        _title = await _c.decryptAddress(widget.item.address);
+        _title = await _c.decryptAddress(widget.item!.address);
         _subtitle =
-            'Protocol: ${widget.item.address.addressProtocol}, Port: ${widget.item.address.addressPort}';
+            'Protocol: ${widget.item!.address!.addressProtocol}, Port: ${widget.item!.address!.addressPort}';
         break;
       six:
       case 6:
-        if (widget.item.product == null) continue cero;
+        if (widget.item!.product == null) continue cero;
         _showValue = 6;
         _icon = Icons.router;
-        _title = '${widget.item.product.productTrademark}';
-        _subtitle = 'Model: ${widget.item.product.productModel}';
+        _title = '${widget.item!.product!.productTrademark}';
+        _subtitle = 'Model: ${widget.item!.product!.productModel}';
         break;
       cero:
       default:
         _showValue = 0;
         _icon = null;
-        _title = widget.item.title;
+        _title = widget.item!.title;
         _subtitle = '';
     }
     setState(() {});
@@ -107,52 +107,52 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
 
   bool _expired() {
     bool _expired = false;
-    if (widget.item.itemPassword != null) {
-      _expired = widget.item.itemPassword.expired;
+    if (widget.item!.itemPassword != null) {
+      _expired = widget.item!.itemPassword!.expired;
       if (_expired) return true;
     }
-    if (widget.item.pin != null) {
-      _expired = widget.item.pin.expired;
+    if (widget.item!.pin != null) {
+      _expired = widget.item!.pin!.expired;
     }
     return _expired;
   }
 
   bool _repeated() {
-    if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeatWarning) {
-        return widget.item.itemPassword.repeated;
+    if (widget.item!.itemPassword != null) {
+      if (widget.item!.itemPassword!.repeatWarning) {
+        return widget.item!.itemPassword!.repeated;
       }
     }
     return false;
   }
 
   Color _setAvatarColor() {
-    if (widget.item.avatarLetterColor >= 0)
-      return Color(widget.item.avatarLetterColor);
-    Color _c = Color(widget.item.avatarColor);
+    if (widget.item!.avatarLetterColor! >= 0)
+      return Color(widget.item!.avatarLetterColor!);
+    Color _c = Color(widget.item!.avatarColor!);
     double _bgDelta = _c.red * 0.299 + _c.green * 0.587 + _c.blue * 0.114;
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
-  Color _setIconColor() {
-    if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeatWarning &&
-          widget.item.itemPassword.repeated) return Colors.grey[200];
+  Color? _setIconColor() {
+    if (widget.item!.itemPassword != null) {
+      if (widget.item!.itemPassword!.repeatWarning &&
+          widget.item!.itemPassword!.repeated) return Colors.grey[200];
     }
     return Colors.grey;
   }
 
-  Color _setWarningColor() {
-    if (widget.item.itemPassword != null) {
-      if (widget.item.itemPassword.repeatWarning &&
-          widget.item.itemPassword.repeated) return Colors.red[300];
+  Color? _setWarningColor() {
+    if (widget.item!.itemPassword != null) {
+      if (widget.item!.itemPassword!.repeatWarning &&
+          widget.item!.itemPassword!.repeated) return Colors.red[300];
     }
     return Colors.grey[100];
   }
 
   @override
   void initState() {
-    _title = widget.item.title;
+    _title = widget.item!.title;
     _subtitle = '';
     _expire = _expired();
     _repeat = _repeated();
@@ -174,12 +174,12 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: widget.item.avatarColor != null
-              ? Color(widget.item.avatarColor)
+          backgroundColor: widget.item!.avatarColor != null
+              ? Color(widget.item!.avatarColor!)
               : Colors.grey,
           child: _icon == null
               ? Text(
-                  widget.item.title.substring(0, 1).toUpperCase(),
+                  widget.item!.title!.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -195,7 +195,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                _title,
+                _title!,
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
                 softWrap: true,
@@ -253,7 +253,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                     onPressed: _toClipBoard,
                   ),
                 ),
-              if (widget.item.itemStatus.contains('<password>'))
+              if (widget.item!.itemStatus!.contains('<password>'))
                 SizedBox(
                   height: 48,
                   width: 48,
@@ -264,9 +264,9 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
                     onPressed: _toClipBoard,
                   ),
                 ),
-              if (!widget.item.itemStatus.contains('<password>'))
+              if (!widget.item!.itemStatus!.contains('<password>'))
                 SizedBox(width: 4),
-              if (!widget.item.itemStatus.contains('<password>'))
+              if (!widget.item!.itemStatus!.contains('<password>'))
                 SizedBox(
                   height: 48,
                   width: 48,

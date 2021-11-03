@@ -19,7 +19,7 @@ void main() {
   test('Contraseña de +8 caracteres', () async {
     Password _randomPassword = Password(passwordEnc: '', passwordStrength: '');
     PasswordHelper.dicePassword().then((p) {
-      bool _passwordPlus8 = _randomPassword.passwordEnc.length > 8;
+      bool _passwordPlus8 = _randomPassword.passwordEnc!.length > 8;
       expect(_passwordPlus8, false);
     });
   });
@@ -42,7 +42,7 @@ void main() {
       test("Test de contraseña segura", () {
         expectLater(
             PasswordHelper.secureDicePassword()
-                .then((p) => int.parse(p.passwordStrength) > 2),
+                .then((p) => int.parse(p.passwordStrength!) > 2),
             completion(true));
       });
     }
@@ -51,7 +51,7 @@ void main() {
   test("Test contraseña segura", () {
     expectLater(
         PasswordHelper.secureDicePassword()
-            .then((p) => int.parse(p.passwordStrength) > 2),
+            .then((p) => int.parse(p.passwordStrength!) > 2),
         completion(true));
   });
 

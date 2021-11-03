@@ -14,8 +14,8 @@ class ItemTableScreen extends StatefulWidget {
 }
 
 class _ItemTableScreenState extends State<ItemTableScreen> {
-  Future _getItems;
-  List<Item> _items;
+  Future? _getItems;
+  late List<Item> _items;
 
   Future<void> _getItemsAsync() async => _items =
       await Provider.of<ItemProvider>(context, listen: false).fetchItems();
@@ -72,7 +72,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('title: '),
                                   Text(
-                                    _items[i].title,
+                                    _items[i].title!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -83,7 +83,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('date: '),
                                   Text(
-                                    _items[i].date,
+                                    _items[i].date!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -116,7 +116,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('font: '),
                                   Text(
-                                    _items[i].font,
+                                    _items[i].font!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -127,7 +127,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('item_status: '),
                                   Text(
-                                    _items[i].itemStatus,
+                                    _items[i].itemStatus!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -138,7 +138,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('tags: '),
                                   Text(
-                                    _items[i].tags,
+                                    _items[i].tags!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -206,7 +206,6 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

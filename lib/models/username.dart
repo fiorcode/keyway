@@ -1,10 +1,10 @@
 class Username {
-  int usernameId;
-  String usernameEnc;
-  String usernameIv;
-  String usernameHash;
+  int? usernameId;
+  String? usernameEnc;
+  String? usernameIv;
+  String? usernameHash;
 
-  String usernameDec;
+  String? usernameDec;
 
   Username({
     this.usernameId,
@@ -39,7 +39,7 @@ class Username {
         usernameHash: this.usernameHash,
       );
 
-  bool notEqual(Username u) {
+  bool notEqual(Username? u) {
     if (u == null) return true;
     if (this.usernameHash != u.usernameHash) return true;
     if (this.usernameEnc != u.usernameEnc) return true;

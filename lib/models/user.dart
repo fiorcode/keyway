@@ -1,5 +1,5 @@
 class User {
-  String encMk, mkIv;
+  String? encMk, mkIv;
 
   User({this.encMk, this.mkIv});
 

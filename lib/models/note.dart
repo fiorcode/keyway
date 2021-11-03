@@ -1,9 +1,9 @@
 class Note {
-  int noteId;
-  String noteEnc;
-  String noteIv;
+  int? noteId;
+  String? noteEnc;
+  String? noteIv;
 
-  String noteDec;
+  String? noteDec;
 
   Note({
     this.noteId,
@@ -34,7 +34,7 @@ class Note {
         noteIv: this.noteIv,
       );
 
-  bool notEqual(Note n) {
+  bool notEqual(Note? n) {
     if (n == null) return true;
     if (this.noteEnc != n.noteEnc) return true;
     if (this.noteIv != n.noteIv) return true;

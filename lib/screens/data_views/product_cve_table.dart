@@ -13,8 +13,8 @@ class ProductCveTableScreen extends StatefulWidget {
 }
 
 class _ProductCveTableScreenState extends State<ProductCveTableScreen> {
-  ItemProvider _item;
-  Future<void> _getProductCves;
+  late ItemProvider _item;
+  Future<void>? _getProductCves;
 
   Future<void> _getProductCvesAsync() async => await _item.fetchProductCves();
 
@@ -94,7 +94,6 @@ class _ProductCveTableScreenState extends State<ProductCveTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

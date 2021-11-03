@@ -7,7 +7,7 @@ import 'package:keyway/models/tag.dart';
 class TagsFilterList extends StatefulWidget {
   const TagsFilterList(this.tag, this.tagsSwitch);
 
-  final Tag tag;
+  final Tag? tag;
   final Function tagsSwitch;
 
   @override
@@ -15,36 +15,36 @@ class TagsFilterList extends StatefulWidget {
 }
 
 class _TagsFilterListState extends State<TagsFilterList> {
-  Future<List<Tag>> _getTags;
-  List<Widget> _buttons;
+  Future<List<Tag>>? _getTags;
+  List<Widget>? _buttons;
 
-  List<Widget> _tags(List<Tag> tags) {
+  List<Widget>? _tags(List<Tag> tags) {
     _buttons = <Widget>[];
     tags.forEach(
       (tag) {
         if (widget.tag != null)
-          tag.selected = tag.tagName == widget.tag.tagName;
+          tag.selected = tag.tagName == widget.tag!.tagName;
         else
           tag.selected = false;
-        _buttons.add(
+        _buttons!.add(
           TextButton.icon(
             icon: Icon(
               Icons.tag,
-              color: Color(tag.tagColor),
-              size: tag.selected ? 20 : 14,
+              color: Color(tag.tagColor!),
+              size: tag.selected! ? 20 : 14,
             ),
             onPressed: () {
               setState(() {
-                tag.selected = !tag.selected;
+                tag.selected = !tag.selected!;
               });
               widget.tagsSwitch(tag);
             },
             label: Text(
-              tag.tagName,
+              tag.tagName!,
               style: TextStyle(
-                color: Color(tag.tagColor),
-                fontSize: tag.selected ? 20 : 14,
-                fontWeight: tag.selected ? FontWeight.bold : null,
+                color: Color(tag.tagColor!),
+                fontSize: tag.selected! ? 20 : 14,
+                fontWeight: tag.selected! ? FontWeight.bold : null,
               ),
             ),
           ),
@@ -72,13 +72,12 @@ class _TagsFilterListState extends State<TagsFilterList> {
         switch (snap.connectionState) {
           case ConnectionState.active:
             return LinearProgressIndicator();
-            break;
           case (ConnectionState.done):
             if (snap.hasError) {
-              return Text(snap.error);
+              return Text(snap.error as String);
             } else {
               List<Tag> _list = <Tag>[];
-              _list = snap.data;
+              _list = snap.data as List<Tag>;
               if (_list.length < 1) return Container(height: 0);
               return Container(
                 height: 48,
@@ -87,11 +86,10 @@ class _TagsFilterListState extends State<TagsFilterList> {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  children: _tags(_list),
+                  children: _tags(_list)!,
                 ),
               );
             }
-            break;
           default:
             return LinearProgressIndicator();
         }

@@ -63,26 +63,32 @@ class DBHelper {
   }
 
   static Future<bool> createBackup(String path) async {
-    String _path = '$path$_backupPath';
-    Directory _dir = await Directory(_path).create(recursive: true);
-    if (_dir != null) {
+    try {
+      String _path = '$path$_backupPath';
+      Directory _dir = await Directory(_path).create(recursive: true);
       final _dbPath = await dbPath();
       final _localDB = File('$_dbPath/kw.db');
       _localDB.copySync(_dir.path + '/kw_backup.db');
       return true;
-    } else {
+    } catch (e) {
+      print(e.toString());
       return false;
     }
   }
 
   static Future<bool> restoreBackup(String filePath) async {
-    File _backupFile = File(filePath);
-    final _dbPath = await dbPath();
-    _backupFile.copySync('$_dbPath/kw.db');
-    return true;
+    try {
+      File _backupFile = File(filePath);
+      final _dbPath = await dbPath();
+      _backupFile.copySync('$_dbPath/kw.db');
+      return true;
+    } catch (e) {
+      print(e.toString());
+      return false;
+    }
   }
 
-  static Future<int> insert(String table, Map<String, Object> data) async =>
+  static Future<int> insert(String table, Map<String, Object?> data) async =>
       (await DBHelper.database()).insert(
         table,
         data,
@@ -93,7 +99,7 @@ class DBHelper {
       (await DBHelper.database()).query(table);
 
   static Future<int> update(
-          String table, Map<String, Object> data, String idName) async =>
+          String table, Map<String, Object?> data, String idName) async =>
       (await DBHelper.database()).update(
         table,
         data,
@@ -102,7 +108,7 @@ class DBHelper {
       );
 
   static Future<int> delete(
-          String table, Map<String, Object> data, String idName) async =>
+          String table, Map<String, Object?> data, String idName) async =>
       (await DBHelper.database()).delete(
         table,
         where: '$idName = ?',
@@ -161,7 +167,7 @@ class DBHelper {
         whereArgs: [data['item_id']],
       );
 
-  static Future<int> deleteProductItem(int productId) async =>
+  static Future<int> deleteProductItem(int? productId) async =>
       (await DBHelper.database()).update(
         itemTable,
         {'fk_product_id': null},
@@ -169,7 +175,7 @@ class DBHelper {
         whereArgs: [productId],
       );
 
-  static Future<int> deleteAddressItem(int addressId) async =>
+  static Future<int> deleteAddressItem(int? addressId) async =>
       (await DBHelper.database()).update(
         itemTable,
         {'fk_address_id': null},
@@ -177,7 +183,7 @@ class DBHelper {
         whereArgs: [addressId],
       );
 
-  static Future<int> deleteNoteItem(int noteId) async =>
+  static Future<int> deleteNoteItem(int? noteId) async =>
       (await DBHelper.database()).update(
         itemTable,
         {'fk_note_id': null},
@@ -185,7 +191,7 @@ class DBHelper {
         whereArgs: [noteId],
       );
 
-  static Future<int> deletePinItem(int pinId) async =>
+  static Future<int> deletePinItem(int? pinId) async =>
       (await DBHelper.database()).update(
         itemTable,
         {'fk_pin_id': null},
@@ -193,7 +199,7 @@ class DBHelper {
         whereArgs: [pinId],
       );
 
-  static Future<int> deleteUsernameItem(int usernameId) async =>
+  static Future<int> deleteUsernameItem(int? usernameId) async =>
       (await DBHelper.database()).update(
         itemTable,
         {'fk_username_id': null},
@@ -201,14 +207,14 @@ class DBHelper {
         whereArgs: [usernameId],
       );
 
-  static Future<int> deletePasswordItems(int passwordId) async =>
+  static Future<int> deletePasswordItems(int? passwordId) async =>
       (await DBHelper.database()).delete(
         itemPasswordTable,
         where: 'fk_password_id = ?',
         whereArgs: [passwordId],
       );
 
-  static Future<int> updateItemPassword(Map<String, Object> data) async =>
+  static Future<int> updateItemPassword(Map<String, Object?> data) async =>
       (await DBHelper.database()).update(
         itemPasswordTable,
         data,
@@ -253,7 +259,7 @@ class DBHelper {
     );
   }
 
-  static Future<List<Map<String, dynamic>>> getCveByName(String cve) async {
+  static Future<List<Map<String, dynamic>>> getCveByName(String? cve) async {
     return (await DBHelper.database()).query(
       cveTable,
       where: 'cve = ?',
@@ -339,14 +345,14 @@ class DBHelper {
   }
 
   static Future<List<Map<String, dynamic>>> getItemPasswordsByPasswordId(
-      int passwordId) async {
+      int? passwordId) async {
     return (await DBHelper.database()).rawQuery('''SELECT * 
         FROM $itemPasswordTable 
         WHERE fk_password_id = $passwordId''');
   }
 
   static Future<List<Map<String, dynamic>>> getPasswordsByItemId(
-      int itemId) async {
+      int? itemId) async {
     return (await DBHelper.database())
         .rawQuery('''SELECT * FROM $itemPasswordTable 
         LEFT JOIN $passwordTable ON $itemPasswordTable.fk_password_id=password_id 
@@ -358,7 +364,7 @@ class DBHelper {
   static Future<List<Map<String, dynamic>>> getTags() async =>
       (await DBHelper.database()).rawQuery('SELECT * FROM $tagTable');
 
-  static Future<List<Map<String, dynamic>>> getTagByName(String n) async =>
+  static Future<List<Map<String, dynamic>>> getTagByName(String? n) async =>
       (await DBHelper.database()).query(
         tagTable,
         where: 'tag_name = ?',
@@ -391,7 +397,7 @@ class DBHelper {
     return _list;
   }
 
-  static Future<void> removeTag(String tag) async {
+  static Future<void> removeTag(String? tag) async {
     (await DBHelper.database()).rawQuery('''
           UPDATE $itemTable 
           SET tags = REPLACE(tags, '<$tag>', '') 

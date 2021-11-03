@@ -14,8 +14,8 @@ class UserTableScreen extends StatefulWidget {
 }
 
 class _UserTableScreenState extends State<UserTableScreen> {
-  ItemProvider _item;
-  Future<List<User>> _getUserData;
+  late ItemProvider _item;
+  Future<List<User>>? _getUserData;
 
   Future<List<User>> _getUserDataAsync() => _item.getUserData();
 
@@ -48,7 +48,7 @@ class _UserTableScreenState extends State<UserTableScreen> {
               if (snap.hasError)
                 return ErrorHelper.errorBody(snap.error);
               else {
-                List<User> _users = snap.data;
+                List<User> _users = snap.data as List<User>;
                 return _users.length <= 0
                     ? EmptyItems()
                     : ListView.separated(
@@ -62,7 +62,7 @@ class _UserTableScreenState extends State<UserTableScreen> {
                                   Text('mk_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _users[i].encMk,
+                                      _users[i].encMk!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -76,7 +76,7 @@ class _UserTableScreenState extends State<UserTableScreen> {
                                   Text('mk_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _users[i].mkIv,
+                                      _users[i].mkIv!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -92,7 +92,6 @@ class _UserTableScreenState extends State<UserTableScreen> {
                             Divider(color: Colors.black),
                       );
               }
-              break;
             default:
               return Center(child: Text('default'));
           }

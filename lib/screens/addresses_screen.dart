@@ -14,14 +14,14 @@ class AddressesScreen extends StatefulWidget {
 }
 
 class _AddressesScreenState extends State<AddressesScreen> {
-  ItemProvider _item;
-  Future<List<Address>> _getAddresses;
-  List<Address> _addresses;
+  late ItemProvider _item;
+  Future<List<Address>>? _getAddresses;
+  late List<Address> _addresses;
 
   Future<void> _getAddressesAsync() async {
     _item = Provider.of<ItemProvider>(context, listen: false);
     _addresses = await _item.fetchAddresses();
-    await Future.forEach(_addresses, (a) async {
+    await Future.forEach(_addresses, (dynamic a) async {
       await Provider.of<CriptoProvider>(context).decryptAddress(a);
     });
   }
@@ -29,13 +29,15 @@ class _AddressesScreenState extends State<AddressesScreen> {
   Future<void> _deleteAddress(Address a) async {
     _item = Provider.of<ItemProvider>(context, listen: false);
     await _item.deleteAddress(a);
-    _getAddresses = _getAddressesAsync();
+    _getAddresses =
+        _getAddressesAsync().then((value) => value as List<Address>);
     setState(() {});
   }
 
   @override
   void initState() {
-    _getAddresses = _getAddressesAsync();
+    _getAddresses =
+        _getAddressesAsync().then((value) => value as List<Address>);
     super.initState();
   }
 
@@ -53,7 +55,6 @@ class _AddressesScreenState extends State<AddressesScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
@@ -61,8 +62,8 @@ class _AddressesScreenState extends State<AddressesScreen> {
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
-                          leading: Text(_item.addresses[i].addressProtocol),
-                          title: Text(_item.addresses[i].addressDec),
+                          leading: Text(_item.addresses[i].addressProtocol!),
+                          title: Text(_item.addresses[i].addressDec!),
                           subtitle:
                               Text(_item.addresses[i].addressPort.toString()),
                           trailing: IconButton(

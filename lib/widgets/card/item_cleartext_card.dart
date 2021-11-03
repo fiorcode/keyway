@@ -11,31 +11,31 @@ import '../../models/item.dart';
 
 class ItemCleartextCard extends StatefulWidget {
   const ItemCleartextCard({
-    Key key,
+    Key? key,
     this.item,
     this.buildItem,
     this.deleteItem,
   }) : super(key: key);
 
-  final Item item;
-  final Function buildItem;
-  final Function deleteItem;
+  final Item? item;
+  final Function? buildItem;
+  final Function? deleteItem;
 
   @override
   _ItemCleartextCardState createState() => _ItemCleartextCardState();
 }
 
 class _ItemCleartextCardState extends State<ItemCleartextCard> {
-  String _title;
-  String _subtitle;
-  int _p1n;
+  String? _title;
+  late String _subtitle;
+  int? _p1n;
 
   bool _settings = false;
   bool _pin = false;
   bool _setTitle = false;
 
-  TextEditingController _titleCtrler;
-  FocusNode _titleFN;
+  TextEditingController? _titleCtrler;
+  FocusNode? _titleFN;
 
   void _settingsSwitch() => setState(() => _settings = !_settings);
 
@@ -58,7 +58,7 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
     } else {
       _titleCtrler = TextEditingController();
       _titleFN = FocusNode();
-      _titleFN.requestFocus();
+      _titleFN!.requestFocus();
     }
     setState(() => _setTitle = !_setTitle);
   }
@@ -70,31 +70,31 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
       if (_pin)
         _title = _p1n.toString();
       else {
-        _title = widget.item.title;
+        _title = widget.item!.title;
       }
     });
   }
 
   Future<void> _buildItem() async {
-    if (_titleCtrler.text.isEmpty) return;
-    Item _i = Item(title: _titleCtrler.text);
+    if (_titleCtrler!.text.isEmpty) return;
+    Item _i = Item(title: _titleCtrler!.text);
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
     if (_pin) {
       _i.pin = await _c.createPin(_p1n.toString());
-      widget.buildItem(widget.item, _i);
+      widget.buildItem!(widget.item, _i);
     } else {
-      _i.password = await _c.createPassword(widget.item.title);
+      _i.password = await _c.createPassword(widget.item!.title!);
       _i.itemPassword = ItemPassword();
-      widget.buildItem(widget.item, _i);
+      widget.buildItem!(widget.item, _i);
     }
   }
 
-  Future<void> _delete() => widget.deleteItem(widget.item);
+  Future<void>? _delete() => widget.deleteItem!(widget.item);
 
   @override
   void initState() {
-    _title = widget.item.title;
-    _subtitle = 'Created: ' + DateHelper.ddMMyyHm(widget.item.date);
+    _title = widget.item!.title;
+    _subtitle = 'Created: ' + DateHelper.ddMMyyHm(widget.item!.date);
     super.initState();
   }
 
@@ -151,7 +151,7 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
                   FittedBox(
                     fit: BoxFit.fitWidth,
                     child: Text(
-                      _title,
+                      _title!,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       softWrap: true,

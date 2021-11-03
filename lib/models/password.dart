@@ -1,11 +1,11 @@
 class Password {
-  int passwordId;
-  String passwordEnc;
-  String passwordIv;
-  String passwordStrength;
-  String passwordHash;
+  int? passwordId;
+  String? passwordEnc;
+  String? passwordIv;
+  String? passwordStrength;
+  String? passwordHash;
 
-  String passwordDec;
+  String? passwordDec;
 
   Password({
     this.passwordId,
@@ -44,7 +44,7 @@ class Password {
         passwordHash: this.passwordHash,
       );
 
-  bool notEqual(Password p) {
+  bool notEqual(Password? p) {
     if (p == null) return true;
     if (this.passwordHash != p.passwordHash) return true;
     if (this.passwordIv != p.passwordIv) return true;

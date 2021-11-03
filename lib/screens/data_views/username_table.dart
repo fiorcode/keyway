@@ -13,8 +13,8 @@ class UsernameTableScreen extends StatefulWidget {
 }
 
 class _UsernameTableScreenState extends State<UsernameTableScreen> {
-  ItemProvider _item;
-  Future _getUsernames;
+  late ItemProvider _item;
+  Future? _getUsernames;
 
   Future<void> _getUsernamesAsync() async => await _item.fetchUsernames();
 
@@ -71,7 +71,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameEnc,
+                                      _item.usernames[i].usernameEnc!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameIv,
+                                      _item.usernames[i].usernameIv!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -99,7 +99,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_hash: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameHash,
+                                      _item.usernames[i].usernameHash!,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -114,7 +114,6 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

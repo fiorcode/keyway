@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:keyway/helpers/date_helper.dart';
 
 class ItemPassword {
-  int fkItemId;
-  int fkPasswordId;
-  String passwordDate;
-  int passwordLapse;
-  String passwordStatus;
+  int? fkItemId;
+  int? fkPasswordId;
+  String? passwordDate;
+  int? passwordLapse;
+  String? passwordStatus;
 
   ItemPassword({
     this.fkItemId,
@@ -17,59 +17,59 @@ class ItemPassword {
     this.passwordStatus = '<active>',
   });
 
-  bool get repeatWarning => !this.passwordStatus.contains('<no-warning>');
-  bool get active => this.passwordStatus.contains('<active>');
-  bool get repeated => this.passwordStatus.contains('<repeated>');
-  bool get deleted => this.passwordStatus.contains('<deleted>');
-  bool get old => this.passwordStatus.contains('<old>');
+  bool get repeatWarning => !this.passwordStatus!.contains('<no-warning>');
+  bool get active => this.passwordStatus!.contains('<active>');
+  bool get repeated => this.passwordStatus!.contains('<repeated>');
+  bool get deleted => this.passwordStatus!.contains('<deleted>');
+  bool get old => this.passwordStatus!.contains('<old>');
   bool get expired => this.passwordLapse == 0
       ? false
       : DateHelper.expired(passwordDate, passwordLapse);
 
   void repeatWarningSwitch() {
     if (repeatWarning)
-      this.passwordStatus += '<no-warning>';
+      this.passwordStatus = this.passwordStatus! + '<no-warning>';
     else
-      this.passwordStatus = this.passwordStatus.replaceAll('<no-warning>', '');
+      this.passwordStatus = this.passwordStatus!.replaceAll('<no-warning>', '');
   }
 
   void setActive() {
     if (!active) {
       unSetDeleted();
       unSetOld();
-      this.passwordStatus += '<active>';
+      this.passwordStatus = this.passwordStatus! + '<active>';
     }
   }
 
   void unSetActive() =>
-      this.passwordStatus = this.passwordStatus.replaceAll('<active>', '');
+      this.passwordStatus = this.passwordStatus!.replaceAll('<active>', '');
 
   void setRepeated() {
-    if (!repeated) this.passwordStatus += '<repeated>';
+    if (!repeated) this.passwordStatus = this.passwordStatus! + '<repeated>';
   }
 
   void unSetRepeated() =>
-      this.passwordStatus = this.passwordStatus.replaceAll('<repeated>', '');
+      this.passwordStatus = this.passwordStatus!.replaceAll('<repeated>', '');
 
   void setDeleted() {
     if (!deleted) {
       unSetActive();
-      this.passwordStatus += '<deleted>';
+      this.passwordStatus = this.passwordStatus! + '<deleted>';
     }
   }
 
   void unSetDeleted() =>
-      this.passwordStatus = this.passwordStatus.replaceAll('<deleted>', '');
+      this.passwordStatus = this.passwordStatus!.replaceAll('<deleted>', '');
 
   void setOld() {
     if (!old) {
       unSetActive();
-      this.passwordStatus += '<old>';
+      this.passwordStatus = this.passwordStatus! + '<old>';
     }
   }
 
   void unSetOld() =>
-      this.passwordStatus = this.passwordStatus.replaceAll('<old>', '');
+      this.passwordStatus = this.passwordStatus!.replaceAll('<old>', '');
 
   ItemPassword.fromMap(Map<String, dynamic> map) {
     fkItemId = map['fk_item_id'];
@@ -98,7 +98,7 @@ class ItemPassword {
     return _ip;
   }
 
-  bool notEqual(ItemPassword ip) {
+  bool notEqual(ItemPassword? ip) {
     if (ip == null) return true;
     if (this.fkItemId != ip.fkItemId) return true;
     if (this.fkPasswordId != ip.fkPasswordId) return true;
@@ -113,13 +113,13 @@ class ItemPassword {
     if (this.fkPasswordId != ip.fkPasswordId) return false;
     if (this.passwordDate != ip.passwordDate) return false;
     if (this.passwordLapse != ip.passwordLapse) return false;
-    if (!_equalStatus(ip.passwordStatus)) return false;
+    if (!_equalStatus(ip.passwordStatus!)) return false;
     return true;
   }
 
   bool _equalStatus(String ps) {
     List<String> _s1 = ps.split("<");
-    List<String> _s2 = this.passwordStatus.split("<");
+    List<String> _s2 = this.passwordStatus!.split("<");
     _s1.sort();
     _s2.sort();
     return listEquals(_s1, _s2);

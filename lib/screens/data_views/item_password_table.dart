@@ -14,8 +14,8 @@ class ItemPasswordTableScreen extends StatefulWidget {
 }
 
 class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
-  ItemProvider _item;
-  Future<void> _getItemPasswords;
+  late ItemProvider _item;
+  Future<void>? _getItemPasswords;
 
   Future<void> _getItemPasswordsAsync() async =>
       await _item.fetchItemPasswords();
@@ -97,7 +97,7 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                                 children: [
                                   Text('password_status: '),
                                   Text(
-                                    _item.itemPasswords[i].passwordStatus,
+                                    _item.itemPasswords[i].passwordStatus!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -111,7 +111,7 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                                     child: FittedBox(
                                       fit: BoxFit.fitWidth,
                                       child: Text(
-                                        _item.itemPasswords[i].passwordDate,
+                                        _item.itemPasswords[i].passwordDate!,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -126,7 +126,6 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

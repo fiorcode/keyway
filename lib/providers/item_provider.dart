@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
 
@@ -127,7 +128,7 @@ class ItemProvider with ChangeNotifier {
     return _cves;
   }
 
-  Future<int> insertItem(Item i, {String date}) async {
+  Future<int> insertItem(Item i, {String? date}) async {
     //TODO: change this in production
     if (date != null)
       i.date = date;
@@ -136,39 +137,39 @@ class ItemProvider with ChangeNotifier {
     //--------------------------------
 
     if (i.password != null) {
-      i.itemPassword.passwordDate = i.date;
-      if (i.password.passwordId == null) {
-        i.itemPassword.fkPasswordId = await insertPassword(i.password);
+      i.itemPassword!.passwordDate = i.date;
+      if (i.password!.passwordId == null) {
+        i.itemPassword!.fkPasswordId = await insertPassword(i.password!);
       } else {
-        i.itemPassword.fkPasswordId = i.password.passwordId;
-        i.itemPassword.setRepeated();
-        await _setRepeated(i.password.passwordId);
+        i.itemPassword!.fkPasswordId = i.password!.passwordId;
+        i.itemPassword!.setRepeated();
+        await _setRepeated(i.password!.passwordId);
       }
     }
     if (i.username != null) {
-      if (i.username.usernameId == null) {
-        i.fkUsernameId = await insertUsername(i.username);
+      if (i.username!.usernameId == null) {
+        i.fkUsernameId = await insertUsername(i.username!);
       } else {
-        i.fkUsernameId = i.username.usernameId;
+        i.fkUsernameId = i.username!.usernameId;
       }
     }
     if (i.pin != null) {
-      i.pin.pinDate = i.date;
-      i.fkPinId = await insertPin(i.pin);
+      i.pin!.pinDate = i.date;
+      i.fkPinId = await insertPin(i.pin!);
     }
     if (i.note != null) {
-      i.fkNoteId = await insertNote(i.note);
+      i.fkNoteId = await insertNote(i.note!);
     }
     if (i.address != null) {
-      i.fkAddressId = await insertAddress(i.address);
+      i.fkAddressId = await insertAddress(i.address!);
     }
     if (i.product != null) {
-      if (i.product.cpe23uri != null) {
-        await insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
-          i.product.fkCpe23uriId = cpe23uriId;
-          i.fkProductId = await insertProduct(i.product);
-          if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
-            await Future.forEach(i.product.cpe23uri.vulnerabilities,
+      if (i.product!.cpe23uri != null) {
+        await insertCpe23uri(i.product!.cpe23uri!).then((cpe23uriId) async {
+          i.product!.fkCpe23uriId = cpe23uriId;
+          i.fkProductId = await insertProduct(i.product!);
+          if (i.product!.cpe23uri!.vulnerabilities!.isNotEmpty) {
+            await Future.forEach(i.product!.cpe23uri!.vulnerabilities!,
                 (String v) async {
               int cveId = await insertCve(Cve(cve: v));
               await insertCpe23UriCve(Cpe23uriCve(cpe23uriId, cveId));
@@ -176,13 +177,13 @@ class ItemProvider with ChangeNotifier {
           }
         });
       } else {
-        i.fkProductId = await insertProduct(i.product);
+        i.fkProductId = await insertProduct(i.product!);
       }
     }
     int _itemId = await DBHelper.insert(DBHelper.itemTable, i.toMap());
     if (i.password != null) {
-      i.itemPassword.fkItemId = _itemId;
-      await insertItemPassword(i.itemPassword);
+      i.itemPassword!.fkItemId = _itemId;
+      await insertItemPassword(i.itemPassword!);
     }
     return _itemId;
   }
@@ -191,10 +192,10 @@ class ItemProvider with ChangeNotifier {
     await _updatePassword(old, i);
 
     if (i.username != null) {
-      if (i.username.usernameId == null) {
-        i.fkUsernameId = await insertUsername(i.username);
+      if (i.username!.usernameId == null) {
+        i.fkUsernameId = await insertUsername(i.username!);
       } else {
-        i.fkUsernameId = i.username.usernameId;
+        i.fkUsernameId = i.username!.usernameId;
       }
     } else {
       i.fkUsernameId = null;
@@ -202,34 +203,34 @@ class ItemProvider with ChangeNotifier {
 
     if (i.pin != null) {
       if (old.pin != null) {
-        if (i.pin.notEqual(old.pin)) {
-          i.pin.pinId = old.pin.pinId;
-          i.fkPinId = i.pin.pinId;
-          await updatePin(i.pin);
+        if (i.pin!.notEqual(old.pin)) {
+          i.pin!.pinId = old.pin!.pinId;
+          i.fkPinId = i.pin!.pinId;
+          await updatePin(i.pin!);
         }
       } else {
-        i.fkPinId = await insertPin(i.pin);
+        i.fkPinId = await insertPin(i.pin!);
       }
     } else {
       if (old.pin != null) {
-        if (old.pin.pinId != null) await deletePin(old.pin);
+        if (old.pin!.pinId != null) await deletePin(old.pin!);
       }
       i.fkPinId = null;
     }
 
     if (i.note != null) {
       if (old.note != null) {
-        if (i.note.notEqual(old.note)) {
-          i.note.noteId = old.note.noteId;
-          i.fkNoteId = i.note.noteId;
-          await updateNote(i.note);
+        if (i.note!.notEqual(old.note)) {
+          i.note!.noteId = old.note!.noteId;
+          i.fkNoteId = i.note!.noteId;
+          await updateNote(i.note!);
         }
       } else {
-        i.fkNoteId = await insertNote(i.note);
+        i.fkNoteId = await insertNote(i.note!);
       }
     } else {
       if (old.note != null) {
-        if (old.note.noteId != null) await deleteNote(old.note);
+        if (old.note!.noteId != null) await deleteNote(old.note!);
       }
       i.fkNoteId = null;
     }
@@ -247,17 +248,17 @@ class ItemProvider with ChangeNotifier {
 
     if (i.address != null) {
       if (old.address != null) {
-        if (i.address.notEqual(old.address)) {
-          i.address.addressId = old.address.addressId;
-          i.fkAddressId = i.address.addressId;
-          await updateAddress(i.address);
+        if (i.address!.notEqual(old.address)) {
+          i.address!.addressId = old.address!.addressId;
+          i.fkAddressId = i.address!.addressId;
+          await updateAddress(i.address!);
         }
       } else {
-        i.fkAddressId = await insertAddress(i.address);
+        i.fkAddressId = await insertAddress(i.address!);
       }
     } else {
       if (old.address != null) {
-        if (old.address.addressId != null) await deleteAddress(old.address);
+        if (old.address!.addressId != null) await deleteAddress(old.address!);
       }
       i.fkAddressId = null;
     }
@@ -276,69 +277,70 @@ class ItemProvider with ChangeNotifier {
     if (old.product != null) {
       if (i.product != null) {
         //PRODUCT (SAME OR MODIFIED)
-        if (old.product.cpe23uri != null) {
-          if (i.product.cpe23uri != null) {
+        if (old.product!.cpe23uri != null) {
+          if (i.product!.cpe23uri != null) {
             //CPE (SAME OR MODIFIED)
-            if (!old.product.cpe23uri.equal(i.product.cpe23uri)) {
-              if (i.product.cpe23uri.cpe23uriId == null) {
-                i.product.fkCpe23uriId =
-                    await insertCpe23uri(i.product.cpe23uri);
-                if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
-                  await Future.forEach(i.product.cpe23uri.vulnerabilities,
+            if (!old.product!.cpe23uri!.equal(i.product!.cpe23uri!)) {
+              if (i.product!.cpe23uri!.cpe23uriId == null) {
+                i.product!.fkCpe23uriId =
+                    await insertCpe23uri(i.product!.cpe23uri!);
+                if (i.product!.cpe23uri!.vulnerabilities!.isNotEmpty) {
+                  await Future.forEach(i.product!.cpe23uri!.vulnerabilities!,
                       (String v) async {
                     int cveId = await insertCve(Cve(cve: v));
                     await insertCpe23UriCve(
-                      Cpe23uriCve(i.product.fkCpe23uriId, cveId),
+                      Cpe23uriCve(i.product!.fkCpe23uriId, cveId),
                     );
                     await insertProductCve(ProductCve(
-                        fkProductId: i.product.productId, fkCveId: cveId));
+                        fkProductId: i.product!.productId, fkCveId: cveId));
                   });
                 }
               } else {
-                i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+                i.product!.fkCpe23uriId = i.product!.cpe23uri!.cpe23uriId;
               }
             }
           } else {
             //CPE DELETED
-            i.product.fkCpe23uriId = null;
+            i.product!.fkCpe23uriId = null;
           }
         } else {
           //CPE ADDED
-          if (i.product.cpe23uri != null) {
-            if (i.product.cpe23uri.cpe23uriId == null) {
-              i.product.fkCpe23uriId = await insertCpe23uri(i.product.cpe23uri);
-              if (i.product.cpe23uri.vulnerabilities.isNotEmpty) {
-                await Future.forEach(i.product.cpe23uri.vulnerabilities,
+          if (i.product!.cpe23uri != null) {
+            if (i.product!.cpe23uri!.cpe23uriId == null) {
+              i.product!.fkCpe23uriId =
+                  await insertCpe23uri(i.product!.cpe23uri!);
+              if (i.product!.cpe23uri!.vulnerabilities!.isNotEmpty) {
+                await Future.forEach(i.product!.cpe23uri!.vulnerabilities!,
                     (String v) async {
                   int cveId = await insertCve(Cve(cve: v));
                   await insertCpe23UriCve(
-                    Cpe23uriCve(i.product.fkCpe23uriId, cveId),
+                    Cpe23uriCve(i.product!.fkCpe23uriId, cveId),
                   );
                   await insertProductCve(ProductCve(
-                      fkProductId: i.product.productId, fkCveId: cveId));
+                      fkProductId: i.product!.productId, fkCveId: cveId));
                 });
               }
             } else {
-              i.product.fkCpe23uriId = i.product.cpe23uri.cpe23uriId;
+              i.product!.fkCpe23uriId = i.product!.cpe23uri!.cpe23uriId;
             }
           }
         }
-        if (i.product.productId != null) updateProduct(i.product);
+        if (i.product!.productId != null) updateProduct(i.product!);
       } else {
         //PRODUCT DELETED
         i.fkProductId = null;
-        await deleteProduct(old.product);
+        await deleteProduct(old.product!);
       }
     } else {
       if (i.product != null) {
         //PRODUCT ADDED
-        if (i.product.cpe23uri != null) {
-          insertCpe23uri(i.product.cpe23uri).then((cpe23uriId) async {
-            i.product.fkCpe23uriId = cpe23uriId;
-            await insertProduct(i.product);
+        if (i.product!.cpe23uri != null) {
+          insertCpe23uri(i.product!.cpe23uri!).then((cpe23uriId) async {
+            i.product!.fkCpe23uriId = cpe23uriId;
+            await insertProduct(i.product!);
           });
         } else {
-          await insertProduct(i.product);
+          await insertProduct(i.product!);
         }
       }
     }
@@ -347,13 +349,13 @@ class ItemProvider with ChangeNotifier {
         .then((_) async {
       if (i.password != null) {
         if (old.itemPassword != null) {
-          if (old.itemPassword.fkPasswordId != i.itemPassword.fkPasswordId) {
-            i.itemPassword.fkItemId = i.itemId;
-            await insertItemPassword(i.itemPassword);
+          if (old.itemPassword!.fkPasswordId != i.itemPassword!.fkPasswordId) {
+            i.itemPassword!.fkItemId = i.itemId;
+            await insertItemPassword(i.itemPassword!);
           }
         } else {
-          i.itemPassword.fkItemId = i.itemId;
-          await insertItemPassword(i.itemPassword);
+          i.itemPassword!.fkItemId = i.itemId;
+          await insertItemPassword(i.itemPassword!);
         }
       }
     });
@@ -366,39 +368,39 @@ class ItemProvider with ChangeNotifier {
   Future<void> _updatePassword(Item old, Item i) async {
     if (old.password != null) {
       if (i.password != null) {
-        if (i.password.passwordId == null) {
+        if (i.password!.passwordId == null) {
           i.itemPassword = ItemPassword();
-          i.itemPassword.passwordDate = DateTime.now().toIso8601String();
-          i.itemPassword.fkPasswordId = await insertPassword(i.password);
-          old.itemPassword.setOld();
-          await updateItemPassword(old.itemPassword);
+          i.itemPassword!.passwordDate = DateTime.now().toIso8601String();
+          i.itemPassword!.fkPasswordId = await insertPassword(i.password!);
+          old.itemPassword!.setOld();
+          await updateItemPassword(old.itemPassword!);
         } else {
-          if (old.password.passwordId != i.password.passwordId) {
-            i.itemPassword.passwordDate = DateTime.now().toIso8601String();
-            i.itemPassword.fkPasswordId = i.password.passwordId;
-            i.itemPassword.setRepeated();
-            await _setRepeated(i.password.passwordId);
-            old.itemPassword.setOld();
-            await updateItemPassword(old.itemPassword);
+          if (old.password!.passwordId != i.password!.passwordId) {
+            i.itemPassword!.passwordDate = DateTime.now().toIso8601String();
+            i.itemPassword!.fkPasswordId = i.password!.passwordId;
+            i.itemPassword!.setRepeated();
+            await _setRepeated(i.password!.passwordId);
+            old.itemPassword!.setOld();
+            await updateItemPassword(old.itemPassword!);
           } else {
-            await updateItemPassword(i.itemPassword);
+            await updateItemPassword(i.itemPassword!);
           }
         }
       } else {
-        old.itemPassword.setDeleted();
-        await updateItemPassword(old.itemPassword);
+        old.itemPassword!.setDeleted();
+        await updateItemPassword(old.itemPassword!);
       }
     } else {
       if (i.password != null) {
         i.itemPassword = ItemPassword(
           passwordDate: DateTime.now().toIso8601String(),
         );
-        if (i.password.passwordId == null) {
-          i.itemPassword.fkPasswordId = await insertPassword(i.password);
+        if (i.password!.passwordId == null) {
+          i.itemPassword!.fkPasswordId = await insertPassword(i.password!);
         } else {
-          i.itemPassword.fkPasswordId = i.password.passwordId;
-          i.itemPassword.setRepeated();
-          await _setRepeated(i.password.passwordId);
+          i.itemPassword!.fkPasswordId = i.password!.passwordId;
+          i.itemPassword!.setRepeated();
+          await _setRepeated(i.password!.passwordId);
         }
       }
     }
@@ -501,7 +503,7 @@ class ItemProvider with ChangeNotifier {
         if (list.isEmpty) {
           return DBHelper.insert(DBHelper.cpe23uriTable, c.toMap());
         } else
-          return Cpe23uri.fromMap(list.first).cpe23uriId;
+          return Cpe23uri.fromMap(list.first).cpe23uriId!;
       },
     );
   }
@@ -513,13 +515,13 @@ class ItemProvider with ChangeNotifier {
   Future<int> insertCve(Cve c) async {
     return DBHelper.getCveByName(c.cve).then((list) {
       if (list.isNotEmpty)
-        return Cve.fromMap(list.first).cveId;
+        return Cve.fromMap(list.first).cveId!;
       else
         return DBHelper.insert(DBHelper.cveTable, c.toMap());
     });
   }
 
-  Future<Password> passwordInDB(String hash) async {
+  Future<Password?> passwordInDB(String hash) async {
     if (hash.isEmpty) return null;
     List<Map<String, dynamic>> _list = await DBHelper.getByValue(
         DBHelper.passwordTable, 'password_hash', hash);
@@ -529,7 +531,7 @@ class ItemProvider with ChangeNotifier {
       return Password.fromMap(_list.first);
   }
 
-  Future<void> _setRepeated(int passwordId) async {
+  Future<void> _setRepeated(int? passwordId) async {
     return DBHelper.getItemPasswordsByPasswordId(passwordId).then((data) {
       List<ItemPassword> _ips = <ItemPassword>[];
       _ips = data.map((e) => ItemPassword.fromMap(e)).toList();
@@ -544,7 +546,7 @@ class ItemProvider with ChangeNotifier {
     });
   }
 
-  Future<Username> usernameInDB(String hash) async {
+  Future<Username?> usernameInDB(String hash) async {
     if (hash.isEmpty) return null;
     List<Map<String, dynamic>> _list = await DBHelper.getByValue(
         DBHelper.usernameTable, 'username_hash', hash);
@@ -568,11 +570,11 @@ class ItemProvider with ChangeNotifier {
       (await DBHelper.getByValue(DBHelper.passwordTable, 'password_hash', hash))
           .first);
 
-  Future<List<ItemPassword>> getItemPasswordsByItemId(int itemId) async {
-    List<ItemPassword> _ips;
+  Future<List<ItemPassword>?> getItemPasswordsByItemId(int itemId) async {
+    List<ItemPassword>? _ips;
     await DBHelper.getItemPasswordsByItemId(itemId).then((data) {
       _ips = data.map((e) => ItemPassword.fromMap(e)).toList();
-      _ips.sort((a, b) => b.passwordDate.compareTo(a.passwordDate));
+      _ips!.sort((a, b) => b.passwordDate!.compareTo(a.passwordDate!));
     });
     return _ips;
   }
@@ -598,7 +600,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<List<Product>> getProductsWithNoCpe() async {
-    Iterable<Product> _iter;
+    late Iterable<Product> _iter;
     await DBHelper.getProductsWithNoCpe().then((data) {
       _iter = data.map((i) => Product.fromMap(i));
     });
@@ -606,7 +608,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<List<Username>> getUsers() async {
-    Iterable<Username> _iter;
+    late Iterable<Username> _iter;
     await DBHelper.read(DBHelper.usernameTable).then((data) {
       _iter = data.map((e) => Username.fromMap(e));
     });
@@ -629,7 +631,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<List<Tag>> getTags() async {
-    Iterable<Tag> _iter;
+    late Iterable<Tag> _iter;
     await DBHelper.read(DBHelper.tagTable).then((data) {
       _iter = data.map((e) => Tag.fromMap(e));
     });
@@ -637,7 +639,7 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<List<User>> getUserData() async {
-    Iterable<User> _iter;
+    late Iterable<User> _iter;
     await DBHelper.read(DBHelper.userTable).then((data) {
       _iter = data.map((e) => User.fromMap(e));
     });
@@ -668,7 +670,7 @@ class ItemProvider with ChangeNotifier {
       'app',
     ];
     Random _r = Random();
-    await Future.forEach(_tags, (t) async {
+    await Future.forEach(_tags, (dynamic t) async {
       Color _c = Color.fromRGBO(
         _r.nextInt(255),
         _r.nextInt(255),
@@ -690,7 +692,7 @@ class ItemProvider with ChangeNotifier {
       'app'
     ];
     int _t = 0;
-    await Future.forEach(_titles, (t) async {
+    await Future.forEach(_titles, (dynamic t) async {
       DateTime _date = DateTime(2021, _r.nextInt(7) + 1, _r.nextInt(27) + 1);
       Color _avatarColor = Color.fromRGBO(
         _r.nextInt(255),
@@ -698,13 +700,14 @@ class ItemProvider with ChangeNotifier {
         _r.nextInt(255),
         1,
       );
-      Password _p = await _cripto.createPassword(t + '@password');
+      Password? _p = await _cripto.createPassword(t + '@password');
       ItemPassword _ip = ItemPassword(passwordLapse: _r.nextInt(360) + 1);
-      Username _u = await _cripto.createUsername(t + '@username');
-      Pin _pin = await _cripto.createPin(_r.nextInt(9999).toString());
+      Username? _u = await _cripto.createUsername(t + '@username');
+      Pin _pin = await (_cripto.createPin(_r.nextInt(9999).toString())
+          as FutureOr<Pin>);
       _pin.pinLapse = _r.nextInt(360) + 1;
-      Note _n = await _cripto.createNote(t + '@note');
-      Address _a = await _cripto.createAddress('www.' + t + '.com');
+      Note? _n = await _cripto.createNote(t + '@note');
+      Address? _a = await _cripto.createAddress('www.' + t + '.com');
       Product _pr = Product(
         productTrademark: t + '_trademark',
         productModel: t + '_model',

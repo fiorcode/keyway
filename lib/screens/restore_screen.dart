@@ -19,9 +19,9 @@ class RestoreScreen extends StatefulWidget {
 }
 
 class _RestoreScreenState extends State<RestoreScreen> {
-  Icon _icon;
-  File _fileToRestore;
-  FileStat _fileToRestoreStatus;
+  Icon? _icon;
+  File? _fileToRestore;
+  FileStat? _fileToRestoreStatus;
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
@@ -41,7 +41,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
     StorageHelper.getDeviceBackup().then((file) async {
       if (file != null) {
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -66,7 +66,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.sd_card, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -91,7 +91,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.folder, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -124,7 +124,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
 
   Future<void> _deleteBackup() async {
     setState(() => _working = true);
-    StorageHelper.deleteFile(_fileToRestore).then((fse) {
+    StorageHelper.deleteFile(_fileToRestore!).then((fse) {
       setState(() {
         _fileToRestore = null;
         _fileToRestoreStatus = null;
@@ -245,7 +245,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(_fileToRestore.path.split('/').last),
+                                      Text(_fileToRestore!.path.split('/').last),
                                     ],
                                   ),
                                   Row(
@@ -260,7 +260,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         ),
                                       ),
                                       Expanded(
-                                          child: Text(_fileToRestore.path)),
+                                          child: Text(_fileToRestore!.path)),
                                     ],
                                   ),
                                   if (_fileToRestoreStatus != null)
@@ -277,7 +277,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         Expanded(
                                           child: Text(
                                             DateHelper.ddMMyyHm(
-                                                _fileToRestoreStatus.modified),
+                                                _fileToRestoreStatus!.modified),
                                           ),
                                         ),
                                       ],
@@ -295,7 +295,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            _fileToRestoreStatus.size
+                                            _fileToRestoreStatus!.size
                                                     .toString() +
                                                 ' Bytes',
                                           ),
@@ -343,7 +343,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                               style:
                                   ElevatedButton.styleFrom(primary: _primary),
                               onPressed: () =>
-                                  _restoreBackup(_fileToRestore.path),
+                                  _restoreBackup(_fileToRestore!.path),
                               child: Text(
                                 'RESTORE',
                                 style: TextStyle(color: Colors.white),

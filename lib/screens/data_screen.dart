@@ -21,8 +21,8 @@ class DataScreen extends StatefulWidget {
 }
 
 class _DataScreenState extends State<DataScreen> {
-  Future<int> _dbSize;
-  Future<DateTime> _dbLastModified;
+  Future<int>? _dbSize;
+  Future<DateTime>? _dbLastModified;
 
   Future<int> _getDBSize() async => await DBHelper.dbSize();
 
@@ -35,7 +35,6 @@ class _DataScreenState extends State<DataScreen> {
         switch (snap.connectionState) {
           case ConnectionState.waiting:
             return Text('Size: Calculating...');
-            break;
           case ConnectionState.done:
             String _size = snap.data == null ? '-' : '${snap.data} Bytes';
             return Row(
@@ -53,7 +52,6 @@ class _DataScreenState extends State<DataScreen> {
                 Text(_size, style: TextStyle(fontSize: 14)),
               ],
             );
-            break;
           default:
             return Text('Size: Unknown');
         }
@@ -68,11 +66,10 @@ class _DataScreenState extends State<DataScreen> {
         switch (snap.connectionState) {
           case ConnectionState.waiting:
             return Text('Last Modified: Calculating...');
-            break;
           case ConnectionState.done:
             DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
             String _date =
-                snap.data == null ? '-' : dateFormat.format(snap.data);
+                snap.data == null ? '-' : dateFormat.format(snap.data!);
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -88,7 +85,6 @@ class _DataScreenState extends State<DataScreen> {
                 Text(_date, style: TextStyle(fontSize: 14)),
               ],
             );
-            break;
           default:
             return Text('Last Modified: Unknown');
         }
@@ -133,9 +129,9 @@ class _DataScreenState extends State<DataScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.grey[100],
-                        Colors.grey[300],
-                        Colors.grey[600],
+                        Colors.grey[100]!,
+                        Colors.grey[300]!,
+                        Colors.grey[600]!,
                       ],
                     ),
                   ),

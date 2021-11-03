@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 class TitleTextField extends StatelessWidget {
   const TitleTextField(this.ctrler, this.focus, this.updateView);
 
-  final TextEditingController ctrler;
-  final FocusNode focus;
+  final TextEditingController? ctrler;
+  final FocusNode? focus;
   final Function updateView;
 
   @override

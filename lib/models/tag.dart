@@ -1,8 +1,8 @@
 class Tag {
-  int id;
-  String tagName;
-  int tagColor;
-  bool selected;
+  int? id;
+  String? tagName;
+  int? tagColor;
+  bool? selected;
 
   Tag({
     this.tagName,

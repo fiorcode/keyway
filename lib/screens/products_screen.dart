@@ -13,8 +13,8 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  ItemProvider _item;
-  Future<void> _getProducts;
+  late ItemProvider _item;
+  Future<void>? _getProducts;
 
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
@@ -45,7 +45,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
@@ -54,8 +53,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(_item.products[i].icon, size: 32),
-                          title: Text(_item.products[i].productTrademark),
-                          subtitle: Text(_item.products[i].productModel),
+                          title: Text(_item.products[i].productTrademark!),
+                          subtitle: Text(_item.products[i].productModel!),
                           trailing: IconButton(
                             onPressed: () => _deleteProduct(_item.products[i]),
                             icon: Icon(

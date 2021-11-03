@@ -1,11 +1,11 @@
 class Address {
-  int addressId;
-  String addressEnc;
-  String addressIv;
-  String addressProtocol;
-  int addressPort;
+  int? addressId;
+  String? addressEnc;
+  String? addressIv;
+  String? addressProtocol;
+  int? addressPort;
 
-  String addressDec;
+  String? addressDec;
 
   Address.factory() {
     this.addressEnc = '';
@@ -51,7 +51,7 @@ class Address {
         addressPort: this.addressPort,
       );
 
-  bool notEqual(Address a) {
+  bool notEqual(Address? a) {
     if (a == null) return true;
     if (this.addressEnc != a.addressEnc) return true;
     if (this.addressIv != a.addressIv) return true;

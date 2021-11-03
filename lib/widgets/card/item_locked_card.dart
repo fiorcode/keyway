@@ -4,12 +4,12 @@ import '../../helpers/date_helper.dart';
 import '../../models/item.dart';
 
 class ItemLockedCard extends StatelessWidget {
-  const ItemLockedCard({Key key, this.item}) : super(key: key);
+  const ItemLockedCard({Key? key, this.item}) : super(key: key);
 
-  final Item item;
+  final Item? item;
 
   Color _setAvatarLetterColor() {
-    Color _color = Color(item.avatarColor);
+    Color _color = Color(item!.avatarColor!);
     double bgDelta =
         _color.red * 0.299 + _color.green * 0.587 + _color.blue * 0.114;
     return (255 - bgDelta > 105)
@@ -43,15 +43,13 @@ class ItemLockedCard extends StatelessWidget {
         contentPadding: EdgeInsets.all(4),
         leading: CircleAvatar(
           radius: 24,
-          backgroundColor: item.avatarColor != null
-              ? Color(item.avatarColor).withAlpha(192)
+          backgroundColor: item!.avatarColor != null
+              ? Color(item!.avatarColor!).withAlpha(192)
               : Colors.grey,
-          child: item.cleartext
+          child: item!.cleartext
               ? Icon(Icons.flash_on)
               : Text(
-                  item.title != null ?? item.title.isNotEmpty
-                      ? item.title.substring(0, 1).toUpperCase()
-                      : '',
+                  item!.title!.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -65,7 +63,7 @@ class ItemLockedCard extends StatelessWidget {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                item.title,
+                item!.title!,
                 maxLines: 1,
                 softWrap: true,
                 style: TextStyle(
@@ -75,7 +73,7 @@ class ItemLockedCard extends StatelessWidget {
                 ),
               ),
             ),
-            Text(item.date != null ? DateHelper.ddMMyyHm(item.date) : ''),
+            Text(item!.date != null ? DateHelper.ddMMyyHm(item!.date) : ''),
           ],
         ),
         onTap: () => _onTap(context),

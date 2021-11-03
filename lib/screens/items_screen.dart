@@ -27,9 +27,9 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  Future<void> _getItems;
+  Future<void>? _getItems;
   List<Item> _items = <Item>[];
-  Tag _tag;
+  Tag? _tag;
 
   TextEditingController _searchCtrler = TextEditingController();
   FocusNode _searchFN = FocusNode();
@@ -53,7 +53,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     if (_searchCtrler.text.isNotEmpty) {
       _items = _item.items
           .where((i) =>
-              i.title.toLowerCase().contains(_searchCtrler.text.toLowerCase()))
+              i.title!.toLowerCase().contains(_searchCtrler.text.toLowerCase()))
           .toList();
     } else {
       _items = _item.items;
@@ -63,10 +63,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
 
   void _tagsSwitch(Tag tag) {
     ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
-    if (tag.selected) {
+    if (tag.selected!) {
       _tag = tag;
       _items = _item.items
-          .where((i) => i.tags.contains('<' + _tag.tagName + '>'))
+          .where((i) => i.tags!.contains('<' + _tag!.tagName! + '>'))
           .toList();
       setState(() {});
     } else {
@@ -133,7 +133,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     _i.itemId =
         await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
     _items.add(_i);
-    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
     setState(() => _working = false);
   }
 
@@ -144,7 +144,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     await _i.deleteItem(old);
     _items.remove(old);
     _items.add(i);
-    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
     setState(() => _working = false);
   }
 
@@ -153,7 +153,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     await Provider.of<ItemProvider>(context, listen: false)
         .deleteCleartextItem(i);
     _items.remove(i);
-    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
+    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
     setState(() => _working = false);
   }
 
@@ -211,7 +211,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           switch (snap.connectionState) {
             case ConnectionState.waiting:
               return LoadingScaffold();
-              break;
             case ConnectionState.done:
               if (snap.hasError)
                 return Center(
@@ -286,7 +285,6 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         ]),
                 );
               }
-              break;
             default:
               return LoadingScaffold();
           }

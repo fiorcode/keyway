@@ -9,7 +9,7 @@ import '../../providers/item_provider.dart';
 class UserListCard extends StatefulWidget {
   const UserListCard(this.ctrler, this.userListSwitch, this.selectUsername);
 
-  final TextEditingController ctrler;
+  final TextEditingController? ctrler;
   final Function userListSwitch;
   final Function selectUsername;
 
@@ -18,19 +18,20 @@ class UserListCard extends StatefulWidget {
 }
 
 class _UserListCardState extends State<UserListCard> {
-  Future<List<Username>> _getUsernames;
-  List<Username> _usernames;
+  Future<List<Username>>? _getUsernames;
+  late List<Username> _usernames;
 
   Future<void> _usernamesList() async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _usernames = await _ip.getUsers();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_usernames, (u) async => await _cp.decryptUsername(u));
+    Future.forEach(
+        _usernames, (dynamic u) async => await _cp.decryptUsername(u));
   }
 
   @override
   void initState() {
-    _getUsernames = _usernamesList();
+    _getUsernames = _usernamesList().then((value) => value as List<Username>);
     super.initState();
   }
 
@@ -62,7 +63,8 @@ class _UserListCardState extends State<UserListCard> {
                             child: IconButton(
                               icon: Icon(Icons.close_rounded),
                               color: Colors.grey,
-                              onPressed: widget.userListSwitch,
+                              onPressed:
+                                  widget.userListSwitch as void Function()?,
                             ),
                           ),
                           Expanded(
@@ -81,8 +83,8 @@ class _UserListCardState extends State<UserListCard> {
                                         color: Colors.grey[100],
                                         gradient: LinearGradient(
                                           colors: [
-                                            Colors.grey[200],
-                                            Colors.grey[100],
+                                            Colors.grey[200]!,
+                                            Colors.grey[100]!,
                                             Colors.white,
                                           ],
                                           begin: Alignment.bottomCenter,
@@ -93,7 +95,7 @@ class _UserListCardState extends State<UserListCard> {
                                         onPressed: () => widget
                                             .selectUsername(e.usernameDec),
                                         child: Text(
-                                          e.usernameDec,
+                                          e.usernameDec!,
                                           style: TextStyle(fontSize: 18),
                                         ),
                                       ),
@@ -110,7 +112,6 @@ class _UserListCardState extends State<UserListCard> {
                 ),
               ),
             );
-            break;
           default:
             return CircularProgressIndicator();
         }

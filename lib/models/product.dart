@@ -4,42 +4,39 @@ import '../models/api/nist/cpe.dart';
 import '../models/cpe23uri.dart';
 
 class Product {
-  int productId;
-  String productType;
-  String productTrademark;
-  String productModel;
-  String productVersion;
-  String productUpdate;
-  String productStatus;
-  int fkCpe23uriId;
+  int? productId;
+  String? productType;
+  String? productTrademark;
+  String? productModel;
+  String? productVersion;
+  String? productUpdate;
+  String? productStatus;
+  int? fkCpe23uriId;
 
-  Cpe23uri cpe23uri;
+  Cpe23uri? cpe23uri;
 
   void setCpe23uri(Cpe cpe) => this.cpe23uri = Cpe23uri.fromCpe(cpe);
 
   String get trademark =>
-      this.productTrademark[0].toUpperCase() +
-      this.productTrademark.substring(1);
+      this.productTrademark![0].toUpperCase() +
+      this.productTrademark!.substring(1);
 
   String get model =>
-      this.productModel[0].toUpperCase() + this.productModel.substring(1);
+      this.productModel![0].toUpperCase() + this.productModel!.substring(1);
 
   bool get isEmpty =>
-      this.productTrademark.isEmpty &&
-      this.productModel.isEmpty &&
+      this.productTrademark!.isEmpty &&
+      this.productModel!.isEmpty &&
       this.cpe23uri == null;
 
   String get type {
     switch (productType) {
       case 'h':
         return 'Hardware';
-        break;
       case 'o':
         return 'OS/Firmware';
-        break;
       case 'a':
         return 'Application';
-        break;
       default:
         return 'All types';
     }
@@ -49,13 +46,10 @@ class Product {
     switch (productType) {
       case 'h':
         return Icons.router;
-        break;
       case 'o':
         return Icons.android;
-        break;
       case 'a':
         return Icons.wysiwyg;
-        break;
       default:
         return Icons.router;
     }
@@ -107,7 +101,7 @@ class Product {
         fkCpe23uriId: this.fkCpe23uriId,
       );
 
-  bool notEqual(Product p) {
+  bool notEqual(Product? p) {
     if (p == null) return true;
     if (this.productType != p.productType) return true;
     if (this.productTrademark != p.productTrademark) return true;

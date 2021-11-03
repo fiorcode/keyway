@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../helpers/password_helper.dart';
 
 class CheckBoard extends StatelessWidget {
-  CheckBoard({@required this.password});
+  CheckBoard({required this.password});
 
   final String password;
 
@@ -41,9 +41,9 @@ class CheckBoard extends StatelessWidget {
 
 class IconLabel extends StatelessWidget {
   const IconLabel({
-    Key key,
-    @required this.label,
-    @required this.logic,
+    Key? key,
+    required this.label,
+    required this.logic,
   }) : super(key: key);
 
   final String label;

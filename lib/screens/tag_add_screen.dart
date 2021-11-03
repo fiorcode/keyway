@@ -15,21 +15,21 @@ class TagAddScreen extends StatefulWidget {
 }
 
 class _TagAddScreenState extends State<TagAddScreen> {
-  ItemProvider _items;
-  Future<List<Tag>> _getTags;
-  List<Widget> _chips;
-  TextEditingController ctrler;
-  FocusNode focus;
+  late ItemProvider _items;
+  Future<List<Tag>>? _getTags;
+  List<Widget>? _chips;
+  TextEditingController? ctrler;
+  FocusNode? focus;
   bool _empty = true;
   Color _color = Colors.grey;
 
-  void _onChange() => setState(() => _empty = ctrler.text.isEmpty);
+  void _onChange() => setState(() => _empty = ctrler!.text.isEmpty);
 
   void _setColor(int color) => setState(() => _color = Color(color));
 
   void _addTag(BuildContext ctx) {
     Tag _tag = Tag(
-      tagName: ctrler.text.toLowerCase(),
+      tagName: ctrler!.text.toLowerCase(),
       tagColor: _color.value,
     );
     _items.insertTag(_tag);
@@ -38,17 +38,17 @@ class _TagAddScreenState extends State<TagAddScreen> {
 
   Future<List<Tag>> _tagsList() async => await _items.getTags();
 
-  List<Widget> _tags(List<Tag> tags) {
+  List<Widget>? _tags(List<Tag> tags) {
     _chips = <Widget>[];
     tags.forEach(
       (tag) {
-        _chips.add(
+        _chips!.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Chip(
               backgroundColor: Colors.grey,
               label: Text(
-                tag.tagName,
+                tag.tagName!,
                 style: TextStyle(color: Colors.white),
               ),
               elevation: 8.0,
@@ -65,8 +65,8 @@ class _TagAddScreenState extends State<TagAddScreen> {
     _items = Provider.of<ItemProvider>(context, listen: false);
     ctrler = TextEditingController();
     focus = FocusNode();
-    focus.requestFocus();
-    _empty = ctrler.text.isEmpty;
+    focus!.requestFocus();
+    _empty = ctrler!.text.isEmpty;
     _getTags = _tagsList();
     super.initState();
   }
@@ -89,7 +89,7 @@ class _TagAddScreenState extends State<TagAddScreen> {
               Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(
-                  '# ' + ctrler.text,
+                  '# ' + ctrler!.text,
                   style: TextStyle(
                     color: _color,
                     fontSize: 32,
@@ -136,11 +136,12 @@ class _TagAddScreenState extends State<TagAddScreen> {
                   builder: (ctx, snap) {
                     switch (snap.connectionState) {
                       case ConnectionState.done:
+                        List<Tag> tags = <Tag>[];
+                        tags = snap.data as List<Tag>;
                         return Wrap(
                           alignment: WrapAlignment.center,
-                          children: _tags(snap.data),
+                          children: _tags(tags)!,
                         );
-                        break;
                       default:
                         return Center(child: CircularProgressIndicator());
                     }

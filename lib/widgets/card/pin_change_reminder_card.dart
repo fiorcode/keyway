@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../models/pin.dart';
 
 class PinChangeReminderCard extends StatefulWidget {
-  const PinChangeReminderCard({Key key, this.pin}) : super(key: key);
+  const PinChangeReminderCard({Key? key, this.pin}) : super(key: key);
 
-  final Pin pin;
+  final Pin? pin;
 
   @override
   _PinChangeReminderCardState createState() => _PinChangeReminderCardState();
@@ -16,7 +16,7 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
 
   @override
   void initState() {
-    if (widget.pin.pinLapse != 96 && widget.pin.pinLapse != 320) {
+    if (widget.pin!.pinLapse != 96 && widget.pin!.pinLapse != 320) {
       _custom = true;
     }
     super.initState();
@@ -44,50 +44,50 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
           children: [
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.pin.pinLapse == 0,
+              selected: widget.pin!.pinLapse == 0,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.pin.pinLapse = 0;
+                      widget.pin!.pinLapse = 0;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 'Never',
                 style: TextStyle(
-                  color: widget.pin.pinLapse == 0 ? Colors.grey : Colors.white,
-                  fontWeight: widget.pin.pinLapse == 0 ? FontWeight.bold : null,
+                  color: widget.pin!.pinLapse == 0 ? Colors.grey : Colors.white,
+                  fontWeight: widget.pin!.pinLapse == 0 ? FontWeight.bold : null,
                 ),
               ),
-              elevation: widget.pin.pinLapse == 0 ? 8.0 : 0.0,
+              elevation: widget.pin!.pinLapse == 0 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.pin.pinLapse == 96,
+              selected: widget.pin!.pinLapse == 96,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.pin.pinLapse = 96;
+                      widget.pin!.pinLapse = 96;
                       _custom = false;
                     })
                   : null,
               label: Text(
                 '96 Days',
                 style: TextStyle(
-                  color: widget.pin.pinLapse == 96 ? Colors.grey : Colors.white,
+                  color: widget.pin!.pinLapse == 96 ? Colors.grey : Colors.white,
                   fontWeight:
-                      widget.pin.pinLapse == 96 ? FontWeight.bold : null,
+                      widget.pin!.pinLapse == 96 ? FontWeight.bold : null,
                 ),
               ),
-              elevation: widget.pin.pinLapse == 96 ? 8.0 : 0.0,
+              elevation: widget.pin!.pinLapse == 96 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.pin.pinLapse == 320,
+              selected: widget.pin!.pinLapse == 320,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
                   ? setState(() {
-                      widget.pin.pinLapse = 320;
+                      widget.pin!.pinLapse = 320;
                       _custom = false;
                     })
                   : null,
@@ -95,12 +95,12 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                 '320 Days',
                 style: TextStyle(
                   color:
-                      widget.pin.pinLapse == 320 ? Colors.grey : Colors.white,
+                      widget.pin!.pinLapse == 320 ? Colors.grey : Colors.white,
                   fontWeight:
-                      widget.pin.pinLapse == 320 ? FontWeight.bold : null,
+                      widget.pin!.pinLapse == 320 ? FontWeight.bold : null,
                 ),
               ),
-              elevation: widget.pin.pinLapse == 320 ? 8.0 : 0.0,
+              elevation: widget.pin!.pinLapse == 320 ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
@@ -121,7 +121,7 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                 children: [
                   SizedBox(height: 8),
                   Text(
-                    widget.pin.pinLapse.toString() + ' Days',
+                    widget.pin!.pinLapse.toString() + ' Days',
                     style: TextStyle(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
@@ -137,9 +137,9 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                     child: Slider(
                       min: 0,
                       max: 364,
-                      value: widget.pin.pinLapse.toDouble(),
+                      value: widget.pin!.pinLapse!.toDouble(),
                       onChanged: (value) => setState(
-                        () => widget.pin.pinLapse = value.round(),
+                        () => widget.pin!.pinLapse = value.round(),
                       ),
                     ),
                   ),
