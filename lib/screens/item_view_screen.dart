@@ -15,27 +15,24 @@ import '../widgets/loading_scaffold.dart';
 class ItemViewScreen extends StatefulWidget {
   static const routeName = '/item-view';
 
-  ItemViewScreen({this.item, this.onReturn});
+  ItemViewScreen({this.item});
 
   final Item? item;
-  final Function? onReturn;
 
   @override
   _ItemViewScreenState createState() => _ItemViewScreenState();
 }
 
 class _ItemViewScreenState extends State<ItemViewScreen> {
-  Item? _i;
+  Item _i = Item();
   Future<void>? _loadItem;
 
   void _onReturn(Item? i) {
     if (i != null) setState(() => _i = i);
-    widget.onReturn!();
   }
 
   Future<void> _loadItemAsync() async {
-    ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
-    await _items.loadPasswords(_i!);
+    await Provider.of<ItemProvider>(context, listen: false).loadPasswords(_i);
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
     _i = await _c.computeDecryptItem(_i);
   }
@@ -61,17 +58,14 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
     _warning = _warning == null ? false : _warning;
     if (_warning) {
       ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
-      _i!.setDeleted();
-      _items.updateItem(_i!, _i!).then(
-            (_) => Navigator.of(context).pop(),
-          );
+      _i.setDeleted();
+      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
     }
-    widget.onReturn!();
   }
 
   @override
   void initState() {
-    _i = widget.item;
+    _i = widget.item!;
     _loadItem = _loadItemAsync();
     super.initState();
   }
@@ -97,7 +91,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                     iconTheme: IconThemeData(color: _primary),
                     centerTitle: true,
                     title: Text(
-                      _i!.title!,
+                      _i.title!,
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -118,19 +112,19 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          if (_i!.username != null)
+                          if (_i.username != null)
                             ItemViewContainer(
                               'username',
-                              _i!.username!.usernameDec,
+                              _i.username!.usernameDec,
                             ),
-                          if (_i!.password != null)
+                          if (_i.password != null)
                             ItemViewContainer(
                               'password',
-                              _i!.password!.passwordDec,
-                              left: _i!.itemPassword!.passwordDate,
-                              right: _i!.itemPassword!.passwordLapse,
+                              _i.password!.passwordDec,
+                              left: _i.itemPassword!.passwordDate,
+                              right: _i.itemPassword!.passwordLapse,
                             ),
-                          if (_i!.hasOldPasswords())
+                          if (_i.hasOldPasswords())
                             Center(
                               child: TextButton(
                                 onPressed: _goToPasswordHistory,
@@ -143,25 +137,25 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                 ),
                               ),
                             ),
-                          if (_i!.pin != null)
+                          if (_i.pin != null)
                             ItemViewContainer(
                               'pin',
-                              _i!.pin!.pinDec,
-                              left: _i!.pin!.pinDate == null
+                              _i.pin!.pinDec,
+                              left: _i.pin!.pinDate == null
                                   ? 'null'
-                                  : _i!.pin!.pinDate,
-                              right: _i!.pin!.pinLapse,
+                                  : _i.pin!.pinDate,
+                              right: _i.pin!.pinLapse,
                             ),
-                          if (_i!.note != null)
-                            ItemViewContainer('note', _i!.note!.noteDec),
-                          if (_i!.address != null)
+                          if (_i.note != null)
+                            ItemViewContainer('note', _i.note!.noteDec),
+                          if (_i.address != null)
                             ItemViewContainer(
                               'address',
-                              _i!.address!.addressDec,
-                              left: _i!.address!.addressProtocol,
-                              right: _i!.address!.addressPort,
+                              _i.address!.addressDec,
+                              left: _i.address!.addressProtocol,
+                              right: _i.address!.addressPort,
                             ),
-                          if (_i!.product != null)
+                          if (_i.product != null)
                             Container(
                               width: double.infinity,
                               height: 160,
@@ -190,7 +184,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                       ),
                                     ),
                                   ),
-                                  if (_i!.product!.productTrademark!.isNotEmpty)
+                                  if (_i.product!.productTrademark!.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -203,11 +197,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i!.product!.productTrademark!.isNotEmpty)
+                                  if (_i.product!.productTrademark!.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i!.product!.trademark,
+                                          _i.product!.trademark,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
@@ -216,7 +210,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i!.product!.productModel!.isNotEmpty)
+                                  if (_i.product!.productModel!.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -229,11 +223,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i!.product!.productModel!.isNotEmpty)
+                                  if (_i.product!.productModel!.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i!.product!.model,
+                                          _i.product!.model,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
@@ -245,7 +239,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                 ],
                               ),
                             ),
-                          _i!.deleted
+                          _i.deleted
                               ? ElevatedButton.icon(
                                   style: ElevatedButton.styleFrom(
                                     primary: Colors.white,
