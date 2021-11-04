@@ -188,7 +188,11 @@ class ItemProvider with ChangeNotifier {
     return _itemId;
   }
 
-  Future<void> updateItem(Item old, Item i) async {
+  Future<int> updateItem(Item i) async {
+    return DBHelper.update(DBHelper.itemTable, i.toMap(), 'item_id');
+  }
+
+  Future<void> updateFullItem(Item old, Item i) async {
     await _updatePassword(old, i);
 
     if (i.username != null) {
@@ -235,17 +239,6 @@ class ItemProvider with ChangeNotifier {
       i.fkNoteId = null;
     }
 
-    // if (i.note != null) {
-    //   if (i.note.noteId == null) {
-    //     i.fkNoteId = await insertNote(i.note);
-    //   } else {
-    //     i.fkNoteId = i.note.noteId;
-    //     await updateNote(i.note);
-    //   }
-    // } else {
-    //   i.fkNoteId = null;
-    // }
-
     if (i.address != null) {
       if (old.address != null) {
         if (i.address!.notEqual(old.address)) {
@@ -262,17 +255,6 @@ class ItemProvider with ChangeNotifier {
       }
       i.fkAddressId = null;
     }
-
-    // if (i.address != null) {
-    //   if (i.address.addressId == null) {
-    //     i.fkAddressId = await insertAddress(i.address);
-    //   } else {
-    //     i.fkAddressId = i.address.addressId;
-    //     await updateAddress(i.address);
-    //   }
-    // } else {
-    //   i.fkAddressId = null;
-    // }
 
     if (old.product != null) {
       if (i.product != null) {
