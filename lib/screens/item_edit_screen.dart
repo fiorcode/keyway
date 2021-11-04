@@ -281,7 +281,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      await _items.updateItem(widget.item!, _i!);
+      await _items.updateFullItem(widget.item!, _i!);
       await _c.decryptItem(_i!);
       Navigator.of(context).pop(_i);
     } catch (error) {
