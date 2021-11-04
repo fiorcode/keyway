@@ -51,7 +51,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.password == null) continue two;
         _showValue = 1;
         _icon = Icons.password;
-        _title = await _c.decryptPassword(widget.item!.password);
+        await _c.decryptPassword(widget.item!.password);
+        _title = widget.item!.password!.passwordDec;
         _subtitle = '';
         break;
       two:
@@ -59,7 +60,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.pin == null) continue three;
         _showValue = 2;
         _icon = Icons.pin;
-        _title = await _c.decryptPin(widget.item!.pin);
+        await _c.decryptPin(widget.item!.pin);
+        _title = widget.item!.pin!.pinDec;
         _subtitle = '';
         break;
       three:
@@ -67,7 +69,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.username == null) continue four;
         _showValue = 3;
         _icon = Icons.account_box;
-        _title = await _c.decryptUsername(widget.item!.username);
+        await _c.decryptUsername(widget.item!.username);
+        _title = widget.item!.username!.usernameDec;
         _subtitle = '';
         break;
       four:
@@ -75,7 +78,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.note == null) continue five;
         _showValue = 4;
         _icon = Icons.note;
-        _title = await _c.decryptNote(widget.item!.note);
+        await _c.decryptNote(widget.item!.note);
+        _title = widget.item!.note!.noteDec;
         _subtitle = '';
         break;
       five:
@@ -83,7 +87,8 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.address == null) continue six;
         _showValue = 5;
         _icon = Icons.http;
-        _title = await _c.decryptAddress(widget.item!.address);
+        await _c.decryptAddress(widget.item!.address);
+        _title = widget.item!.address!.addressDec;
         _subtitle =
             'Protocol: ${widget.item!.address!.addressProtocol}, Port: ${widget.item!.address!.addressPort}';
         break;
