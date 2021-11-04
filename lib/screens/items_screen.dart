@@ -111,9 +111,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemViewScreen(item: i, onReturn: _onReturn),
+        builder: (context) => ItemViewScreen(item: i),
       ),
-    );
+    ).then((_) => _onReturn());
   }
 
   void _goToAlpha() {
