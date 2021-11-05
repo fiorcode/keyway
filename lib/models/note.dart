@@ -1,15 +1,17 @@
 class Note {
   int? noteId;
-  String? noteEnc;
-  String? noteIv;
+  String noteEnc = '';
+  String noteIv = '';
 
   String noteDec = '';
+
+  bool get empty => this.noteEnc.isEmpty && this.noteIv.isEmpty;
 
   Note({
     this.noteId,
     this.noteEnc = '',
     this.noteIv = '',
-    this.noteDec = '***clear***',
+    this.noteDec = '',
   });
 
   Note.fromMap(Map<String, dynamic> map) {
