@@ -1,10 +1,15 @@
 class Username {
   int? usernameId;
-  String? usernameEnc;
-  String? usernameIv;
-  String? usernameHash;
+  String usernameEnc = '';
+  String usernameIv = '';
+  String usernameHash = '';
 
   String usernameDec = '';
+
+  bool get empty =>
+      this.usernameEnc.isEmpty &&
+      this.usernameIv.isEmpty &&
+      this.usernameHash.isEmpty;
 
   Username({
     this.usernameId,
