@@ -56,7 +56,8 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                 'Never',
                 style: TextStyle(
                   color: widget.pin!.pinLapse == 0 ? Colors.grey : Colors.white,
-                  fontWeight: widget.pin!.pinLapse == 0 ? FontWeight.bold : null,
+                  fontWeight:
+                      widget.pin!.pinLapse == 0 ? FontWeight.bold : null,
                 ),
               ),
               elevation: widget.pin!.pinLapse == 0 ? 8.0 : 0.0,
@@ -74,7 +75,8 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
               label: Text(
                 '96 Days',
                 style: TextStyle(
-                  color: widget.pin!.pinLapse == 96 ? Colors.grey : Colors.white,
+                  color:
+                      widget.pin!.pinLapse == 96 ? Colors.grey : Colors.white,
                   fontWeight:
                       widget.pin!.pinLapse == 96 ? FontWeight.bold : null,
                 ),
@@ -137,7 +139,7 @@ class _PinChangeReminderCardState extends State<PinChangeReminderCard> {
                     child: Slider(
                       min: 0,
                       max: 364,
-                      value: widget.pin!.pinLapse!.toDouble(),
+                      value: widget.pin!.pinLapse.toDouble(),
                       onChanged: (value) => setState(
                         () => widget.pin!.pinLapse = value.round(),
                       ),
