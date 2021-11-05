@@ -142,19 +142,19 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   }
 
   void _loadFieldsAsync() {
-    _titleCtrler.text = _i.title!;
+    _titleCtrler.text = _i.title;
     if (_i.username != null) _userCtrler.text = _i.username!.usernameDec;
     if (_i.password != null) _passCtrler.text = _i.password!.passwordDec;
     if (_i.pin != null) _pinCtrler.text = _i.pin!.pinDec;
     if (_i.note != null) _noteCtrler.text = _i.note!.noteDec;
     if (_i.address != null) {
       _addressCtrler.text = _i.address!.addressDec;
-      _protocolCtrler.text = _i.address!.addressProtocol!;
+      _protocolCtrler.text = _i.address!.addressProtocol;
       _portCtrler.text = _i.address!.addressPort.toString();
     }
     if (_i.product != null) {
-      _trademarkCtrler.text = _i.product!.productTrademark!;
-      _modelCtrler.text = _i.product!.productModel!;
+      _trademarkCtrler.text = _i.product!.productTrademark;
+      _modelCtrler.text = _i.product!.productModel;
     }
   }
 
@@ -185,14 +185,14 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         if (widget.item!.password != null) {
           if (widget.item!.password!.passwordHash !=
               _i.password!.passwordHash) {
-            if (_i.password!.passwordHash!.isNotEmpty) {
+            if (_i.password!.passwordHash.isNotEmpty) {
               await _setPassword();
             } else {
               _i.password = null;
             }
           }
         } else {
-          if (_i.password!.passwordHash!.isNotEmpty) {
+          if (_i.password!.passwordHash.isNotEmpty) {
             await _setPassword();
           } else {
             _i.password = null;
@@ -210,16 +210,16 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      if (_i.pin != null) {
-        if (_pinCtrler.text.isNotEmpty) {
-          if (widget.item!.pin != null) {
-            if (widget.item!.pin!.pinDec != _pinCtrler.text) {
-              _i.pin = await _c.createPin(_pinCtrler.text);
-            }
+      if (_pinCtrler.text.isNotEmpty) {
+        if (widget.item!.pin != null) {
+          if (widget.item!.pin!.pinDec != _pinCtrler.text) {
+            _i.pin = await _c.createPin(_pinCtrler.text);
           }
         } else {
-          _i.pin = null;
+          _i.pin = await _c.createPin(_pinCtrler.text);
         }
+      } else {
+        _i.pin = null;
       }
 
       if (_i.note != null) {
