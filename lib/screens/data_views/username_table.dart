@@ -71,7 +71,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameEnc!,
+                                      _item.usernames[i].usernameEnc,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameIv!,
+                                      _item.usernames[i].usernameIv,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -99,7 +99,7 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                                   Text('username_hash: '),
                                   Expanded(
                                     child: Text(
-                                      _item.usernames[i].usernameHash!,
+                                      _item.usernames[i].usernameHash,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
