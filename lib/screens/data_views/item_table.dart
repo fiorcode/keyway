@@ -72,7 +72,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('title: '),
                                   Text(
-                                    _items[i].title!,
+                                    _items[i].title,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -83,7 +83,7 @@ class _ItemTableScreenState extends State<ItemTableScreen> {
                                 children: [
                                   Text('date: '),
                                   Text(
-                                    _items[i].date!,
+                                    _items[i].date,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
