@@ -5,28 +5,35 @@ import '../models/cpe23uri.dart';
 
 class Product {
   int? productId;
-  String? productType;
-  String? productTrademark;
-  String? productModel;
-  String? productVersion;
-  String? productUpdate;
-  String? productStatus;
+  String productType = '';
+  String productTrademark = '';
+  String productModel = '';
+  String productVersion = '';
+  String productUpdate = '';
+  String productStatus = '';
   int? fkCpe23uriId;
 
   Cpe23uri? cpe23uri;
 
+  bool get empty =>
+      this.productType.isEmpty &&
+      this.productTrademark.isEmpty &&
+      this.productModel.isEmpty &&
+      this.productVersion.isEmpty &&
+      this.productUpdate.isEmpty;
+
   void setCpe23uri(Cpe cpe) => this.cpe23uri = Cpe23uri.fromCpe(cpe);
 
   String get trademark =>
-      this.productTrademark![0].toUpperCase() +
-      this.productTrademark!.substring(1);
+      this.productTrademark[0].toUpperCase() +
+      this.productTrademark.substring(1);
 
   String get model =>
-      this.productModel![0].toUpperCase() + this.productModel!.substring(1);
+      this.productModel[0].toUpperCase() + this.productModel.substring(1);
 
   bool get isEmpty =>
-      this.productTrademark!.isEmpty &&
-      this.productModel!.isEmpty &&
+      this.productTrademark.isEmpty &&
+      this.productModel.isEmpty &&
       this.cpe23uri == null;
 
   String get type {
