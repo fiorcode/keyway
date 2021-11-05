@@ -127,11 +127,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> decryptPassword(Password? p) async {
     if (p == null) return;
-    if (p.passwordIv!.isEmpty) return;
-    if (p.passwordEnc!.isEmpty) return;
+    if (p.passwordIv.isEmpty) return;
+    if (p.passwordEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
-      p.passwordEnc!.codeUnits,
-      nonce: p.passwordIv!.codeUnits,
+      p.passwordEnc.codeUnits,
+      nonce: p.passwordIv.codeUnits,
       mac: Mac.empty,
     );
     p.passwordDec = String.fromCharCodes((await _aesCbc.decrypt(
@@ -142,11 +142,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> decryptUsername(Username? u) async {
     if (u == null) return;
-    if (u.usernameIv!.isEmpty) return;
-    if (u.usernameEnc!.isEmpty) return;
+    if (u.usernameIv.isEmpty) return;
+    if (u.usernameEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
-      u.usernameEnc!.codeUnits,
-      nonce: u.usernameIv!.codeUnits,
+      u.usernameEnc.codeUnits,
+      nonce: u.usernameIv.codeUnits,
       mac: Mac.empty,
     );
     u.usernameDec = String.fromCharCodes((await _aesCbc.decrypt(
@@ -157,11 +157,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> decryptPin(Pin? p) async {
     if (p == null) return;
-    if (p.pinIv!.isEmpty) return;
-    if (p.pinEnc!.isEmpty) return;
+    if (p.pinIv.isEmpty) return;
+    if (p.pinEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
-      p.pinEnc!.codeUnits,
-      nonce: p.pinIv!.codeUnits,
+      p.pinEnc.codeUnits,
+      nonce: p.pinIv.codeUnits,
       mac: Mac.empty,
     );
     p.pinDec = String.fromCharCodes((await _aesCbc.decrypt(
@@ -172,11 +172,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> decryptNote(Note? n) async {
     if (n == null) return;
-    if (n.noteIv!.isEmpty) return;
-    if (n.noteEnc!.isEmpty) return;
+    if (n.noteIv.isEmpty) return;
+    if (n.noteEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
-      n.noteEnc!.codeUnits,
-      nonce: n.noteIv!.codeUnits,
+      n.noteEnc.codeUnits,
+      nonce: n.noteIv.codeUnits,
       mac: Mac.empty,
     );
     n.noteDec = String.fromCharCodes((await _aesCbc.decrypt(
@@ -187,11 +187,11 @@ class CriptoProvider with ChangeNotifier {
 
   Future<void> decryptAddress(Address? a) async {
     if (a == null) return;
-    if (a.addressIv!.isEmpty) return;
-    if (a.addressEnc!.isEmpty) return;
+    if (a.addressIv.isEmpty) return;
+    if (a.addressEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
-      a.addressEnc!.codeUnits,
-      nonce: a.addressIv!.codeUnits,
+      a.addressEnc.codeUnits,
+      nonce: a.addressIv.codeUnits,
       mac: Mac.empty,
     );
     a.addressDec = String.fromCharCodes((await _aesCbc.decrypt(
@@ -209,7 +209,7 @@ class CriptoProvider with ChangeNotifier {
     SecretBox _sb = await _aesCbc.encrypt(
       p.codeUnits,
       secretKey: _secretKey,
-      nonce: _p.passwordIv!.codeUnits,
+      nonce: _p.passwordIv.codeUnits,
     );
     _p.passwordEnc = String.fromCharCodes(_sb.cipherText);
     _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
@@ -225,7 +225,7 @@ class CriptoProvider with ChangeNotifier {
     SecretBox _sb = await _aesCbc.encrypt(
       u.codeUnits,
       secretKey: _secretKey,
-      nonce: _u.usernameIv!.codeUnits,
+      nonce: _u.usernameIv.codeUnits,
     );
     _u.usernameEnc = String.fromCharCodes(_sb.cipherText);
     return _u;
@@ -237,7 +237,7 @@ class CriptoProvider with ChangeNotifier {
     SecretBox _sb = await _aesCbc.encrypt(
       p.codeUnits,
       secretKey: _secretKey,
-      nonce: _p.pinIv!.codeUnits,
+      nonce: _p.pinIv.codeUnits,
     );
     _p.pinEnc = String.fromCharCodes(_sb.cipherText);
     return _p;
@@ -249,7 +249,7 @@ class CriptoProvider with ChangeNotifier {
     SecretBox _sb = await _aesCbc.encrypt(
       n.codeUnits,
       secretKey: _secretKey,
-      nonce: _n.noteIv!.codeUnits,
+      nonce: _n.noteIv.codeUnits,
     );
     _n.noteEnc = String.fromCharCodes(_sb.cipherText);
     return _n;
@@ -261,7 +261,7 @@ class CriptoProvider with ChangeNotifier {
     SecretBox _sb = await _aesCbc.encrypt(
       a.codeUnits,
       secretKey: _secretKey,
-      nonce: _a.addressIv!.codeUnits,
+      nonce: _a.addressIv.codeUnits,
     );
     _a.addressEnc = String.fromCharCodes(_sb.cipherText);
     return _a;
@@ -291,8 +291,8 @@ class CriptoProvider with ChangeNotifier {
     AesCbc _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
     if (i.item.password != null) {
       SecretBox _sbPassword = SecretBox(
-        i.item.password!.passwordEnc!.codeUnits,
-        nonce: i.item.password!.passwordIv!.codeUnits,
+        i.item.password!.passwordEnc.codeUnits,
+        nonce: i.item.password!.passwordIv.codeUnits,
         mac: Mac.empty,
       );
       i.item.password!.passwordDec = String.fromCharCodes(
@@ -300,8 +300,8 @@ class CriptoProvider with ChangeNotifier {
     }
     if (i.item.username != null) {
       SecretBox _sbUsername = SecretBox(
-        i.item.username!.usernameEnc!.codeUnits,
-        nonce: i.item.username!.usernameIv!.codeUnits,
+        i.item.username!.usernameEnc.codeUnits,
+        nonce: i.item.username!.usernameIv.codeUnits,
         mac: Mac.empty,
       );
       i.item.username!.usernameDec = String.fromCharCodes(
@@ -309,8 +309,8 @@ class CriptoProvider with ChangeNotifier {
     }
     if (i.item.pin != null) {
       SecretBox _sbPin = SecretBox(
-        i.item.pin!.pinEnc!.codeUnits,
-        nonce: i.item.pin!.pinIv!.codeUnits,
+        i.item.pin!.pinEnc.codeUnits,
+        nonce: i.item.pin!.pinIv.codeUnits,
         mac: Mac.empty,
       );
       i.item.pin!.pinDec = String.fromCharCodes(
@@ -318,8 +318,8 @@ class CriptoProvider with ChangeNotifier {
     }
     if (i.item.address != null) {
       SecretBox _sbAddress = SecretBox(
-        i.item.address!.addressEnc!.codeUnits,
-        nonce: i.item.address!.addressIv!.codeUnits,
+        i.item.address!.addressEnc.codeUnits,
+        nonce: i.item.address!.addressIv.codeUnits,
         mac: Mac.empty,
       );
       i.item.address!.addressDec = String.fromCharCodes(
@@ -327,8 +327,8 @@ class CriptoProvider with ChangeNotifier {
     }
     if (i.item.note != null) {
       SecretBox _sbNote = SecretBox(
-        i.item.note!.noteEnc!.codeUnits,
-        nonce: i.item.note!.noteIv!.codeUnits,
+        i.item.note!.noteEnc.codeUnits,
+        nonce: i.item.note!.noteIv.codeUnits,
         mac: Mac.empty,
       );
       i.item.note!.noteDec = String.fromCharCodes(
