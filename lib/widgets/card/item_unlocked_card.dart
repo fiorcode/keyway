@@ -184,7 +184,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
               : Colors.grey,
           child: _icon == null
               ? Text(
-                  widget.item!.title!.substring(0, 1).toUpperCase(),
+                  widget.item!.title.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
