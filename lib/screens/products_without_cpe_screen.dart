@@ -69,8 +69,8 @@ class _ProductsWithoutCpeScreenState extends State<ProductsWithoutCpeScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(products[i].icon, size: 32),
-                          title: Text(products[i].productTrademark!),
-                          subtitle: Text(products[i].productModel!),
+                          title: Text(products[i].productTrademark),
+                          subtitle: Text(products[i].productModel),
                           trailing: IconButton(
                             onPressed: () {},
                             icon: Icon(
