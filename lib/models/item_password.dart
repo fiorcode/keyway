@@ -25,6 +25,11 @@ class ItemPassword {
   bool get expired => this.passwordLapse == 0
       ? false
       : DateHelper.expired(passwordDate, passwordLapse);
+  bool get customLapse =>
+      this.passwordLapse != 0 &&
+      this.passwordLapse != 96 &&
+      this.passwordLapse != 320;
+  bool get noLapse => this.passwordLapse == 0;
 
   void repeatWarningSwitch() {
     if (repeatWarning)
