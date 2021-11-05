@@ -83,7 +83,7 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
       _i.pin = await _c.createPin(_p1n.toString());
       widget.buildItem!(widget.item, _i);
     } else {
-      _i.password = await _c.createPassword(widget.item!.title!);
+      _i.password = await _c.createPassword(widget.item!.title);
       _i.itemPassword = ItemPassword();
       widget.buildItem!(widget.item, _i);
     }
