@@ -49,7 +49,7 @@ class ItemLockedCard extends StatelessWidget {
           child: item!.cleartext
               ? Icon(Icons.flash_on)
               : Text(
-                  item!.title!.substring(0, 1).toUpperCase(),
+                  item!.title.substring(0, 1).toUpperCase(),
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -63,7 +63,7 @@ class ItemLockedCard extends StatelessWidget {
             FittedBox(
               fit: BoxFit.fitWidth,
               child: Text(
-                item!.title!,
+                item!.title,
                 maxLines: 1,
                 softWrap: true,
                 style: TextStyle(
@@ -73,7 +73,7 @@ class ItemLockedCard extends StatelessWidget {
                 ),
               ),
             ),
-            Text(item!.date != null ? DateHelper.ddMMyyHm(item!.date) : ''),
+            Text(DateHelper.ddMMyyHm(item!.date)),
           ],
         ),
         onTap: () => _onTap(context),
