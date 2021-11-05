@@ -47,7 +47,7 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
         title: Text(
-          widget.item!.title!,
+          widget.item!.title,
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
