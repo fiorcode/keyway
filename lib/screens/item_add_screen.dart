@@ -58,6 +58,18 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   bool _unlocking = false;
   bool _loadingRandomPass = false;
 
+  bool get fieldsEmpty {
+    return _userCtrler.text.isEmpty &&
+        _passCtrler.text.isEmpty &&
+        _pinCtrler.text.isEmpty &&
+        _noteCtrler.text.isEmpty &&
+        _addressCtrler.text.isEmpty &&
+        _protocolCtrler.text.isEmpty &&
+        _portCtrler.text.isEmpty &&
+        _trademarkCtrler.text.isEmpty &&
+        _modelCtrler.text.isEmpty;
+  }
+
   void _usernameSwitch() {
     setState(() {
       if (_i.username != null) {
@@ -146,6 +158,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
   }
 
   Future<void> _insertItem() async {
+    if (this.fieldsEmpty) {
+      Navigator.of(context).pop();
+      return;
+    }
     try {
       CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
       ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
@@ -315,8 +331,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
                                   child: PasswordChangeReminderCard(
-                                    itemPass: _i.itemPassword,
-                                  ),
+                                      _i.itemPassword!),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Row(
