@@ -8,8 +8,8 @@ import 'note.dart';
 
 class Item {
   int? itemId;
-  String? title;
-  String? date;
+  String title = '';
+  String date = '';
   int? avatarColor;
   int? avatarLetterColor;
   String? font;
@@ -33,10 +33,29 @@ class Item {
 
   bool get deleted => this.itemStatus!.contains('<deleted>');
   bool get cleartext => this.itemStatus!.contains('<cleartext>');
+  bool get empty {
+    if (this.username != null) {
+      if (!this.username!.empty) return false;
+    }
+    if (this.password != null) {
+      if (!this.password!.empty) return false;
+    }
+    if (this.pin != null) {
+      if (!this.pin!.empty) return false;
+    }
+    if (this.note != null) {
+      if (!this.note!.empty) return false;
+    }
+    if (this.address != null) {
+      if (!this.address!.empty) return false;
+    }
+    if (this.product != null) {
+      if (!this.product!.empty) return false;
+    }
+    return true;
+  }
 
   Item.factory() {
-    this.title = '';
-    this.date = '';
     this.avatarColor = 4290624957;
     this.avatarLetterColor = 4294967295;
     this.font = '';
