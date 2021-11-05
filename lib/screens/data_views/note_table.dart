@@ -71,7 +71,7 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                                   Text('note_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.notes[i].noteEnc!,
+                                      _item.notes[i].noteEnc,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                                   Text('note_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.notes[i].noteIv!,
+                                      _item.notes[i].noteIv,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
