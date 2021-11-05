@@ -24,7 +24,7 @@ class ItemDeletedCard extends StatelessWidget {
   }
 
   Text _setTitle() => Text(
-        item!.title!,
+        item!.title,
         overflow: TextOverflow.ellipsis,
         maxLines: 1,
         style: TextStyle(
@@ -49,7 +49,7 @@ class ItemDeletedCard extends StatelessWidget {
               ? Color(item!.avatarColor!)
               : Colors.grey,
           child: Text(
-            item!.title!.substring(0, 1).toUpperCase(),
+            item!.title.substring(0, 1).toUpperCase(),
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
