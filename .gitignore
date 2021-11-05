@@ -118,3 +118,4 @@ app.*.symbols
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies
 .flutter-plugins-dependencies
+.idea/workspace.xml
