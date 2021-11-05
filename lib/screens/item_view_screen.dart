@@ -91,7 +91,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                     iconTheme: IconThemeData(color: _primary),
                     centerTitle: true,
                     title: Text(
-                      _i.title!,
+                      _i.title,
                       style: TextStyle(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -141,9 +141,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                             ItemViewContainer(
                               'pin',
                               _i.pin!.pinDec,
-                              left: _i.pin!.pinDate == null
-                                  ? 'null'
-                                  : _i.pin!.pinDate,
+                              left: _i.pin!.pinDate,
                               right: _i.pin!.pinLapse,
                             ),
                           if (_i.note != null)
@@ -184,7 +182,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                       ),
                                     ),
                                   ),
-                                  if (_i.product!.productTrademark!.isNotEmpty)
+                                  if (_i.product!.productTrademark.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -197,7 +195,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product!.productTrademark!.isNotEmpty)
+                                  if (_i.product!.productTrademark.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -210,7 +208,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product!.productModel!.isNotEmpty)
+                                  if (_i.product!.productModel.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -223,7 +221,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product!.productModel!.isNotEmpty)
+                                  if (_i.product!.productModel.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
