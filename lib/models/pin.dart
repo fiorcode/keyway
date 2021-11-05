@@ -2,33 +2,35 @@ import 'package:keyway/helpers/date_helper.dart';
 
 class Pin {
   int? pinId;
-  String? pinEnc;
-  String? pinIv;
-  String? pinDate;
-  int? pinLapse;
-  String? pinStatus;
+  String pinEnc = '';
+  String pinIv = '';
+  String pinDate = '';
+  int pinLapse = 0;
+  String pinStatus = '';
 
   String pinDec = '';
+
+  bool get empty => this.pinEnc.isEmpty && this.pinIv.isEmpty;
 
   Pin({
     this.pinId,
     this.pinEnc = '',
     this.pinIv = '',
-    this.pinDate,
+    this.pinDate = '',
     this.pinLapse = 320,
     this.pinStatus = '<active>',
     this.pinDec = '***clear***',
   });
 
-  bool get repeatWarning => !this.pinStatus!.contains('<no-warning>');
+  bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
   bool get expired =>
       this.pinLapse == 0 ? false : DateHelper.expired(pinDate, pinLapse);
 
   void repeatWarningSwitch() {
     if (repeatWarning)
-      this.pinStatus = this.pinStatus! + '<no-warning>';
+      this.pinStatus = this.pinStatus + '<no-warning>';
     else
-      this.pinStatus = this.pinStatus!.replaceAll('<no-warning>', '');
+      this.pinStatus = this.pinStatus.replaceAll('<no-warning>', '');
   }
 
   Pin.fromMap(Map<String, dynamic> map) {
