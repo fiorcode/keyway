@@ -1,11 +1,16 @@
 class Password {
   int? passwordId;
-  String? passwordEnc;
-  String? passwordIv;
-  String? passwordStrength;
-  String? passwordHash;
+  String passwordEnc = '';
+  String passwordIv = '';
+  String passwordStrength = '';
+  String passwordHash = '';
 
   String passwordDec = '';
+
+  bool get empty =>
+      this.passwordEnc.isEmpty &&
+      this.passwordIv.isEmpty &&
+      this.passwordHash.isEmpty;
 
   Password({
     this.passwordId,
