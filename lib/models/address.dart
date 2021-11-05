@@ -1,11 +1,13 @@
 class Address {
   int? addressId;
-  String? addressEnc;
-  String? addressIv;
-  String? addressProtocol;
-  int? addressPort;
+  String addressEnc = '';
+  String addressIv = '';
+  String addressProtocol = '';
+  int addressPort = 0;
 
   String addressDec = '';
+
+  bool get empty => this.addressEnc.isEmpty && this.addressIv.isEmpty;
 
   Address.factory() {
     this.addressEnc = '';
