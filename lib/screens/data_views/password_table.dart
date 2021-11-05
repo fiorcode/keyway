@@ -71,7 +71,7 @@ class _PasswordTableScreenState extends State<PasswordTableScreen> {
                                   Text('password_enc: '),
                                   Expanded(
                                     child: Text(
-                                      _item.passwords[i].passwordEnc!,
+                                      _item.passwords[i].passwordEnc,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -85,7 +85,7 @@ class _PasswordTableScreenState extends State<PasswordTableScreen> {
                                   Text('password_iv: '),
                                   Expanded(
                                     child: Text(
-                                      _item.passwords[i].passwordIv!,
+                                      _item.passwords[i].passwordIv,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -99,7 +99,7 @@ class _PasswordTableScreenState extends State<PasswordTableScreen> {
                                   Text('password_strength: '),
                                   Expanded(
                                     child: Text(
-                                      _item.passwords[i].passwordStrength!,
+                                      _item.passwords[i].passwordStrength,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -112,7 +112,7 @@ class _PasswordTableScreenState extends State<PasswordTableScreen> {
                                   Text('password_hash: '),
                                   Expanded(
                                     child: Text(
-                                      _item.passwords[i].passwordHash!,
+                                      _item.passwords[i].passwordHash,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
