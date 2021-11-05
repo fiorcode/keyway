@@ -80,7 +80,7 @@ class _AddressCardState extends State<AddressCard> {
 
   @override
   void initState() {
-    if (widget.address!.addressProtocol!.isEmpty) {
+    if (widget.address!.addressProtocol.isEmpty) {
       _index = 0;
       _loadPresets();
     } else {
