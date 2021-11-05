@@ -32,8 +32,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   int _typeIndex = 0;
 
   bool _productNotEmpty() {
-    if (widget.product!.productTrademark!.isNotEmpty) return true;
-    if (widget.product!.productModel!.isNotEmpty) return true;
+    if (widget.product!.productTrademark.isNotEmpty) return true;
+    if (widget.product!.productModel.isNotEmpty) return true;
     return false;
   }
 
@@ -97,8 +97,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
       if (_productNotEmpty()) {
         _getCpesAsync = _nist.getCpesByCpeMatch(
           type: widget.product!.productType,
-          trademark: widget.product!.productTrademark!,
-          model: widget.product!.productModel!,
+          trademark: widget.product!.productTrademark,
+          model: widget.product!.productModel,
           startIndex: startIndex,
         );
       }
