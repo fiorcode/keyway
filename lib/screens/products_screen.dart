@@ -53,8 +53,8 @@ class _ProductsScreenState extends State<ProductsScreen> {
                       return Card(
                         child: ListTile(
                           leading: Icon(_item.products[i].icon, size: 32),
-                          title: Text(_item.products[i].productTrademark!),
-                          subtitle: Text(_item.products[i].productModel!),
+                          title: Text(_item.products[i].productTrademark),
+                          subtitle: Text(_item.products[i].productModel),
                           trailing: IconButton(
                             onPressed: () => _deleteProduct(_item.products[i]),
                             icon: Icon(
