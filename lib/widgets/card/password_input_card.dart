@@ -59,9 +59,7 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
             if (widget.ctrler!.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: PasswordChangeReminderCard(
-                  itemPass: widget.item!.itemPassword,
-                ),
+                child: PasswordChangeReminderCard(widget.item!.itemPassword!),
               ),
             if (widget.ctrler!.text.isNotEmpty)
               Row(
