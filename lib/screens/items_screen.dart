@@ -53,7 +53,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     if (_searchCtrler.text.isNotEmpty) {
       _items = _item.items
           .where((i) =>
-              i.title!.toLowerCase().contains(_searchCtrler.text.toLowerCase()))
+              i.title.toLowerCase().contains(_searchCtrler.text.toLowerCase()))
           .toList();
     } else {
       _items = _item.items;
@@ -125,7 +125,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _generatePassword() async {
     setState(() => _working = true);
     Item _i = Item(
-      title: (await PasswordHelper.dicePassword()).password,
+      title: (await PasswordHelper.dicePassword()).password!,
       itemStatus: '<cleartext>',
       avatarColor: Colors.white.value,
       avatarLetterColor: Colors.black.value,
@@ -133,7 +133,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     _i.itemId =
         await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
     _items.add(_i);
-    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
   }
 
@@ -144,7 +144,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     await _i.deleteItem(old);
     _items.remove(old);
     _items.add(i);
-    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
   }
 
@@ -153,7 +153,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     await Provider.of<ItemProvider>(context, listen: false)
         .deleteCleartextItem(i);
     _items.remove(i);
-    _items.sort((a, b) => DateHelper.compare(b.date!, a.date!));
+    _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
   }
 
@@ -165,8 +165,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Icons.lock_outline,
           color: _unlocking ? Colors.orange : Colors.red,
         ),
-        onPressed: _lockSwitch,
-        // onPressed: () => _cripto.unlock('Qwe123!'),
+        // onPressed: _lockSwitch,
+        onPressed: () => _cripto.unlock('Qwe123!'),
       );
     } else {
       if (_searching) {
