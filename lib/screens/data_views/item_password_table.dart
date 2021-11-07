@@ -97,7 +97,7 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                                 children: [
                                   Text('password_status: '),
                                   Text(
-                                    _item.itemPasswords[i].passwordStatus!,
+                                    _item.itemPasswords[i].passwordStatus,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
