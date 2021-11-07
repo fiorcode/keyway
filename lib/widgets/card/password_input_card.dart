@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/models/item.dart';
-import 'package:keyway/widgets/card/password_change_reminder_card.dart';
+import 'package:keyway/widgets/card/password_add_edit_card.dart';
 import 'package:keyway/widgets/card/strength_level_card.dart';
 import 'package:keyway/widgets/text_field/password_text_field.dart';
 
@@ -18,8 +18,6 @@ class PasswordInputCard extends StatefulWidget {
 
 class _PasswordInputCardState extends State<PasswordInputCard> {
   bool _loadingRandomPass = false;
-
-  void _updateView() {}
 
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
@@ -39,7 +37,7 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
             Row(
               children: [
                 Expanded(
-                  child: PasswordTextField(widget.ctrler, _updateView),
+                  child: PasswordTextField(widget.ctrler),
                 ),
                 _loadingRandomPass
                     ? CircularProgressIndicator()
@@ -59,7 +57,7 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
             if (widget.ctrler!.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: PasswordChangeReminderCard(widget.item!.itemPassword!),
+                child: PasswordAddEditCard(widget.item!.itemPassword!),
               ),
             if (widget.ctrler!.text.isNotEmpty)
               Row(
