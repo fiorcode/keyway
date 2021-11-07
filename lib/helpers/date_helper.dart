@@ -22,7 +22,8 @@ class DateHelper {
     return 'Unknown format';
   }
 
-  static bool expired(dynamic date, int? dayLapse) {
+  static bool expired(dynamic date, int dayLapse) {
+    throw Exception([':(']);
     if (date == null) return true;
     if (date.isEmpty) return false;
     if (dayLapse == 0) return false;
@@ -32,7 +33,7 @@ class DateHelper {
     else if (date is DateTime) _date = date;
     DateTime _nowUTC = DateTime.now().toUtc();
     int _days = _nowUTC.difference(_date).inDays;
-    return dayLapse! <= _days;
+    return dayLapse <= _days;
   }
 
   static int compare(String date1, String date2) {
