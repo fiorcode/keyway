@@ -19,7 +19,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   int _showValue = 0;
   String? _title;
   late String _subtitle;
-  bool _expire = false;
+  bool _expired = false;
   bool _repeat = false;
   IconData? _icon;
   Color? _avatarColor;
@@ -110,18 +110,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     setState(() {});
   }
 
-  bool _expired() {
-    bool _expired = false;
-    if (widget.item!.itemPassword != null) {
-      _expired = widget.item!.itemPassword!.expired;
-      if (_expired) return true;
-    }
-    if (widget.item!.pin != null) {
-      _expired = widget.item!.pin!.expired;
-    }
-    return _expired;
-  }
-
   bool _repeated() {
     if (widget.item!.itemPassword != null) {
       if (widget.item!.itemPassword!.repeatWarning) {
@@ -129,6 +117,14 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
       }
     }
     return false;
+  }
+
+  bool _exp() {
+    try {
+      return widget.item!.expired;
+    } catch (e) {
+      throw e;
+    }
   }
 
   Color _setAvatarColor() {
@@ -159,7 +155,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   void initState() {
     _title = widget.item!.title;
     _subtitle = '';
-    _expire = _expired();
     _repeat = _repeated();
     _avatarColor = _setAvatarColor();
     _iconColor = _setIconColor();
@@ -169,6 +164,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
 
   @override
   Widget build(BuildContext context) {
+    _expired = widget.item!.expired;
     return Card(
       clipBehavior: Clip.antiAlias,
       shadowColor: _warnColor,
@@ -227,7 +223,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_expire && _showValue == 0)
+              if (_expired && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
