@@ -33,6 +33,16 @@ class Item {
 
   bool get deleted => this.itemStatus!.contains('<deleted>');
   bool get cleartext => this.itemStatus!.contains('<cleartext>');
+  bool get expired {
+    if (this.itemPassword != null) {
+      if (this.itemPassword!.expired) return true;
+    }
+    if (this.pin != null) {
+      if (this.pin!.expired) return true;
+    }
+    return false;
+  }
+
   bool get empty {
     if (this.username != null) {
       if (!this.username!.empty) return false;
