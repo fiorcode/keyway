@@ -46,7 +46,6 @@ import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
 void main() {
-  // FlutterCryptography.enable();
   runApp(MyApp());
 }
 
