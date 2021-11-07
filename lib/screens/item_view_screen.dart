@@ -63,6 +63,15 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
     }
   }
 
+  bool _expired(BuildContext context) {
+    try {
+      return widget.item!.expired;
+    } catch (e) {
+      ErrorHelper.errorDialog(context, e);
+      return false;
+    }
+  }
+
   @override
   void initState() {
     _i = widget.item!;
@@ -121,8 +130,10 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                             ItemViewContainer(
                               'password',
                               _i.password!.passwordDec,
-                              left: _i.itemPassword!.passwordDate,
+                              left: _i.itemPassword!.passwordDate!,
                               right: _i.itemPassword!.passwordLapse,
+                              repeated: _i.itemPassword!.repeated,
+                              expired: _expired(context),
                             ),
                           if (_i.hasOldPasswords())
                             Center(
@@ -143,6 +154,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                               _i.pin!.pinDec,
                               left: _i.pin!.pinDate,
                               right: _i.pin!.pinLapse,
+                              expired: _expired(context),
                             ),
                           if (_i.note != null)
                             ItemViewContainer('note', _i.note!.noteDec),
