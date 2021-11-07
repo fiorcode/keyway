@@ -24,7 +24,7 @@ import '../widgets/text_field/long_text_text_field.dart';
 import '../widgets/card/item_preview_card.dart';
 import '../widgets/card/user_list_card.dart';
 import '../widgets/card/strength_level_card.dart';
-import '../widgets/card/password_change_reminder_card.dart';
+import '../widgets/card/password_add_edit_card.dart';
 import '../widgets/card/pin_change_reminder_card.dart';
 import '../widgets/card/tags_card.dart';
 import '../widgets/card/address_card.dart';
@@ -195,8 +195,8 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         }
       }
       _items.insertItem(_i).then((_) => Navigator.of(context).pop());
-    } catch (error) {
-      ErrorHelper.errorDialog(context, error);
+    } catch (e) {
+      ErrorHelper.errorDialog(context, e);
     }
   }
 
@@ -306,11 +306,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: PasswordTextField(
-                                      _passCtrler,
-                                      _updateView,
-                                      // _passFocusNode,
-                                    ),
+                                    child: PasswordTextField(_passCtrler),
                                   ),
                                   _loadingRandomPass
                                       ? CircularProgressIndicator()
@@ -330,8 +326,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: PasswordChangeReminderCard(
-                                      _i.itemPassword!),
+                                  child: PasswordAddEditCard(_i.itemPassword!),
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Row(
