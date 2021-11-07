@@ -23,8 +23,12 @@ class Pin {
   });
 
   bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
-  bool get expired =>
-      this.pinLapse == 0 ? false : DateHelper.expired(pinDate, pinLapse);
+  bool get expired {
+    if (this.pinLapse == 0) {
+      return false;
+    }
+    return DateHelper.expired(pinDate, pinLapse);
+  }
 
   void repeatWarningSwitch() {
     if (repeatWarning)
