@@ -17,7 +17,6 @@ class SetPasswordScreen extends StatefulWidget {
 }
 
 class _SetPasswordScreenState extends State<SetPasswordScreen> {
-  // CriptoProvider _cripto;
   ZxcvbnResult? _zxcvbnResult;
 
   final _passCtrler = TextEditingController();
@@ -87,12 +86,6 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     _zxcvbnResult = ZxcvbnResult();
     super.initState();
   }
-
-  // @override
-  // void didChangeDependencies() {
-  //   _cripto = Provider.of<CriptoProvider>(context, listen: false);
-  //   super.didChangeDependencies();
-  // }
 
   @override
   void dispose() {
