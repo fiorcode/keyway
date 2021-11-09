@@ -21,11 +21,12 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  flutter:
-    sdk: flutter
+  # catcher: ^0.6.9
   connectivity_plus: ^1.0.6
   cryptography: ^2.0.2
   external_path: ^1.0.1
+  flutter:
+    sdk: flutter
   flutter_email_sender: ^5.0.2
   google_fonts: ^2.0.0
   http: ^0.13.3
