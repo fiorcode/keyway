@@ -119,14 +119,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     return false;
   }
 
-  bool _exp() {
-    try {
-      return widget.item!.expired;
-    } catch (e) {
-      throw e;
-    }
-  }
-
   Color _setAvatarColor() {
     if (widget.item!.avatarLetterColor! >= 0)
       return Color(widget.item!.avatarLetterColor!);
