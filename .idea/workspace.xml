@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.flutter-plugins" beforeDir="false" afterPath="$PROJECT_DIR$/.flutter-plugins" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.packages" beforeDir="false" afterPath="$PROJECT_DIR$/.packages" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/error_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/error_helper.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/android/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/gradle/wrapper/gradle-wrapper.properties" beforeDir="false" afterPath="$PROJECT_DIR$/android/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/set_password_screen.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/widgets/card/item_unlocked_card.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,6 +26,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="com.android.tools.idea.emulator.zoom.toolbar.visible" value="false" />
     <property name="dart.analysis.tool.window.force.activate" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
@@ -33,7 +35,7 @@
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="emulator" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
   <component name="SvnConfiguration">
@@ -62,36 +64,40 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1636421507244">
+    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1636486963544">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1632578428832" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1636421507244" />
+    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1636486963544" />
     <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1633970076782">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631653087057" />
     <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1633970076782" />
-    <state width="670" height="266" key="GridCell.Tab.0.bottom" timestamp="1631119605818">
+    <state width="1285" height="264" key="GridCell.Tab.0.bottom" timestamp="1636487521955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="670" height="266" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.center" timestamp="1631119605818">
+    <state width="1285" height="264" key="GridCell.Tab.0.bottom/0.0.1920.1040@0.0.1920.1040" timestamp="1636487521955" />
+    <state width="1285" height="264" key="GridCell.Tab.0.center" timestamp="1636487521955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="670" height="266" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.left" timestamp="1631119605818">
+    <state width="1285" height="264" key="GridCell.Tab.0.center/0.0.1920.1040@0.0.1920.1040" timestamp="1636487521955" />
+    <state width="1285" height="264" key="GridCell.Tab.0.left" timestamp="1636487521955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="670" height="266" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.right" timestamp="1631119605818">
+    <state width="1285" height="264" key="GridCell.Tab.0.left/0.0.1920.1040@0.0.1920.1040" timestamp="1636487521955" />
+    <state width="1285" height="264" key="GridCell.Tab.0.right" timestamp="1636487521955">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="670" height="266" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1633955474390">
+    <state width="1285" height="264" key="GridCell.Tab.0.right/0.0.1920.1040@0.0.1920.1040" timestamp="1636487521955" />
+    <state x="326" y="165" key="SettingsEditor" timestamp="1636485958385">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119414979" />
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1633955474390" />
+    <state x="326" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1636485958385" />
   </component>
 </project>

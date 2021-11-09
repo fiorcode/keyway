@@ -21,7 +21,7 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  # catcher: ^0.6.9
+  catcher: ^0.6.9
   connectivity_plus: ^1.0.6
   cryptography: ^2.0.2
   external_path: ^1.0.1

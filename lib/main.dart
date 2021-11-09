@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
+import 'package:catcher/catcher.dart';
+
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
@@ -45,7 +47,20 @@ import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
 void main() {
-  runApp(MyApp());
+  CatcherOptions debugOptions = CatcherOptions(
+    ///Show information about caught error in dialog
+    DialogReportMode(),
+    [
+      ///Print logs in console
+      ConsoleHandler()
+    ],
+  );
+  Catcher(
+    runAppFunction: () {
+      runApp(MyApp());
+    },
+    debugConfig: debugOptions,
+  );
 }
 
 class MyApp extends StatelessWidget {
