@@ -47,14 +47,20 @@ import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
 void main() {
-  CatcherOptions debugOptions = CatcherOptions(
-    ///Show information about caught error in dialog
-    DialogReportMode(),
-    [
-      ///Print logs in console
-      ConsoleHandler()
-    ],
-  );
+  WidgetsFlutterBinding.ensureInitialized();
+  CatcherOptions debugOptions =
+      CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Scaffold(
+      body: Center(
+        child: Container(
+          height: 100,
+          width: 100,
+          child: Text('ERROR'),
+        ),
+      ),
+    );
+  };
   Catcher(
     runAppFunction: () {
       runApp(MyApp());
@@ -74,6 +80,11 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: NistProvider()),
       ],
       child: MaterialApp(
+        navigatorKey: Catcher.navigatorKey,
+        builder: (BuildContext context, Widget? widget) {
+          Catcher.addDefaultErrorWidget();
+          return widget!;
+        },
         title: 'Keyway',
         theme: ThemeData(
           primarySwatch: Colors.grey,
