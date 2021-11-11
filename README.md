@@ -1,6 +1,6 @@
 # keyway
 
-A new Flutter project.
+[](https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png)
 
 ## Getting Started
 
