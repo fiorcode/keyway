@@ -1,11 +1,11 @@
-<ol align="center">  
-  <li>
+<dl align="center">  
+  <dt>
     <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
-  </li>
-  <li>
+  </dt>
+  <dt>
     <p style="font-size:30px">Keyway</p>
-  </li>
-</ol>
+  </dt>
+</dl>
 
 ## Getting Started
 
