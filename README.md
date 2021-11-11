@@ -3,7 +3,7 @@
     <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
   </dt>
   <dt>
-    <h2 style="font-size:128px;">Keyway</h2>
+    <h2 style="font-family:Courier;">Keyway</h2>
   </dt>
 </dl>
 
