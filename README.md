@@ -1,7 +1,7 @@
 # keyway
 
 <p align="center">
-  <img width="256" height="256" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
+  <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
 </p>
 
 ## Getting Started
