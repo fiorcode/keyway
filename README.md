@@ -1,8 +1,10 @@
 # keyway
 
 <p align="center">
+  <ul>  
   <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
   <b>Keyway</b>
+</ul>
 </p>
 
 ## Getting Started
