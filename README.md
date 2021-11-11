@@ -1,6 +1,6 @@
 # keyway
 
-[](https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png)
+![alt text](https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png)
 
 ## Getting Started
 
