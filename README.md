@@ -1,4 +1,4 @@
-<ul align="center" style="list-style: none">  
+<ul align="center" style="list-style-type:square">  
   <li>
     <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
   </li>
