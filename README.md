@@ -2,7 +2,7 @@
 
 <p align="center">
   <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
-  <a>Keyway</a>
+  <a text="Keyway">
 </p>
 
 ## Getting Started
