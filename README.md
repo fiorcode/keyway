@@ -1,8 +1,12 @@
 # keyway
 
 <ul align="center">  
-  <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
-  <b>Keyway</b>
+  <li>
+    <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
+  </li>
+  <li>
+    <b>Keyway</b>
+  </li>
 </ul>
 
 ## Getting Started
