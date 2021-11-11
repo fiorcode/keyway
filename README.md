@@ -1,6 +1,8 @@
 # keyway
 
-![alt text](https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png?style=centerme)
+<p align="center">
+  <img width="600" height="200" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
+</p>
 
 ## Getting Started
 
