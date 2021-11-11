@@ -1,11 +1,11 @@
-<ul align="center" style="list-style-type:square">  
+<ol align="center">  
   <li>
     <img width="192" height="192" src="https://raw.githubusercontent.com/fiorcode/keyway/master/assets/icon.png">
   </li>
   <li>
     <p style="font-size:30px">Keyway</p>
   </li>
-</ul>
+</ol>
 
 ## Getting Started
 
