@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-import 'package:catcher/catcher.dart';
-
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
 import 'providers/nist_provider.dart';
@@ -47,26 +45,22 @@ import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  CatcherOptions debugOptions =
-      CatcherOptions(SilentReportMode(), [ConsoleHandler()]);
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+  };
   ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Scaffold(
-      body: Center(
-        child: Container(
-          height: 100,
-          width: 100,
-          child: Text('ERROR'),
+    return Material(
+      child: Container(
+        color: Colors.purple,
+        alignment: Alignment.center,
+        child: Text(
+          'Something went wrong!',
+          style: TextStyle(fontSize: 20, color: Colors.white),
         ),
       ),
     );
   };
-  Catcher(
-    runAppFunction: () {
-      runApp(MyApp());
-    },
-    debugConfig: debugOptions,
-  );
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -80,11 +74,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: NistProvider()),
       ],
       child: MaterialApp(
-        navigatorKey: Catcher.navigatorKey,
-        builder: (BuildContext context, Widget? widget) {
-          Catcher.addDefaultErrorWidget();
-          return widget!;
-        },
+        debugShowCheckedModeBanner: false,
         title: 'Keyway',
         theme: ThemeData(
           primarySwatch: Colors.grey,
