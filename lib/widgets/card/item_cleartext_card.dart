@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/models/item_password.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:provider/provider.dart';
@@ -28,16 +29,27 @@ class ItemCleartextCard extends StatefulWidget {
 class _ItemCleartextCardState extends State<ItemCleartextCard> {
   String? _title;
   late String _subtitle;
-  int? _p1n;
+  int _p1n = Random.secure().nextInt(9999);
 
   bool _settings = false;
   bool _pin = false;
   bool _setTitle = false;
+  bool _working = false;
 
   TextEditingController? _titleCtrler;
   FocusNode? _titleFN;
 
   void _settingsSwitch() => setState(() => _settings = !_settings);
+
+  void _refresh() async {
+    if (_pin)
+      widget.item!.title = Random.secure().nextInt(9999).toString();
+    else
+      widget.item!.title = (await PasswordHelper.dicePassword()).password!;
+    setState(() {
+      _title = widget.item!.title;
+    });
+  }
 
   void _toClipBoard() async {
     Clipboard.setData(ClipboardData(text: _title)).then(
@@ -63,15 +75,15 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
     setState(() => _setTitle = !_setTitle);
   }
 
-  void _passwordPin() {
-    if (_p1n == null) _p1n = Random.secure().nextInt(9999);
+  void _passwordPin() async {
+    _pin = !_pin;
+    if (_pin)
+      widget.item!.title = _p1n.toString();
+    else {
+      widget.item!.title = (await PasswordHelper.dicePassword()).password!;
+    }
     setState(() {
-      _pin = !_pin;
-      if (_pin)
-        _title = _p1n.toString();
-      else {
-        _title = widget.item!.title;
-      }
+      _title = widget.item!.title;
     });
   }
 
@@ -122,12 +134,14 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
                       color: Colors.red,
                       size: 24,
                     )
-                  : Icon(
-                      Icons.settings,
-                      color: Colors.grey,
-                      size: 24,
-                    ),
-              onPressed: _setTitle ? _setTitleSwitch : _settingsSwitch,
+                  : _working
+                      ? CircularProgressIndicator()
+                      : Icon(
+                          Icons.refresh,
+                          color: Colors.grey,
+                          size: 24,
+                        ),
+              onPressed: _setTitle ? _setTitleSwitch : _refresh,
             ),
           ),
         ),
