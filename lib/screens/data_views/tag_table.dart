@@ -74,7 +74,7 @@ class _TagTableScreenState extends State<TagTableScreen> {
                                   Text('tag_name: '),
                                   Expanded(
                                     child: Text(
-                                      tags[i].tagName!,
+                                      tags[i].tagName,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
