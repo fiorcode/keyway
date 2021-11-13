@@ -194,9 +194,11 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
           _i.product = null;
         }
       }
-      _items.insertItem(_i).then((_) => Navigator.of(context).pop());
+      _items.insertItem(_i).then((_) => Navigator.of(context).pop()).onError(
+          (error, stackTrace) => ErrorHelper.errorDialog(context, error));
     } catch (e) {
       ErrorHelper.errorDialog(context, e);
+      return;
     }
   }
 
@@ -435,7 +437,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: ProductCard(
-                        _i.product,
+                        _i.product!,
                         _trademarkCtrler,
                         _modelCtrler,
                       ),
