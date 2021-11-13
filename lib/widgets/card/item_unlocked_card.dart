@@ -19,7 +19,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   int _showValue = 0;
   String? _title;
   late String _subtitle;
-  bool _expired = false;
   bool _repeat = false;
   IconData? _icon;
   Color? _avatarColor;
@@ -156,7 +155,6 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
 
   @override
   Widget build(BuildContext context) {
-    _expired = widget.item!.expired;
     return Card(
       clipBehavior: Clip.antiAlias,
       shadowColor: _warnColor,
@@ -215,7 +213,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              if (_expired && _showValue == 0)
+              if (widget.item!.expired && _showValue == 0)
                 SizedBox(
                   height: 48,
                   width: 48,
