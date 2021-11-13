@@ -36,6 +36,15 @@ class Product {
       this.productModel.isEmpty &&
       this.cpe23uri == null;
 
+  bool get isHardware => this.type == 'h';
+  bool get isOsFirmware => this.type == 'o';
+  bool get isApp => this.type == 'a';
+
+  void setTypeHardware() => this.productType = 'h';
+  void setTypeOsFirmware() => this.productType = 'o';
+  void setTypeApp() => this.productType = 'a';
+  void setTypeAll() => this.productType = '';
+
   String get type {
     switch (productType) {
       case 'h':
