@@ -30,21 +30,21 @@ class _TagsFilterListState extends State<TagsFilterList> {
           TextButton.icon(
             icon: Icon(
               Icons.tag,
-              color: Color(tag.tagColor!),
-              size: tag.selected! ? 20 : 14,
+              color: Color(tag.tagColor),
+              size: tag.selected ? 20 : 14,
             ),
             onPressed: () {
               setState(() {
-                tag.selected = !tag.selected!;
+                tag.selected = !tag.selected;
               });
               widget.tagsSwitch(tag);
             },
             label: Text(
-              tag.tagName!,
+              tag.tagName,
               style: TextStyle(
-                color: Color(tag.tagColor!),
-                fontSize: tag.selected! ? 20 : 14,
-                fontWeight: tag.selected! ? FontWeight.bold : null,
+                color: Color(tag.tagColor),
+                fontSize: tag.selected ? 20 : 14,
+                fontWeight: tag.selected ? FontWeight.bold : null,
               ),
             ),
           ),
