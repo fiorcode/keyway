@@ -48,7 +48,7 @@ class _TagAddScreenState extends State<TagAddScreen> {
             child: Chip(
               backgroundColor: Colors.grey,
               label: Text(
-                tag.tagName!,
+                tag.tagName,
                 style: TextStyle(color: Colors.white),
               ),
               elevation: 8.0,
