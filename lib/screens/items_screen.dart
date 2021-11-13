@@ -62,18 +62,16 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   }
 
   void _tagsSwitch(Tag tag) {
-    ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
-    if (tag.selected!) {
+    if (tag.selected) {
       _tag = tag;
-      _items = _item.items
-          .where((i) => i.tags!.contains('<' + _tag!.tagName! + '>'))
+      _items = _items
+          .where((i) => i.tags!.contains('<' + _tag!.tagName + '>'))
           .toList();
-      setState(() {});
     } else {
       _tag = null;
-      _items = _item.items;
-      setState(() {});
+      _items = Provider.of<ItemProvider>(context, listen: false).items;
     }
+    setState(() {});
   }
 
   Future<void> _getItemsAsync() async => _items =
@@ -165,8 +163,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Icons.lock_outline,
           color: _unlocking ? Colors.orange : Colors.red,
         ),
-        onPressed: _lockSwitch,
-        // onPressed: () => _cripto.unlock('Qwe123!'),
+        // onPressed: _lockSwitch,
+        onPressed: () => _cripto.unlock('Qwe123!'),
       );
     } else {
       if (_searching) {
@@ -236,7 +234,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         ),
                       IconButton(
                         icon: Icon(Icons.flash_on),
-                        onPressed: () => _generatePassword(),
+                        onPressed: _generatePassword,
                       ),
                       if (!_cripto.locked)
                         IconButton(
