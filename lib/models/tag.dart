@@ -1,11 +1,11 @@
 class Tag {
   int? id;
-  String? tagName;
-  int? tagColor;
-  bool? selected;
+  String tagName = '';
+  int tagColor = 4294967295;
+  bool selected = false;
 
   Tag({
-    this.tagName,
+    this.tagName = '',
     this.tagColor = 4294967295,
     this.selected = false,
   });
