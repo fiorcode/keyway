@@ -57,13 +57,13 @@ class _TagsScreenState extends State<TagsScreen> {
                           leading: Icon(
                             Icons.tag,
                             size: 32,
-                            color: Color(tags[i].tagColor!),
+                            color: Color(tags[i].tagColor),
                           ),
                           title: Text(
-                            tags[i].tagName!,
+                            tags[i].tagName,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Color(tags[i].tagColor!),
+                              color: Color(tags[i].tagColor),
                             ),
                           ),
                           trailing: IconButton(
