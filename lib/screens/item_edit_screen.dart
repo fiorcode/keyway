@@ -428,7 +428,7 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8.0),
                       child: ProductCard(
-                        _i.product,
+                        _i.product!,
                         _trademarkCtrler,
                         _modelCtrler,
                       ),
