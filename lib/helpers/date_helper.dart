@@ -23,7 +23,6 @@ class DateHelper {
   }
 
   static bool expired(dynamic date, int dayLapse) {
-    throw Exception([':(']);
     if (date == null) return true;
     if (date.isEmpty) return false;
     if (dayLapse == 0) return false;
