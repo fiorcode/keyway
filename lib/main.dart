@@ -44,24 +44,7 @@ import 'screens/data_views/cve_table.dart';
 import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
-void main() {
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-  };
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Material(
-      child: Container(
-        color: Colors.purple,
-        alignment: Alignment.center,
-        child: Text(
-          'Something went wrong!',
-          style: TextStyle(fontSize: 20, color: Colors.white),
-        ),
-      ),
-    );
-  };
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -75,6 +58,12 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        builder: (BuildContext context, Widget? widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return Text(errorDetails.exception.toString());
+          };
+          return widget!;
+        },
         title: 'Keyway',
         theme: ThemeData(
           primarySwatch: Colors.grey,
