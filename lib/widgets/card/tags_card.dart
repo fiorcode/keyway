@@ -34,19 +34,19 @@ class _TagsCardState extends State<TagsCard> {
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: tag.selected!,
+              selected: tag.selected,
               selectedColor: Colors.grey[200],
               onSelected: interact
                   ? (selected) => tagTapped(tag, selected)
                   : (selected) => null,
               label: Text(
-                tag.tagName!,
+                tag.tagName,
                 style: TextStyle(
-                  color: tag.selected! ? Colors.grey : Colors.white,
-                  fontWeight: tag.selected! ? FontWeight.bold : null,
+                  color: tag.selected ? Colors.grey : Colors.white,
+                  fontWeight: tag.selected ? FontWeight.bold : null,
                 ),
               ),
-              elevation: tag.selected! ? 8.0 : 0.0,
+              elevation: tag.selected ? 8.0 : 0.0,
             ),
           ),
         );
