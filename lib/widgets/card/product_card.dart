@@ -10,9 +10,9 @@ class ProductCard extends StatefulWidget {
     this.modelCtrler,
   );
 
-  final Product? product;
-  final TextEditingController? trademarkCtrler;
-  final TextEditingController? modelCtrler;
+  final Product product;
+  final TextEditingController trademarkCtrler;
+  final TextEditingController modelCtrler;
 
   @override
   _ProductCardState createState() => _ProductCardState();
@@ -24,38 +24,38 @@ class _ProductCardState extends State<ProductCard> {
 
   void _onChangedTrademark(String value) {
     setState(() {
-      _emptyTrademark = widget.trademarkCtrler!.text.isEmpty;
-      widget.product!.productTrademark = value;
+      _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
+      widget.product.productTrademark = value;
     });
   }
 
   void _clearTrademark() {
     setState(() {
-      widget.trademarkCtrler!.clear();
-      widget.product!.productTrademark = '';
+      widget.trademarkCtrler.clear();
+      widget.product.productTrademark = '';
       _emptyTrademark = true;
     });
   }
 
   void _onChangedModel(String value) {
     setState(() {
-      _emptyModel = widget.modelCtrler!.text.isEmpty;
-      widget.product!.productModel = value;
+      _emptyModel = widget.modelCtrler.text.isEmpty;
+      widget.product.productModel = value;
     });
   }
 
   void _clearModel() {
     setState(() {
-      widget.modelCtrler!.clear();
-      widget.product!.productModel = '';
+      widget.modelCtrler.clear();
+      widget.product.productModel = '';
       _emptyModel = true;
     });
   }
 
   @override
   void initState() {
-    _emptyTrademark = widget.trademarkCtrler!.text.isEmpty;
-    _emptyModel = widget.modelCtrler!.text.isEmpty;
+    _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
+    _emptyModel = widget.modelCtrler.text.isEmpty;
     super.initState();
   }
 
@@ -75,63 +75,57 @@ class _ProductCardState extends State<ProductCard> {
               children: [
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product!.productType == 'h',
+                  selected: widget.product.isHardware,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product!.productType = 'h')
-                      : setState(() => widget.product!.productType = ''),
+                      ? setState(() => widget.product.setTypeHardware())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'Hardware',
                     style: TextStyle(
-                      color: widget.product!.productType == 'h'
+                      color: widget.product.isHardware
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product!.productType == 'h'
-                          ? FontWeight.bold
-                          : null,
+                      fontWeight:
+                          widget.product.isHardware ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product!.productType == 'h' ? 8.0 : 0.0,
+                  elevation: widget.product.isHardware ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product!.productType == 'o',
+                  selected: widget.product.isOsFirmware,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product!.productType = 'o')
-                      : setState(() => widget.product!.productType = ''),
+                      ? setState(() => widget.product.setTypeOsFirmware())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'OS/Firmware',
                     style: TextStyle(
-                      color: widget.product!.productType == 'o'
+                      color: widget.product.isOsFirmware
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product!.productType == 'o'
-                          ? FontWeight.bold
-                          : null,
+                      fontWeight:
+                          widget.product.isOsFirmware ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product!.productType == 'o' ? 8.0 : 0.0,
+                  elevation: widget.product.isOsFirmware ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product!.productType == 'a',
+                  selected: widget.product.isApp,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product!.productType = 'a')
-                      : setState(() => widget.product!.productType = ''),
+                      ? setState(() => widget.product.setTypeApp())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'App/Program',
                     style: TextStyle(
-                      color: widget.product!.productType == 'a'
-                          ? Colors.grey
-                          : Colors.white,
-                      fontWeight: widget.product!.productType == 'a'
-                          ? FontWeight.bold
-                          : null,
+                      color: widget.product.isApp ? Colors.grey : Colors.white,
+                      fontWeight: widget.product.isApp ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product!.productType == 'a' ? 8.0 : 0.0,
+                  elevation: widget.product.isApp ? 8.0 : 0.0,
                 ),
               ],
             ),
