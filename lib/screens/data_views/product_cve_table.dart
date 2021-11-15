@@ -16,17 +16,19 @@ class _ProductCveTableScreenState extends State<ProductCveTableScreen> {
   late ItemProvider _item;
   Future<void>? _getProductCves;
 
-  Future<void> _getProductCvesAsync() async => await _item.fetchProductCves();
+  Future<void> _getProductCvesAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false)
+          .fetchProductCves();
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getProductCves = _getProductCvesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(

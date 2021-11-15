@@ -63,29 +63,19 @@ class DBHelper {
   }
 
   static Future<bool> createBackup(String path) async {
-    try {
-      String _path = '$path$_backupPath';
-      Directory _dir = await Directory(_path).create(recursive: true);
-      final _dbPath = await dbPath();
-      final _localDB = File('$_dbPath/kw.db');
-      _localDB.copySync(_dir.path + '/kw_backup.db');
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return false;
-    }
+    String _path = '$path$_backupPath';
+    Directory _dir = await Directory(_path).create(recursive: true);
+    final _dbPath = await dbPath();
+    final _localDB = File('$_dbPath/kw.db');
+    _localDB.copySync(_dir.path + '/kw_backup.db');
+    return true;
   }
 
   static Future<bool> restoreBackup(String filePath) async {
-    try {
-      File _backupFile = File(filePath);
-      final _dbPath = await dbPath();
-      _backupFile.copySync('$_dbPath/kw.db');
-      return true;
-    } catch (e) {
-      print(e.toString());
-      return false;
-    }
+    File _backupFile = File(filePath);
+    final _dbPath = await dbPath();
+    _backupFile.copySync('$_dbPath/kw.db');
+    return true;
   }
 
   static Future<int> insert(String table, Map<String, Object?> data) async =>

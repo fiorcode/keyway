@@ -14,14 +14,13 @@ class UserTableScreen extends StatefulWidget {
 }
 
 class _UserTableScreenState extends State<UserTableScreen> {
-  late ItemProvider _item;
   Future<List<User>>? _getUserData;
 
-  Future<List<User>> _getUserDataAsync() => _item.getUserData();
+  Future<List<User>> _getUserDataAsync() =>
+      Provider.of<ItemProvider>(context, listen: false).getUserData();
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getUserData = _getUserDataAsync();
     super.initState();
   }

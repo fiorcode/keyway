@@ -16,17 +16,18 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
   late ItemProvider _item;
   Future? _getCpe23uris;
 
-  Future<void> _getCpe23urisAsync() async => await _item.fetchCpe23uris();
+  Future<void> _getCpe23urisAsync() async =>
+      await Provider.of<ItemProvider>(context).fetchCpe23uris();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getCpe23uris = _getCpe23urisAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(

@@ -14,16 +14,15 @@ class TagTableScreen extends StatefulWidget {
 }
 
 class _TagTableScreenState extends State<TagTableScreen> {
-  late ItemProvider _item;
   Future<List<Tag>>? _getTags;
 
-  Future<List<Tag>> _getTagsAsync() => _item.getTags();
+  Future<List<Tag>> _getTagsAsync() =>
+      Provider.of<ItemProvider>(context, listen: false).getTags();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getTags = _getTagsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override

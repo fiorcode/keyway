@@ -16,17 +16,18 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
   late ItemProvider _item;
   Future? _getAddresses;
 
-  Future<void> _getAddressesAsync() async => await _item.fetchAddresses();
+  Future<void> _getAddressesAsync() async =>
+      await Provider.of<ItemProvider>(context).fetchAddresses();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getAddresses = _getAddressesAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(

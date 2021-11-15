@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/models/item.dart';
 import 'package:provider/provider.dart';
 
+import 'package:keyway/models/item.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/widgets/empty_items.dart';
@@ -15,14 +15,13 @@ class ItemTableScreen extends StatefulWidget {
 
 class _ItemTableScreenState extends State<ItemTableScreen> {
   Future? _getItems;
-  late List<Item> _items;
+  List<Item> _items = <Item>[];
 
   Future<void> _getItemsAsync() async => _items =
       await Provider.of<ItemProvider>(context, listen: false).fetchItems();
 
   @override
   void initState() {
-    _items = <Item>[];
     _getItems = _getItemsAsync();
     super.initState();
   }

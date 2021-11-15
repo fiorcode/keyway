@@ -35,75 +35,45 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _backupToDevice() async {
     StorageHelper.backupToDevice().then((succeed) {
-      if (succeed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              'DONE!',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: succeed ? Colors.green : Colors.red,
+          content: Text(
+            succeed ? 'DONE!' : 'SOMETHING WENT WRONG',
+            textAlign: TextAlign.center,
           ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(
-              'SOMETHING WENT WRONG',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
-          ),
-        );
-      }
+          duration: Duration(seconds: 1),
+        ),
+      );
     });
   }
 
   Future<void> _backupToSdCard() async {
     StorageHelper.backupToSdCard().then((succeed) {
-      if (succeed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              'DONE!',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: succeed ? Colors.green : Colors.red,
+          content: Text(
+            succeed ? 'DONE!' : 'SOMETHING WENT WRONG',
+            textAlign: TextAlign.center,
           ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(
-              'SOMETHING WENT WRONG',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
-          ),
-        );
-      }
+          duration: Duration(seconds: 1),
+        ),
+      );
     });
   }
 
   Future<void> _backupToMail() async {
-    try {
-      await _checkPermissions();
-      File _db = await (StorageHelper.getDeviceBackup() as FutureOr<File>);
-      final Email _email = Email(
-        body: 'Keyway Backup',
-        subject: 'Keyway Backup',
-        recipients: ['lperezfiorentino@vialidad.gob.ar'],
-        attachmentPaths: [_db.path],
-        isHTML: false,
-      );
-      await FlutterEmailSender.send(_email);
-    } catch (e) {
-      ErrorHelper.errorDialog(context, e.toString());
-    }
+    await _checkPermissions();
+    File _db = await (StorageHelper.getDeviceBackup() as FutureOr<File>);
+    final Email _email = Email(
+      body: 'Keyway Backup',
+      subject: 'Keyway Backup',
+      recipients: ['lperezfiorentino@vialidad.gob.ar'],
+      attachmentPaths: [_db.path],
+      isHTML: false,
+    );
+    await FlutterEmailSender.send(_email);
   }
 
   Future<void> _getDeviceBackup() async {

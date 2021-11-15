@@ -16,17 +16,18 @@ class _PinTableScreenState extends State<PinTableScreen> {
   late ItemProvider _item;
   Future? _getPins;
 
-  Future<void> _getPinsAsync() async => await _item.fetchPins();
+  Future<void> _getPinsAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false).fetchPins();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getPins = _getPinsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(

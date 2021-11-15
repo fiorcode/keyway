@@ -67,16 +67,12 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<void> unlock(String key) async {
-    try {
-      _secretKey = await _aesCbc
-          .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
-      SecretBox _sb = await _getSecret();
-      _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
-      _locked = false;
-      notifyListeners();
-    } catch (error) {
-      throw error;
-    }
+    _secretKey = await _aesCbc
+        .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
+    SecretBox _sb = await _getSecret();
+    _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
+    _locked = false;
+    notifyListeners();
   }
 
   static Future<bool> initialSetup(String key) async {

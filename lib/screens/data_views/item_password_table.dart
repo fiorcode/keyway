@@ -18,17 +18,18 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
   Future<void>? _getItemPasswords;
 
   Future<void> _getItemPasswordsAsync() async =>
-      await _item.fetchItemPasswords();
+      await Provider.of<ItemProvider>(context, listen: false)
+          .fetchItemPasswords();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getItemPasswords = _getItemPasswordsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
