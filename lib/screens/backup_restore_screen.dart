@@ -65,7 +65,9 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
 
   Future<void> _backupToMail() async {
     await _checkPermissions();
-    File _db = await (StorageHelper.getDeviceBackup() as FutureOr<File>);
+    File _db = await (StorageHelper.getDeviceBackup().onError(
+            (error, stackTrace) => ErrorHelper.errorDialog(context, error))
+        as FutureOr<File>);
     final Email _email = Email(
       body: 'Keyway Backup',
       subject: 'Keyway Backup',
@@ -73,7 +75,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       attachmentPaths: [_db.path],
       isHTML: false,
     );
-    await FlutterEmailSender.send(_email);
+    await FlutterEmailSender.send(_email).onError(
+        (error, stackTrace) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDeviceBackup() async {
@@ -98,7 +101,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getSdBackup() async {
@@ -123,7 +126,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDownloadsBackup() async {
@@ -148,7 +151,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _restoreBackup(String path) async {
