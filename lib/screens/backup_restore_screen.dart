@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:keyway/helpers/error_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../helpers/error_helper.dart';
 import '../helpers/date_helper.dart';
 import '../helpers/db_helper.dart';
 import '../helpers/storage_helper.dart';
@@ -25,10 +25,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
-    PermissionStatus _status = await Permission.manageExternalStorage.status;
+    PermissionStatus _status = await Permission.manageExternalStorage.status
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     if (_status.isDenied) {
-      if (!(await Permission.manageExternalStorage.request().isGranted))
-        return false;
+      PermissionStatus _ps = await Permission.manageExternalStorage
+          .request()
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
+      if (!(_ps.isGranted)) return false;
     }
     return true;
   }
@@ -45,7 +48,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           duration: Duration(seconds: 1),
         ),
       );
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _backupToSdCard() async {
@@ -60,13 +63,14 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           duration: Duration(seconds: 1),
         ),
       );
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _backupToMail() async {
-    await _checkPermissions();
-    File _db = await (StorageHelper.getDeviceBackup().onError(
-            (error, stackTrace) => ErrorHelper.errorDialog(context, error))
+    await _checkPermissions()
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    File _db = await (StorageHelper.getDeviceBackup()
+            .onError((error, st) => ErrorHelper.errorDialog(context, error))
         as FutureOr<File>);
     final Email _email = Email(
       body: 'Keyway Backup',
@@ -75,12 +79,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       attachmentPaths: [_db.path],
       isHTML: false,
     );
-    await FlutterEmailSender.send(_email).onError(
-        (error, stackTrace) => ErrorHelper.errorDialog(context, error));
+    await FlutterEmailSender.send(_email)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDeviceBackup() async {
-    await _checkPermissions();
+    await _checkPermissions()
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     Color _primary = Theme.of(context).primaryColor;
     _icon = Icon(Icons.phone_iphone, color: _primary, size: 32);
     setState(() => _working = true);
@@ -101,11 +106,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getSdBackup() async {
-    await _checkPermissions();
+    await _checkPermissions()
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     setState(() => _working = true);
     StorageHelper.getSdCardBackup().then((file) async {
       if (file != null) {
@@ -126,11 +132,12 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDownloadsBackup() async {
-    await _checkPermissions();
+    await _checkPermissions()
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     setState(() => _working = true);
     StorageHelper.getDownloadFolderBackup().then((file) async {
       if (file != null) {
@@ -151,16 +158,18 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _restoreBackup(String path) async {
-    return DBHelper.restoreBackup(path).then(
-      (_) => Navigator.popUntil(
-        context,
-        ModalRoute.withName(ItemsListScreen.routeName),
-      ),
-    );
+    return DBHelper.restoreBackup(path)
+        .then(
+          (_) => Navigator.popUntil(
+            context,
+            ModalRoute.withName(ItemsListScreen.routeName),
+          ),
+        )
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _deleteBackup() async {
@@ -171,7 +180,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         _fileToRestoreStatus = null;
         _working = false;
       });
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override
@@ -244,7 +253,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'SD Card',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              onTap: () => _backupToSdCard(),
+                              onTap: _backupToSdCard,
                             ),
                             DashboardCard(
                               icon:
@@ -253,7 +262,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'E-Mail',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              onTap: () => _backupToMail(),
+                              onTap: _backupToMail,
                             ),
                           ],
                         ),
