@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -26,7 +27,9 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
 
   Future<void> _deletePassword(Password p) async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip.deletePassword(p);
+    await _ip
+        .deletePassword(p)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getPasswords = _getPasswordsAsync();
     setState(() {});
   }
