@@ -161,7 +161,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
   Future<void> _setPassword() async {
     ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
     String _h = CriptoProvider.doHash(_passCtrler.text);
-    Password? _p = await _items.passwordInDB(_h);
+    Password? _p = await _items
+        .passwordInDB(_h)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     if (_p != null) {
       if (_i.itemPassword!.repeatWarning) {
         bool? _warning = await WarningHelper.repeat(context, 'Password');
@@ -171,7 +173,9 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
       _i.password = _p;
     } else {
       CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-      _i.password = await _c.createPassword(_passCtrler.text);
+      _i.password = await _c
+          .createPassword(_passCtrler.text)
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
       if (_i.password == null) _i.itemPassword = null;
     }
   }
@@ -252,8 +256,12 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
         }
       }
 
-      await _items.updateFullItem(widget.item!, _i);
-      await _c.decryptItem(_i);
+      await _items
+          .updateFullItem(widget.item!, _i)
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
+      await _c
+          .decryptItem(_i)
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
       Navigator.of(context).pop(_i);
     } catch (error) {
       ErrorHelper.errorDialog(context, error);
