@@ -32,9 +32,13 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
   }
 
   Future<void> _loadItemAsync() async {
-    await Provider.of<ItemProvider>(context, listen: false).loadPasswords(_i);
+    await Provider.of<ItemProvider>(context, listen: false)
+        .loadPasswords(_i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-    _i = await _c.computeDecryptItem(_i);
+    _i = await _c
+        .computeDecryptItem(_i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   void _goToEditItem() {
@@ -59,7 +63,10 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
     if (_warning) {
       ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
       _i.setDeleted();
-      _items.updateItem(_i).then((_) => Navigator.of(context).pop());
+      _items
+          .updateItem(_i)
+          .then((_) => Navigator.of(context).pop())
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
     }
   }
 
