@@ -211,7 +211,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
         _passCtrler.text = p.password!;
         _loadingRandomPass = false;
       });
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override
