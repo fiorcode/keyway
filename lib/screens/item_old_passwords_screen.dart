@@ -24,7 +24,9 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
 
   Future<void> _decryptPasswordsAsync() async {
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-    return _c.decryptItemPasswords(widget.item!);
+    return _c
+        .decryptItemPasswords(widget.item!)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override
