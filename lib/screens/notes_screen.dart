@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -22,12 +23,18 @@ class _NotesScreenState extends State<NotesScreen> {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _notes = await _ip.fetchNotes();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_notes, (dynamic n) async => await _cp.decryptNote(n));
+    Future.forEach(
+        _notes,
+        (dynamic n) async => await _cp
+            .decryptNote(n)
+            .onError((error, st) => ErrorHelper.errorDialog(context, error)));
   }
 
   Future<void> _deleteNote(Note n) async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip.deleteNote(n);
+    await _ip
+        .deleteNote(n)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getNotes = _getNotesAsync();
     setState(() {});
   }
@@ -53,6 +60,9 @@ class _NotesScreenState extends State<NotesScreen> {
               case ConnectionState.waiting:
                 return LoadingScaffold();
               case ConnectionState.done:
+                if (snap.hasError) {
+                  return ErrorHelper.errorScaffold(snap.error);
+                }
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
                     itemCount: _item.notes.length,
