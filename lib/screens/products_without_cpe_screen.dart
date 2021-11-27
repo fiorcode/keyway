@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/screens/product_search_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -60,6 +61,9 @@ class _ProductsWithoutCpeScreenState extends State<ProductsWithoutCpeScreen> {
               case ConnectionState.waiting:
                 return LoadingScaffold();
               case ConnectionState.done:
+                if (snap.hasError) {
+                  return ErrorHelper.errorBody(snap.error);
+                }
                 List<Product> products = <Product>[];
                 products = snap.data as List<Product>;
                 return ListView.builder(
