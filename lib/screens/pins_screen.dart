@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -26,7 +27,9 @@ class _PinsScreenState extends State<PinsScreen> {
 
   Future<void> _deletePin(Pin p) async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip.deletePin(p);
+    await _ip
+        .deletePin(p)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getPins = _getNotesAsync();
     setState(() {});
   }
