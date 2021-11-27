@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/item_provider.dart';
@@ -19,7 +20,9 @@ class _ProductsScreenState extends State<ProductsScreen> {
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
   Future<void> _deleteProduct(Product p) async {
-    await _item.deleteProduct(p);
+    await _item
+        .deleteProduct(p)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getProducts = _getProductsAsync();
     setState(() {});
   }
