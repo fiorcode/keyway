@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/nist_provider.dart';
@@ -92,18 +93,22 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     NistProvider _nist = Provider.of<NistProvider>(context, listen: false);
     if (_byKeyword) {
       if (_keywordCtrler.text.isEmpty) return;
-      _getCpesAsync = _nist.getCpesByKeyword(
-        _keywordCtrler.text,
-        startIndex: startIndex,
-      );
+      _getCpesAsync = _nist
+          .getCpesByKeyword(
+            _keywordCtrler.text,
+            startIndex: startIndex,
+          )
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
     } else {
       if (_productNotEmpty()) {
-        _getCpesAsync = _nist.getCpesByCpeMatch(
-          type: _product.productType,
-          trademark: _product.productTrademark,
-          model: _product.productModel,
-          startIndex: startIndex,
-        );
+        _getCpesAsync = _nist
+            .getCpesByCpeMatch(
+              type: _product.productType,
+              trademark: _product.productTrademark,
+              model: _product.productModel,
+              startIndex: startIndex,
+            )
+            .onError((error, st) => ErrorHelper.errorDialog(context, error));
       }
     }
   }
