@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/screens/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -27,8 +28,10 @@ class _RestoreScreenState extends State<RestoreScreen> {
   Future<bool> _checkPermissions() async {
     PermissionStatus _status = await Permission.manageExternalStorage.status;
     if (_status.isDenied) {
-      if (!(await Permission.manageExternalStorage.request().isGranted))
-        return false;
+      PermissionStatus _ps = await Permission.manageExternalStorage
+          .request()
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
+      if (!_ps.isGranted) return false;
     }
     return true;
   }
@@ -245,7 +248,8 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(_fileToRestore!.path.split('/').last),
+                                      Text(
+                                          _fileToRestore!.path.split('/').last),
                                     ],
                                   ),
                                   Row(
