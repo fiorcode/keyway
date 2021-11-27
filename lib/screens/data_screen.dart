@@ -36,6 +36,9 @@ class _DataScreenState extends State<DataScreen> {
           case ConnectionState.waiting:
             return Text('Size: Calculating...');
           case ConnectionState.done:
+            if (snap.hasError) {
+              return Text('Error: ' + snap.error.toString());
+            }
             String _size = snap.data == null ? '-' : '${snap.data} Bytes';
             return Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -67,6 +70,9 @@ class _DataScreenState extends State<DataScreen> {
           case ConnectionState.waiting:
             return Text('Last Modified: Calculating...');
           case ConnectionState.done:
+            if (snap.hasError) {
+              return Text('Error: ' + snap.error.toString());
+            }
             DateFormat dateFormat = DateFormat('dd/MM/yyyy H:mm');
             String _date =
                 snap.data == null ? '-' : dateFormat.format(snap.data!);
