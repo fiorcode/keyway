@@ -194,8 +194,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
           _i.product = null;
         }
       }
-      _items.insertItem(_i).then((_) => Navigator.of(context).pop()).onError(
-          (error, stackTrace) => ErrorHelper.errorDialog(context, error));
+      _items
+          .insertItem(_i)
+          .then((_) => Navigator.of(context).pop())
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
     } catch (e) {
       ErrorHelper.errorDialog(context, e);
       return;
