@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/date_helper.dart';
@@ -83,11 +84,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() {});
   }
 
-  void _clearSearch() {
-    _searchCtrler.clear();
-    _items = Provider.of<ItemProvider>(context, listen: false).items;
-    setState(() {});
-  }
+  void _clearSearch() => setState(() => _searchCtrler.clear());
 
   void _goToDashboard() {
     Navigator.of(context)
@@ -123,13 +120,16 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _generatePassword() async {
     setState(() => _working = true);
     Item _i = Item(
-      title: (await PasswordHelper.dicePassword()).password!,
+      title: (await PasswordHelper.dicePassword()
+              .onError((error, st) => ErrorHelper.errorDialog(context, error)))
+          .password!,
       itemStatus: '<cleartext>',
       avatarColor: Colors.white.value,
       avatarLetterColor: Colors.black.value,
     );
-    _i.itemId =
-        await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
+    _i.itemId = await Provider.of<ItemProvider>(context, listen: false)
+        .insertItem(_i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _items.add(_i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -138,8 +138,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _buildRandomItem(Item old, Item i) async {
     setState(() => _working = true);
     ItemProvider _i = Provider.of<ItemProvider>(context, listen: false);
-    i.itemId = await _i.insertItem(i);
-    await _i.deleteItem(old);
+    i.itemId = await _i
+        .insertItem(i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    await _i
+        .deleteItem(old)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _items.remove(old);
     _items.add(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
@@ -149,7 +153,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _deleteRandomItem(Item i) async {
     setState(() => _working = true);
     await Provider.of<ItemProvider>(context, listen: false)
-        .deleteCleartextItem(i);
+        .deleteCleartextItem(i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _items.remove(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -211,9 +216,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
               return LoadingScaffold();
             case ConnectionState.done:
               if (snap.hasError)
-                return Center(
-                  child: Image.asset("assets/error.png"),
-                );
+                return ErrorHelper.errorScaffold(snap.error);
               else {
                 return Scaffold(
                   backgroundColor: _back,
