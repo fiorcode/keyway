@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -15,29 +16,32 @@ class AddressesScreen extends StatefulWidget {
 
 class _AddressesScreenState extends State<AddressesScreen> {
   late ItemProvider _item;
-  Future<List<Address>>? _getAddresses;
+  Future<List<Address>>? _getAddrs;
   late List<Address> _addresses;
 
   Future<void> _getAddressesAsync() async {
     _item = Provider.of<ItemProvider>(context, listen: false);
-    _addresses = await _item.fetchAddresses();
+    _addresses = await _item.fetchAddresses().onError(
+        (error, stackTrace) => ErrorHelper.errorDialog(context, error));
     await Future.forEach(_addresses, (dynamic a) async {
       await Provider.of<CriptoProvider>(context).decryptAddress(a);
-    });
+    }).onError((error, stackTrace) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _deleteAddress(Address a) async {
     _item = Provider.of<ItemProvider>(context, listen: false);
-    await _item.deleteAddress(a);
-    _getAddresses =
-        _getAddressesAsync().then((value) => value as List<Address>);
+    await _item.deleteAddress(a).onError(
+        (error, stackTrace) => ErrorHelper.errorDialog(context, error));
+    _getAddrs = _getAddressesAsync()
+        .then((value) => value as List<Address>)
+        .onError(
+            (error, stackTrace) => ErrorHelper.errorDialog(context, error));
     setState(() {});
   }
 
   @override
   void initState() {
-    _getAddresses =
-        _getAddressesAsync().then((value) => value as List<Address>);
+    _getAddrs = _getAddressesAsync().then((value) => value as List<Address>);
     super.initState();
   }
 
@@ -50,12 +54,15 @@ class _AddressesScreenState extends State<AddressesScreen> {
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
       ),
       body: FutureBuilder(
-          future: _getAddresses,
+          future: _getAddrs,
           builder: (ctx, snap) {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
               case ConnectionState.done:
+                if (snap.hasError) {
+                  return ErrorHelper.errorBody(snap.error);
+                }
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
                     itemCount: _addresses.length,
