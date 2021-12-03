@@ -15,13 +15,12 @@ class NotesScreen extends StatefulWidget {
 }
 
 class _NotesScreenState extends State<NotesScreen> {
-  late ItemProvider _item;
   Future<void>? _getNotes;
   late List<Note> _notes;
 
   Future<void> _getNotesAsync() async {
-    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    _notes = await _ip.fetchNotes();
+    _notes =
+        await Provider.of<ItemProvider>(context, listen: false).fetchNotes();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
     Future.forEach(
         _notes,
@@ -31,8 +30,7 @@ class _NotesScreenState extends State<NotesScreen> {
   }
 
   Future<void> _deleteNote(Note n) async {
-    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip
+    await Provider.of<ItemProvider>(context, listen: false)
         .deleteNote(n)
         .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getNotes = _getNotesAsync();
@@ -65,14 +63,14 @@ class _NotesScreenState extends State<NotesScreen> {
                 }
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: _item.notes.length,
+                    itemCount: _notes.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
                           leading: Icon(Icons.http, size: 38),
-                          title: Text(_item.notes[i].noteDec),
+                          title: Text(_notes[i].noteDec),
                           trailing: IconButton(
-                            onPressed: () => _deleteNote(_item.notes[i]),
+                            onPressed: () => _deleteNote(_notes[i]),
                             icon: Icon(
                               Icons.delete_forever,
                               color: Colors.red,
