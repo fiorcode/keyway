@@ -7,7 +7,7 @@ class StrengthLevelCard extends StatelessWidget {
 
   final ZxcvbnResult? zxcvbnResult;
 
-  Color? _shadowColor() {
+  Color _shadowColor() {
     switch (zxcvbnResult!.score) {
       case 0:
         return Colors.red;
@@ -20,7 +20,7 @@ class StrengthLevelCard extends StatelessWidget {
       case 4:
         return Colors.green;
       default:
-        return null;
+        return Colors.white;
     }
   }
 

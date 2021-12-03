@@ -15,28 +15,28 @@ class TagAddScreen extends StatefulWidget {
 }
 
 class _TagAddScreenState extends State<TagAddScreen> {
-  late ItemProvider _items;
   Future<List<Tag>>? _getTags;
   List<Widget>? _chips;
-  TextEditingController? ctrler;
-  FocusNode? focus;
+  TextEditingController ctrler = TextEditingController();
+  FocusNode focus = FocusNode();
   bool _empty = true;
   Color _color = Colors.grey;
 
-  void _onChange() => setState(() => _empty = ctrler!.text.isEmpty);
+  void _onChange() => setState(() => _empty = ctrler.text.isEmpty);
 
   void _setColor(int color) => setState(() => _color = Color(color));
 
   void _addTag(BuildContext ctx) {
     Tag _tag = Tag(
-      tagName: ctrler!.text.toLowerCase(),
+      tagName: ctrler.text.toLowerCase(),
       tagColor: _color.value,
     );
-    _items.insertTag(_tag);
+    Provider.of<ItemProvider>(context, listen: false).insertTag(_tag);
     Navigator.of(context).pop(_tag);
   }
 
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
+  Future<List<Tag>> _tagsList() async =>
+      await Provider.of<ItemProvider>(context, listen: false).getTags();
 
   List<Widget>? _tags(List<Tag> tags) {
     _chips = <Widget>[];
@@ -62,11 +62,8 @@ class _TagAddScreenState extends State<TagAddScreen> {
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
-    ctrler = TextEditingController();
-    focus = FocusNode();
-    focus!.requestFocus();
-    _empty = ctrler!.text.isEmpty;
+    focus.requestFocus();
+    _empty = ctrler.text.isEmpty;
     _getTags = _tagsList();
     super.initState();
   }
@@ -89,7 +86,7 @@ class _TagAddScreenState extends State<TagAddScreen> {
               Padding(
                 padding: EdgeInsets.all(16),
                 child: Text(
-                  '# ' + ctrler!.text,
+                  '# ' + ctrler.text,
                   style: TextStyle(
                     color: _color,
                     fontSize: 32,

@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:math';
+// import 'dart:math';
 import 'package:flutter/material.dart';
+// import '../providers/cripto_provider.dart';
 
-import '../providers/cripto_provider.dart';
 import '../helpers/db_helper.dart';
 import '../models/item.dart';
 import '../models/item_password.dart';
@@ -129,13 +129,13 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<int> insertItem(Item i, {String? date}) async {
-    //TODO: change this in production
-    if (date != null)
-      i.date = date;
-    else
-      i.date = DateTime.now().toIso8601String();
+    // if (date != null)
+    //   i.date = date;
+    // else
+    //   i.date = DateTime.now().toIso8601String();
     //--------------------------------
 
+    i.date = DateTime.now().toIso8601String();
     if (i.password != null) {
       i.itemPassword!.passwordDate = i.date;
       if (i.password!.passwordId == null) {
@@ -412,9 +412,6 @@ class ItemProvider with ChangeNotifier {
   Future<void> updateItemPassword(ItemPassword ip) async =>
       await DBHelper.updateItemPassword(ip.toMap());
 
-  // Future<void> deleteItemPassword(ItemPassword ip) async =>
-  //     await DBHelper.deleteItemPassword(ip.toMap());
-
   Future<void> loadPasswords(Item i) async {
     List<Map<String, dynamic>> _list =
         await DBHelper.getPasswordsByItemId(i.itemId);
@@ -423,9 +420,6 @@ class ItemProvider with ChangeNotifier {
 
   Future<int> insertUsername(Username u) async =>
       await DBHelper.insert(DBHelper.usernameTable, u.toMap());
-
-  // Future<int> updateUsername(Username u) async =>
-  //     await DBHelper.update(DBHelper.usernameTable, u.toMap(), 'username_id');
 
   Future<int> deleteUsername(Username u) async {
     await DBHelper.deleteUsernameItem(u.usernameId);
@@ -637,93 +631,93 @@ class ItemProvider with ChangeNotifier {
     return _iter.toList();
   }
 
-  Future<void> mockData() async {
-    CriptoProvider _cripto = CriptoProvider();
-    await _cripto.unlock('Qwe123!');
-    List<String> _titles = [
-      'Facebook',
-      'Instagram',
-      'WiFiCasa',
-      'Spotify',
-      'Netflix',
-      'Steam',
-      'Discord',
-      'GitHub',
-      'Zoom',
-      'TeamViewer',
-    ];
-    List<String> _tags = [
-      'social',
-      'hard',
-      'stream',
-      'game',
-      'code',
-      'app',
-    ];
-    Random _r = Random();
-    await Future.forEach(_tags, (dynamic t) async {
-      Color _c = Color.fromRGBO(
-        _r.nextInt(255),
-        _r.nextInt(255),
-        _r.nextInt(255),
-        1,
-      );
-      insertTag(Tag(tagName: t, tagColor: _c.value));
-    });
-    _tags = [
-      'social',
-      'social',
-      'hard',
-      'stream',
-      'stream',
-      'game',
-      'game',
-      'code',
-      'app',
-      'app'
-    ];
-    int _t = 0;
-    await Future.forEach(_titles, (dynamic t) async {
-      DateTime _date = DateTime(2021, _r.nextInt(7) + 1, _r.nextInt(27) + 1);
-      Color _avatarColor = Color.fromRGBO(
-        _r.nextInt(255),
-        _r.nextInt(255),
-        _r.nextInt(255),
-        1,
-      );
-      Password? _p = await _cripto.createPassword(t + '@password');
-      ItemPassword _ip = ItemPassword(passwordLapse: _r.nextInt(360) + 1);
-      Username? _u = await _cripto.createUsername(t + '@username');
-      Pin _pin = await (_cripto.createPin(_r.nextInt(9999).toString())
-          as FutureOr<Pin>);
-      _pin.pinLapse = _r.nextInt(360) + 1;
-      Note? _n = await _cripto.createNote(t + '@note');
-      Address? _a = await _cripto.createAddress('www.' + t + '.com');
-      Product _pr = Product(
-        productTrademark: t + '_trademark',
-        productModel: t + '_model',
-      );
-      Item _i = Item(
-        title: t,
-        date: _date.toIso8601String(),
-        avatarColor: _avatarColor.value,
-        avatarLetterColor: _setAvatarLetterColor(_avatarColor).value,
-        password: _p,
-        itemPassword: _ip,
-        username: _u,
-        pin: _pin,
-        note: _n,
-        address: _a,
-        product: _pr,
-      );
-      _i.addRemoveTag(_tags[_t]);
-      _t += 1;
-      await insertItem(_i, date: _date.toIso8601String());
-    });
-  }
+  // Future<void> mockData() async {
+  //   CriptoProvider _cripto = CriptoProvider();
+  //   await _cripto.unlock('Qwe123!');
+  //   List<String> _titles = [
+  //     'Facebook',
+  //     'Instagram',
+  //     'WiFiCasa',
+  //     'Spotify',
+  //     'Netflix',
+  //     'Steam',
+  //     'Discord',
+  //     'GitHub',
+  //     'Zoom',
+  //     'TeamViewer',
+  //   ];
+  //   List<String> _tags = [
+  //     'social',
+  //     'hard',
+  //     'stream',
+  //     'game',
+  //     'code',
+  //     'app',
+  //   ];
+  //   Random _r = Random();
+  //   await Future.forEach(_tags, (dynamic t) async {
+  //     Color _c = Color.fromRGBO(
+  //       _r.nextInt(255),
+  //       _r.nextInt(255),
+  //       _r.nextInt(255),
+  //       1,
+  //     );
+  //     insertTag(Tag(tagName: t, tagColor: _c.value));
+  //   });
+  //   _tags = [
+  //     'social',
+  //     'social',
+  //     'hard',
+  //     'stream',
+  //     'stream',
+  //     'game',
+  //     'game',
+  //     'code',
+  //     'app',
+  //     'app'
+  //   ];
+  //   int _t = 0;
+  //   await Future.forEach(_titles, (dynamic t) async {
+  //     DateTime _date = DateTime(2021, _r.nextInt(7) + 1, _r.nextInt(27) + 1);
+  //     Color _avatarColor = Color.fromRGBO(
+  //       _r.nextInt(255),
+  //       _r.nextInt(255),
+  //       _r.nextInt(255),
+  //       1,
+  //     );
+  //     Password? _p = await _cripto.createPassword(t + '@password');
+  //     ItemPassword _ip = ItemPassword(passwordLapse: _r.nextInt(360) + 1);
+  //     Username? _u = await _cripto.createUsername(t + '@username');
+  //     Pin _pin = await (_cripto.createPin(_r.nextInt(9999).toString())
+  //         as FutureOr<Pin>);
+  //     _pin.pinLapse = _r.nextInt(360) + 1;
+  //     Note? _n = await _cripto.createNote(t + '@note');
+  //     Address? _a = await _cripto.createAddress('www.' + t + '.com');
+  //     Product _pr = Product(
+  //       productTrademark: t + '_trademark',
+  //       productModel: t + '_model',
+  //     );
+  //     Item _i = Item(
+  //       title: t,
+  //       date: _date.toIso8601String(),
+  //       avatarColor: _avatarColor.value,
+  //       avatarLetterColor: _setAvatarLetterColor(_avatarColor).value,
+  //       password: _p,
+  //       itemPassword: _ip,
+  //       username: _u,
+  //       pin: _pin,
+  //       note: _n,
+  //       address: _a,
+  //       product: _pr,
+  //     );
+  //     _i.addRemoveTag(_tags[_t]);
+  //     _t += 1;
+  //     await insertItem(_i, date: _date.toIso8601String());
+  //   });
+  // }
 
-  Color _setAvatarLetterColor(Color c) {
-    double _bgDelta = c.red * 0.299 + c.green * 0.587 + c.blue * 0.114;
-    return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
-  }
+  // Color _setAvatarLetterColor(Color c) {
+  //   double _bgDelta = c.red * 0.299 + c.green * 0.587 + c.blue * 0.114;
+  //   return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
+  // }
 }

@@ -18,18 +18,7 @@ class _LongTextTextFieldState extends State<LongTextTextField> {
       keyboardType: TextInputType.multiline,
       maxLength: 512,
       maxLines: 32,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        // enabledBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 1),
-        // ),
-        // focusedBorder: OutlineInputBorder(
-        //   borderSide: BorderSide(width: 3),
-        // ),
-        // filled: true,
-        // fillColor: Theme.of(context).backgroundColor,
-        hintText: 'Note',
-      ),
+      decoration: InputDecoration(border: InputBorder.none, hintText: 'Note'),
       onChanged: (_) {},
     );
   }

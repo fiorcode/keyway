@@ -30,7 +30,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     if (_status.isDenied) {
       PermissionStatus _ps = await Permission.manageExternalStorage
           .request()
-          .onError((error, st) => ErrorHelper.errorDialog(context, error));
+          .onError((error, st) => _onError(error));
       if (!(_ps.isGranted)) return false;
     }
     return true;
@@ -48,7 +48,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           duration: Duration(seconds: 1),
         ),
       );
-    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _backupToSdCard() async {
@@ -63,15 +63,13 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
           duration: Duration(seconds: 1),
         ),
       );
-    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _backupToMail() async {
-    await _checkPermissions()
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    await _checkPermissions().onError((error, st) => _onError(error));
     File _db = await (StorageHelper.getDeviceBackup()
-            .onError((error, st) => ErrorHelper.errorDialog(context, error))
-        as FutureOr<File>);
+        .onError((error, st) => _onError(error)) as FutureOr<File>);
     final Email _email = Email(
       body: 'Keyway Backup',
       subject: 'Keyway Backup',
@@ -80,12 +78,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
       isHTML: false,
     );
     await FlutterEmailSender.send(_email)
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+        .onError((error, st) => _onError(error));
   }
 
   Future<void> _getDeviceBackup() async {
-    await _checkPermissions()
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    await _checkPermissions().onError((error, st) => _onError(error));
     Color _primary = Theme.of(context).primaryColor;
     _icon = Icon(Icons.phone_iphone, color: _primary, size: 32);
     setState(() => _working = true);
@@ -106,12 +103,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _getSdBackup() async {
-    await _checkPermissions()
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    await _checkPermissions().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getSdCardBackup().then((file) async {
       if (file != null) {
@@ -132,12 +128,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _getDownloadsBackup() async {
-    await _checkPermissions()
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    await _checkPermissions().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getDownloadFolderBackup().then((file) async {
       if (file != null) {
@@ -158,7 +153,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _restoreBackup(String path) async {
@@ -169,7 +164,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
             ModalRoute.withName(ItemsListScreen.routeName),
           ),
         )
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+        .onError((error, st) => _onError(error));
   }
 
   Future<void> _deleteBackup() async {
@@ -181,6 +176,11 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         _working = false;
       });
     }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+  }
+
+  dynamic _onError(Object? error) {
+    setState(() => _working = false);
+    return ErrorHelper.errorDialog(context, error);
   }
 
   @override

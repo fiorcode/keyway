@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:crypto/crypto.dart';
-// import 'package:encrypt/encrypt.dart' as e;
 import 'package:zxcvbn/zxcvbn.dart';
 
 import 'package:keyway/helpers/db_helper.dart';

@@ -16,13 +16,13 @@ class TagsCard extends StatefulWidget {
 }
 
 class _TagsCardState extends State<TagsCard> {
-  late ItemProvider _items;
   Future<List<Tag>>? _getTags;
   late List<Tag> _tagList;
   List<Widget>? _chips;
   String? _widgetTags;
 
-  Future<List<Tag>> _tagsList() async => _tagList = await _items.getTags();
+  Future<List<Tag>> _tagsList() async => _tagList =
+      await Provider.of<ItemProvider>(context, listen: false).getTags();
 
   List<Widget>? _tags(List<Tag> tags, bool interact) {
     _chips = <Widget>[];
@@ -76,7 +76,6 @@ class _TagsCardState extends State<TagsCard> {
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
     if (widget.item != null) _widgetTags = widget.item!.tags;
     _getTags = _tagsList();
     super.initState();

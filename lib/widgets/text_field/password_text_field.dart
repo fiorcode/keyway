@@ -4,9 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:keyway/helpers/password_helper.dart';
 
 class PasswordTextField extends StatefulWidget {
-  PasswordTextField(this.ctrler);
+  PasswordTextField(this.ctrler, this.updateView);
 
   final TextEditingController? ctrler;
+  final Function updateView;
 
   @override
   _PasswordTextFieldState createState() => _PasswordTextFieldState();
@@ -18,6 +19,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
 
   void _onChanged() {
     setState(() => _empty = widget.ctrler!.text.isEmpty);
+    widget.updateView();
   }
 
   void _obscureSwitch() {
@@ -27,6 +29,8 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
   void _clear() {
     widget.ctrler!.clear();
     _empty = true;
+    setState(() {});
+    widget.updateView();
   }
 
   @override

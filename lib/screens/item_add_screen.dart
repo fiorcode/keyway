@@ -310,7 +310,10 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                               Row(
                                 children: [
                                   Expanded(
-                                    child: PasswordTextField(_passCtrler),
+                                    child: PasswordTextField(
+                                      _passCtrler,
+                                      _updateView,
+                                    ),
                                   ),
                                   _loadingRandomPass
                                       ? CircularProgressIndicator()

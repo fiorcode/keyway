@@ -13,20 +13,19 @@ class TagsScreen extends StatefulWidget {
 }
 
 class _TagsScreenState extends State<TagsScreen> {
-  late ItemProvider _item;
   Future<List<Tag>>? _getTags;
 
-  Future<List<Tag>> _getTagsAsync() => _item.getTags();
+  Future<List<Tag>> _getTagsAsync() =>
+      Provider.of<ItemProvider>(context, listen: false).getTags();
 
   Future<void> _deleteTag(Tag t) async {
-    await _item.deleteTag(t);
+    await Provider.of<ItemProvider>(context, listen: false).deleteTag(t);
     _getTags = _getTagsAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getTags = _getTagsAsync();
     super.initState();
   }

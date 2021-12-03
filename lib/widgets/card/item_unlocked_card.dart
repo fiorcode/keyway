@@ -20,10 +20,10 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
   String? _title;
   late String _subtitle;
   bool _repeat = false;
-  IconData? _icon;
-  Color? _avatarColor;
-  Color? _iconColor;
-  Color? _warnColor;
+  IconData _icon = Icons.title;
+  Color _avatarColor = Colors.grey;
+  Color _iconColor = Colors.white;
+  Color _warnColor = Colors.red;
 
   void _onTap() => widget.onTap!();
 
@@ -50,7 +50,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.password == null) continue two;
         _showValue = 1;
         _icon = Icons.password;
-        await _c.decryptPassword(widget.item!.password);
+        await _c.decryptPassword(widget.item!.password).onError(
+              (error, st) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Error: ' + error.toString()),
+                  duration: Duration(seconds: 3),
+                ),
+              ),
+            );
         _title = widget.item!.password!.passwordDec;
         _subtitle = '';
         break;
@@ -59,7 +67,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.pin == null) continue three;
         _showValue = 2;
         _icon = Icons.pin;
-        await _c.decryptPin(widget.item!.pin);
+        await _c.decryptPin(widget.item!.pin).onError(
+              (error, st) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Error: ' + error.toString()),
+                  duration: Duration(seconds: 3),
+                ),
+              ),
+            );
         _title = widget.item!.pin!.pinDec;
         _subtitle = '';
         break;
@@ -68,7 +84,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.username == null) continue four;
         _showValue = 3;
         _icon = Icons.account_box;
-        await _c.decryptUsername(widget.item!.username);
+        await _c.decryptUsername(widget.item!.username).onError(
+              (error, st) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Error: ' + error.toString()),
+                  duration: Duration(seconds: 3),
+                ),
+              ),
+            );
         _title = widget.item!.username!.usernameDec;
         _subtitle = '';
         break;
@@ -77,7 +101,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.note == null) continue five;
         _showValue = 4;
         _icon = Icons.note;
-        await _c.decryptNote(widget.item!.note);
+        await _c.decryptNote(widget.item!.note).onError(
+              (error, st) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Error: ' + error.toString()),
+                  duration: Duration(seconds: 3),
+                ),
+              ),
+            );
         _title = widget.item!.note!.noteDec;
         _subtitle = '';
         break;
@@ -86,7 +118,15 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
         if (widget.item!.address == null) continue six;
         _showValue = 5;
         _icon = Icons.http;
-        await _c.decryptAddress(widget.item!.address);
+        await _c.decryptAddress(widget.item!.address).onError(
+              (error, st) => ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  backgroundColor: Colors.red,
+                  content: Text('Error: ' + error.toString()),
+                  duration: Duration(seconds: 3),
+                ),
+              ),
+            );
         _title = widget.item!.address!.addressDec;
         _subtitle =
             'Protocol: ${widget.item!.address!.addressProtocol}, Port: ${widget.item!.address!.addressPort}';
@@ -102,7 +142,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
       cero:
       default:
         _showValue = 0;
-        _icon = null;
+        _icon = Icons.title;
         _title = widget.item!.title;
         _subtitle = '';
     }
@@ -126,20 +166,20 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
     return (255 - _bgDelta > 105) ? Colors.white : Colors.black;
   }
 
-  Color? _setIconColor() {
+  Color _setIconColor() {
     if (widget.item!.itemPassword != null) {
       if (widget.item!.itemPassword!.repeatWarning &&
-          widget.item!.itemPassword!.repeated) return Colors.grey[200];
+          widget.item!.itemPassword!.repeated) return Colors.grey[200]!;
     }
     return Colors.grey;
   }
 
-  Color? _setWarningColor() {
+  Color _setWarningColor() {
     if (widget.item!.itemPassword != null) {
       if (widget.item!.itemPassword!.repeatWarning &&
-          widget.item!.itemPassword!.repeated) return Colors.red[300];
+          widget.item!.itemPassword!.repeated) return Colors.red[300]!;
     }
-    return Colors.grey[100];
+    return Colors.grey[100]!;
   }
 
   @override
@@ -168,7 +208,7 @@ class _ItemUnlockedCardState extends State<ItemUnlockedCard> {
           backgroundColor: widget.item!.avatarColor != null
               ? Color(widget.item!.avatarColor!)
               : Colors.grey,
-          child: _icon == null
+          child: _icon == Icons.title
               ? Text(
                   widget.item!.title.substring(0, 1).toUpperCase(),
                   style: TextStyle(

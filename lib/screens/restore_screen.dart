@@ -58,7 +58,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getSdBackup() async {
@@ -83,7 +83,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDownloadsBackup() async {
@@ -108,7 +108,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _restoreBackup(String path) async {
@@ -122,7 +122,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
           ModalRoute.withName(SplashScreen.routeName),
         );
       },
-    );
+    ).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _deleteBackup() async {
@@ -133,7 +133,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         _fileToRestoreStatus = null;
         _working = false;
       });
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override

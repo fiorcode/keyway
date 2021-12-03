@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/providers/item_provider.dart';
 import 'package:provider/provider.dart';
@@ -47,9 +48,13 @@ class _ItemLockedCardState extends State<ItemLockedCard> {
     if (_pin)
       widget.item!.title = Random.secure().nextInt(9999).toString();
     else {
-      widget.item!.title = (await PasswordHelper.dicePassword()).password!;
+      widget.item!.title = (await PasswordHelper.dicePassword()
+              .onError((error, st) => ErrorHelper.errorDialog(context, error)))
+          .password!;
     }
-    Provider.of<ItemProvider>(context, listen: false).updateItem(widget.item!);
+    Provider.of<ItemProvider>(context, listen: false)
+        .updateItem(widget.item!)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     setState(() {});
   }
 

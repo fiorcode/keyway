@@ -63,19 +63,17 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
       _zxcvbnResult = result;
       _passCtrler.text = result.password!;
       setState(() => _loadingRandomPass = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   void _setPassword() async {
-    try {
-      if (await CriptoProvider.initialSetup(_passCtrler.text)) {
+    CriptoProvider.initialSetup(_passCtrler.text).then((success) {
+      if (success) {
         Provider.of<CriptoProvider>(context, listen: false)
             .unlock(_passCtrler.text);
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
-    } catch (error) {
-      ErrorHelper.errorDialog(context, error);
-    }
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   void _restoreData() =>

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 
 import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/models/item.dart';
@@ -21,7 +22,9 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
 
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
-    widget.ctrler!.text = (await PasswordHelper.dicePassword()).password!;
+    widget.ctrler!.text = (await PasswordHelper.dicePassword()
+            .onError((error, st) => ErrorHelper.errorDialog(context, error)))
+        .password!;
     setState(() => _loadingRandomPass = false);
   }
 
@@ -37,7 +40,10 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
             Row(
               children: [
                 Expanded(
-                  child: PasswordTextField(widget.ctrler),
+                  child: PasswordTextField(
+                    widget.ctrler,
+                    () => this.setState(() {}),
+                  ),
                 ),
                 _loadingRandomPass
                     ? CircularProgressIndicator()
@@ -75,12 +81,10 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
                     ),
                   ),
                   Switch(
-                    activeColor: Colors.green,
-                    value: widget.item!.itemPassword!.repeatWarning,
-                    onChanged: (_) => setState(() {
-                      widget.item!.itemPassword!.repeatWarningSwitch();
-                    }),
-                  ),
+                      activeColor: Colors.green,
+                      value: widget.item!.itemPassword!.repeatWarning,
+                      onChanged: (_) => setState(() =>
+                          widget.item!.itemPassword!.repeatWarningSwitch())),
                 ],
               ),
           ],

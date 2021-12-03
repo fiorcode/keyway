@@ -120,8 +120,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _generatePassword() async {
     setState(() => _working = true);
     Item _i = Item(
-      title: (await PasswordHelper.dicePassword()
-              .onError((error, st) => ErrorHelper.errorDialog(context, error)))
+      title: (await PasswordHelper.dicePassword().onError((error, st) {
+        setState(() => _working = false);
+        return ErrorHelper.errorDialog(context, error);
+      }))
           .password!,
       itemStatus: '<cleartext>',
       avatarColor: Colors.white.value,
@@ -129,7 +131,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     );
     _i.itemId = await Provider.of<ItemProvider>(context, listen: false)
         .insertItem(_i)
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+        .onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.add(_i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -138,12 +143,14 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _buildRandomItem(Item old, Item i) async {
     setState(() => _working = true);
     ItemProvider _i = Provider.of<ItemProvider>(context, listen: false);
-    i.itemId = await _i
-        .insertItem(i)
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
-    await _i
-        .deleteItem(old)
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    i.itemId = await _i.insertItem(i).onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
+    await _i.deleteItem(old).onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.remove(old);
     _items.add(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
@@ -154,7 +161,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() => _working = true);
     await Provider.of<ItemProvider>(context, listen: false)
         .deleteCleartextItem(i)
-        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+        .onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.remove(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -168,8 +178,8 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           Icons.lock_outline,
           color: _unlocking ? Colors.orange : Colors.red,
         ),
-        // onPressed: _lockSwitch,
-        onPressed: () => _cripto.unlock('Qwe123!'),
+        onPressed: _lockSwitch,
+        // onPressed: () => _cripto.unlock('Qwe123!'),
       );
     } else {
       if (_searching) {

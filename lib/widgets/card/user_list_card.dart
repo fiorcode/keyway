@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/username.dart';
@@ -26,7 +27,8 @@ class _UserListCardState extends State<UserListCard> {
     _usernames = await _ip.getUsers();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
     Future.forEach(
-        _usernames, (dynamic u) async => await _cp.decryptUsername(u));
+            _usernames, (dynamic u) async => await _cp.decryptUsername(u))
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override

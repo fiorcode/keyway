@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -21,12 +22,14 @@ class _UsernamesScreenState extends State<UsernamesScreen> {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _usernames = await _ip.fetchUsernames();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_usernames, (dynamic u) => _cp.decryptUsername(u));
+    Future.forEach(_usernames, (dynamic u) => _cp.decryptUsername(u))
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _deleteUsername(Username u) async {
-    ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip.deleteUsername(u);
+    await Provider.of<ItemProvider>(context, listen: false)
+        .deleteUsername(u)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getUsernames = _getUsernamesAsync();
     setState(() {});
   }
