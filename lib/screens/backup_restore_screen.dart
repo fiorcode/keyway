@@ -24,7 +24,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   FileStat? _fileToRestoreStatus;
   bool _working = false;
 
-  Future<bool> _checkPermissions() async {
+  Future<bool> _externalStoragePermission() async {
     PermissionStatus _status = await Permission.manageExternalStorage.status
         .onError((error, st) => ErrorHelper.errorDialog(context, error));
     if (_status.isDenied) {
@@ -36,7 +36,20 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     return true;
   }
 
+  Future<bool> _storagePermission() async {
+    PermissionStatus _status = await Permission.storage.status
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    if (_status.isDenied) {
+      PermissionStatus _ps = await Permission.storage
+          .request()
+          .onError((error, st) => _onError(error));
+      if (!(_ps.isGranted)) return false;
+    }
+    return true;
+  }
+
   Future<void> _backupToDevice() async {
+    await _storagePermission();
     StorageHelper.backupToDevice().then((succeed) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -57,7 +70,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         SnackBar(
           backgroundColor: succeed ? Colors.green : Colors.red,
           content: Text(
-            succeed ? 'DONE!' : 'SOMETHING WENT WRONG',
+            succeed ? 'DONE!' : 'SOMETHING WENT WRONG \n\n no SD card?',
             textAlign: TextAlign.center,
           ),
           duration: Duration(seconds: 1),
@@ -67,22 +80,54 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   }
 
   Future<void> _backupToMail() async {
-    await _checkPermissions().onError((error, st) => _onError(error));
-    File _db = await (StorageHelper.getDeviceBackup()
-        .onError((error, st) => _onError(error)) as FutureOr<File>);
-    final Email _email = Email(
-      body: 'Keyway Backup',
-      subject: 'Keyway Backup',
-      recipients: ['lperezfiorentino@vialidad.gob.ar'],
-      attachmentPaths: [_db.path],
-      isHTML: false,
-    );
-    await FlutterEmailSender.send(_email)
-        .onError((error, st) => _onError(error));
+    await _storagePermission();
+    StorageHelper.backupToDevice().then((succeed) {
+      if (succeed) {
+        StorageHelper.getDeviceBackup().then((file) async {
+          if (file != null) {
+            final Email _email = Email(
+              body: 'Keyway Backup',
+              subject: 'Keyway Backup',
+              recipients: ['lperezfiorentino@vialidad.gob.ar'],
+              attachmentPaths: [file.path],
+              isHTML: false,
+            );
+            await FlutterEmailSender.send(_email)
+                .onError((error, st) => _onError(error));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text('Email sent!', textAlign: TextAlign.center),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  'FILE NOT FOUND',
+                  textAlign: TextAlign.center,
+                ),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          }
+        }).onError((error, st) => _onError(error));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red,
+            content: Text('SOMETHING WENT WRONG', textAlign: TextAlign.center),
+            duration: Duration(seconds: 1),
+          ),
+        );
+      }
+    });
   }
 
   Future<void> _getDeviceBackup() async {
-    await _checkPermissions().onError((error, st) => _onError(error));
+    await _storagePermission().onError((error, st) => _onError(error));
     Color _primary = Theme.of(context).primaryColor;
     _icon = Icon(Icons.phone_iphone, color: _primary, size: 32);
     setState(() => _working = true);
@@ -107,7 +152,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   }
 
   Future<void> _getSdBackup() async {
-    await _checkPermissions().onError((error, st) => _onError(error));
+    await _externalStoragePermission().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getSdCardBackup().then((file) async {
       if (file != null) {
@@ -132,7 +177,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
   }
 
   Future<void> _getDownloadsBackup() async {
-    await _checkPermissions().onError((error, st) => _onError(error));
+    await _externalStoragePermission().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getDownloadFolderBackup().then((file) async {
       if (file != null) {
