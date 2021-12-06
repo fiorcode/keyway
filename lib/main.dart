@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'providers/cripto_provider.dart';
 import 'providers/item_provider.dart';
@@ -43,8 +44,16 @@ import 'screens/data_views/cpe23uri_cve_table.dart';
 import 'screens/data_views/cve_table.dart';
 import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
+import 'services/notification_service.dart';
 
-void main() => runApp(MyApp());
+final AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('keyway\assets\icon.png');
+
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService().init();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
