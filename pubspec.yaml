@@ -27,6 +27,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_email_sender: ^5.0.2
+  flutter_local_notifications: ^9.1.4
   http: ^0.13.3
   intl: ^0.17.0
   permission_handler: ^8.1.4+1
