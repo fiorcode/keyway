@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
+import '../helpers/error_helper.dart';
 import '../helpers/date_helper.dart';
 import '../helpers/password_helper.dart';
 import '../models/tag.dart';
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
+import '../services/notification_service.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/item_view_screen.dart';
+import '../screens/dashboard_screen.dart';
 import '../widgets/card/item_cleartext_card.dart';
 import '../widgets/empty_items.dart';
 import '../widgets/loading_scaffold.dart';
-import '../screens/dashboard_screen.dart';
 import '../widgets/card/item_locked_card.dart';
 import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
@@ -203,6 +204,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   @override
   void initState() {
     _getItems = _getItemsAsync();
+    NotificationService().scheduleNotifications();
     super.initState();
   }
 
