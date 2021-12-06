@@ -1,7 +1,7 @@
 class ProductCve {
-  int fkProductId;
-  int fkCveId;
-  int patched;
+  int? fkProductId;
+  int? fkCveId;
+  int? patched;
 
   ProductCve({
     this.fkProductId,
@@ -9,7 +9,7 @@ class ProductCve {
     this.patched = 0,
   });
 
-  bool get isPatched => (this.patched > 0);
+  bool get isPatched => (this.patched! > 0);
 
   ProductCve.fromMap(Map<String, dynamic> map) {
     fkProductId = map['fk_product_id'];
@@ -33,7 +33,6 @@ class ProductCve {
   }
 
   bool notEqual(ProductCve pc) {
-    if (pc == null) return true;
     if (this.fkProductId != pc.fkProductId) return true;
     if (this.fkCveId != pc.fkCveId) return true;
     if (this.patched != pc.patched) return true;

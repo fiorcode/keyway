@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/nist_provider.dart';
@@ -12,57 +13,60 @@ class ProductSearchScreen extends StatefulWidget {
 
   ProductSearchScreen({this.product, this.trademarkCtrler, this.modelCtrler});
 
-  final Product product;
-  final TextEditingController trademarkCtrler;
-  final TextEditingController modelCtrler;
+  final Product? product;
+  final TextEditingController? trademarkCtrler;
+  final TextEditingController? modelCtrler;
 
   @override
   _ProductSearchScreenState createState() => _ProductSearchScreenState();
 }
 
 class _ProductSearchScreenState extends State<ProductSearchScreen> {
-  NistProvider _nist;
-  Future<CpeBody> _getCpesAsync;
-  TextEditingController _keywordCtrler = TextEditingController();
+  Future<CpeBody>? _getCpesAsync;
 
-  bool _emptyTrademark;
-  bool _emptyModel;
-  bool _emptyKeyword;
+  Product _product = Product();
+  TextEditingController _trademarkCtrler = TextEditingController();
+  TextEditingController _modelCtrler = TextEditingController();
+  TextEditingController _keywordCtrler = TextEditingController();
+  bool _emptyTrademark = true;
+  bool _emptyModel = true;
+  bool _emptyKeyword = true;
+
   bool _byKeyword = false;
   int _typeIndex = 0;
 
   bool _productNotEmpty() {
-    if (widget.product.productTrademark.isNotEmpty) return true;
-    if (widget.product.productModel.isNotEmpty) return true;
+    if (_product.productTrademark.isNotEmpty) return true;
+    if (_product.productModel.isNotEmpty) return true;
     return false;
   }
 
   void _onChangedTrademark(String value) {
     setState(() {
-      _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
-      widget.product.productTrademark = value;
+      _emptyTrademark = _trademarkCtrler.text.isEmpty;
+      _product.productTrademark = value;
     });
   }
 
   void _clearTrademark() {
     setState(() {
-      widget.trademarkCtrler.clear();
-      widget.product.productTrademark = '';
+      _trademarkCtrler.clear();
+      _product.productTrademark = '';
       _emptyTrademark = true;
     });
   }
 
   void _onChangedModel(String value) {
     setState(() {
-      _emptyModel = widget.modelCtrler.text.isEmpty;
-      widget.product.productModel = value;
+      _emptyModel = _modelCtrler.text.isEmpty;
+      _product.productModel = value;
     });
   }
 
   void _clearModel() {
     setState(() {
-      widget.modelCtrler.clear();
-      widget.product.productModel = '';
+      _modelCtrler.clear();
+      _product.productModel = '';
       _emptyModel = true;
     });
   }
@@ -86,21 +90,25 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   }
 
   void _search({int startIndex = 0}) {
-    _nist = Provider.of<NistProvider>(context, listen: false);
+    NistProvider _nist = Provider.of<NistProvider>(context, listen: false);
     if (_byKeyword) {
       if (_keywordCtrler.text.isEmpty) return;
-      _getCpesAsync = _nist.getCpesByKeyword(
-        _keywordCtrler.text,
-        startIndex: startIndex,
-      );
+      _getCpesAsync = _nist
+          .getCpesByKeyword(
+            _keywordCtrler.text,
+            startIndex: startIndex,
+          )
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
     } else {
       if (_productNotEmpty()) {
-        _getCpesAsync = _nist.getCpesByCpeMatch(
-          type: widget.product.productType,
-          trademark: widget.product.productTrademark,
-          model: widget.product.productModel,
-          startIndex: startIndex,
-        );
+        _getCpesAsync = _nist
+            .getCpesByCpeMatch(
+              type: _product.productType,
+              trademark: _product.productTrademark,
+              model: _product.productModel,
+              startIndex: startIndex,
+            )
+            .onError((error, st) => ErrorHelper.errorDialog(context, error));
       }
     }
   }
@@ -108,35 +116,44 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   void _byKeywordSwitch() => setState(() => _byKeyword = !_byKeyword);
 
   void _typeSwitch() {
-    setState(() {
-      if (_typeIndex == 3)
-        _typeIndex = 0;
-      else
-        _typeIndex += 1;
-      switch (_typeIndex) {
-        case 1:
-          widget.product.productType = 'h';
-          break;
-        case 2:
-          widget.product.productType = 'o';
-          break;
-        case 3:
-          widget.product.productType = 'a';
-          break;
-        default:
-          widget.product.productType = '';
-      }
-    });
+    if (_typeIndex == 3)
+      _typeIndex = 0;
+    else
+      _typeIndex += 1;
+    switch (_typeIndex) {
+      case 1:
+        _product.setTypeHardware();
+        break;
+      case 2:
+        _product.setTypeOsFirmware();
+        break;
+      case 3:
+        _product.setTypeApp();
+        break;
+      default:
+        _product.setTypeAll();
+    }
+    setState(() {});
   }
 
   int _pages(int totalResults) => (totalResults.toDouble() / 100).ceil();
 
-  void _setCpe(Cpe cpe) => widget.product.setCpe23uri(cpe);
+  void _setCpe(Cpe cpe) {
+    _product.setCpe23uri(cpe);
+    _product.productTrademark = cpe.trademark;
+    _product.productModel = cpe.model;
+    widget.trademarkCtrler!.text = cpe.trademark;
+    widget.modelCtrler!.text = cpe.model;
+  }
 
   @override
   void initState() {
-    _emptyTrademark = widget.trademarkCtrler.text.isEmpty;
-    _emptyModel = widget.modelCtrler.text.isEmpty;
+    if (widget.product != null) _product = widget.product!;
+    if (widget.trademarkCtrler != null)
+      _trademarkCtrler = widget.trademarkCtrler!;
+    if (widget.modelCtrler != null) _modelCtrler = widget.modelCtrler!;
+    _emptyTrademark = _trademarkCtrler.text.isEmpty;
+    _emptyModel = _modelCtrler.text.isEmpty;
     _emptyKeyword = _keywordCtrler.text.isEmpty;
     _search();
     super.initState();
@@ -144,11 +161,13 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Color _back = Theme.of(context).backgroundColor;
+    Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: _back,
       appBar: AppBar(
-        backgroundColor: Theme.of(context).backgroundColor,
-        iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
+        backgroundColor: _back,
+        iconTheme: IconThemeData(color: _primary),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(12),
@@ -182,7 +201,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                               selectedColor: Colors.grey[200],
                               onSelected: (_) {},
                               label: Text(
-                                widget.product.type,
+                                _product.type,
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontWeight: FontWeight.bold,
@@ -193,8 +212,11 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                           ),
                           IconButton(
                             onPressed: _typeSwitch,
-                            icon: Icon(Icons.change_circle_outlined,
-                                color: Colors.grey, size: 32),
+                            icon: Icon(
+                              Icons.change_circle_outlined,
+                              color: Colors.grey,
+                              size: 32,
+                            ),
                           ),
                         ],
                       ),
@@ -215,7 +237,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                           Expanded(
                             child: TextField(
                               autocorrect: true,
-                              controller: widget.trademarkCtrler,
+                              controller: _trademarkCtrler,
                               decoration: InputDecoration(
                                 hintText: 'Trademark / Developer',
                                 suffixIcon: _emptyTrademark
@@ -248,7 +270,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                           Expanded(
                             child: TextField(
                               autocorrect: true,
-                              controller: widget.modelCtrler,
+                              controller: _modelCtrler,
                               decoration: InputDecoration(
                                 hintText: 'Model / Program',
                                 suffixIcon: _emptyModel
@@ -326,8 +348,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                   case (ConnectionState.done):
                     if (snap.hasError) {
                       return Text(snap.error.toString());
-                    } else
-                      return snap.data.result.cpes.length <= 0
+                    } else {
+                      CpeBody body = snap.data as CpeBody;
+                      return body.result!.cpes!.length <= 0
                           ? Padding(
                               padding: const EdgeInsets.all(32.0),
                               child: Center(
@@ -343,7 +366,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                 Padding(
                                   padding: const EdgeInsets.only(top: 8.0),
                                   child: Text(
-                                    '${snap.data.totalResults} results',
+                                    '${body.totalResults} results',
                                     style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -351,7 +374,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                     ),
                                   ),
                                 ),
-                                if (snap.data.totalResults > 100)
+                                if (body.totalResults! > 100)
                                   Container(
                                     height: 64,
                                     child: ListView.builder(
@@ -359,15 +382,14 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                       shrinkWrap: true,
                                       padding:
                                           EdgeInsets.symmetric(vertical: 12.0),
-                                      itemCount: _pages(snap.data.totalResults),
+                                      itemCount: _pages(body.totalResults!),
                                       itemBuilder: (ctx, i) {
                                         return FloatingActionButton(
-                                          elevation:
-                                              snap.data.startIndex / 100 == i
-                                                  ? 8.0
-                                                  : 0.0,
+                                          elevation: body.startIndex! / 100 == i
+                                              ? 8.0
+                                              : 0.0,
                                           backgroundColor:
-                                              snap.data.startIndex / 100 == i
+                                              body.startIndex! / 100 == i
                                                   ? Colors.white
                                                   : Colors.grey,
                                           onPressed: () =>
@@ -376,11 +398,9 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                           child: Text(
                                             (i + 1).toString(),
                                             style: TextStyle(
-                                              color:
-                                                  snap.data.startIndex / 100 ==
-                                                          i
-                                                      ? Colors.grey
-                                                      : Colors.white,
+                                              color: body.startIndex! / 100 == i
+                                                  ? Colors.grey
+                                                  : Colors.white,
                                             ),
                                           ),
                                         );
@@ -390,17 +410,17 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                 ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount: snap.data.result.cpes.length,
+                                  itemCount: body.result!.cpes!.length,
                                   itemBuilder: (ctx, i) {
                                     return CpeSelectionCard(
-                                      snap.data.result.cpes[i],
+                                      body.result!.cpes![i],
                                       _setCpe,
                                     );
                                   },
                                 ),
                               ],
                             );
-                    break;
+                    }
                   default:
                     return Center(child: Text('default'));
                 }

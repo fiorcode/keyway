@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/item_provider.dart';
@@ -13,13 +14,15 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
-  ItemProvider _item;
-  Future<void> _getProducts;
+  late ItemProvider _item;
+  Future<void>? _getProducts;
 
   Future<void> _getProductsAsync() => _item.fetchProducts();
 
   Future<void> _deleteProduct(Product p) async {
-    await _item.deleteProduct(p);
+    await _item
+        .deleteProduct(p)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getProducts = _getProductsAsync();
     setState(() {});
   }
@@ -45,7 +48,6 @@ class _ProductsScreenState extends State<ProductsScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),

@@ -32,7 +32,7 @@ class _UnlockContainerState extends State<UnlockContainer> {
     await _cripto
         .unlock(_ctrler.text)
         .then((_) => widget.function())
-        .onError((error, _) {
+        .onError((dynamic error, _) {
       ScaffoldMessenger.of(ctx).showSnackBar(
         SnackBar(
           content: Text('Wrong Password'),

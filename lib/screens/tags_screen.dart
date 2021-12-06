@@ -13,20 +13,19 @@ class TagsScreen extends StatefulWidget {
 }
 
 class _TagsScreenState extends State<TagsScreen> {
-  ItemProvider _item;
-  Future<List<Tag>> _getTags;
+  Future<List<Tag>>? _getTags;
 
-  Future<List<Tag>> _getTagsAsync() => _item.getTags();
+  Future<List<Tag>> _getTagsAsync() =>
+      Provider.of<ItemProvider>(context, listen: false).getTags();
 
   Future<void> _deleteTag(Tag t) async {
-    await _item.deleteTag(t);
+    await Provider.of<ItemProvider>(context, listen: false).deleteTag(t);
     _getTags = _getTagsAsync();
     setState(() {});
   }
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getTags = _getTagsAsync();
     super.initState();
   }
@@ -45,28 +44,29 @@ class _TagsScreenState extends State<TagsScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
+                List<Tag> tags = <Tag>[];
+                tags = snap.data as List<Tag>;
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: snap.data.length,
+                    itemCount: tags.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
                           leading: Icon(
                             Icons.tag,
                             size: 32,
-                            color: Color(snap.data[i].tagColor),
+                            color: Color(tags[i].tagColor),
                           ),
                           title: Text(
-                            snap.data[i].tagName,
+                            tags[i].tagName,
                             style: TextStyle(
                               fontSize: 18,
-                              color: Color(snap.data[i].tagColor),
+                              color: Color(tags[i].tagColor),
                             ),
                           ),
                           trailing: IconButton(
-                            onPressed: () => _deleteTag(snap.data[i]),
+                            onPressed: () => _deleteTag(tags[i]),
                             icon: Icon(
                               Icons.delete_forever,
                               color: Colors.red,

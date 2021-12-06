@@ -13,20 +13,21 @@ class NoteTableScreen extends StatefulWidget {
 }
 
 class _NoteTableScreenState extends State<NoteTableScreen> {
-  ItemProvider _item;
-  Future _getNotes;
+  late ItemProvider _item;
+  Future? _getNotes;
 
-  Future<void> _getNotesAsync() async => await _item.fetchNotes();
+  Future<void> _getNotesAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false).fetchNotes();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getNotes = _getNotesAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -100,7 +101,6 @@ class _NoteTableScreenState extends State<NoteTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

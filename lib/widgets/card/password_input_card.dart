@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 
 import 'package:keyway/helpers/password_helper.dart';
 import 'package:keyway/models/item.dart';
-import 'package:keyway/widgets/card/password_change_reminder_card.dart';
+import 'package:keyway/widgets/card/password_add_edit_card.dart';
 import 'package:keyway/widgets/card/strength_level_card.dart';
 import 'package:keyway/widgets/text_field/password_text_field.dart';
 
 class PasswordInputCard extends StatefulWidget {
   const PasswordInputCard(this.ctrler, this.item);
 
-  final TextEditingController ctrler;
-  final Item item;
+  final TextEditingController? ctrler;
+  final Item? item;
 
   @override
   _PasswordInputCardState createState() => _PasswordInputCardState();
@@ -19,11 +20,11 @@ class PasswordInputCard extends StatefulWidget {
 class _PasswordInputCardState extends State<PasswordInputCard> {
   bool _loadingRandomPass = false;
 
-  void _updateView() {}
-
   Future<void> _loadRandomPassword() async {
     setState(() => _loadingRandomPass = true);
-    widget.ctrler.text = (await PasswordHelper.dicePassword()).password;
+    widget.ctrler!.text = (await PasswordHelper.dicePassword()
+            .onError((error, st) => ErrorHelper.errorDialog(context, error)))
+        .password!;
     setState(() => _loadingRandomPass = false);
   }
 
@@ -39,7 +40,10 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
             Row(
               children: [
                 Expanded(
-                  child: PasswordTextField(widget.ctrler, _updateView),
+                  child: PasswordTextField(
+                    widget.ctrler,
+                    () => this.setState(() {}),
+                  ),
                 ),
                 _loadingRandomPass
                     ? CircularProgressIndicator()
@@ -49,21 +53,19 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
                       ),
               ],
             ),
-            if (widget.ctrler.text.isNotEmpty)
+            if (widget.ctrler!.text.isNotEmpty)
               StrengthLevelCard(
                 PasswordHelper.evaluate(
-                  widget.ctrler.text,
-                  password: widget.item.password,
+                  widget.ctrler!.text,
+                  password: widget.item!.password,
                 ),
               ),
-            if (widget.ctrler.text.isNotEmpty)
+            if (widget.ctrler!.text.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: PasswordChangeReminderCard(
-                  itemPass: widget.item.itemPassword,
-                ),
+                child: PasswordAddEditCard(widget.item!.itemPassword!),
               ),
-            if (widget.ctrler.text.isNotEmpty)
+            if (widget.ctrler!.text.isNotEmpty)
               Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -79,12 +81,10 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
                     ),
                   ),
                   Switch(
-                    activeColor: Colors.green,
-                    value: widget.item.itemPassword.repeatWarning,
-                    onChanged: (_) => setState(() {
-                      widget.item.itemPassword.repeatWarningSwitch();
-                    }),
-                  ),
+                      activeColor: Colors.green,
+                      value: widget.item!.itemPassword!.repeatWarning,
+                      onChanged: (_) => setState(() =>
+                          widget.item!.itemPassword!.repeatWarningSwitch())),
                 ],
               ),
           ],

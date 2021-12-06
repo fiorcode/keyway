@@ -10,7 +10,7 @@ class NistProvider with ChangeNotifier {
   static const _baseUrl = 'https://services.nvd.nist.gov/rest/json';
 
   Future<CpeBody> getCpesByCpeMatch({
-    String type = '*',
+    String? type = '*',
     String trademark = '*',
     String model = '*',
     int startIndex = 0,

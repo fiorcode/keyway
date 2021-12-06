@@ -7,36 +7,65 @@ import 'address.dart';
 import 'note.dart';
 
 class Item {
-  int itemId;
-  String title;
-  String date;
-  int avatarColor;
-  int avatarLetterColor;
-  String font;
-  String itemStatus;
-  String tags;
-  int fkUsernameId;
-  int fkPinId;
-  int fkNoteId;
-  int fkAddressId;
-  int fkProductId;
+  int? itemId;
+  String title = '';
+  String date = '';
+  int? avatarColor;
+  int? avatarLetterColor;
+  String? font;
+  String? itemStatus;
+  String? tags;
+  int? fkUsernameId;
+  int? fkPinId;
+  int? fkNoteId;
+  int? fkAddressId;
+  int? fkProductId;
 
-  Username username;
-  Password password;
-  List<Password> passwords;
-  ItemPassword itemPassword;
-  List<ItemPassword> itemPasswords;
-  Pin pin;
-  Note note;
-  Address address;
-  Product product;
+  Username? username;
+  Password? password;
+  List<Password>? passwords;
+  ItemPassword? itemPassword;
+  List<ItemPassword>? itemPasswords;
+  Pin? pin;
+  Note? note;
+  Address? address;
+  Product? product;
 
-  bool get deleted => this.itemStatus.contains('<deleted>');
-  bool get cleartext => this.itemStatus.contains('<cleartext>');
+  bool get deleted => this.itemStatus!.contains('<deleted>');
+  bool get cleartext => this.itemStatus!.contains('<cleartext>');
+  bool get expired {
+    if (this.itemPassword != null) {
+      if (this.itemPassword!.expired) return true;
+    }
+    if (this.pin != null) {
+      if (this.pin!.expired) return true;
+    }
+    return false;
+  }
+
+  bool get empty {
+    if (this.username != null) {
+      if (!this.username!.empty) return false;
+    }
+    if (this.password != null) {
+      if (!this.password!.empty) return false;
+    }
+    if (this.pin != null) {
+      if (!this.pin!.empty) return false;
+    }
+    if (this.note != null) {
+      if (!this.note!.empty) return false;
+    }
+    if (this.address != null) {
+      if (!this.address!.empty) return false;
+    }
+    if (this.product != null) {
+      if (!this.product!.empty) return false;
+    }
+    return true;
+  }
 
   Item.factory() {
-    this.title = '';
-    this.date = '';
     this.avatarColor = 4290624957;
     this.avatarLetterColor = 4294967295;
     this.font = '';
@@ -73,24 +102,24 @@ class Item {
   });
 
   void setDeleted() {
-    if (!this.deleted) this.itemStatus += '<deleted>';
+    if (!this.deleted) this.itemStatus = this.itemStatus! + '<deleted>';
   }
 
   void unSetDeleted() {
-    this.itemStatus = this.itemStatus.replaceAll('<deleted>', '');
+    this.itemStatus = this.itemStatus!.replaceAll('<deleted>', '');
   }
 
   void setCleartext() {
-    if (!this.cleartext) this.itemStatus += '<cleartext>';
+    if (!this.cleartext) this.itemStatus = this.itemStatus! + '<cleartext>';
   }
 
   void unSetCleartext() {
-    this.itemStatus = this.itemStatus.replaceAll('<cleartext>', '');
+    this.itemStatus = this.itemStatus!.replaceAll('<cleartext>', '');
   }
 
   bool hasOldPasswords() {
     if (this.itemPasswords == null) return false;
-    if (this.itemPasswords.isEmpty) return false;
+    if (this.itemPasswords!.isEmpty) return false;
     return true;
   }
 
@@ -155,16 +184,16 @@ class Item {
       fkNoteId: this.fkNoteId,
       fkAddressId: this.fkAddressId,
       fkProductId: this.fkAddressId,
-      username: this.username != null ? this.username.clone() : null,
-      password: this.password != null ? this.password.clone() : null,
+      username: this.username != null ? this.username!.clone() : null,
+      password: this.password != null ? this.password!.clone() : null,
       passwords: this.passwords,
       itemPassword:
-          this.itemPassword != null ? this.itemPassword.clone() : null,
+          this.itemPassword != null ? this.itemPassword!.clone() : null,
       itemPasswords: this.itemPasswords,
-      pin: this.pin != null ? this.pin.clone() : null,
-      note: this.note != null ? this.note.clone() : null,
-      address: this.address != null ? this.address.clone() : null,
-      product: this.product != null ? this.product.clone() : null,
+      pin: this.pin != null ? this.pin!.clone() : null,
+      note: this.note != null ? this.note!.clone() : null,
+      address: this.address != null ? this.address!.clone() : null,
+      product: this.product != null ? this.product!.clone() : null,
     );
     return _i;
   }
@@ -179,37 +208,37 @@ class Item {
     if (this.itemStatus != i.itemStatus) return true;
     if (this.tags != i.tags) return true;
     if (this.password != null) {
-      if (this.password.notEqual(i.password)) return true;
+      if (this.password!.notEqual(i.password)) return true;
     } else {
       if (i.password != null) return true;
     }
     if (this.itemPassword != null) {
-      if (this.itemPassword.notEqual(i.itemPassword)) return true;
+      if (this.itemPassword!.notEqual(i.itemPassword)) return true;
     } else {
       if (i.itemPassword != null) return true;
     }
     if (this.username != null) {
-      if (this.username.notEqual(i.username)) return true;
+      if (this.username!.notEqual(i.username)) return true;
     } else {
       if (i.username != null) return true;
     }
     if (this.pin != null) {
-      if (this.pin.notEqual(i.pin)) return true;
+      if (this.pin!.notEqual(i.pin)) return true;
     } else {
       if (i.pin != null) return true;
     }
     if (this.note != null) {
-      if (this.note.notEqual(i.note)) return true;
+      if (this.note!.notEqual(i.note)) return true;
     } else {
       if (i.note != null) return true;
     }
     if (this.address != null) {
-      if (this.address.notEqual(i.address)) return true;
+      if (this.address!.notEqual(i.address)) return true;
     } else {
       if (i.address != null) return true;
     }
     if (this.product != null) {
-      if (this.product.notEqual(i.product)) return true;
+      if (this.product!.notEqual(i.product)) return true;
     } else {
       if (i.product != null) return true;
     }
@@ -219,24 +248,24 @@ class Item {
   void loadPasswords(List<Map<String, dynamic>> listMap) {
     if (listMap.isEmpty) return;
     listMap.forEach((ip) {
-      this.itemPasswords.add(ItemPassword.fromMap(ip));
-      this.passwords.add(Password.fromMap(ip));
+      this.itemPasswords!.add(ItemPassword.fromMap(ip));
+      this.passwords!.add(Password.fromMap(ip));
     });
   }
 
-  void addRemoveTag(String tag) {
-    if (this.tags.contains('<$tag>')) {
-      this.tags = this.tags.replaceAll('<$tag>', '');
+  void addRemoveTag(String? tag) {
+    if (this.tags!.contains('<$tag>')) {
+      this.tags = this.tags!.replaceAll('<$tag>', '');
     } else {
-      this.tags += '<$tag>';
+      this.tags = this.tags! + '<$tag>';
     }
   }
 
   void clearDecriptedValues() {
-    if (this.password != null) this.password.clearPasswordDec();
-    if (this.username != null) this.username.clearUsernameDec();
-    if (this.pin != null) this.pin.clearPinDec();
-    if (this.note != null) this.note.clearNoteDec();
-    if (this.address != null) this.address.clearAddressDec();
+    if (this.password != null) this.password!.clearPasswordDec();
+    if (this.username != null) this.username!.clearUsernameDec();
+    if (this.pin != null) this.pin!.clearPinDec();
+    if (this.note != null) this.note!.clearNoteDec();
+    if (this.address != null) this.address!.clearAddressDec();
   }
 }

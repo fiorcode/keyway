@@ -15,11 +15,10 @@ class TagAddScreen extends StatefulWidget {
 }
 
 class _TagAddScreenState extends State<TagAddScreen> {
-  ItemProvider _items;
-  Future<List<Tag>> _getTags;
-  List<Widget> _chips;
-  TextEditingController ctrler;
-  FocusNode focus;
+  Future<List<Tag>>? _getTags;
+  List<Widget>? _chips;
+  TextEditingController ctrler = TextEditingController();
+  FocusNode focus = FocusNode();
   bool _empty = true;
   Color _color = Colors.grey;
 
@@ -32,17 +31,18 @@ class _TagAddScreenState extends State<TagAddScreen> {
       tagName: ctrler.text.toLowerCase(),
       tagColor: _color.value,
     );
-    _items.insertTag(_tag);
+    Provider.of<ItemProvider>(context, listen: false).insertTag(_tag);
     Navigator.of(context).pop(_tag);
   }
 
-  Future<List<Tag>> _tagsList() async => await _items.getTags();
+  Future<List<Tag>> _tagsList() async =>
+      await Provider.of<ItemProvider>(context, listen: false).getTags();
 
-  List<Widget> _tags(List<Tag> tags) {
+  List<Widget>? _tags(List<Tag> tags) {
     _chips = <Widget>[];
     tags.forEach(
       (tag) {
-        _chips.add(
+        _chips!.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Chip(
@@ -62,9 +62,6 @@ class _TagAddScreenState extends State<TagAddScreen> {
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
-    ctrler = TextEditingController();
-    focus = FocusNode();
     focus.requestFocus();
     _empty = ctrler.text.isEmpty;
     _getTags = _tagsList();
@@ -136,11 +133,12 @@ class _TagAddScreenState extends State<TagAddScreen> {
                   builder: (ctx, snap) {
                     switch (snap.connectionState) {
                       case ConnectionState.done:
+                        List<Tag> tags = <Tag>[];
+                        tags = snap.data as List<Tag>;
                         return Wrap(
                           alignment: WrapAlignment.center,
-                          children: _tags(snap.data),
+                          children: _tags(tags)!,
                         );
-                        break;
                       default:
                         return Center(child: CircularProgressIndicator());
                     }

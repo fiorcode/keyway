@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/date_helper.dart';
@@ -27,9 +28,9 @@ class ItemsListScreen extends StatefulWidget {
 }
 
 class _ItemsListScreenState extends State<ItemsListScreen> {
-  Future<void> _getItems;
+  Future<void>? _getItems;
   List<Item> _items = <Item>[];
-  Tag _tag;
+  Tag? _tag;
 
   TextEditingController _searchCtrler = TextEditingController();
   FocusNode _searchFN = FocusNode();
@@ -62,18 +63,16 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   }
 
   void _tagsSwitch(Tag tag) {
-    ItemProvider _item = Provider.of<ItemProvider>(context, listen: false);
     if (tag.selected) {
       _tag = tag;
-      _items = _item.items
-          .where((i) => i.tags.contains('<' + _tag.tagName + '>'))
+      _items = _items
+          .where((i) => i.tags!.contains('<' + _tag!.tagName + '>'))
           .toList();
-      setState(() {});
     } else {
       _tag = null;
-      _items = _item.items;
-      setState(() {});
+      _items = Provider.of<ItemProvider>(context, listen: false).items;
     }
+    setState(() {});
   }
 
   Future<void> _getItemsAsync() async => _items =
@@ -85,11 +84,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     setState(() {});
   }
 
-  void _clearSearch() {
-    _searchCtrler.clear();
-    _items = Provider.of<ItemProvider>(context, listen: false).items;
-    setState(() {});
-  }
+  void _clearSearch() => setState(() => _searchCtrler.clear());
 
   void _goToDashboard() {
     Navigator.of(context)
@@ -111,9 +106,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => ItemViewScreen(item: i, onReturn: _onReturn),
+        builder: (context) => ItemViewScreen(item: i),
       ),
-    );
+    ).then((_) => _onReturn());
   }
 
   void _goToAlpha() {
@@ -125,13 +120,21 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _generatePassword() async {
     setState(() => _working = true);
     Item _i = Item(
-      title: (await PasswordHelper.dicePassword()).password,
+      title: (await PasswordHelper.dicePassword().onError((error, st) {
+        setState(() => _working = false);
+        return ErrorHelper.errorDialog(context, error);
+      }))
+          .password!,
       itemStatus: '<cleartext>',
       avatarColor: Colors.white.value,
       avatarLetterColor: Colors.black.value,
     );
-    _i.itemId =
-        await Provider.of<ItemProvider>(context, listen: false).insertItem(_i);
+    _i.itemId = await Provider.of<ItemProvider>(context, listen: false)
+        .insertItem(_i)
+        .onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.add(_i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -140,8 +143,14 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _buildRandomItem(Item old, Item i) async {
     setState(() => _working = true);
     ItemProvider _i = Provider.of<ItemProvider>(context, listen: false);
-    i.itemId = await _i.insertItem(i);
-    await _i.deleteItem(old);
+    i.itemId = await _i.insertItem(i).onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
+    await _i.deleteItem(old).onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.remove(old);
     _items.add(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
@@ -151,7 +160,11 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   Future<void> _deleteRandomItem(Item i) async {
     setState(() => _working = true);
     await Provider.of<ItemProvider>(context, listen: false)
-        .deleteCleartextItem(i);
+        .deleteCleartextItem(i)
+        .onError((error, st) {
+      setState(() => _working = false);
+      return ErrorHelper.errorDialog(context, error);
+    });
     _items.remove(i);
     _items.sort((a, b) => DateHelper.compare(b.date, a.date));
     setState(() => _working = false);
@@ -211,12 +224,9 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
           switch (snap.connectionState) {
             case ConnectionState.waiting:
               return LoadingScaffold();
-              break;
             case ConnectionState.done:
               if (snap.hasError)
-                return Center(
-                  child: Image.asset("assets/error.png"),
-                );
+                return ErrorHelper.errorScaffold(snap.error);
               else {
                 return Scaffold(
                   backgroundColor: _back,
@@ -237,7 +247,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                         ),
                       IconButton(
                         icon: Icon(Icons.flash_on),
-                        onPressed: () => _generatePassword(),
+                        onPressed: _generatePassword,
                       ),
                       if (!_cripto.locked)
                         IconButton(
@@ -247,10 +257,10 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     ],
                     actionsIconTheme: IconThemeData(color: _primary),
                   ),
-                  body: _items.length < 1
-                      ? EmptyItems()
-                      : Stack(children: [
-                          Column(
+                  body: Stack(children: [
+                    _items.length < 1
+                        ? EmptyItems()
+                        : Column(
                             children: [
                               if (_working) LinearProgressIndicator(),
                               if (_items.isNotEmpty)
@@ -281,12 +291,11 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                               ),
                             ],
                           ),
-                          if (_unlocking && _cripto.locked)
-                            UnlockContainer(_lockSwitch)
-                        ]),
+                    if (_unlocking && _cripto.locked)
+                      UnlockContainer(_lockSwitch)
+                  ]),
                 );
               }
-              break;
             default:
               return LoadingScaffold();
           }

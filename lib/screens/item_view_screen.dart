@@ -15,29 +15,30 @@ import '../widgets/loading_scaffold.dart';
 class ItemViewScreen extends StatefulWidget {
   static const routeName = '/item-view';
 
-  ItemViewScreen({this.item, this.onReturn});
+  ItemViewScreen({this.item});
 
-  final Item item;
-  final Function onReturn;
+  final Item? item;
 
   @override
   _ItemViewScreenState createState() => _ItemViewScreenState();
 }
 
 class _ItemViewScreenState extends State<ItemViewScreen> {
-  Item _i;
-  Future<void> _loadItem;
+  Item _i = Item();
+  Future<void>? _loadItem;
 
-  void _onReturn(Item i) {
+  void _onReturn(Item? i) {
     if (i != null) setState(() => _i = i);
-    widget.onReturn();
   }
 
   Future<void> _loadItemAsync() async {
-    ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
-    await _items.loadPasswords(_i);
+    await Provider.of<ItemProvider>(context, listen: false)
+        .loadPasswords(_i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-    _i = await _c.computeDecryptItem(_i);
+    _i = await _c
+        .computeDecryptItem(_i)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   void _goToEditItem() {
@@ -57,21 +58,30 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
       );
 
   void _deleteItem() async {
-    bool _warning = await WarningHelper.deleteItem(context);
+    bool? _warning = await WarningHelper.deleteItem(context);
     _warning = _warning == null ? false : _warning;
     if (_warning) {
       ItemProvider _items = Provider.of<ItemProvider>(context, listen: false);
       _i.setDeleted();
-      _items.updateItem(_i, _i).then(
-            (_) => Navigator.of(context).pop(),
-          );
+      _items
+          .updateItem(_i)
+          .then((_) => Navigator.of(context).pop())
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
     }
-    widget.onReturn();
+  }
+
+  bool _expired(BuildContext context) {
+    try {
+      return widget.item!.expired;
+    } catch (e) {
+      ErrorHelper.errorDialog(context, e);
+      return false;
+    }
   }
 
   @override
   void initState() {
-    _i = widget.item;
+    _i = widget.item!;
     _loadItem = _loadItemAsync();
     super.initState();
   }
@@ -86,7 +96,6 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
           switch (snap.connectionState) {
             case ConnectionState.waiting:
               return LoadingScaffold();
-              break;
             case ConnectionState.done:
               if (snap.hasError)
                 return ErrorBody(snap.error);
@@ -122,14 +131,16 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                           if (_i.username != null)
                             ItemViewContainer(
                               'username',
-                              _i.username.usernameDec,
+                              _i.username!.usernameDec,
                             ),
                           if (_i.password != null)
                             ItemViewContainer(
                               'password',
-                              _i.password.passwordDec,
-                              left: _i.itemPassword.passwordDate,
-                              right: _i.itemPassword.passwordLapse,
+                              _i.password!.passwordDec,
+                              left: _i.itemPassword!.passwordDate!,
+                              right: _i.itemPassword!.passwordLapse,
+                              repeated: _i.itemPassword!.repeated,
+                              expired: _expired(context),
                             ),
                           if (_i.hasOldPasswords())
                             Center(
@@ -147,20 +158,19 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                           if (_i.pin != null)
                             ItemViewContainer(
                               'pin',
-                              _i.pin.pinDec,
-                              left: _i.pin.pinDate == null
-                                  ? 'null'
-                                  : _i.pin.pinDate,
-                              right: _i.pin.pinLapse,
+                              _i.pin!.pinDec,
+                              left: _i.pin!.pinDate,
+                              right: _i.pin!.pinLapse,
+                              expired: _expired(context),
                             ),
                           if (_i.note != null)
-                            ItemViewContainer('note', _i.note.noteDec),
+                            ItemViewContainer('note', _i.note!.noteDec),
                           if (_i.address != null)
                             ItemViewContainer(
                               'address',
-                              _i.address.addressDec,
-                              left: _i.address.addressProtocol,
-                              right: _i.address.addressPort,
+                              _i.address!.addressDec,
+                              left: _i.address!.addressProtocol,
+                              right: _i.address!.addressPort,
                             ),
                           if (_i.product != null)
                             Container(
@@ -191,7 +201,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                       ),
                                     ),
                                   ),
-                                  if (_i.product.productTrademark.isNotEmpty)
+                                  if (_i.product!.productTrademark.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -204,11 +214,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product.productTrademark.isNotEmpty)
+                                  if (_i.product!.productTrademark.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i.product.trademark,
+                                          _i.product!.trademark,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
@@ -217,7 +227,7 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product.productModel.isNotEmpty)
+                                  if (_i.product!.productModel.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
@@ -230,11 +240,11 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                                         ),
                                       ),
                                     ),
-                                  if (_i.product.productModel.isNotEmpty)
+                                  if (_i.product!.productModel.isNotEmpty)
                                     Expanded(
                                       child: Center(
                                         child: Text(
-                                          _i.product.model,
+                                          _i.product!.model,
                                           style: TextStyle(
                                             fontSize: 22,
                                             fontWeight: FontWeight.w300,
@@ -284,7 +294,6 @@ class _ItemViewScreenState extends State<ItemViewScreen> {
                   ),
                 );
               }
-              break;
             default:
               return LoadingScaffold();
           }

@@ -26,7 +26,7 @@ class DateHelper {
     if (date == null) return true;
     if (date.isEmpty) return false;
     if (dayLapse == 0) return false;
-    DateTime _date;
+    late DateTime _date;
     if (date is String)
       _date = DateTime.parse(date).toUtc();
     else if (date is DateTime) _date = date;

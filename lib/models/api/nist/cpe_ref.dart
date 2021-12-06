@@ -1,6 +1,6 @@
 class CpeRef {
-  final String ref;
-  final String type;
+  final String? ref;
+  final String? type;
 
   CpeRef(this.ref, this.type);
 

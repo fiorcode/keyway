@@ -11,22 +11,17 @@ class GreenColorPicker extends StatefulWidget {
 }
 
 class _GreenColorPickerState extends State<GreenColorPicker> {
-  double _value;
-  Color _color;
+  double? _value;
+  Color? _color;
 
-  _setColor(double val) => _color = _color.withGreen(val.toInt());
+  _setColor(double val) => _color = _color!.withGreen(val.toInt());
 
   // _setValue(Color col) => _value = col.green.toDouble();
 
   @override
   void initState() {
-    if (widget.color != null) {
-      _color = widget.color;
-      _value = _color.green.toDouble();
-    } else {
-      _color = Colors.grey;
-      _value = 0;
-    }
+    _color = widget.color;
+    _value = _color!.green.toDouble();
     super.initState();
   }
 
@@ -43,11 +38,11 @@ class _GreenColorPickerState extends State<GreenColorPicker> {
       child: Slider(
         min: 0,
         max: 255,
-        value: _value == null ? 0 : _value,
+        value: _value == null ? 0 : _value!,
         onChanged: (value) {
           _value = value;
           _setColor(value);
-          widget.change(_color.value);
+          widget.change(_color!.value);
         },
       ),
     );
@@ -63,44 +58,37 @@ class GradientRectSliderTrackShape extends SliderTrackShape
   void paint(
     PaintingContext context,
     Offset offset, {
-    @required RenderBox parentBox,
-    @required SliderThemeData sliderTheme,
-    @required Animation<double> enableAnimation,
-    @required TextDirection textDirection,
-    @required Offset thumbCenter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
     bool isDiscrete = false,
     bool isEnabled = false,
     double additionalActiveTrackHeight = 2,
   }) {
-    assert(context != null);
-    assert(offset != null);
-    assert(parentBox != null);
-    assert(sliderTheme != null);
     assert(sliderTheme.disabledActiveTrackColor != null);
     assert(sliderTheme.disabledInactiveTrackColor != null);
     assert(sliderTheme.activeTrackColor != null);
     assert(sliderTheme.inactiveTrackColor != null);
     assert(sliderTheme.thumbShape != null);
-    assert(enableAnimation != null);
-    assert(textDirection != null);
-    assert(thumbCenter != null);
     // If the slider [SliderThemeData.trackHeight] is less than or equal to 0,
     // then it makes no difference whether the track is painted or not,
     // therefore the painting  can be a no-op.
-    if (sliderTheme.trackHeight <= 0) {
+    if (sliderTheme.trackHeight! <= 0) {
       return;
     }
 
     LinearGradient gradient = LinearGradient(colors: [
-      Colors.green[100],
-      Colors.green[200],
-      Colors.green[300],
-      Colors.green[400],
+      Colors.green[100]!,
+      Colors.green[200]!,
+      Colors.green[300]!,
+      Colors.green[400]!,
       Colors.green,
-      Colors.green[600],
-      Colors.green[700],
-      Colors.green[800],
-      Colors.green[900],
+      Colors.green[600]!,
+      Colors.green[700]!,
+      Colors.green[800]!,
+      Colors.green[900]!,
     ]);
 
     final Rect trackRect = getPreferredRect(
@@ -121,12 +109,12 @@ class GradientRectSliderTrackShape extends SliderTrackShape
         end: sliderTheme.activeTrackColor);
     final Paint activePaint = Paint()
       ..shader = gradient.createShader(trackRect)
-      ..color = activeTrackColorTween.evaluate(enableAnimation);
+      ..color = activeTrackColorTween.evaluate(enableAnimation)!;
     final Paint inactivePaint = Paint()
       ..shader = gradient.createShader(trackRect)
-      ..color = inactiveTrackColorTween.evaluate(enableAnimation);
-    Paint leftTrackPaint;
-    Paint rightTrackPaint;
+      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    late Paint leftTrackPaint;
+    late Paint rightTrackPaint;
     switch (textDirection) {
       case TextDirection.ltr:
         leftTrackPaint = activePaint;

@@ -1,10 +1,10 @@
 import 'package:keyway/models/api/nist/cpe_result.dart';
 
 class CpeBody {
-  final int resultsPerPage;
-  final int startIndex;
-  final int totalResults;
-  final CpeResult result;
+  final int? resultsPerPage;
+  final int? startIndex;
+  final int? totalResults;
+  final CpeResult? result;
 
   CpeBody({
     this.resultsPerPage,

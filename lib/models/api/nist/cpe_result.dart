@@ -1,11 +1,11 @@
 import 'package:keyway/models/api/nist/cpe.dart';
 
 class CpeResult {
-  final String dataType;
-  final String feedVersion;
-  final int cpeCount;
-  final String feedTimestamp;
-  final List<Cpe> cpes;
+  final String? dataType;
+  final String? feedVersion;
+  final int? cpeCount;
+  final String? feedTimestamp;
+  final List<Cpe>? cpes;
 
   CpeResult({
     this.dataType,

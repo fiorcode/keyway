@@ -4,30 +4,30 @@ import 'package:flutter/services.dart';
 class PinTextField extends StatefulWidget {
   PinTextField(this.ctrler);
 
-  final TextEditingController ctrler;
+  final TextEditingController? ctrler;
 
   @override
   _PinTextFieldState createState() => _PinTextFieldState();
 }
 
 class _PinTextFieldState extends State<PinTextField> {
-  bool _empty;
+  late bool _empty;
   bool _obscure = false;
 
   void _onChanged() {
-    setState(() => _empty = widget.ctrler.text.isEmpty);
+    setState(() => _empty = widget.ctrler!.text.isEmpty);
   }
 
   void _obscureSwitch() => setState(() => _obscure = !_obscure);
 
   void _clear() => setState(() {
-        widget.ctrler.clear();
+        widget.ctrler!.clear();
         _empty = true;
       });
 
   @override
   void initState() {
-    _empty = widget.ctrler.text.isEmpty;
+    _empty = widget.ctrler!.text.isEmpty;
     super.initState();
   }
 

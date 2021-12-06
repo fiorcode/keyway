@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class WarningHelper {
-  static Future<bool> repeat(BuildContext context, String field) async {
+  static Future<bool?> repeat(BuildContext context, String field) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -31,7 +31,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> deleteDB(BuildContext context) async {
+  static Future<bool?> deleteDB(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -98,7 +98,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> deleteItem(BuildContext context) async {
+  static Future<bool?> deleteItem(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -162,7 +162,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> deleteBackup(BuildContext context) async {
+  static Future<bool?> deleteBackup(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {
@@ -228,7 +228,7 @@ class WarningHelper {
     );
   }
 
-  static Future<bool> download(BuildContext context) async {
+  static Future<bool?> download(BuildContext context) async {
     return showDialog<bool>(
       context: context,
       builder: (context) {

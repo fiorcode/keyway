@@ -13,20 +13,21 @@ class UsernameTableScreen extends StatefulWidget {
 }
 
 class _UsernameTableScreenState extends State<UsernameTableScreen> {
-  ItemProvider _item;
-  Future _getUsernames;
+  late ItemProvider _item;
+  Future<void>? _getUsernames;
 
-  Future<void> _getUsernamesAsync() async => await _item.fetchUsernames();
+  Future<void> _getUsernamesAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false).fetchUsernames();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getUsernames = _getUsernamesAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -114,7 +115,6 @@ class _UsernameTableScreenState extends State<UsernameTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

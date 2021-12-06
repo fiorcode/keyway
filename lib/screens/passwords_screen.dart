@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:provider/provider.dart';
 
 import 'package:keyway/providers/cripto_provider.dart';
@@ -14,19 +15,21 @@ class PasswordsScreen extends StatefulWidget {
 }
 
 class _PasswordsScreenState extends State<PasswordsScreen> {
-  Future<void> _getPasswords;
-  List<Password> _passwords;
+  Future<void>? _getPasswords;
+  late List<Password> _passwords;
 
   Future<void> _getPasswordsAsync() async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
     _passwords = await _ip.fetchPasswords();
     CriptoProvider _cp = Provider.of<CriptoProvider>(context, listen: false);
-    Future.forEach(_passwords, (p) => _cp.decryptPassword(p));
+    Future.forEach(_passwords, (dynamic p) => _cp.decryptPassword(p));
   }
 
   Future<void> _deletePassword(Password p) async {
     ItemProvider _ip = Provider.of<ItemProvider>(context, listen: false);
-    await _ip.deletePassword(p);
+    await _ip
+        .deletePassword(p)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     _getPasswords = _getPasswordsAsync();
     setState(() {});
   }
@@ -51,7 +54,6 @@ class _PasswordsScreenState extends State<PasswordsScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),

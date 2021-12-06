@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:keyway/helpers/date_helper.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/providers/cripto_provider.dart';
 import 'package:keyway/screens/splash_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -19,16 +20,18 @@ class RestoreScreen extends StatefulWidget {
 }
 
 class _RestoreScreenState extends State<RestoreScreen> {
-  Icon _icon;
-  File _fileToRestore;
-  FileStat _fileToRestoreStatus;
+  Icon? _icon;
+  File? _fileToRestore;
+  FileStat? _fileToRestoreStatus;
   bool _working = false;
 
   Future<bool> _checkPermissions() async {
     PermissionStatus _status = await Permission.manageExternalStorage.status;
     if (_status.isDenied) {
-      if (!(await Permission.manageExternalStorage.request().isGranted))
-        return false;
+      PermissionStatus _ps = await Permission.manageExternalStorage
+          .request()
+          .onError((error, st) => ErrorHelper.errorDialog(context, error));
+      if (!_ps.isGranted) return false;
     }
     return true;
   }
@@ -41,7 +44,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
     StorageHelper.getDeviceBackup().then((file) async {
       if (file != null) {
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -55,7 +58,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getSdBackup() async {
@@ -66,7 +69,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.sd_card, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -80,7 +83,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _getDownloadsBackup() async {
@@ -91,7 +94,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.folder, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -105,7 +108,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _restoreBackup(String path) async {
@@ -119,18 +122,18 @@ class _RestoreScreenState extends State<RestoreScreen> {
           ModalRoute.withName(SplashScreen.routeName),
         );
       },
-    );
+    ).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   Future<void> _deleteBackup() async {
     setState(() => _working = true);
-    StorageHelper.deleteFile(_fileToRestore).then((fse) {
+    StorageHelper.deleteFile(_fileToRestore!).then((fse) {
       setState(() {
         _fileToRestore = null;
         _fileToRestoreStatus = null;
         _working = false;
       });
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override
@@ -245,7 +248,8 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(_fileToRestore.path.split('/').last),
+                                      Text(
+                                          _fileToRestore!.path.split('/').last),
                                     ],
                                   ),
                                   Row(
@@ -260,7 +264,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         ),
                                       ),
                                       Expanded(
-                                          child: Text(_fileToRestore.path)),
+                                          child: Text(_fileToRestore!.path)),
                                     ],
                                   ),
                                   if (_fileToRestoreStatus != null)
@@ -277,7 +281,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         Expanded(
                                           child: Text(
                                             DateHelper.ddMMyyHm(
-                                                _fileToRestoreStatus.modified),
+                                                _fileToRestoreStatus!.modified),
                                           ),
                                         ),
                                       ],
@@ -295,7 +299,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            _fileToRestoreStatus.size
+                                            _fileToRestoreStatus!.size
                                                     .toString() +
                                                 ' Bytes',
                                           ),
@@ -343,7 +347,7 @@ class _RestoreScreenState extends State<RestoreScreen> {
                               style:
                                   ElevatedButton.styleFrom(primary: _primary),
                               onPressed: () =>
-                                  _restoreBackup(_fileToRestore.path),
+                                  _restoreBackup(_fileToRestore!.path),
                               child: Text(
                                 'RESTORE',
                                 style: TextStyle(color: Colors.white),

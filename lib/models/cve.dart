@@ -1,12 +1,12 @@
 class Cve {
-  int cveId;
-  String cve;
-  String assigner;
-  String referencesUrl;
-  String descriptions;
-  String publishedDate;
-  String lastModifiedDate;
-  int fkCveImpactV3Id;
+  int? cveId;
+  String? cve;
+  String? assigner;
+  String? referencesUrl;
+  String? descriptions;
+  String? publishedDate;
+  String? lastModifiedDate;
+  int? fkCveImpactV3Id;
 
   Cve({
     this.cveId,

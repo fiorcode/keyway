@@ -1,28 +1,22 @@
 import 'package:flutter/material.dart';
 
-// import 'package:keyway/helpers/date_helper.dart';
-import 'package:keyway/models/item_password.dart';
+import '../../models/item_password.dart';
 
-class PasswordChangeReminderCard extends StatefulWidget {
-  const PasswordChangeReminderCard({Key key, this.itemPass}) : super(key: key);
+class PasswordAddEditCard extends StatefulWidget {
+  const PasswordAddEditCard(this.itemPass, {Key? key}) : super(key: key);
 
   final ItemPassword itemPass;
 
   @override
-  _PasswordChangeReminderCardState createState() =>
-      _PasswordChangeReminderCardState();
+  _PasswordAddEditCardState createState() => _PasswordAddEditCardState();
 }
 
-class _PasswordChangeReminderCardState
-    extends State<PasswordChangeReminderCard> {
-  bool _custom = false;
+class _PasswordAddEditCardState extends State<PasswordAddEditCard> {
+  bool _customLapse = false;
 
   @override
   void initState() {
-    if (widget.itemPass.passwordLapse != 96 &&
-        widget.itemPass.passwordLapse != 320) {
-      _custom = true;
-    }
+    _customLapse = widget.itemPass.customLapse;
     super.initState();
   }
 
@@ -48,37 +42,27 @@ class _PasswordChangeReminderCardState
           children: [
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: widget.itemPass.passwordLapse == 0,
+              selected: widget.itemPass.noLapse,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
-                  ? setState(() {
-                      widget.itemPass.passwordLapse = 0;
-                      _custom = false;
-                    })
-                  : null,
+                  ? setState(() => widget.itemPass.passwordLapse = 0)
+                  : setState(() => widget.itemPass.passwordLapse = 320),
               label: Text(
                 'Never',
                 style: TextStyle(
-                  color: widget.itemPass.passwordLapse == 0
-                      ? Colors.grey
-                      : Colors.white,
-                  fontWeight: widget.itemPass.passwordLapse == 0
-                      ? FontWeight.bold
-                      : null,
+                  color: widget.itemPass.noLapse ? Colors.grey : Colors.white,
+                  fontWeight: widget.itemPass.noLapse ? FontWeight.bold : null,
                 ),
               ),
-              elevation: widget.itemPass.passwordLapse == 0 ? 8.0 : 0.0,
+              elevation: widget.itemPass.noLapse ? 8.0 : 0.0,
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
               selected: widget.itemPass.passwordLapse == 96,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
-                  ? setState(() {
-                      widget.itemPass.passwordLapse = 96;
-                      _custom = false;
-                    })
-                  : null,
+                  ? setState(() => widget.itemPass.passwordLapse = 96)
+                  : setState(() => widget.itemPass.passwordLapse = 320),
               label: Text(
                 '96 Days',
                 style: TextStyle(
@@ -97,11 +81,8 @@ class _PasswordChangeReminderCardState
               selected: widget.itemPass.passwordLapse == 320,
               selectedColor: Colors.grey[200],
               onSelected: (selected) => selected
-                  ? setState(() {
-                      widget.itemPass.passwordLapse = 320;
-                      _custom = false;
-                    })
-                  : null,
+                  ? setState(() => widget.itemPass.passwordLapse = 320)
+                  : setState(() => widget.itemPass.passwordLapse = 0),
               label: Text(
                 '320 Days',
                 style: TextStyle(
@@ -117,19 +98,21 @@ class _PasswordChangeReminderCardState
             ),
             ChoiceChip(
               backgroundColor: Colors.grey,
-              selected: _custom,
+              selected: _customLapse,
               selectedColor: Colors.grey[200],
-              onSelected: (selected) => setState(() => _custom = selected),
+              onSelected: (selected) {
+                setState(() => widget.itemPass.passwordLapse = 1);
+              },
               label: Text(
                 'Custom',
                 style: TextStyle(
-                  color: _custom ? Colors.grey : Colors.white,
-                  fontWeight: _custom ? FontWeight.bold : null,
+                  color: _customLapse ? Colors.grey : Colors.white,
+                  fontWeight: _customLapse ? FontWeight.bold : null,
                 ),
               ),
-              elevation: _custom ? 8.0 : 0.0,
+              elevation: _customLapse ? 8.0 : 0.0,
             ),
-            if (_custom)
+            if (_customLapse)
               Column(
                 children: [
                   SizedBox(height: 8),
@@ -148,30 +131,18 @@ class _PasswordChangeReminderCardState
                       ),
                     ),
                     child: Slider(
-                      min: 0,
-                      max: 364,
-                      value: widget.itemPass.passwordLapse.toDouble(),
-                      onChanged: (value) => setState(
-                        () => widget.itemPass.passwordLapse = value.round(),
-                      ),
-                    ),
+                        min: 0,
+                        max: 364,
+                        value: widget.itemPass.passwordLapse.toDouble(),
+                        onChanged: (value) {
+                          setState(() =>
+                              widget.itemPass.passwordLapse = value.round());
+                        }),
                   ),
                 ],
               ),
           ],
         ),
-        // Row(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     Icon(Icons.calendar_today),
-        //     Padding(
-        //       padding: const EdgeInsets.all(8.0),
-        //       child: Text(
-        //         'Created: ' + DateHelper.shortDate(widget.itemPass.dateTime),
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ],
     );
   }

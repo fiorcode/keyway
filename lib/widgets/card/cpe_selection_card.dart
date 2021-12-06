@@ -5,7 +5,7 @@ import 'package:keyway/models/api/nist/cpe.dart';
 class CpeSelectionCard extends StatefulWidget {
   const CpeSelectionCard(this.cpe, this.addRemoveCpe);
 
-  final Cpe cpe;
+  final Cpe? cpe;
   final Function addRemoveCpe;
 
   @override
@@ -39,7 +39,7 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          widget.cpe.titles[0].title,
+                          widget.cpe!.titles![0].title!,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           textAlign: TextAlign.center,
@@ -59,7 +59,7 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
                     Text('Type'),
                     SizedBox(width: 8.0),
                     Text(
-                      widget.cpe.type,
+                      widget.cpe!.type,
                       style: TextStyle(fontWeight: FontWeight.bold),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -72,7 +72,7 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
                     Text('Trademark'),
                     SizedBox(width: 8.0),
                     Text(
-                      widget.cpe.trademark,
+                      widget.cpe!.trademark,
                       style: TextStyle(fontWeight: FontWeight.bold),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
@@ -86,7 +86,7 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
                     SizedBox(width: 8.0),
                     Flexible(
                       child: Text(
-                        widget.cpe.model,
+                        widget.cpe!.model,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontWeight: FontWeight.bold),
                         maxLines: 2,
@@ -95,7 +95,7 @@ class _CpeSelectionCardState extends State<CpeSelectionCard> {
                     ),
                   ],
                 ),
-                if (widget.cpe.hasVulns)
+                if (widget.cpe!.hasVulns)
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

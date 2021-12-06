@@ -13,20 +13,21 @@ class ProductTableScreen extends StatefulWidget {
 }
 
 class _ProductTableScreenState extends State<ProductTableScreen> {
-  ItemProvider _item;
-  Future<void> _getProducts;
+  late ItemProvider _item;
+  Future<void>? _getProducts;
 
-  Future<void> _getProductsAsync() => _item.fetchProducts();
+  Future<void> _getProductsAsync() =>
+      Provider.of<ItemProvider>(context, listen: false).fetchProducts();
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getProducts = _getProductsAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -149,7 +150,6 @@ class _ProductTableScreenState extends State<ProductTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

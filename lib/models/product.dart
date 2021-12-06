@@ -4,16 +4,23 @@ import '../models/api/nist/cpe.dart';
 import '../models/cpe23uri.dart';
 
 class Product {
-  int productId;
-  String productType;
-  String productTrademark;
-  String productModel;
-  String productVersion;
-  String productUpdate;
-  String productStatus;
-  int fkCpe23uriId;
+  int? productId;
+  String productType = '';
+  String productTrademark = '';
+  String productModel = '';
+  String productVersion = '';
+  String productUpdate = '';
+  String productStatus = '';
+  int? fkCpe23uriId;
 
-  Cpe23uri cpe23uri;
+  Cpe23uri? cpe23uri;
+
+  bool get empty =>
+      this.productType.isEmpty &&
+      this.productTrademark.isEmpty &&
+      this.productModel.isEmpty &&
+      this.productVersion.isEmpty &&
+      this.productUpdate.isEmpty;
 
   void setCpe23uri(Cpe cpe) => this.cpe23uri = Cpe23uri.fromCpe(cpe);
 
@@ -29,17 +36,23 @@ class Product {
       this.productModel.isEmpty &&
       this.cpe23uri == null;
 
+  bool get isHardware => this.type == 'h';
+  bool get isOsFirmware => this.type == 'o';
+  bool get isApp => this.type == 'a';
+
+  void setTypeHardware() => this.productType = 'h';
+  void setTypeOsFirmware() => this.productType = 'o';
+  void setTypeApp() => this.productType = 'a';
+  void setTypeAll() => this.productType = '';
+
   String get type {
     switch (productType) {
       case 'h':
         return 'Hardware';
-        break;
       case 'o':
         return 'OS/Firmware';
-        break;
       case 'a':
         return 'Application';
-        break;
       default:
         return 'All types';
     }
@@ -49,13 +62,10 @@ class Product {
     switch (productType) {
       case 'h':
         return Icons.router;
-        break;
       case 'o':
         return Icons.android;
-        break;
       case 'a':
         return Icons.wysiwyg;
-        break;
       default:
         return Icons.router;
     }
@@ -107,7 +117,7 @@ class Product {
         fkCpe23uriId: this.fkCpe23uriId,
       );
 
-  bool notEqual(Product p) {
+  bool notEqual(Product? p) {
     if (p == null) return true;
     if (this.productType != p.productType) return true;
     if (this.productTrademark != p.productTrademark) return true;

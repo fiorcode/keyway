@@ -13,13 +13,13 @@ class PresetsList extends StatelessWidget {
     this.productSwitch,
   });
 
-  final Item item;
-  final Function usernameSwitch;
-  final Function passwordSwitch;
-  final Function pinSwitch;
-  final Function noteSwitch;
-  final Function addressSwitch;
-  final Function productSwitch;
+  final Item? item;
+  final Function? usernameSwitch;
+  final Function? passwordSwitch;
+  final Function? pinSwitch;
+  final Function? noteSwitch;
+  final Function? addressSwitch;
+  final Function? productSwitch;
 
   @override
   Widget build(BuildContext context) {
@@ -34,88 +34,88 @@ class PresetsList extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
                 backgroundColor:
-                    item.username != null ? Colors.white : Colors.grey,
+                    item!.username != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.account_box,
-                  size: item.username != null ? 32 : 24,
-                  color: item.username != null ? Colors.grey : Colors.white,
+                  size: item!.username != null ? 32 : 24,
+                  color: item!.username != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.username != null ? 8 : 0,
+                elevation: item!.username != null ? 8 : 0,
                 heroTag: null,
-                onPressed: usernameSwitch,
+                onPressed: usernameSwitch as void Function()?,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
                 backgroundColor:
-                    item.password != null ? Colors.white : Colors.grey,
+                    item!.password != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.password,
-                  size: item.password != null ? 32 : 24,
-                  color: item.password != null ? Colors.grey : Colors.white,
+                  size: item!.password != null ? 32 : 24,
+                  color: item!.password != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.password != null ? 8 : 0,
+                elevation: item!.password != null ? 8 : 0,
                 heroTag: null,
-                onPressed: passwordSwitch,
+                onPressed: passwordSwitch as void Function()?,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
-                backgroundColor: item.pin != null ? Colors.white : Colors.grey,
+                backgroundColor: item!.pin != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.pin,
-                  size: item.pin != null ? 32 : 24,
-                  color: item.pin != null ? Colors.grey : Colors.white,
+                  size: item!.pin != null ? 32 : 24,
+                  color: item!.pin != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.pin != null ? 8 : 0,
+                elevation: item!.pin != null ? 8 : 0,
                 heroTag: null,
-                onPressed: pinSwitch,
+                onPressed: pinSwitch as void Function()?,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
-                backgroundColor: item.note != null ? Colors.white : Colors.grey,
+                backgroundColor: item!.note != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.notes_rounded,
-                  size: item.note != null ? 32 : 24,
-                  color: item.note != null ? Colors.grey : Colors.white,
+                  size: item!.note != null ? 32 : 24,
+                  color: item!.note != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.note != null ? 8 : 0,
+                elevation: item!.note != null ? 8 : 0,
                 heroTag: null,
-                onPressed: noteSwitch,
+                onPressed: noteSwitch as void Function()?,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
                 backgroundColor:
-                    item.address != null ? Colors.white : Colors.grey,
+                    item!.address != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.http,
-                  size: item.address != null ? 32 : 24,
-                  color: item.address != null ? Colors.grey : Colors.white,
+                  size: item!.address != null ? 32 : 24,
+                  color: item!.address != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.address != null ? 8 : 0,
+                elevation: item!.address != null ? 8 : 0,
                 heroTag: null,
-                onPressed: addressSwitch,
+                onPressed: addressSwitch as void Function()?,
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4),
               child: FloatingActionButton(
                 backgroundColor:
-                    item.product != null ? Colors.white : Colors.grey,
+                    item!.product != null ? Colors.white : Colors.grey,
                 child: Icon(
                   Icons.router,
-                  size: item.product != null ? 32 : 24,
-                  color: item.product != null ? Colors.grey : Colors.white,
+                  size: item!.product != null ? 32 : 24,
+                  color: item!.product != null ? Colors.grey : Colors.white,
                 ),
-                elevation: item.product != null ? 8 : 0,
+                elevation: item!.product != null ? 8 : 0,
                 heroTag: null,
-                onPressed: productSwitch,
+                onPressed: productSwitch as void Function()?,
               ),
             ),
           ],

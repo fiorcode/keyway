@@ -43,13 +43,13 @@ class _SearchBarTextFieldState extends State<SearchBarTextField> {
         border: InputBorder.none,
         prefixIcon: InkWell(
           child: Icon(Icons.search),
-          onTap: widget.switchFunction,
+          onTap: widget.switchFunction as void Function()?,
         ),
         suffixIcon: _empty
             ? null
             : InkWell(
                 child: Icon(Icons.clear),
-                onTap: widget.clearFunction,
+                onTap: widget.clearFunction as void Function()?,
               ),
       ),
       onChanged: (_) => _onChange(),
