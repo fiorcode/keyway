@@ -1,16 +1,16 @@
 import 'package:keyway/models/api/nist/cpe.dart';
 
 class Cpe23uri {
-  int cpe23uriId;
-  String value;
-  int deprecated;
-  String lastModifiedDate;
-  String title;
-  String ref;
-  String refType;
-  String lastTracking;
+  int? cpe23uriId;
+  String? value;
+  int? deprecated;
+  String? lastModifiedDate;
+  String? title;
+  String? ref;
+  String? refType;
+  String? lastTracking;
 
-  List<String> vulnerabilities;
+  List<String>? vulnerabilities;
 
   Cpe23uri({
     this.cpe23uriId,
@@ -26,9 +26,9 @@ class Cpe23uri {
   Cpe23uri.fromCpe(Cpe cpe) {
     this.value = cpe.cpe23Uri;
     this.lastModifiedDate = cpe.lastModifiedDate;
-    this.title = cpe.titles.isEmpty ? '' : cpe.titles.first.title;
-    this.ref = cpe.refs.isEmpty ? '' : cpe.refs.first.ref;
-    this.refType = cpe.refs.isEmpty ? '' : cpe.refs.first.type;
+    this.title = cpe.titles!.isEmpty ? '' : cpe.titles!.first.title;
+    this.ref = cpe.refs!.isEmpty ? '' : cpe.refs!.first.ref;
+    this.refType = cpe.refs!.isEmpty ? '' : cpe.refs!.first.type;
     this.vulnerabilities = cpe.vulnerabilities;
   }
 

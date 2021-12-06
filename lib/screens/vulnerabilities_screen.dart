@@ -13,11 +13,11 @@ class VulnerabilitiesScreen extends StatefulWidget {
 }
 
 class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
-  ItemProvider _item;
+  late ItemProvider _item;
   // NistProvider _nist;
 
-  Future<void> _getCves;
-  Future<void> _getProducts;
+  Future<void>? _getCves;
+  Future<void>? _getProducts;
 
   Future<void> _getCvesAsync() => _item.fetchCves();
 
@@ -47,7 +47,7 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
       body: Column(
         children: [
           FutureBuilder(
-            future: Future.wait([_getProducts, _getCves]),
+            future: Future.wait([_getProducts!, _getCves!]),
             builder: (ctx, snap) {
               switch (snap.connectionState) {
                 case ConnectionState.done:
@@ -150,7 +150,6 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
                       ],
                     );
                   }
-                  break;
                 default:
                   return Center(child: Text('default'));
               }

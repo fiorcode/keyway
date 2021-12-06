@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="NONE" />
+  </component>
   <component name="ChangeListManager">
     <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/backup_restore_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/backup_restore_screen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[Pixel_XL_API_30]" />
+  <component name="ExecutionTargetManager" SELECTED_TARGET="device_and_snapshot_combo_box_target[C:\Users\temp\.android\avd\Pixel_2_API_30.avd]" />
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -19,17 +24,21 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="com.android.tools.idea.emulator.zoom.toolbar.visible" value="false" />
     <property name="dart.analysis.tool.window.force.activate" value="true" />
     <property name="dart.analysis.tool.window.visible" value="false" />
     <property name="io.flutter.reload.alreadyRun" value="true" />
-    <property name="last_opened_file_path" value="$USER_HOME$/Downloads" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="project.structure.last.edited" value="Project" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
-    <property name="settings.editor.selected.configurable" value="emulator" />
+    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.project.gradle" />
     <property name="show.migrate.to.gradle.popup" value="false" />
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -42,50 +51,5 @@
       <updated>1631118270451</updated>
     </task>
     <servers />
-  </component>
-  <component name="WindowStateProjectService">
-    <state x="845" y="383" width="600" height="487" key="#Notifications" timestamp="1634406862693">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="845" y="383" width="600" height="487" key="#Notifications/0.0.1920.1040@0.0.1920.1040" timestamp="1634406862693" />
-    <state x="552" y="161" key="#Plugins" timestamp="1631118571605">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="552" y="161" key="#Plugins/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118571605" />
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1631118450630">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="414" y="175" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631118450630" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager" timestamp="1635963254629">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1632578428832" />
-    <state x="259" y="118" width="1200" height="800" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1635963254629" />
-    <state x="678" y="260" key="FileChooserDialogImpl" timestamp="1633970076782">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631653087057" />
-    <state x="678" y="260" key="FileChooserDialogImpl/0.0.1920.1040@0.0.1920.1040" timestamp="1633970076782" />
-    <state width="670" height="266" key="GridCell.Tab.0.bottom" timestamp="1631119605818">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="670" height="266" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.center" timestamp="1631119605818">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="670" height="266" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.left" timestamp="1631119605818">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="670" height="266" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state width="670" height="266" key="GridCell.Tab.0.right" timestamp="1631119605818">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="670" height="266" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119605818" />
-    <state x="461" y="165" key="SettingsEditor" timestamp="1633955474390">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/1920.-460.1050.1640@0.0.1920.1040" timestamp="1631119414979" />
-    <state x="461" y="165" key="SettingsEditor/0.0.1920.1040@0.0.1920.1040" timestamp="1633955474390" />
   </component>
 </project>

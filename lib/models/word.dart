@@ -1,6 +1,6 @@
 class Word {
-  final String value;
-  final String freq;
+  final String? value;
+  final String? freq;
 
   Word({this.value, this.freq});
 

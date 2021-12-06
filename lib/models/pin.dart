@@ -1,32 +1,38 @@
 import 'package:keyway/helpers/date_helper.dart';
 
 class Pin {
-  int pinId;
-  String pinEnc;
-  String pinIv;
-  String pinDate;
-  int pinLapse;
-  String pinStatus;
+  int? pinId;
+  String pinEnc = '';
+  String pinIv = '';
+  String pinDate = '';
+  int pinLapse = 0;
+  String pinStatus = '';
 
-  String pinDec;
+  String pinDec = '';
+
+  bool get empty => this.pinEnc.isEmpty && this.pinIv.isEmpty;
 
   Pin({
     this.pinId,
     this.pinEnc = '',
     this.pinIv = '',
-    this.pinDate,
+    this.pinDate = '',
     this.pinLapse = 320,
     this.pinStatus = '<active>',
     this.pinDec = '***clear***',
   });
 
   bool get repeatWarning => !this.pinStatus.contains('<no-warning>');
-  bool get expired =>
-      this.pinLapse == 0 ? false : DateHelper.expired(pinDate, pinLapse);
+  bool get expired {
+    if (this.pinLapse == 0) {
+      return false;
+    }
+    return DateHelper.expired(pinDate, pinLapse);
+  }
 
   void repeatWarningSwitch() {
     if (repeatWarning)
-      this.pinStatus += '<no-warning>';
+      this.pinStatus = this.pinStatus + '<no-warning>';
     else
       this.pinStatus = this.pinStatus.replaceAll('<no-warning>', '');
   }
@@ -62,7 +68,7 @@ class Pin {
         pinStatus: this.pinStatus,
       );
 
-  bool notEqual(Pin p) {
+  bool notEqual(Pin? p) {
     if (p == null) return true;
     if (this.pinId != p.pinId) return true;
     if (this.pinEnc != p.pinEnc) return true;

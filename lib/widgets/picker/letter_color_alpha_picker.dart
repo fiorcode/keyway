@@ -11,10 +11,10 @@ class LetterColorAlphaPicker extends StatefulWidget {
 }
 
 class _LetterColorAlphaPickerState extends State<LetterColorAlphaPicker> {
-  double _value;
-  Color _color;
+  double? _value;
+  Color? _color;
 
-  _setColor(double val) => _color = _color.withAlpha(val.toInt());
+  _setColor(double val) => _color = _color!.withAlpha(val.toInt());
 
   // _setValue(Color col) {
   //   setState(() => _value = _color.alpha.toDouble());
@@ -22,13 +22,8 @@ class _LetterColorAlphaPickerState extends State<LetterColorAlphaPicker> {
 
   @override
   void initState() {
-    if (widget.color != null) {
-      _color = widget.color;
-      _value = _color.alpha.toDouble();
-    } else {
-      _color = Colors.grey;
-      _value = 255;
-    }
+    _color = widget.color;
+    _value = _color!.alpha.toDouble();
     super.initState();
   }
 
@@ -45,11 +40,11 @@ class _LetterColorAlphaPickerState extends State<LetterColorAlphaPicker> {
       child: Slider(
         min: 0,
         max: 255,
-        value: _value == null ? 0 : _value,
+        value: _value == null ? 0 : _value!,
         onChanged: (value) {
           _value = value;
           _setColor(value);
-          widget.change(_color.value);
+          widget.change(_color!.value);
         },
       ),
     );
@@ -60,44 +55,37 @@ class GradientRectSliderTrackShape extends SliderTrackShape
     with BaseSliderTrackShape {
   /// Create a slider track that draws two rectangles with rounded outer edges.
   const GradientRectSliderTrackShape(this.color);
-  final Color color;
+  final Color? color;
 
   @override
   void paint(
     PaintingContext context,
     Offset offset, {
-    @required RenderBox parentBox,
-    @required SliderThemeData sliderTheme,
-    @required Animation<double> enableAnimation,
-    @required TextDirection textDirection,
-    @required Offset thumbCenter,
+    required RenderBox parentBox,
+    required SliderThemeData sliderTheme,
+    required Animation<double> enableAnimation,
+    required TextDirection textDirection,
+    required Offset thumbCenter,
     bool isDiscrete = false,
     bool isEnabled = false,
     double additionalActiveTrackHeight = 2,
   }) {
-    assert(context != null);
-    assert(offset != null);
-    assert(parentBox != null);
-    assert(sliderTheme != null);
     assert(sliderTheme.disabledActiveTrackColor != null);
     assert(sliderTheme.disabledInactiveTrackColor != null);
     assert(sliderTheme.activeTrackColor != null);
     assert(sliderTheme.inactiveTrackColor != null);
     assert(sliderTheme.thumbShape != null);
-    assert(enableAnimation != null);
-    assert(textDirection != null);
-    assert(thumbCenter != null);
     // If the slider [SliderThemeData.trackHeight] is less than or equal to 0,
     // then it makes no difference whether the track is painted or not,
     // therefore the painting  can be a no-op.
-    if (sliderTheme.trackHeight <= 0) {
+    if (sliderTheme.trackHeight! <= 0) {
       return;
     }
 
     LinearGradient gradient = LinearGradient(colors: [
-      color.withAlpha(0),
-      color.withAlpha(128),
-      color.withAlpha(255),
+      color!.withAlpha(0),
+      color!.withAlpha(128),
+      color!.withAlpha(255),
     ]);
 
     final Rect trackRect = getPreferredRect(
@@ -118,12 +106,12 @@ class GradientRectSliderTrackShape extends SliderTrackShape
         end: sliderTheme.activeTrackColor);
     final Paint activePaint = Paint()
       ..shader = gradient.createShader(trackRect)
-      ..color = activeTrackColorTween.evaluate(enableAnimation);
+      ..color = activeTrackColorTween.evaluate(enableAnimation)!;
     final Paint inactivePaint = Paint()
       ..shader = gradient.createShader(trackRect)
-      ..color = inactiveTrackColorTween.evaluate(enableAnimation);
-    Paint leftTrackPaint;
-    Paint rightTrackPaint;
+      ..color = inactiveTrackColorTween.evaluate(enableAnimation)!;
+    late Paint leftTrackPaint;
+    late Paint rightTrackPaint;
     switch (textDirection) {
       case TextDirection.ltr:
         leftTrackPaint = activePaint;

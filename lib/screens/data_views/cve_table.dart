@@ -13,20 +13,21 @@ class CveTableScreen extends StatefulWidget {
 }
 
 class _CveTableScreenState extends State<CveTableScreen> {
-  ItemProvider _item;
-  Future _getCves;
+  late ItemProvider _item;
+  Future? _getCves;
 
-  Future<void> _getCvesAsync() async => await _item.fetchCves();
+  Future<void> _getCvesAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false).fetchCves();
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getCves = _getCvesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -70,7 +71,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('cve: '),
                                   Text(
-                                    _item.cves[i].cve,
+                                    _item.cves[i].cve!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -81,7 +82,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('assigner: '),
                                   Text(
-                                    _item.cves[i].assigner,
+                                    _item.cves[i].assigner!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -92,7 +93,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('references_url: '),
                                   Text(
-                                    _item.cves[i].referencesUrl,
+                                    _item.cves[i].referencesUrl!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -103,7 +104,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('descriptions: '),
                                   Text(
-                                    _item.cves[i].descriptions,
+                                    _item.cves[i].descriptions!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -114,7 +115,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('published_date: '),
                                   Text(
-                                    _item.cves[i].publishedDate,
+                                    _item.cves[i].publishedDate!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -125,7 +126,7 @@ class _CveTableScreenState extends State<CveTableScreen> {
                                 children: [
                                   Text('last_modified_date: '),
                                   Text(
-                                    _item.cves[i].lastModifiedDate,
+                                    _item.cves[i].lastModifiedDate!,
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -149,7 +150,6 @@ class _CveTableScreenState extends State<CveTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

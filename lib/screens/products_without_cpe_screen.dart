@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/helpers/error_helper.dart';
 import 'package:keyway/screens/product_search_screen.dart';
 import 'package:provider/provider.dart';
 
@@ -15,17 +16,17 @@ class ProductsWithoutCpeScreen extends StatefulWidget {
 }
 
 class _ProductsWithoutCpeScreenState extends State<ProductsWithoutCpeScreen> {
-  ItemProvider _item;
-  Future<List<Product>> _getProducts;
+  late ItemProvider _item;
+  Future<List<Product>>? _getProducts;
 
   Future<List<Product>> _getProductsAsync() => _item.getProductsWithNoCpe();
 
   void _goToSearch(
     BuildContext context,
     String route,
-    Product product,
-    String trademark,
-    String model,
+    Product? product,
+    String? trademark,
+    String? model,
   ) =>
       Navigator.push(
         context,
@@ -59,17 +60,21 @@ class _ProductsWithoutCpeScreenState extends State<ProductsWithoutCpeScreen> {
             switch (snap.connectionState) {
               case ConnectionState.waiting:
                 return LoadingScaffold();
-                break;
               case ConnectionState.done:
+                if (snap.hasError) {
+                  return ErrorHelper.errorBody(snap.error);
+                }
+                List<Product> products = <Product>[];
+                products = snap.data as List<Product>;
                 return ListView.builder(
                     padding: EdgeInsets.all(12.0),
-                    itemCount: snap.data.length,
+                    itemCount: products.length,
                     itemBuilder: (ctx, i) {
                       return Card(
                         child: ListTile(
-                          leading: Icon(snap.data[i].icon, size: 32),
-                          title: Text(snap.data[i].productTrademark),
-                          subtitle: Text(snap.data[i].productModel),
+                          leading: Icon(products[i].icon, size: 32),
+                          title: Text(products[i].productTrademark),
+                          subtitle: Text(products[i].productModel),
                           trailing: IconButton(
                             onPressed: () {},
                             icon: Icon(
@@ -81,9 +86,9 @@ class _ProductsWithoutCpeScreenState extends State<ProductsWithoutCpeScreen> {
                           onTap: () => _goToSearch(
                             context,
                             ProductSearchScreen.routeName,
-                            snap.data[i],
-                            snap.data[i].productTrademark,
-                            snap.data[i].productModel,
+                            products[i],
+                            products[i].productTrademark,
+                            products[i].productModel,
                           ),
                         ),
                       );

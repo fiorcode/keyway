@@ -1,17 +1,17 @@
 class CveImpactV3 {
-  String cveImpactV3Id;
-  num exploitabilityScore;
-  num impactScore;
-  String attackVector;
-  String attackComplexity;
-  String privilegesRequired;
-  String userInteraction;
-  String scope;
-  String confidentialityImpact;
-  String integrityImpact;
-  String availabilityImpact;
-  num baseScore;
-  num baseSeverity;
+  String? cveImpactV3Id;
+  num? exploitabilityScore;
+  num? impactScore;
+  String? attackVector;
+  String? attackComplexity;
+  String? privilegesRequired;
+  String? userInteraction;
+  String? scope;
+  String? confidentialityImpact;
+  String? integrityImpact;
+  String? availabilityImpact;
+  num? baseScore;
+  num? baseSeverity;
 
   CveImpactV3({
     this.cveImpactV3Id,

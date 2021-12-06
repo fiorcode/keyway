@@ -13,8 +13,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  CriptoProvider _cripto;
-  Future<void> _firstRun;
+  late CriptoProvider _cripto;
+  Future<void>? _firstRun;
 
   Future<void> _checkFirstRun() async {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
@@ -48,12 +48,10 @@ class _SplashScreenState extends State<SplashScreen> {
               return Center(
                 child: Image.asset("assets/icon.png"),
               );
-              break;
             case ConnectionState.waiting:
               return Center(
                 child: Image.asset("assets/icon.png"),
               );
-              break;
             default:
               return Center(
                 child: Image.asset("assets/error.png"),

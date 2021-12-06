@@ -3,11 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:keyway/helpers/date_helper.dart';
 
 class ItemPassword {
-  int fkItemId;
-  int fkPasswordId;
-  String passwordDate;
-  int passwordLapse;
-  String passwordStatus;
+  int? fkItemId;
+  int? fkPasswordId;
+  String? passwordDate;
+  int passwordLapse = 320;
+  String passwordStatus = '<active>';
 
   ItemPassword({
     this.fkItemId,
@@ -25,10 +25,15 @@ class ItemPassword {
   bool get expired => this.passwordLapse == 0
       ? false
       : DateHelper.expired(passwordDate, passwordLapse);
+  bool get customLapse =>
+      this.passwordLapse != 0 &&
+      this.passwordLapse != 96 &&
+      this.passwordLapse != 320;
+  bool get noLapse => this.passwordLapse == 0;
 
   void repeatWarningSwitch() {
     if (repeatWarning)
-      this.passwordStatus += '<no-warning>';
+      this.passwordStatus = this.passwordStatus + '<no-warning>';
     else
       this.passwordStatus = this.passwordStatus.replaceAll('<no-warning>', '');
   }
@@ -37,7 +42,7 @@ class ItemPassword {
     if (!active) {
       unSetDeleted();
       unSetOld();
-      this.passwordStatus += '<active>';
+      this.passwordStatus = this.passwordStatus + '<active>';
     }
   }
 
@@ -45,7 +50,7 @@ class ItemPassword {
       this.passwordStatus = this.passwordStatus.replaceAll('<active>', '');
 
   void setRepeated() {
-    if (!repeated) this.passwordStatus += '<repeated>';
+    if (!repeated) this.passwordStatus = this.passwordStatus + '<repeated>';
   }
 
   void unSetRepeated() =>
@@ -54,7 +59,7 @@ class ItemPassword {
   void setDeleted() {
     if (!deleted) {
       unSetActive();
-      this.passwordStatus += '<deleted>';
+      this.passwordStatus = this.passwordStatus + '<deleted>';
     }
   }
 
@@ -64,7 +69,7 @@ class ItemPassword {
   void setOld() {
     if (!old) {
       unSetActive();
-      this.passwordStatus += '<old>';
+      this.passwordStatus = this.passwordStatus + '<old>';
     }
   }
 
@@ -98,7 +103,7 @@ class ItemPassword {
     return _ip;
   }
 
-  bool notEqual(ItemPassword ip) {
+  bool notEqual(ItemPassword? ip) {
     if (ip == null) return true;
     if (this.fkItemId != ip.fkItemId) return true;
     if (this.fkPasswordId != ip.fkPasswordId) return true;

@@ -2,12 +2,12 @@ import 'package:keyway/models/api/nist/cpe_ref.dart';
 import 'package:keyway/models/api/nist/cpe_title.dart';
 
 class Cpe {
-  final bool deprecated;
-  final String cpe23Uri;
-  final String lastModifiedDate;
-  final List<CpeTitle> titles;
-  final List<CpeRef> refs;
-  final List<String> vulnerabilities;
+  final bool? deprecated;
+  final String? cpe23Uri;
+  final String? lastModifiedDate;
+  final List<CpeTitle>? titles;
+  final List<CpeRef>? refs;
+  final List<String>? vulnerabilities;
 
   Cpe({
     this.deprecated,
@@ -19,23 +19,21 @@ class Cpe {
   });
 
   String get type {
-    switch (cpe23Uri.split(':')[2]) {
+    switch (cpe23Uri!.split(':')[2]) {
       case 'h':
         return 'HARDWARE';
-        break;
       case 'o':
         return 'OS/FIRMAWARE';
-        break;
       default:
         return 'APP/PROGRAM';
     }
   }
 
-  String get trademark => cpe23Uri.split(':')[3].toUpperCase();
+  String get trademark => cpe23Uri!.split(':')[3].toUpperCase();
 
-  String get model => cpe23Uri.split(':')[4].toUpperCase();
+  String get model => cpe23Uri!.split(':')[4].toUpperCase();
 
-  bool get hasVulns => vulnerabilities.isNotEmpty;
+  bool get hasVulns => vulnerabilities!.isNotEmpty;
 
   factory Cpe.fromJson(Map<String, dynamic> parsedJson) {
     List<dynamic> _cpeTitles = parsedJson['titles'] as List<dynamic>;

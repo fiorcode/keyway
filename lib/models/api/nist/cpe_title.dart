@@ -1,6 +1,6 @@
 class CpeTitle {
-  final String title;
-  final String lang;
+  final String? title;
+  final String? lang;
 
   CpeTitle(this.title, this.lang);
 

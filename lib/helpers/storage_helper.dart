@@ -49,7 +49,7 @@ class StorageHelper {
     }
   }
 
-  static Future<File> getDeviceBackup() async {
+  static Future<File?> getDeviceBackup() async {
     String _path = await devicePath();
     if (_path.isEmpty) return null;
     _path = _path + '/keyway/backups/kw_backup.db';
@@ -59,7 +59,7 @@ class StorageHelper {
     return null;
   }
 
-  static Future<File> getSdCardBackup() async {
+  static Future<File?> getSdCardBackup() async {
     String _path = await sdCardPath();
     if (_path.isEmpty) return null;
     _path = _path + '/keyway/backups/kw_backup.db';
@@ -69,7 +69,7 @@ class StorageHelper {
     return null;
   }
 
-  static Future<File> getDownloadFolderBackup() async {
+  static Future<File?> getDownloadFolderBackup() async {
     String _path = await ExternalPath.getExternalStoragePublicDirectory(
         ExternalPath.DIRECTORY_DOWNLOADS);
     if (_path.isEmpty) return null;

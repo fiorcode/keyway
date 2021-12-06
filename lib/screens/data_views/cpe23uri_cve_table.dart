@@ -13,20 +13,22 @@ class Cpe23uriCveTableScreen extends StatefulWidget {
 }
 
 class _Cpe23uriCveTableScreenState extends State<Cpe23uriCveTableScreen> {
-  ItemProvider _item;
-  Future<void> _getCpe23uriCves;
+  late ItemProvider _item;
+  Future<void>? _getCpe23uriCves;
 
-  Future<void> _getCpe23uriCvesAsync() async => await _item.fetchCpe23uriCves();
+  Future<void> _getCpe23uriCvesAsync() async =>
+      await Provider.of<ItemProvider>(context, listen: false)
+          .fetchCpe23uriCves();
 
   @override
   void initState() {
-    _item = Provider.of<ItemProvider>(context, listen: false);
     _getCpe23uriCves = _getCpe23uriCvesAsync();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -84,7 +86,6 @@ class _Cpe23uriCveTableScreenState extends State<Cpe23uriCveTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

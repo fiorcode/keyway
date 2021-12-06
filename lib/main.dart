@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:provider/provider.dart';
 
 import 'providers/cripto_provider.dart';
@@ -45,10 +44,7 @@ import 'screens/data_views/cve_table.dart';
 import 'screens/data_views/tag_table.dart';
 import 'screens/data_views/user_table.dart';
 
-void main() {
-  // FlutterCryptography.enable();
-  runApp(MyApp());
-}
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   @override
@@ -61,6 +57,13 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: NistProvider()),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        builder: (BuildContext context, Widget? widget) {
+          ErrorWidget.builder = (FlutterErrorDetails errorDetails) {
+            return Text(errorDetails.exception.toString());
+          };
+          return widget!;
+        },
         title: 'Keyway',
         theme: ThemeData(
           primarySwatch: Colors.grey,

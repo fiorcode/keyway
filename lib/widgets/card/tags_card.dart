@@ -7,29 +7,29 @@ import '../../providers/item_provider.dart';
 import '../../screens/tag_add_screen.dart';
 
 class TagsCard extends StatefulWidget {
-  const TagsCard({Key key, this.item}) : super(key: key);
+  const TagsCard({Key? key, this.item}) : super(key: key);
 
-  final Item item;
+  final Item? item;
 
   @override
   _TagsCardState createState() => _TagsCardState();
 }
 
 class _TagsCardState extends State<TagsCard> {
-  ItemProvider _items;
-  Future<List<Tag>> _getTags;
-  List<Tag> _tagList;
-  List<Widget> _chips;
-  String _widgetTags;
+  Future<List<Tag>>? _getTags;
+  late List<Tag> _tagList;
+  List<Widget>? _chips;
+  String? _widgetTags;
 
-  Future<List<Tag>> _tagsList() async => _tagList = await _items.getTags();
+  Future<List<Tag>> _tagsList() async => _tagList =
+      await Provider.of<ItemProvider>(context, listen: false).getTags();
 
-  List<Widget> _tags(List<Tag> tags, bool interact) {
+  List<Widget>? _tags(List<Tag> tags, bool interact) {
     _chips = <Widget>[];
     tags.forEach(
       (tag) {
-        tag.selected = _widgetTags.contains('<${tag.tagName}>');
-        _chips.add(
+        tag.selected = _widgetTags!.contains('<${tag.tagName}>');
+        _chips!.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: ChoiceChip(
@@ -57,16 +57,16 @@ class _TagsCardState extends State<TagsCard> {
 
   void tagTapped(Tag tag, bool selected) {
     tag.selected = selected;
-    if (_widgetTags.contains('<${tag.tagName}>')) {
-      _widgetTags = _widgetTags.replaceAll('<${tag.tagName}>', '');
+    if (_widgetTags!.contains('<${tag.tagName}>')) {
+      _widgetTags = _widgetTags!.replaceAll('<${tag.tagName}>', '');
     } else {
-      _widgetTags += '<${tag.tagName}>';
+      _widgetTags = _widgetTags! + '<${tag.tagName}>';
     }
-    widget.item.addRemoveTag(tag.tagName);
+    widget.item!.addRemoveTag(tag.tagName);
     setState(() {});
   }
 
-  void _onReturn(Tag tag) {
+  void _onReturn(Tag? tag) {
     if (tag != null) {
       tagTapped(tag, true);
       _tagList.add(tag);
@@ -76,8 +76,7 @@ class _TagsCardState extends State<TagsCard> {
 
   @override
   void initState() {
-    _items = Provider.of<ItemProvider>(context, listen: false);
-    if (widget.item != null) _widgetTags = widget.item.tags;
+    if (widget.item != null) _widgetTags = widget.item!.tags;
     _getTags = _tagsList();
     super.initState();
   }
@@ -120,7 +119,7 @@ class _TagsCardState extends State<TagsCard> {
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 4.0),
                                       scrollDirection: Axis.horizontal,
-                                      children: _tags(_tagList, true),
+                                      children: _tags(_tagList, true)!,
                                     ),
                                   ),
                                   IconButton(
@@ -154,7 +153,6 @@ class _TagsCardState extends State<TagsCard> {
                                   ),
                                 ).then((tag) => _onReturn(tag)),
                               );
-                        break;
                       default:
                         return Center(child: CircularProgressIndicator());
                     }

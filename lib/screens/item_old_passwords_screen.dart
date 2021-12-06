@@ -13,18 +13,20 @@ class ItemOldPasswordsScreen extends StatefulWidget {
 
   ItemOldPasswordsScreen({this.item});
 
-  final Item item;
+  final Item? item;
 
   @override
   _ItemOldPasswordsScreenState createState() => _ItemOldPasswordsScreenState();
 }
 
 class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
-  Future<void> _decryptPasswords;
+  Future<void>? _decryptPasswords;
 
   Future<void> _decryptPasswordsAsync() async {
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-    return _c.decryptItemPasswords(widget.item);
+    return _c
+        .decryptItemPasswords(widget.item!)
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
 
   @override
@@ -47,7 +49,7 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
         iconTheme: IconThemeData(color: Theme.of(context).primaryColor),
         centerTitle: true,
         title: Text(
-          widget.item.title,
+          widget.item!.title,
           style: TextStyle(
             fontSize: 32,
             fontWeight: FontWeight.bold,
@@ -61,17 +63,16 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
           switch (snap.connectionState) {
             case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
-              break;
             case ConnectionState.done:
               if (snap.hasError) {
                 return ErrorBody(snap.error);
               } else {
                 return ListView.builder(
                   padding: EdgeInsets.all(16.0),
-                  itemCount: widget.item.itemPasswords.length,
+                  itemCount: widget.item!.itemPasswords!.length,
                   itemBuilder: (ctx, i) {
-                    ItemPassword _ip = widget.item.itemPasswords[i];
-                    Password _p = widget.item.passwords
+                    ItemPassword _ip = widget.item!.itemPasswords![i];
+                    Password _p = widget.item!.passwords!
                         .where((p) => p.passwordId == _ip.fkPasswordId)
                         .first;
                     return Container(
@@ -117,7 +118,6 @@ class _ItemOldPasswordsScreenState extends State<ItemOldPasswordsScreen> {
                   },
                 );
               }
-              break;
             default:
               return Center(child: CircularProgressIndicator());
           }

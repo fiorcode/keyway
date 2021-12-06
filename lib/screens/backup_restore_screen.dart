@@ -1,9 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:keyway/helpers/error_helper.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../helpers/error_helper.dart';
 import '../helpers/date_helper.dart';
 import '../helpers/db_helper.dart';
 import '../helpers/storage_helper.dart';
@@ -18,69 +19,106 @@ class BackupRestoreScreen extends StatefulWidget {
 }
 
 class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
-  Icon _icon;
-  File _fileToRestore;
-  FileStat _fileToRestoreStatus;
+  Icon? _icon;
+  File? _fileToRestore;
+  FileStat? _fileToRestoreStatus;
   bool _working = false;
 
-  Future<bool> _checkPermissions() async {
-    PermissionStatus _status = await Permission.manageExternalStorage.status;
+  Future<bool> _externalStoragePermission() async {
+    PermissionStatus _status = await Permission.manageExternalStorage.status
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
     if (_status.isDenied) {
-      if (!(await Permission.manageExternalStorage.request().isGranted))
-        return false;
+      PermissionStatus _ps = await Permission.manageExternalStorage
+          .request()
+          .onError((error, st) => _onError(error));
+      if (!(_ps.isGranted)) return false;
+    }
+    return true;
+  }
+
+  Future<bool> _storagePermission() async {
+    PermissionStatus _status = await Permission.storage.status
+        .onError((error, st) => ErrorHelper.errorDialog(context, error));
+    if (_status.isDenied) {
+      PermissionStatus _ps = await Permission.storage
+          .request()
+          .onError((error, st) => _onError(error));
+      if (!(_ps.isGranted)) return false;
     }
     return true;
   }
 
   Future<void> _backupToDevice() async {
+    await _storagePermission();
     StorageHelper.backupToDevice().then((succeed) {
-      if (succeed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              'DONE!',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: succeed ? Colors.green : Colors.red,
+          content: Text(
+            succeed ? 'DONE!' : 'SOMETHING WENT WRONG',
+            textAlign: TextAlign.center,
           ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.red,
-            content: Text(
-              'SOMETHING WENT WRONG',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
-          ),
-        );
-      }
-    });
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _backupToSdCard() async {
     StorageHelper.backupToSdCard().then((succeed) {
-      if (succeed) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            backgroundColor: Colors.green,
-            content: Text(
-              'DONE!',
-              textAlign: TextAlign.center,
-            ),
-            duration: Duration(seconds: 1),
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          backgroundColor: succeed ? Colors.green : Colors.red,
+          content: Text(
+            succeed ? 'DONE!' : 'SOMETHING WENT WRONG \n\n no SD card?',
+            textAlign: TextAlign.center,
           ),
-        );
+          duration: Duration(seconds: 1),
+        ),
+      );
+    }).onError((error, st) => _onError(error));
+  }
+
+  Future<void> _backupToMail() async {
+    await _storagePermission();
+    StorageHelper.backupToDevice().then((succeed) {
+      if (succeed) {
+        StorageHelper.getDeviceBackup().then((file) async {
+          if (file != null) {
+            final Email _email = Email(
+              body: 'Keyway Backup',
+              subject: 'Keyway Backup',
+              recipients: ['lperezfiorentino@vialidad.gob.ar'],
+              attachmentPaths: [file.path],
+              isHTML: false,
+            );
+            await FlutterEmailSender.send(_email)
+                .onError((error, st) => _onError(error));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.green,
+                content: Text('Email sent!', textAlign: TextAlign.center),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red,
+                content: Text(
+                  'FILE NOT FOUND',
+                  textAlign: TextAlign.center,
+                ),
+                duration: Duration(seconds: 1),
+              ),
+            );
+          }
+        }).onError((error, st) => _onError(error));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             backgroundColor: Colors.red,
-            content: Text(
-              'SOMETHING WENT WRONG',
-              textAlign: TextAlign.center,
-            ),
+            content: Text('SOMETHING WENT WRONG', textAlign: TextAlign.center),
             duration: Duration(seconds: 1),
           ),
         );
@@ -88,32 +126,15 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
     });
   }
 
-  Future<void> _backupToMail() async {
-    try {
-      await _checkPermissions();
-      File _db = await StorageHelper.getDeviceBackup();
-      final Email _email = Email(
-        body: 'Keyway Backup',
-        subject: 'Keyway Backup',
-        recipients: ['lperezfiorentino@vialidad.gob.ar'],
-        attachmentPaths: [_db.path],
-        isHTML: false,
-      );
-      await FlutterEmailSender.send(_email);
-    } catch (e) {
-      ErrorHelper.errorDialog(context, e.toString());
-    }
-  }
-
   Future<void> _getDeviceBackup() async {
-    await _checkPermissions();
+    await _storagePermission().onError((error, st) => _onError(error));
     Color _primary = Theme.of(context).primaryColor;
     _icon = Icon(Icons.phone_iphone, color: _primary, size: 32);
     setState(() => _working = true);
     StorageHelper.getDeviceBackup().then((file) async {
       if (file != null) {
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -127,18 +148,18 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _getSdBackup() async {
-    await _checkPermissions();
+    await _externalStoragePermission().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getSdCardBackup().then((file) async {
       if (file != null) {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.sd_card, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -152,18 +173,18 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _getDownloadsBackup() async {
-    await _checkPermissions();
+    await _externalStoragePermission().onError((error, st) => _onError(error));
     setState(() => _working = true);
     StorageHelper.getDownloadFolderBackup().then((file) async {
       if (file != null) {
         Color _primary = Theme.of(context).primaryColor;
         _icon = Icon(Icons.folder, color: _primary, size: 32);
         _fileToRestore = file;
-        _fileToRestoreStatus = await _fileToRestore.stat();
+        _fileToRestoreStatus = await _fileToRestore!.stat();
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -177,27 +198,34 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
         );
       }
       setState(() => _working = false);
-    });
+    }).onError((error, st) => _onError(error));
   }
 
   Future<void> _restoreBackup(String path) async {
-    return DBHelper.restoreBackup(path).then(
-      (_) => Navigator.popUntil(
-        context,
-        ModalRoute.withName(ItemsListScreen.routeName),
-      ),
-    );
+    return DBHelper.restoreBackup(path)
+        .then(
+          (_) => Navigator.popUntil(
+            context,
+            ModalRoute.withName(ItemsListScreen.routeName),
+          ),
+        )
+        .onError((error, st) => _onError(error));
   }
 
   Future<void> _deleteBackup() async {
     setState(() => _working = true);
-    StorageHelper.deleteFile(_fileToRestore).then((fse) {
+    StorageHelper.deleteFile(_fileToRestore!).then((fse) {
       setState(() {
         _fileToRestore = null;
         _fileToRestoreStatus = null;
         _working = false;
       });
-    });
+    }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+  }
+
+  dynamic _onError(Object? error) {
+    setState(() => _working = false);
+    return ErrorHelper.errorDialog(context, error);
   }
 
   @override
@@ -270,7 +298,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'SD Card',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              onTap: () => _backupToSdCard(),
+                              onTap: _backupToSdCard,
                             ),
                             DashboardCard(
                               icon:
@@ -279,7 +307,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                 'E-Mail',
                                 style: TextStyle(color: _primary, fontSize: 12),
                               ),
-                              onTap: () => _backupToMail(),
+                              onTap: _backupToMail,
                             ),
                           ],
                         ),
@@ -374,7 +402,8 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
-                                      Text(_fileToRestore.path.split('/').last),
+                                      Text(
+                                          _fileToRestore!.path.split('/').last),
                                     ],
                                   ),
                                   Row(
@@ -389,7 +418,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                       ),
                                       Expanded(
-                                          child: Text(_fileToRestore.path)),
+                                          child: Text(_fileToRestore!.path)),
                                     ],
                                   ),
                                   if (_fileToRestoreStatus != null)
@@ -406,7 +435,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         Expanded(
                                           child: Text(
                                             DateHelper.ddMMyyHm(
-                                                _fileToRestoreStatus.modified),
+                                                _fileToRestoreStatus!.modified),
                                           ),
                                         ),
                                       ],
@@ -424,7 +453,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                                         ),
                                         Expanded(
                                           child: Text(
-                                            _fileToRestoreStatus.size
+                                            _fileToRestoreStatus!.size
                                                     .toString() +
                                                 ' Bytes',
                                           ),
@@ -472,7 +501,7 @@ class _BackupRestoreScreenState extends State<BackupRestoreScreen> {
                               style:
                                   ElevatedButton.styleFrom(primary: _primary),
                               onPressed: () =>
-                                  _restoreBackup(_fileToRestore.path),
+                                  _restoreBackup(_fileToRestore!.path),
                               child: Text(
                                 'RESTORE',
                                 style: TextStyle(color: Colors.white),

@@ -13,20 +13,21 @@ class Cpe23uriTableScreen extends StatefulWidget {
 }
 
 class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
-  ItemProvider _item;
-  Future _getCpe23uris;
+  late ItemProvider _item;
+  Future? _getCpe23uris;
 
-  Future<void> _getCpe23urisAsync() async => await _item.fetchCpe23uris();
+  Future<void> _getCpe23urisAsync() async =>
+      await Provider.of<ItemProvider>(context).fetchCpe23uris();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getCpe23uris = _getCpe23urisAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -71,7 +72,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                   Text('value: '),
                                   Expanded(
                                     child: Text(
-                                      _item.cpe23uris[i].value,
+                                      _item.cpe23uris[i].value!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -104,7 +105,8 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                       _item.cpe23uris[i].lastModifiedDate ==
                                               null
                                           ? 'null'
-                                          : _item.cpe23uris[i].lastModifiedDate,
+                                          : _item
+                                              .cpe23uris[i].lastModifiedDate!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -118,7 +120,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                   Text('title: '),
                                   Expanded(
                                     child: Text(
-                                      _item.cpe23uris[i].title,
+                                      _item.cpe23uris[i].title!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -134,7 +136,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                     child: Text(
                                       _item.cpe23uris[i].ref == null
                                           ? 'null'
-                                          : _item.cpe23uris[i].ref,
+                                          : _item.cpe23uris[i].ref!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -150,7 +152,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                     child: Text(
                                       _item.cpe23uris[i].refType == null
                                           ? 'null'
-                                          : _item.cpe23uris[i].refType,
+                                          : _item.cpe23uris[i].refType!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -166,7 +168,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                                     child: Text(
                                       _item.cpe23uris[i].lastTracking == null
                                           ? 'null'
-                                          : _item.cpe23uris[i].lastTracking,
+                                          : _item.cpe23uris[i].lastTracking!,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
@@ -181,7 +183,6 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

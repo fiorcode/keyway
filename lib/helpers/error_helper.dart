@@ -22,7 +22,38 @@ class ErrorHelper {
     );
   }
 
+  static Widget errorScaffold(dynamic e) => ErrorScaffold(e);
+
   static Widget errorBody(dynamic e) => ErrorBody(e);
+}
+
+class ErrorScaffold extends StatelessWidget {
+  ErrorScaffold(this.error);
+
+  final dynamic error;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        children: [
+          Center(
+            child: Image.asset("assets/error.png", height: 128),
+          ),
+          Container(
+            height: 128,
+            child: Center(
+              child: Text(
+                error.toString(),
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.red),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class ErrorBody extends StatelessWidget {

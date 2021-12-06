@@ -13,7 +13,7 @@ import '../picker/letter_color_alpha_picker.dart';
 class ItemPreviewCard extends StatefulWidget {
   ItemPreviewCard(this.item);
 
-  final Item item;
+  final Item? item;
 
   @override
   _ItemPreviewCardState createState() => _ItemPreviewCardState();
@@ -26,12 +26,12 @@ class _ItemPreviewCardState extends State<ItemPreviewCard> {
   bool _editingBackground = true;
 
   _setFillColor(int color) {
-    widget.item.avatarColor = color;
+    widget.item!.avatarColor = color;
     setState(() => _fillColor = Color(color));
   }
 
   _setFontColor(int color) {
-    widget.item.avatarLetterColor = color;
+    widget.item!.avatarLetterColor = color;
     setState(() => _fontColor = Color(color));
   }
 
@@ -40,10 +40,10 @@ class _ItemPreviewCardState extends State<ItemPreviewCard> {
 
   @override
   void initState() {
-    if (widget.item.avatarColor >= 0)
-      _fillColor = Color(widget.item.avatarColor);
-    if (widget.item.avatarLetterColor >= 0)
-      _fontColor = Color(widget.item.avatarLetterColor);
+    if (widget.item!.avatarColor! >= 0)
+      _fillColor = Color(widget.item!.avatarColor!);
+    if (widget.item!.avatarLetterColor! >= 0)
+      _fontColor = Color(widget.item!.avatarLetterColor!);
     super.initState();
   }
 
@@ -73,9 +73,9 @@ class _ItemPreviewCardState extends State<ItemPreviewCard> {
               radius: 24,
               backgroundColor: _fillColor,
               child: Text(
-                widget.item.title.isEmpty
+                widget.item!.title.isEmpty
                     ? 'T'
-                    : widget.item.title.substring(0, 1).toUpperCase(),
+                    : widget.item!.title.substring(0, 1).toUpperCase(),
                 style: TextStyle(
                   color: _fontColor,
                   fontSize: 24,
@@ -84,7 +84,7 @@ class _ItemPreviewCardState extends State<ItemPreviewCard> {
               ),
             ),
             title: Text(
-              widget.item.title.isEmpty ? 'Title' : widget.item.title,
+              widget.item!.title.isEmpty ? 'Title' : widget.item!.title,
               overflow: TextOverflow.ellipsis,
               maxLines: 1,
               style: TextStyle(

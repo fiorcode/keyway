@@ -1,8 +1,8 @@
 class Backup {
-  int backupId;
-  String backupDate;
-  String backupType;
-  String backupPath;
+  int? backupId;
+  String? backupDate;
+  String? backupType;
+  String? backupPath;
 
   Backup({
     this.backupId,
@@ -36,7 +36,6 @@ class Backup {
       );
 
   bool notEqual(Backup u) {
-    if (u == null) return true;
     if (this.backupPath != u.backupPath) return true;
     if (this.backupDate != u.backupDate) return true;
     if (this.backupType != u.backupType) return true;

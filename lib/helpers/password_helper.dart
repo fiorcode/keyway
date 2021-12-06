@@ -53,14 +53,14 @@ class PasswordHelper {
     return _wordList;
   }
 
-  static ZxcvbnResult evaluate(String s, {Password password}) {
+  static ZxcvbnResult evaluate(String s, {Password? password}) {
     if (s.isEmpty) return ZxcvbnResult();
     var _evaluation = Zxcvbn().evaluate(s);
     if (password != null)
       password.passwordStrength = _evaluation.score.toString();
     return ZxcvbnResult(
       password: _evaluation.password,
-      score: _evaluation.score.toInt(),
+      score: _evaluation.score!.toInt(),
       suggestions: _evaluation.feedback.suggestions,
       warning: _evaluation.feedback.warning,
     );
@@ -69,22 +69,22 @@ class PasswordHelper {
   static Future<ZxcvbnResult> dicePassword() async {
     List<Word> _wordList = await getWordList();
     Random _rdm = Random.secure();
-    String _pass = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value +
+    String _pass = _wordList.elementAt(_rdm.nextInt(_wordList.length)).value! +
         _conectors.elementAt(_rdm.nextInt(_conectors.length)) +
-        _wordList.elementAt(_rdm.nextInt(_wordList.length)).value;
+        _wordList.elementAt(_rdm.nextInt(_wordList.length)).value!;
     return evaluate(_pass);
   }
 
   static Future<Password> secureDicePassword() async {
     List<Word> _wordList = await getWordList();
     List<Word> _lowFreqList =
-        _wordList.where((w) => int.parse(w.freq) < 1000).toList();
+        _wordList.where((w) => int.parse(w.freq!) < 1000).toList();
     Random _rdm = Random.secure();
     String _word1 =
-        _lowFreqList.elementAt(_rdm.nextInt(_lowFreqList.length)).value;
+        _lowFreqList.elementAt(_rdm.nextInt(_lowFreqList.length)).value!;
     String _conect = _conectors.elementAt(_rdm.nextInt(_conectors.length));
     String _word2 =
-        _lowFreqList.elementAt(_rdm.nextInt(_lowFreqList.length)).value;
+        _lowFreqList.elementAt(_rdm.nextInt(_lowFreqList.length)).value!;
     String _conect2 = _conectors.elementAt(_rdm.nextInt(_conectors.length));
     String _pass = _word1 + _conect + _word2 + _conect2;
     return Password(
@@ -93,10 +93,10 @@ class PasswordHelper {
 }
 
 class ZxcvbnResult {
-  String password;
+  String? password;
   int score;
-  List<String> suggestions;
-  String warning;
+  List<String>? suggestions;
+  String? warning;
 
   ZxcvbnResult({
     this.password = '',

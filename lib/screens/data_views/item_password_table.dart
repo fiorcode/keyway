@@ -14,21 +14,22 @@ class ItemPasswordTableScreen extends StatefulWidget {
 }
 
 class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
-  ItemProvider _item;
-  Future<void> _getItemPasswords;
+  late ItemProvider _item;
+  Future<void>? _getItemPasswords;
 
   Future<void> _getItemPasswordsAsync() async =>
-      await _item.fetchItemPasswords();
+      await Provider.of<ItemProvider>(context, listen: false)
+          .fetchItemPasswords();
 
   @override
-  void didChangeDependencies() {
-    _item = Provider.of<ItemProvider>(context);
+  void initState() {
     _getItemPasswords = _getItemPasswordsAsync();
-    super.didChangeDependencies();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    _item = Provider.of<ItemProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
@@ -111,7 +112,7 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                                     child: FittedBox(
                                       fit: BoxFit.fitWidth,
                                       child: Text(
-                                        _item.itemPasswords[i].passwordDate,
+                                        _item.itemPasswords[i].passwordDate!,
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                         ),
@@ -126,7 +127,6 @@ class _ItemPasswordTableScreenState extends State<ItemPasswordTableScreen> {
                         separatorBuilder: (ctx, i) =>
                             Divider(color: Colors.black),
                       );
-              break;
             default:
               return Center(child: Text('default'));
           }

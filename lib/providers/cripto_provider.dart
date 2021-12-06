@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cryptography/cryptography.dart';
 import 'package:crypto/crypto.dart';
-// import 'package:encrypt/encrypt.dart' as e;
 import 'package:zxcvbn/zxcvbn.dart';
 
 import 'package:keyway/helpers/db_helper.dart';
@@ -20,8 +20,8 @@ import 'package:keyway/models/password.dart';
 
 class CriptoProvider with ChangeNotifier {
   bool _locked = true;
-  AesCbc _aesCbc;
-  SecretKey _secretKey;
+  late AesCbc _aesCbc;
+  SecretKey _secretKey = SecretKey(''.codeUnits);
 
   CriptoProvider() {
     _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
@@ -30,18 +30,29 @@ class CriptoProvider with ChangeNotifier {
 
   bool get locked => _locked;
 
-  Future<String> _getMasterKey() async =>
-      (await SharedPreferences.getInstance()).getString('masterKey');
+  Future<String> _getMasterKey() async {
+    String? mk = (await SharedPreferences.getInstance()).getString('masterKey');
+    if (mk != null)
+      return mk;
+    else
+      return '';
+  }
 
-  Future<String> _getMasterKeyIV() async =>
-      (await SharedPreferences.getInstance()).getString('masterKeyIV');
+  Future<String> _getMasterKeyIV() async {
+    String? mkIv =
+        (await SharedPreferences.getInstance()).getString('masterKeyIV');
+    if (mkIv != null)
+      return mkIv;
+    else
+      return '';
+  }
 
   Future<bool> isMasterKey() async =>
       (await SharedPreferences.getInstance()).getBool('isMasterKey') ?? false;
 
   Future<SecretBox> _getSecret() async {
-    String _mk = await _getMasterKey();
-    String _mkIv = await _getMasterKeyIV();
+    String _mk = await (_getMasterKey());
+    String _mkIv = await (_getMasterKeyIV());
     return SecretBox(_mk.codeUnits, nonce: _mkIv.codeUnits, mac: Mac.empty);
   }
 
@@ -55,16 +66,12 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<void> unlock(String key) async {
-    try {
-      _secretKey = await _aesCbc
-          .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
-      SecretBox _sb = await _getSecret();
-      _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
-      _locked = false;
-      notifyListeners();
-    } catch (error) {
-      throw error;
-    }
+    _secretKey = await _aesCbc
+        .newSecretKeyFromBytes(doHash(key).substring(0, 32).codeUnits);
+    SecretBox _sb = await _getSecret();
+    _secretKey = SecretKey(await _aesCbc.decrypt(_sb, secretKey: _secretKey));
+    _locked = false;
+    notifyListeners();
   }
 
   static Future<bool> initialSetup(String key) async {
@@ -97,7 +104,7 @@ class CriptoProvider with ChangeNotifier {
 
     _v.clear();
     _mk = 'MASTER*KEY*CLEARED';
-    _sb = null;
+    _sb = SecretBox(''.codeUnits, nonce: ''.codeUnits, mac: Mac.empty);
 
     return true;
   }
@@ -106,17 +113,17 @@ class CriptoProvider with ChangeNotifier {
     return SharedPreferences.getInstance().then((pref) {
       DBHelper.read(DBHelper.userTable).then((data) {
         User _user = User.fromMap(data.first);
-        pref.setString('masterKey', _user.encMk);
-        pref.setString('masterKeyIV', _user.mkIv);
+        pref.setString('masterKey', _user.encMk!);
+        pref.setString('masterKeyIV', _user.mkIv!);
         pref.setBool('isMasterKey', true);
       });
     });
   }
 
-  Future<String> decryptPassword(Password p) async {
-    if (p == null) return '';
-    if (p.passwordIv.isEmpty) return '';
-    if (p.passwordEnc.isEmpty) return '';
+  Future<void> decryptPassword(Password? p) async {
+    if (p == null) return;
+    if (p.passwordIv.isEmpty) return;
+    if (p.passwordEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
       p.passwordEnc.codeUnits,
       nonce: p.passwordIv.codeUnits,
@@ -126,13 +133,12 @@ class CriptoProvider with ChangeNotifier {
       _sb,
       secretKey: _secretKey,
     )));
-    return p.passwordDec;
   }
 
-  Future<String> decryptUsername(Username u) async {
-    if (u == null) return '';
-    if (u.usernameIv.isEmpty) return '';
-    if (u.usernameEnc.isEmpty) return '';
+  Future<void> decryptUsername(Username? u) async {
+    if (u == null) return;
+    if (u.usernameIv.isEmpty) return;
+    if (u.usernameEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
       u.usernameEnc.codeUnits,
       nonce: u.usernameIv.codeUnits,
@@ -142,13 +148,12 @@ class CriptoProvider with ChangeNotifier {
       _sb,
       secretKey: _secretKey,
     )));
-    return u.usernameDec;
   }
 
-  Future<String> decryptPin(Pin p) async {
-    if (p == null) return '';
-    if (p.pinIv.isEmpty) return '';
-    if (p.pinEnc.isEmpty) return '';
+  Future<void> decryptPin(Pin? p) async {
+    if (p == null) return;
+    if (p.pinIv.isEmpty) return;
+    if (p.pinEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
       p.pinEnc.codeUnits,
       nonce: p.pinIv.codeUnits,
@@ -158,13 +163,12 @@ class CriptoProvider with ChangeNotifier {
       _sb,
       secretKey: _secretKey,
     )));
-    return p.pinDec;
   }
 
-  Future<String> decryptNote(Note n) async {
-    if (n == null) return '';
-    if (n.noteIv.isEmpty) return '';
-    if (n.noteEnc.isEmpty) return '';
+  Future<void> decryptNote(Note? n) async {
+    if (n == null) return;
+    if (n.noteIv.isEmpty) return;
+    if (n.noteEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
       n.noteEnc.codeUnits,
       nonce: n.noteIv.codeUnits,
@@ -174,13 +178,12 @@ class CriptoProvider with ChangeNotifier {
       _sb,
       secretKey: _secretKey,
     )));
-    return n.noteDec;
   }
 
-  Future<String> decryptAddress(Address a) async {
-    if (a == null) return '';
-    if (a.addressIv.isEmpty) return '';
-    if (a.addressEnc.isEmpty) return '';
+  Future<void> decryptAddress(Address? a) async {
+    if (a == null) return;
+    if (a.addressIv.isEmpty) return;
+    if (a.addressEnc.isEmpty) return;
     SecretBox _sb = SecretBox(
       a.addressEnc.codeUnits,
       nonce: a.addressIv.codeUnits,
@@ -190,10 +193,9 @@ class CriptoProvider with ChangeNotifier {
       _sb,
       secretKey: _secretKey,
     )));
-    return a.addressDec;
   }
 
-  Future<Password> createPassword(String p) async {
+  Future<Password?> createPassword(String p) async {
     if (p.isEmpty) return null;
     Password _p = Password(
       passwordIv: String.fromCharCodes(_aesCbc.newNonce()),
@@ -209,7 +211,7 @@ class CriptoProvider with ChangeNotifier {
     return _p;
   }
 
-  Future<Username> createUsername(String u) async {
+  Future<Username?> createUsername(String u) async {
     if (u.isEmpty) return null;
     Username _u = Username(
       usernameIv: String.fromCharCodes(_aesCbc.newNonce()),
@@ -224,7 +226,7 @@ class CriptoProvider with ChangeNotifier {
     return _u;
   }
 
-  Future<Pin> createPin(String p) async {
+  Future<Pin?> createPin(String p) async {
     if (p.isEmpty) return null;
     Pin _p = Pin(pinIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
@@ -236,7 +238,7 @@ class CriptoProvider with ChangeNotifier {
     return _p;
   }
 
-  Future<Note> createNote(String n) async {
+  Future<Note?> createNote(String n) async {
     if (n.isEmpty) return null;
     Note _n = Note(noteIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
@@ -248,7 +250,7 @@ class CriptoProvider with ChangeNotifier {
     return _n;
   }
 
-  Future<Address> createAddress(String a) async {
+  Future<Address?> createAddress(String a) async {
     if (a.isEmpty) return null;
     Address _a = Address(addressIv: String.fromCharCodes(_aesCbc.newNonce()));
     SecretBox _sb = await _aesCbc.encrypt(
@@ -261,15 +263,15 @@ class CriptoProvider with ChangeNotifier {
   }
 
   Future<void> decryptItem(Item i) async {
-    if (i.password != null) await this.decryptPassword(i.password);
-    if (i.username != null) await this.decryptUsername(i.username);
-    if (i.pin != null) await this.decryptPin(i.pin);
-    if (i.address != null) await this.decryptAddress(i.address);
-    if (i.note != null) await this.decryptNote(i.note);
+    await this.decryptPassword(i.password);
+    await this.decryptUsername(i.username);
+    await this.decryptPin(i.pin);
+    await this.decryptAddress(i.address);
+    await this.decryptNote(i.note);
   }
 
   Future<void> decryptItemPasswords(Item i) async {
-    Future.forEach(i.passwords, (p) async {
+    Future.forEach(i.passwords!, (dynamic p) async {
       await this.decryptPassword(p);
     });
   }
@@ -284,47 +286,47 @@ class CriptoProvider with ChangeNotifier {
     AesCbc _aesCbc = AesCbc.with256bits(macAlgorithm: MacAlgorithm.empty);
     if (i.item.password != null) {
       SecretBox _sbPassword = SecretBox(
-        i.item.password.passwordEnc.codeUnits,
-        nonce: i.item.password.passwordIv.codeUnits,
+        i.item.password!.passwordEnc.codeUnits,
+        nonce: i.item.password!.passwordIv.codeUnits,
         mac: Mac.empty,
       );
-      i.item.password.passwordDec = String.fromCharCodes(
+      i.item.password!.passwordDec = String.fromCharCodes(
           await _aesCbc.decrypt(_sbPassword, secretKey: i.secretKey));
     }
     if (i.item.username != null) {
       SecretBox _sbUsername = SecretBox(
-        i.item.username.usernameEnc.codeUnits,
-        nonce: i.item.username.usernameIv.codeUnits,
+        i.item.username!.usernameEnc.codeUnits,
+        nonce: i.item.username!.usernameIv.codeUnits,
         mac: Mac.empty,
       );
-      i.item.username.usernameDec = String.fromCharCodes(
+      i.item.username!.usernameDec = String.fromCharCodes(
           await _aesCbc.decrypt(_sbUsername, secretKey: i.secretKey));
     }
     if (i.item.pin != null) {
       SecretBox _sbPin = SecretBox(
-        i.item.pin.pinEnc.codeUnits,
-        nonce: i.item.pin.pinIv.codeUnits,
+        i.item.pin!.pinEnc.codeUnits,
+        nonce: i.item.pin!.pinIv.codeUnits,
         mac: Mac.empty,
       );
-      i.item.pin.pinDec = String.fromCharCodes(
+      i.item.pin!.pinDec = String.fromCharCodes(
           await _aesCbc.decrypt(_sbPin, secretKey: i.secretKey));
     }
     if (i.item.address != null) {
       SecretBox _sbAddress = SecretBox(
-        i.item.address.addressEnc.codeUnits,
-        nonce: i.item.address.addressIv.codeUnits,
+        i.item.address!.addressEnc.codeUnits,
+        nonce: i.item.address!.addressIv.codeUnits,
         mac: Mac.empty,
       );
-      i.item.address.addressDec = String.fromCharCodes(
+      i.item.address!.addressDec = String.fromCharCodes(
           await _aesCbc.decrypt(_sbAddress, secretKey: i.secretKey));
     }
     if (i.item.note != null) {
       SecretBox _sbNote = SecretBox(
-        i.item.note.noteEnc.codeUnits,
-        nonce: i.item.note.noteIv.codeUnits,
+        i.item.note!.noteEnc.codeUnits,
+        nonce: i.item.note!.noteIv.codeUnits,
         mac: Mac.empty,
       );
-      i.item.note.noteDec = String.fromCharCodes(
+      i.item.note!.noteDec = String.fromCharCodes(
           await _aesCbc.decrypt(_sbNote, secretKey: i.secretKey));
     }
     return i.item;

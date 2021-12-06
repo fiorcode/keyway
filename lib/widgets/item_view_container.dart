@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:keyway/helpers/date_helper.dart';
 
 class ItemViewContainer extends StatelessWidget {
-  const ItemViewContainer(this.title, this.content,
-      {this.left = '', this.right = 0});
+  const ItemViewContainer(
+    this.title,
+    this.content, {
+    this.left = '',
+    this.right = 0,
+    this.repeated = false,
+    this.expired = false,
+  });
 
   final String title;
   final String content;
   final String left;
   final int right;
+  final bool repeated;
+  final bool expired;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +25,7 @@ class ItemViewContainer extends StatelessWidget {
       height: 92,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.black,
+          color: this.repeated ? Colors.red : Colors.black,
           width: 3.0,
         ),
         borderRadius: BorderRadius.circular(8),
@@ -40,7 +48,7 @@ class ItemViewContainer extends StatelessWidget {
                   child: left.isNotEmpty
                       ? Container(
                           padding: EdgeInsets.all(2),
-                          color: Colors.black,
+                          color: this.repeated ? Colors.red : Colors.black,
                           child: FittedBox(
                             fit: BoxFit.fitHeight,
                             clipBehavior: Clip.hardEdge,
@@ -60,7 +68,7 @@ class ItemViewContainer extends StatelessWidget {
                 Expanded(
                   child: Container(
                     padding: EdgeInsets.all(2),
-                    color: Colors.black,
+                    color: this.repeated ? Colors.red : Colors.black,
                     child: FittedBox(
                       fit: BoxFit.fitHeight,
                       clipBehavior: Clip.hardEdge,
@@ -77,7 +85,7 @@ class ItemViewContainer extends StatelessWidget {
                   Expanded(
                     child: Container(
                       padding: EdgeInsets.all(2),
-                      color: Colors.black,
+                      color: this.repeated ? Colors.red : Colors.black,
                       child: FittedBox(
                         fit: BoxFit.fitHeight,
                         clipBehavior: Clip.hardEdge,
@@ -91,7 +99,7 @@ class ItemViewContainer extends StatelessWidget {
                   ),
                 if (this.title != 'address')
                   Expanded(
-                    child: DateHelper.expired(left, right)
+                    child: this.repeated
                         ? Container(
                             padding: EdgeInsets.all(2),
                             color: Colors.red,
@@ -99,7 +107,7 @@ class ItemViewContainer extends StatelessWidget {
                               fit: BoxFit.fitHeight,
                               clipBehavior: Clip.hardEdge,
                               child: Text(
-                                'expired',
+                                'repeated',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(color: Colors.white),
                               ),

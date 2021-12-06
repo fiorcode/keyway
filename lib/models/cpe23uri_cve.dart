@@ -1,6 +1,6 @@
 class Cpe23uriCve {
-  int fkCpe23uriId;
-  int fkCveId;
+  int? fkCpe23uriId;
+  int? fkCveId;
 
   Cpe23uriCve(this.fkCpe23uriId, this.fkCveId);
 

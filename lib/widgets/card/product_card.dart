@@ -19,8 +19,8 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  bool _emptyTrademark;
-  bool _emptyModel;
+  late bool _emptyTrademark;
+  late bool _emptyModel;
 
   void _onChangedTrademark(String value) {
     setState(() {
@@ -75,63 +75,57 @@ class _ProductCardState extends State<ProductCard> {
               children: [
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'h',
+                  selected: widget.product.isHardware,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'h')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product.setTypeHardware())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'Hardware',
                     style: TextStyle(
-                      color: widget.product.productType == 'h'
+                      color: widget.product.isHardware
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product.productType == 'h'
-                          ? FontWeight.bold
-                          : null,
+                      fontWeight:
+                          widget.product.isHardware ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'h' ? 8.0 : 0.0,
+                  elevation: widget.product.isHardware ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'o',
+                  selected: widget.product.isOsFirmware,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'o')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product.setTypeOsFirmware())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'OS/Firmware',
                     style: TextStyle(
-                      color: widget.product.productType == 'o'
+                      color: widget.product.isOsFirmware
                           ? Colors.grey
                           : Colors.white,
-                      fontWeight: widget.product.productType == 'o'
-                          ? FontWeight.bold
-                          : null,
+                      fontWeight:
+                          widget.product.isOsFirmware ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'o' ? 8.0 : 0.0,
+                  elevation: widget.product.isOsFirmware ? 8.0 : 0.0,
                 ),
                 ChoiceChip(
                   backgroundColor: Colors.grey,
-                  selected: widget.product.productType == 'a',
+                  selected: widget.product.isApp,
                   selectedColor: Colors.grey[200],
                   onSelected: (selected) => selected
-                      ? setState(() => widget.product.productType = 'a')
-                      : setState(() => widget.product.productType = ''),
+                      ? setState(() => widget.product.setTypeApp())
+                      : setState(() => widget.product.setTypeAll()),
                   label: Text(
                     'App/Program',
                     style: TextStyle(
-                      color: widget.product.productType == 'a'
-                          ? Colors.grey
-                          : Colors.white,
-                      fontWeight: widget.product.productType == 'a'
-                          ? FontWeight.bold
-                          : null,
+                      color: widget.product.isApp ? Colors.grey : Colors.white,
+                      fontWeight: widget.product.isApp ? FontWeight.bold : null,
                     ),
                   ),
-                  elevation: widget.product.productType == 'a' ? 8.0 : 0.0,
+                  elevation: widget.product.isApp ? 8.0 : 0.0,
                 ),
               ],
             ),
