@@ -8,7 +8,6 @@ import '../models/tag.dart';
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
 import '../providers/item_provider.dart';
-import '../services/notification_service.dart';
 import '../screens/item_add_screen.dart';
 import '../screens/item_view_screen.dart';
 import '../screens/dashboard_screen.dart';
@@ -204,7 +203,7 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
   @override
   void initState() {
     _getItems = _getItemsAsync();
-    NotificationService().scheduleNotifications();
+    // NotificationService().scheduleNotifications();
     super.initState();
   }
 
