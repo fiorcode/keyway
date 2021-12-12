@@ -23,11 +23,12 @@ class ProductSearchScreen extends StatefulWidget {
 
 class _ProductSearchScreenState extends State<ProductSearchScreen> {
   Future<CpeBody>? _getCpesAsync;
-
   Product _product = Product();
+
   TextEditingController _trademarkCtrler = TextEditingController();
   TextEditingController _modelCtrler = TextEditingController();
   TextEditingController _keywordCtrler = TextEditingController();
+
   bool _emptyTrademark = true;
   bool _emptyModel = true;
   bool _emptyKeyword = true;
@@ -144,6 +145,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     _product.productModel = cpe.model;
     widget.trademarkCtrler!.text = cpe.trademark;
     widget.modelCtrler!.text = cpe.model;
+    Navigator.of(context).pop();
   }
 
   @override
