@@ -147,6 +147,16 @@ class _VulnerabilitiesScreenState extends State<VulnerabilitiesScreen> {
                             ],
                           ),
                         ),
+                        SizedBox(height: 16),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Theme.of(context).primaryColor),
+                          onPressed: () {},
+                          child: Text(
+                            'PRODUCTS WITH VULNERABILITIES',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       ],
                     );
                   }
