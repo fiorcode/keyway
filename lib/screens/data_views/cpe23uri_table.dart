@@ -17,7 +17,7 @@ class _Cpe23uriTableScreenState extends State<Cpe23uriTableScreen> {
   Future? _getCpe23uris;
 
   Future<void> _getCpe23urisAsync() async =>
-      await Provider.of<ItemProvider>(context).fetchCpe23uris();
+      await Provider.of<ItemProvider>(context, listen: false).fetchCpe23uris();
 
   @override
   void initState() {
