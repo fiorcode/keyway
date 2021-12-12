@@ -23,8 +23,6 @@ class NistProvider with ChangeNotifier {
     try {
       HttpClientRequest request = await client.getUrl(Uri.parse(urlString));
       HttpClientResponse response = await request.close();
-
-      // final response = await http.get(Uri.parse(urlString));
       if (response.statusCode == 200) {
         String _json = await response.transform(utf8.decoder).join();
         return CpeBody.fromJson(jsonDecode(_json));
