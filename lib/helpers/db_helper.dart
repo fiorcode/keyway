@@ -119,6 +119,12 @@ class DBHelper {
       OR password_status IS NULL) 
       ORDER BY date DESC''');
 
+  static Future<List<Map<String, dynamic>>> getItemsWithCves() async =>
+      (await DBHelper.database()).rawQuery('''SELECT * FROM item
+      INNER JOIN product ON item.fk_product_id=product.product_id
+      WHERE item_status NOT LIKE '%<deleted>%' 
+      ORDER BY date DESC''');
+
   static Future<List<Map<String, dynamic>>> getActiveItems() async =>
       (await DBHelper.database()).query(
         itemTable,
