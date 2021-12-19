@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:keyway/providers/item_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../helpers/error_helper.dart';
-import '../models/tag.dart';
 import '../models/item.dart';
 import '../providers/cripto_provider.dart';
-import '../providers/item_provider.dart';
 import '../screens/item_view_screen.dart';
 import '../widgets/card/item_cleartext_card.dart';
 import '../widgets/empty_items.dart';
@@ -15,7 +14,7 @@ import '../widgets/card/item_unlocked_card.dart';
 import '../widgets/unlock_container.dart';
 
 class ProductsWithCvesScreen extends StatefulWidget {
-  static const routeName = '/items';
+  static const routeName = '/products-with-cves';
 
   @override
   _ProductsWithCvesScreenState createState() => _ProductsWithCvesScreenState();
@@ -32,7 +31,7 @@ class _ProductsWithCvesScreenState extends State<ProductsWithCvesScreen> {
 
   Future<void> _getItemsWithCvesAsync() async =>
       _itemsProduct = await Provider.of<ItemProvider>(context, listen: false)
-          .fetchItemsWithCves();
+          .getItemsWithCves();
 
   void _onReturn() {
     _getItemsWithCves = _getItemsWithCvesAsync();
@@ -125,8 +124,8 @@ class _ProductsWithCvesScreenState extends State<ProductsWithCvesScreen> {
                                     } else if (_itemsProduct[i].cleartext) {
                                       return ItemCleartextCard(
                                         item: _itemsProduct[i],
-                                        deleteItem: _deleteRandomItem,
-                                        buildItem: _buildRandomItem,
+                                        // deleteItem: _deleteRandomItem,
+                                        // buildItem: _buildRandomItem,
                                       );
                                     } else {
                                       return ItemUnlockedCard(
