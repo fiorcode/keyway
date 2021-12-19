@@ -178,6 +178,9 @@ class ItemProvider with ChangeNotifier {
                   (String v) async {
                 int cveId = await insertCve(Cve(cve: v));
                 await insertCpe23UriCve(Cpe23uriCve(cpe23uriId, cveId));
+                await insertProductCve(
+                  ProductCve(fkProductId: i.fkProductId, fkCveId: cveId),
+                );
               });
             }
           });
@@ -587,6 +590,14 @@ class ItemProvider with ChangeNotifier {
   Future<List<Product>> getProductsWithNoCpe() async {
     late Iterable<Product> _iter;
     await DBHelper.getProductsWithNoCpe().then((data) {
+      _iter = data.map((i) => Product.fromMap(i));
+    });
+    return _iter.toList();
+  }
+
+  Future<List<Item>> getItemsWithCves() async {
+    late Iterable<List<Item>> _iter;
+    await DBHelper.getItemsWithCves().then((data) {
       _iter = data.map((i) => Product.fromMap(i));
     });
     return _iter.toList();
