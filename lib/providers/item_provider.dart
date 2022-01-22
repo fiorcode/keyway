@@ -596,9 +596,9 @@ class ItemProvider with ChangeNotifier {
   }
 
   Future<List<Item>> getItemsWithCves() async {
-    late Iterable<List<Item>> _iter;
+    late Iterable<Item> _iter;
     await DBHelper.getItemsWithCves().then((data) {
-      _iter = data.map((i) => Product.fromMap(i));
+      _iter = data.map((i) => Item.fromMap(i));
     });
     return _iter.toList();
   }
