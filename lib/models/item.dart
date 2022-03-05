@@ -183,7 +183,7 @@ class Item {
       fkPinId: this.fkPinId,
       fkNoteId: this.fkNoteId,
       fkAddressId: this.fkAddressId,
-      fkProductId: this.fkAddressId,
+      fkProductId: this.fkProductId,
       username: this.username != null ? this.username!.clone() : null,
       password: this.password != null ? this.password!.clone() : null,
       passwords: this.passwords,

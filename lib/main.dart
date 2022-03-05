@@ -90,7 +90,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.grey,
           primaryColor: Colors.grey[800],
           primaryColorLight: Colors.grey[100],
-          accentColor: Colors.white,
           backgroundColor: Colors.grey[200],
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),

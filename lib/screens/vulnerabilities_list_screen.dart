@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../models/cve.dart';
-import '../providers/nist_provider.dart';
 import '../helpers/error_helper.dart';
-import '../models/item.dart';
-import '../providers/cripto_provider.dart';
-import '../screens/item_view_screen.dart';
 import '../widgets/empty_items.dart';
 import '../widgets/loading_scaffold.dart';
-import '../widgets/card/item_locked_card.dart';
 
 class VulnerabilitiesListScreen extends StatefulWidget {
   static const routeName = '/cves-list';
@@ -28,29 +22,29 @@ class _VulnerabilitiesListScreenState extends State<VulnerabilitiesListScreen> {
   Future<void> _getCvesAsync() async => _cves = [];
   // await Provider.of<NistProvider>(context, listen: false).fetchCves();
 
-  void _onReturn() {
-    _getCves = _getCvesAsync();
-    setState(() {});
-  }
+  // void _onReturn() {
+  //   _getCves = _getCvesAsync();
+  //   setState(() {});
+  // }
 
-  void _goToCveView(Item i) {
-    if (Provider.of<CriptoProvider>(context, listen: false).locked) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: Colors.red,
-          content: Text('Please unlock'),
-          duration: Duration(seconds: 1),
-        ),
-      );
-      return;
-    }
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ItemViewScreen(item: i),
-      ),
-    ).then((_) => _onReturn());
-  }
+  // void _goToCveView(Item i) {
+  //   if (Provider.of<CriptoProvider>(context, listen: false).locked) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         backgroundColor: Colors.red,
+  //         content: Text('Please unlock'),
+  //         duration: Duration(seconds: 1),
+  //       ),
+  //     );
+  //     return;
+  //   }
+  //   Navigator.push(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => ItemViewScreen(item: i),
+  //     ),
+  //   ).then((_) => _onReturn());
+  // }
 
   @override
   void initState() {
@@ -60,7 +54,7 @@ class _VulnerabilitiesListScreenState extends State<VulnerabilitiesListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
+    // CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
     Color _primary = Theme.of(context).primaryColor;
     Color _back = Theme.of(context).backgroundColor;
     return FutureBuilder(
