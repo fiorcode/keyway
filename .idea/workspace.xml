@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/helpers/warning_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/helpers/warning_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/models/item.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/models/item.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/providers/cripto_provider.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/screens/vulnerabilities_list_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/vulnerabilities_list_screen.dart" afterDir="false" />
-    </list>
+    <list default="true" id="5444d845-10d2-4302-9df6-6cb93f5f2ef0" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
