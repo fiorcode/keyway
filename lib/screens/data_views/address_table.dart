@@ -17,7 +17,7 @@ class _AddressTableScreenState extends State<AddressTableScreen> {
   Future? _getAddresses;
 
   Future<void> _getAddressesAsync() async =>
-      await Provider.of<ItemProvider>(context).fetchAddresses();
+      await Provider.of<ItemProvider>(context, listen: false).fetchAddresses();
 
   @override
   void initState() {

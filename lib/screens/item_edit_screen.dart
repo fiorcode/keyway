@@ -244,6 +244,8 @@ class _ItemEditScreenState extends State<ItemEditScreen> {
             if (widget.item!.address!.addressDec != _addressCtrler.text) {
               _i.address = await _c.createAddress(_addressCtrler.text);
             }
+          } else {
+            _i.address = await _c.createAddress(_addressCtrler.text);
           }
         } else {
           _i.address = null;

@@ -18,7 +18,8 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkFirstRun() async {
     _cripto = Provider.of<CriptoProvider>(context, listen: false);
-    if (await _cripto.isMasterKey()) {
+    bool _isMK = await _cripto.isMasterKey();
+    if (_isMK) {
       Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
     } else {
       // if (await CriptoProvider.initialSetup('Qwe123!')) {

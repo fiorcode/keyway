@@ -65,7 +65,7 @@ class Item {
     return true;
   }
 
-  Item.factory() {
+  Item.byDefault() {
     this.avatarColor = 4290624957;
     this.avatarLetterColor = 4294967295;
     this.font = '';

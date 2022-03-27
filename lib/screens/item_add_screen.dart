@@ -38,7 +38,7 @@ class ItemAddScreen extends StatefulWidget {
 }
 
 class _ItemAddScreenState extends State<ItemAddScreen> {
-  Item _i = Item.factory();
+  Item _i = Item.byDefault();
 
   TextEditingController _titleCtrler = TextEditingController();
   TextEditingController _userCtrler = TextEditingController();
@@ -328,7 +328,7 @@ class _ItemAddScreenState extends State<ItemAddScreen> {
                                   PasswordHelper.evaluate(
                                     _passCtrler.text,
                                     password: _i.password,
-                                  ),
+                                  ).score,
                                 ),
                               if (_passCtrler.text.isNotEmpty)
                                 Padding(

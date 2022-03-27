@@ -58,7 +58,7 @@ class _PasswordInputCardState extends State<PasswordInputCard> {
                 PasswordHelper.evaluate(
                   widget.ctrler!.text,
                   password: widget.item!.password,
-                ),
+                ).score,
               ),
             if (widget.ctrler!.text.isNotEmpty)
               Padding(

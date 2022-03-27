@@ -205,6 +205,7 @@ class CriptoProvider with ChangeNotifier {
       secretKey: _secretKey,
       nonce: _p.passwordIv.codeUnits,
     );
+    _p.passwordDec = p;
     _p.passwordEnc = String.fromCharCodes(_sb.cipherText);
     _p.passwordStrength = Zxcvbn().evaluate(p).score.toString();
     return _p;
@@ -233,6 +234,7 @@ class CriptoProvider with ChangeNotifier {
       secretKey: _secretKey,
       nonce: _p.pinIv.codeUnits,
     );
+    _p.pinDec = p;
     _p.pinEnc = String.fromCharCodes(_sb.cipherText);
     return _p;
   }
@@ -245,6 +247,7 @@ class CriptoProvider with ChangeNotifier {
       secretKey: _secretKey,
       nonce: _n.noteIv.codeUnits,
     );
+    _n.noteDec = n;
     _n.noteEnc = String.fromCharCodes(_sb.cipherText);
     return _n;
   }
@@ -257,6 +260,7 @@ class CriptoProvider with ChangeNotifier {
       secretKey: _secretKey,
       nonce: _a.addressIv.codeUnits,
     );
+    _a.addressDec = a;
     _a.addressEnc = String.fromCharCodes(_sb.cipherText);
     return _a;
   }

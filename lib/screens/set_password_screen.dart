@@ -34,7 +34,10 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
   }
 
   void _checkConfirmPassword() {
-    setState(() => _equals = _passCtrler.text == _confirmCtrler.text);
+    setState(() {
+      _equals = _passCtrler.text == _confirmCtrler.text;
+      if (_equals) FocusScope.of(context).unfocus();
+    });
   }
 
   void _clear() {
@@ -62,6 +65,8 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
     PasswordHelper.dicePassword().then((result) {
       _zxcvbnResult = result;
       _passCtrler.text = result.password!;
+      _confirmCtrler.clear();
+      _checkConfirmPassword();
       setState(() => _loadingRandomPass = false);
     }).onError((error, st) => ErrorHelper.errorDialog(context, error));
   }
@@ -74,6 +79,23 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
         Navigator.of(context).pushReplacementNamed(ItemsListScreen.routeName);
       }
     }).onError((error, st) => ErrorHelper.errorDialog(context, error));
+  }
+
+  Color _setButtonColor() {
+    switch (_zxcvbnResult!.score) {
+      case 0:
+        return Colors.red;
+      case 1:
+        return Colors.orange;
+      case 2:
+        return Colors.yellow;
+      case 3:
+        return Colors.lightGreen;
+      case 4:
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
   }
 
   void _restoreData() =>
@@ -150,7 +172,7 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
             if (_loadingRandomPass) LinearProgressIndicator(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: StrengthLevelCard(_zxcvbnResult),
+              child: StrengthLevelCard(_zxcvbnResult!.score),
             ),
             SizedBox(height: 32),
             TextField(
@@ -184,7 +206,20 @@ class _SetPasswordScreenState extends State<SetPasswordScreen> {
               textInputAction: TextInputAction.next,
               onSubmitted: (_) => _setPassword(),
             ),
-            SizedBox(height: 48),
+            SizedBox(height: 8),
+            if (_equals && _passCtrler.text.isNotEmpty)
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(primary: _setButtonColor()),
+                onPressed: _setPassword,
+                child: Text(
+                  'SET PASSWORD',
+                  style: TextStyle(
+                      color: _zxcvbnResult!.score == 2
+                          ? Colors.grey[800]
+                          : Colors.white),
+                ),
+              ),
+            SizedBox(height: 24),
             Text(
               'NOT YOUR FIRST TIME?',
               textAlign: TextAlign.center,
