@@ -259,13 +259,12 @@ class _ItemsListScreenState extends State<ItemsListScreen> {
                     actionsIconTheme: IconThemeData(color: _primary),
                   ),
                   body: Stack(children: [
+                    if (_working) LinearProgressIndicator(),
                     _items.length < 1
                         ? EmptyItems()
                         : Column(
                             children: [
-                              if (_working) LinearProgressIndicator(),
-                              if (_items.isNotEmpty)
-                                TagsFilterList(_tag, _tagsSwitch),
+                              TagsFilterList(_tag, _tagsSwitch),
                               Expanded(
                                 child: ListView.builder(
                                   key: UniqueKey(),

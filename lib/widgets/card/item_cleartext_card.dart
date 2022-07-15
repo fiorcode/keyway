@@ -99,7 +99,7 @@ class _ItemCleartextCardState extends State<ItemCleartextCard> {
     if (_titleCtrler.text.isEmpty) return;
     Item _i = Item(title: _titleCtrler.text);
     CriptoProvider _c = Provider.of<CriptoProvider>(context, listen: false);
-    if (_pin) {
+    if (int.tryParse(widget.item!.title) != null) {
       _i.pin = await _c
           .createPin(_p1n.toString())
           .onError((error, st) => ErrorHelper.errorDialog(context, error));
