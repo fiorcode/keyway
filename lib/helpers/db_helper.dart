@@ -62,8 +62,9 @@ class DBHelper {
     return File('$_dbPath/kw.db').lastModified();
   }
 
-  static Future<bool> createBackup(String path) async {
-    String _path = '$path$_backupPath';
+  static Future<bool> createBackup(String path,
+      {bool backupPath = true}) async {
+    String _path = backupPath ? '$path$_backupPath' : path;
     Directory _dir = await Directory(_path).create(recursive: true);
     final _dbPath = await dbPath();
     final _localDB = File('$_dbPath/kw.db');
@@ -114,15 +115,15 @@ class DBHelper {
       LEFT JOIN note ON item.fk_note_id=note.note_id
       LEFT JOIN address ON item.fk_address_id=address.address_id
       LEFT JOIN product ON item.fk_product_id=product.product_id
-      WHERE item_status NOT LIKE '%<deleted>%'  
-      AND (password_status LIKE '%<active>%' 
-      OR password_status IS NULL) 
+      WHERE item_status NOT LIKE '%<deleted>%'
+      AND (password_status LIKE '%<active>%'
+      OR password_status IS NULL)
       ORDER BY date DESC''');
 
   static Future<List<Map<String, dynamic>>> getItemsWithCves() async =>
       (await DBHelper.database()).rawQuery('''SELECT * FROM item
       INNER JOIN product ON item.fk_product_id=product.product_id
-      WHERE item_status NOT LIKE '%<deleted>%' 
+      WHERE item_status NOT LIKE '%<deleted>%'
       ORDER BY date DESC''');
 
   static Future<List<Map<String, dynamic>>> getActiveItems() async =>
@@ -335,25 +336,25 @@ class DBHelper {
 
   static Future<List<Map<String, dynamic>>> getItemPasswordsByItemId(
       int itemId) async {
-    return (await DBHelper.database()).rawQuery('''SELECT * 
-        FROM $itemPasswordTable 
+    return (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemPasswordTable
         WHERE fk_item_id = $itemId''');
   }
 
   static Future<List<Map<String, dynamic>>> getItemPasswordsByPasswordId(
       int? passwordId) async {
-    return (await DBHelper.database()).rawQuery('''SELECT * 
-        FROM $itemPasswordTable 
+    return (await DBHelper.database()).rawQuery('''SELECT *
+        FROM $itemPasswordTable
         WHERE fk_password_id = $passwordId''');
   }
 
   static Future<List<Map<String, dynamic>>> getPasswordsByItemId(
       int? itemId) async {
     return (await DBHelper.database())
-        .rawQuery('''SELECT * FROM $itemPasswordTable 
-        LEFT JOIN $passwordTable ON $itemPasswordTable.fk_password_id=password_id 
-        WHERE $itemPasswordTable.fk_item_id=$itemId 
-        ORDER BY password_date DESC 
+        .rawQuery('''SELECT * FROM $itemPasswordTable
+        LEFT JOIN $passwordTable ON $itemPasswordTable.fk_password_id=password_id
+        WHERE $itemPasswordTable.fk_item_id=$itemId
+        ORDER BY password_date DESC
         LIMIT -1 OFFSET 1''');
   }
 
@@ -382,11 +383,11 @@ class DBHelper {
     List<Map<String, dynamic>> _list =
         await (await DBHelper.database()).rawQuery(
       '''SELECT *
-      FROM $itemTable 
-      INNER JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id 
-      INNER JOIN $passwordTable ON $itemPasswordTable.fk_password_id = $passwordTable.password_id 
-      WHERE $itemPasswordTable.fk_item_id = ? 
-      ORDER BY $itemPasswordTable.date DESC 
+      FROM $itemTable
+      INNER JOIN $itemPasswordTable ON $itemTable.item_id = $itemPasswordTable.fk_item_id
+      INNER JOIN $passwordTable ON $itemPasswordTable.fk_password_id = $passwordTable.password_id
+      WHERE $itemPasswordTable.fk_item_id = ?
+      ORDER BY $itemPasswordTable.date DESC
       LIMIT -1 OFFSET 1''',
       [itemId],
     );
@@ -395,8 +396,8 @@ class DBHelper {
 
   static Future<void> removeTag(String? tag) async {
     (await DBHelper.database()).rawQuery('''
-          UPDATE $itemTable 
-          SET tags = REPLACE(tags, '<$tag>', '') 
+          UPDATE $itemTable
+          SET tags = REPLACE(tags, '<$tag>', '')
           WHERE tags LIKE '%<$tag>%'
           ''');
   }

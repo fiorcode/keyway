@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:keyway/providers/cripto_provider.dart';
+import 'package:provider/provider.dart';
 
 import '../helpers/db_helper.dart';
 import 'addresses_screen.dart';
@@ -109,6 +111,7 @@ class _DataScreenState extends State<DataScreen> {
 
   @override
   Widget build(BuildContext context) {
+    CriptoProvider _cripto = Provider.of<CriptoProvider>(context);
     Color _primary = Theme.of(context).primaryColor;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
@@ -188,6 +191,7 @@ class _DataScreenState extends State<DataScreen> {
                       style: TextStyle(color: _primary, fontSize: 16),
                     ),
                     onTap: () => _goTo(PasswordsScreen.routeName),
+                    locked: _cripto.locked,
                   ),
                   DashboardCard(
                     icon: Icon(Icons.account_box, color: _primary, size: 48),

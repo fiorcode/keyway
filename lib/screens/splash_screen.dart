@@ -45,17 +45,17 @@ class _SplashScreenState extends State<SplashScreen> {
         future: _firstRun,
         builder: (ctx, snap) {
           switch (snap.connectionState) {
-            case ConnectionState.done:
-              return Center(
-                child: Image.asset("assets/icon.png"),
-              );
-            case ConnectionState.waiting:
-              return Center(
-                child: Image.asset("assets/icon.png"),
-              );
+            // case ConnectionState.done:
+            //   return Center(
+            //     child: Image.asset("assets/icon.png"),
+            //   );
+            // case ConnectionState.waiting:
+            //   return Center(
+            //     child: Image.asset("assets/icon.png"),
+            //   );
             default:
               return Center(
-                child: Image.asset("assets/error.png"),
+                child: Image.asset("assets/icon.png"),
               );
           }
         },

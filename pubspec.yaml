@@ -21,27 +21,33 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  connectivity_plus: ^1.0.6
-  cryptography: ^2.0.2
+  connectivity_plus: ^2.3.6
+  cryptography: ^2.0.5
   external_path: ^1.0.1
   flutter:
     sdk: flutter
-  flutter_email_sender: ^5.0.2
-  flutter_local_notifications: ^9.1.4
-  http: ^0.13.3
+  flutter_email_sender: ^5.1.0
+  flutter_local_notifications: ^9.5.3+1
+  http: ^0.13.4
   intl: ^0.17.0
-  permission_handler: ^8.1.4+1
-  provider: ^5.0.0
-  shared_preferences: ^2.0.5
-  sqflite: ^2.0.0+3
+  permission_handler: ^10.0.0
+  provider: ^6.0.3
+  shared_preferences: ^2.0.15
+  sqflite: ^2.0.2
   workmanager: ^0.4.1
   zxcvbn: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  mockito: null
-  test: null
+  mockito: ^5.2.0
+  test: ^1.17.12
+
+  flutter_native_splash: ^2.1.6
+
+flutter_native_splash:
+  color: "#eeeeee"
+  image: assets/logo.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
